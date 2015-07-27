@@ -1,0 +1,108 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ----------------------------------#
+# Setting up vars of APPRIS program #
+# ----------------------------------#
+
+export APPRIS_HOME="/home/appris"
+
+source "${APPRIS_HOME}/code/conf/apprisrc"
+
+# ----------------------------#
+# Setting up vars for scripts #
+# ----------------------------#
+
+export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
+
+export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_SCRIPTS_DIR}/bin"
+
+export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_SCRIPTS_DIR}/conf"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/appris/test"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_WORKSPACE}/logs"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features"
+
+export APPRIS_SEQ_DIR="${APPRIS_WORKSPACE}/sequences"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=74
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/TST.easy.Homo_sapiens.GRCh38.77.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.cdna.all.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.pep.all.fa"
+
+#export APPRIS_TYPE_ALIGN=compara
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIE="Homo sapiens"
+
+#export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y,M,MT"
+#export APPRIS_CHR_LIST="1,6,5,20,18"
+#export APPRIS_CHR_LIST="19,7,14,22,13"
+#export APPRIS_CHR_LIST="17,16,4,9,21"
+#export APPRIS_CHR_LIST="11,3,8,10,Y"
+#export APPRIS_CHR_LIST="2,12,15,X,M"
+
+export APPRIS_WS_NAME="test"
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/gencode20"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+#export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.TST.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.TST.ini"
+
+# ----------------------------------------------#
+# Setting up PERL LIBRARY PATH and binary files #
+# ----------------------------------------------#
+
+export APPRIS_PERL_LIB="${APPRIS_HOME}/lib/appris_perllib"
+
+export APPRIS_PROGRAMS_MODULES_DIR="${APPRIS_HOME}/modules"
+
+export APPRIS_MODULES_PERL_LIB="${APPRIS_PROGRAMS_MODULES_DIR}/lib/perl5"
+
+export PERL5LIB="${PERL5LIB}:${APPRIS_PERL_LIB}:${APPRIS_MODULES_PERL_LIB}"
+
+export PATH="${APPRIS_SCRIPTS_BIN_DIR}:${PATH}"
+
+# ---------------------------#
+# Setting up the ENSEMBL API #
+# ---------------------------#
+
+module load ensembl/ensembl74
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-compara/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-variation/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-functgenomics/modules/:${PERL5LIB}"
