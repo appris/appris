@@ -1,0 +1,39 @@
+track PrinIsoformsAPPRIS
+bigDataUrl http://apprisws.bioinfo.cnio.es/download/trackHub/hg19/appris_data.appris.bb
+shortLabel APPRIS Principal Splice Isoforms
+longLabel APPRIS selects a single CDS variant for each gene as the 'PRINCIPAL' isoform based on the range of protein features
+type bigBed 12
+color 180,95,4
+visibility full
+priority 1
+html appris
+
+track DomainsAPPRIS
+compositeTrack on
+visibility dense
+shortLabel Presence of protein domains
+longLabel Presence of whole protein domains and damaged domains
+dragAndDrop subTracks
+priority 2
+type bigBed 12
+noInherit on
+
+	track WholeDomainsAPPRIS
+	bigDataUrl http://apprisws.bioinfo.cnio.es/download/trackHub/hg19/appris_data.appris.bb
+	parent DomainsAPPRIS on
+	shortLabel Whole protein domains
+	longLabel Presence of whole protein domains
+	type bigBed 12
+	color 164,189,83
+	priority 1
+	visibility dense
+
+	track DamagedDomainsAPPRIS
+	bigDataUrl http://apprisws.bioinfo.cnio.es/download/trackHub/hg19/appris_data.appris.bb
+	parent DomainsAPPRIS on
+	shortLabel Damaged protein domains
+	longLabel Presence of damaged protein domains
+	type bigBed 12
+	color 86,191,85
+	priority 2
+	visibility dense

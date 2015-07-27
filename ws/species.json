@@ -1,0 +1,209 @@
+{
+    "homo_sapiens": {
+        "scientific":   "Homo sapiens",
+        "common":       "Human",
+        "category":     "popular",
+        "assemblies":   [{
+            "name":     "GRCh38|hg38",
+            "id":       "hg38",
+            "gencode":  22,
+            "dataset":  80
+        },{
+            "name":     "GRCh37|hg19",
+            "id":       "hg19",
+            "gencode":  19,
+            "dataset":  74
+        }],
+        "archives":   [{
+            "name":     "GRCh38|hg38",
+            "id":       "hg38",
+            "datasets": [79,77,76,75]
+        },{
+            "name":     "GRCh37|hg19",
+            "id":       "hg19",
+            "datasets": [74]
+        }],
+        "popular":      1,
+        "order":        1
+    },
+    "mus_musculus": {
+        "scientific":   "Mus musculus",
+        "common":       "Mouse",
+        "category":     "popular",
+        "assemblies":   [{
+            "name":     "GRCm38|mm10",
+            "id":       "mm10",
+            "gencode":  "M5",
+            "dataset":  80
+        }],
+        "archives":   [{
+            "name":     "GRCm38|mm10",
+            "id":       "mm10",
+            "datasets": [78,77,74]
+        }],
+        "popular":      1,
+        "order":        2
+    },
+    "danio_rerio": {
+        "scientific":   "Danio rerio",
+        "common":       "Zebrafish",
+        "category":     "popular",
+        "assemblies":   [{
+            "name":     "GRCz10|danRer10",
+            "id":       "danRer10",
+            "dataset":  80
+        },{
+            "name":     "Zv9|danRer7",
+            "id":       "danRer7",
+            "dataset":  77
+        }],
+        "archives":   [{
+            "name":     "Zv9|danRer7",
+            "id":       "danRer7",
+            "datasets": [77]
+        }],        
+        "popular":      1,
+        "order":        3
+    },
+    "rattus_norvegicus": {
+        "scientific":   "Rattus norvegicus",
+        "common":       "Rat",
+        "category":     "rodents",
+        "assemblies":   [{
+            "name":     "Rnor_6.0|rn6",
+            "id":       "rn6",
+            "dataset":  80
+        },{
+            "name":     "Rnor_5.0|rn5",
+            "id":       "rn5",
+            "dataset":  77
+        }],
+        "archives":   [{
+            "name":     "Rnor_5.0|rn5",
+            "id":       "rn5",
+            "datasets": [77]
+        }],         
+        "popular":      1,
+        "order":        4
+    },
+    "sus_scrofa": {
+        "scientific":   "Sus scrofa",
+        "common":       "Pig",
+        "category":     "laurasiatheria",
+        "assemblies":   [{
+            "name":     "Sscrofa10.2|susScr3",
+            "id":       "susScr3",
+            "dataset":  77
+        }],
+        "popular":      1,
+        "order":        5
+    },
+    "bos_taurus": {
+        "scientific":   "Bos taurus",
+        "common":       "Cow",
+        "category":     "laurasiatheria",
+        "assemblies":   [{
+            "name":     "UMD3.1|bosTau8",
+            "id":       "bosTau8",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        6
+    },
+    "canis_familiaris": {
+        "scientific":   "Canis familiaris",
+        "common":       "Dog",
+        "category":     "laurasiatheria",
+        "assemblies":   [{
+            "name":     "CanFam3.1|canFam3",
+            "id":       "canFam3",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        7
+    },
+    "felis_catus": {
+        "scientific":   "Felis catus",
+        "common":       "Cat",
+        "category":     "laurasiatheria",
+        "assemblies":   [{
+            "name":     "Felis_catus_6.2|felCat5",
+            "id":       "felCat5",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        8
+    },
+    "monodelphis_domestica": {
+        "scientific":   "Monodelphis domestica",
+        "common":       "Opossum",
+        "category":     "mammals",
+        "assemblies":   [{
+            "name":     "BROADO5|monDom5",
+            "id":       "monDom5",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        9
+    },
+    "gallus_gallus": {
+        "scientific":   "Gallus gallus",
+        "common":       "Chicken",
+        "category":     "birds",
+        "assemblies":   [{
+            "name":     "Galgal4|galGal4",
+            "id":       "galGal4",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        10
+    },
+    "taeniopygia_guttata": {
+        "scientific":   "Taeniopygia guttata",
+        "common":       "Zebra Finch",
+        "category":     "birds",
+        "assemblies":   [{
+            "name":     "taeGut3.2.4|taeGut1",
+            "id":       "taeGut1",
+            "dataset":  79
+        }],
+        "popular":      0,
+        "order":        11
+    },
+    "anolis_carolinensis": {
+        "scientific":   "Anolis carolinensis",
+        "common":       "Anole lizard",
+        "category":     "reptiles",
+        "assemblies":   [{
+            "name":     "AnoCar2.0|anoCar2",
+            "id":       "anoCar2",
+            "dataset":  79
+        }],
+        "popular":      0,
+        "order":        12
+    },
+    "xenopus_tropicalis": {
+        "scientific":   "Xenopus tropicalis",
+        "common":       "Xenopus",
+        "category":     "amphibians",
+        "assemblies":   [{
+            "name":     "JGI4.2|xenTro3",
+            "id":       "xenTro3",
+            "dataset":  79
+        }],
+        "popular":      0,
+        "order":        13
+    },
+    "takifugu_rubripes": {
+        "scientific":   "Takifugu rubripes",
+        "common":       "Fugu",
+        "category":     "fish",
+        "assemblies":   [{
+            "name":     "FUGU4|fr3",
+            "id":       "fr3",
+            "dataset":  77
+        }],
+        "popular":      0,
+        "order":        14
+    }
+}

@@ -1,0 +1,12 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+    RewriteRule ^/tools$ http://appris.cnio.es:3000/#/tools [R=301,NC,L]
+    RewriteRule ^/downloads$ http://appris.cnio.es:3000/#/downloads [R=301,NC,L]
+    RewriteRule ^/about$ http://appris.cnio.es:3000/#/about [R=301,NC,L]
+    RewriteRule ^/help http://appris.cnio.es:3000/#/help [R=301,NC,L]
+</IfModule>

@@ -1,0 +1,6 @@
+{
+    "name": "APPRIS RESTful Web services",
+    "version": "0.1.0",
+    "description": "There are services that retrieve useful information of genes/transcripts, and services that retrieve the results of the execution of APPRIS methods.",
+    "apidocFilename": "README.md"
+}

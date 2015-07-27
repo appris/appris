@@ -1,0 +1,110 @@
+{
+    "functional_residue": {
+        "order":        1,
+        "id":          "functional_residue",
+        "name":         "firestar",
+        "label":        "No. Functional Residues",
+        "desc":         "Known functional residues",
+        "description":  "firestar predicts functionally important residues",
+        "class":        "f",
+        "control":      "runner,exporter"
+    },
+    "homologous_structure": {
+        "order":        2,
+        "id":          "homologous_structure",
+        "name":        "matador3d",
+        "label":        "3D Structure Score",
+        "desc":         "Regions with known 3D structure",
+        "description":  "Matador3D analyses protein structural information for each variant",
+        "class":       "m",
+        "control":      "runner,exporter"
+    },
+    "functional_domain": {
+        "order":        3,
+        "id":          "functional_domain",
+        "name":         "spade",
+        "label":        "Whole Domains",
+        "desc":         "Whole Pfam functional domains",
+        "description":  "SPADE identifies the functional domains present in a transcript and detects those domains that are damaged (not whole)",
+        "class":        "s",
+        "type":        {
+            "domain":   {
+                "class":    "s",
+                "label":    "Whole Pfam functional domains"
+            },
+            "domain_possibly_damaged":   {
+                "class":    "s",
+                "label":    "Whole Pfam functional domains"
+            },
+            "domain_damaged":   {
+                "class":    "sd",
+                "label":    "Damaged Pfam functional domains"
+            },
+            "domain_wrong":   {
+                "class":    "sd",
+                "label":    "Damaged Pfam functional domains"
+            }
+        },
+        "control":      "runner,exporter"
+    },
+    "vertebrate_conservation": {
+        "order":        4,
+        "id":          "vertebrate_conservation",
+        "name":         "corsair",
+        "label":        "Conservation score",
+        "desc":         "Isoform with most cross-species evidence",
+        "description":  "CORSAIR carries out BLAST searches against vertebrates to determine the most likely principal isoform",
+        "class":        "c",
+        "control":      "runner,exporter"
+    },
+    "transmembrane_signal": {
+        "order":        5,
+        "id":          "transmembrane_signal",
+        "name":         "thump",
+        "label":        "No. Transmembrane Helices",
+        "desc":         "Transmembrane helices",
+        "description":  "THUMP makes unanimous predictions of trans-membrane helices",
+        "class":        "t",
+        "type":        {
+            "transmembrane":   {
+                "class":    "t",
+                "label":    "Transmembrane helices"
+            },
+            "transmembrane_wrong":   {
+                "class":    "td",
+                "label":    "Damaged Transmembrane helices"
+            }
+        },
+        "control":      "runner,exporter"
+    },
+    "peptide_mitochondrial_signal": {
+        "order":        6,
+        "id":          "peptide_mitochondrial_signal",
+        "name":         "crash",
+        "label":        "Signal Sequence",
+        "desc":         "Peptide / Mitochondrial signal sequences",
+        "description":  "CRASH predicts the presence and location of signal peptides and cleavage sites in amino acid sequences",
+        "class":        "cr",
+        "control":      "runner,exporter"
+    },
+    "principal_isoform": {
+        "order":        7,
+        "id":          "principal_isoform",
+        "name":         "appris",
+        "label":        "Principal Isoform",
+        "desc":         "APPRIS principal isoform",
+        "description":  "APPRIS predicts the principal isoform",
+        "class":        "a",
+        "control":      "runner,exporter"
+    },
+    "proteomic_evidence": {
+        "order":        8,
+        "id":          "proteomic_evidence",
+        "name":         "proteo",
+        "label":        "No. Mapping Peptides",
+        "desc":         "CNIO Proteomic Evidence",
+        "description":  "PROTEO retrieves proteomic evidence for the human genome",
+        "class":        "p",
+        "control":      "exporter"
+    }
+}
