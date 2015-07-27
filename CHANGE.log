@@ -1,0 +1,624 @@
+###########################################
+# TODO LIST	or DECLARATIONS OF INTENTIONS #
+###########################################
+
+* APPRIS-CODE,
+	- APPRIS # TODO!!!
+		- Create a cutoff for the decision of CORSAIR. If the longest isoform is bigger than 1000aa, then we don't
+		take into account CORSAIR score.
+		- New weight for CORSAIR.    
+
+	- SPADE # TODO!!! (NOT USED YET: IN TEST)
+		- Normalized lengths for each DOMAIN, plus template gap penalties.
+
+	- THUMP  # TODO: 2!!!
+		- There is a bug in the consensus... check the example, PDE3B, ENSMUSG00000098306
+		- Implement CACHED method. Take into account temporal files that are cached.
+	
+	- CRASH # TODO!!!
+		- Execute SignalP sequence by sequence because the program crashed for more than 3 sequences.
+
+	- MATADOR3D # TODO!!!
+		- Algorithm as CORSAIR. Create non-redundant PDB database.
+		
+	- FIRESTAR # TODO????? (ask Michael)
+		- Take into account the median of sites to final decision in appris-firestar.
+		
+	- INERTIA # TODO!!!!
+		- RUN in CALENDULA.FCSC.ES THE DIFF GENES of GENCODEM4 - GENCODE19 - GENCODE22 !!!
+		
+	- Include INERTIA annotations for Human (only Gencode19) and Mouse (GencodeM4).
+
+	- Think about create new STRUCTURE of Data:
+		- Concatenate the methods files for each gene...
+		- Concatenate the results for each gene in one file??? Whats happen when you execute appris for some methods?
+		
+	- APPRIS # TODO!!!
+		- Rename "scripts/apprisall.pl" script to "scripts/appris.pl" 
+		- Create "apprisall" script that executes the pipeline, checks the results and insert the annotations.
+		- Include INERTIA changes (for Gencode19)
+				
+	- INERTIA # TODO!!!!!!
+		- Include annotations for Human (Gencode19) and Mouse (GencodeM4). For Mouse we only used "compara" alignments.
+		NOTE: Be careful, the Human results come from Gencode12 and the Mouse results come from GencodeM2
+
+		
+####################################################
+# DESCRIPTION OF APPRIS RELEASES: WS1.WS2.C1.C2.D  #
+# WS1.WS2	-> Release of web server			   #
+# C1.C2		-> Release of code					   #
+# D			-> Release of data files			   #
+####################################################
+
+############################
+# DATE: 		           #
+# RELEASE:  	4.2.2.4.10 #
+# INIT_DATE: 	18Jun2015  #
+############################
+
+* HIGHLIGHTS:
+	- UCSC TrackHub of species that APPRIS has principal isoforms:
+		hg19, hg38, mm10, rn6, rn5, danRer10, danRer7, susScr3
+	- UCSC TrackHub of CNIO proteomic evidences for human
+		hg19, hg38		
+
+* APPRIS-SERVER, v4.4
+	
+	TrackHub!!! <- TODO!!!!
+	
+	- UCSC TrackHub of species that APPRIS has principal isoforms:
+		hg19, hg38, mm10, rn6, rn5, danRer10, danRer7, susScr3
+	- UCSC TrackHub of CNIO proteomic evidences for human
+		hg19, hg38
+
+
+
+* APPRIS-CODE, v2.4
+
+		
+* APPRIS-DATA, v10
+
+	- RefSeq!!! <- TODO!!!!
+
+###########################
+# DATE: 		          #
+# RELEASE:  	4.3.2.4.9 #
+# INIT_DATE: 	17Jul2015 #
+###########################
+
+* HIGHLIGHTS:
+	- Hand-over for e81: Human, and Mouse.
+	- APPRIS has included invertebrate species: Drosophila melanogaster and Caenorhabditis elegans!!!	
+	- TSL method (http://www.ensembl.org/Help/Glossary?id=492) is included into APPRIS decision.
+	
+* APPRIS-SERVER, v4.3
+	- Now Sequence Browser retrieves annotations in detail for residue.
+	- Improve/fixing the annotations within sequence Browser
+	- Change of 'viewer' web service that prints the UCSC image to 'sequencer'
+	- Include the highlight of CDS regions within Sequence Browser
+
+* APPRIS-CODE, v2.4
+	- MATADOR3D
+		- The score of total gaps was not working. There were not cases with -1,-0.5 score. E.g. PAX6 gene
+	- SPADE
+  		- It does not take into account "insertions" within HMM sequences. Fixed. E.g. PAX6 gene
+		- Fixing the range of residues when a transcripts receives exported alignments
+  	- APPRIS
+		- TSL annotation (tsl1) is included into APPRIS decision		
+	- APPRIS pipeline has included invertebrate species: Drosophila melanogaster and Caenorhabditis elegans.
+	- CORSAIR
+		- Include new RefSeq database for "Invertebrates".
+	- Discard the Ensembl version only in the cases where the identifier starts with 'ENS'.
+
+* APPRIS-DATA, v9
+	- Human
+		> Ensembl81/Gencode23 (GRCh38),	ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl76/Gencode20 (GRCh38),	ens76.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
+		> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
+	- Mouse
+		> Ensembl81/GencodeM6 (GRCm38),	ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl74/GencodeM2 (GRCm38),	ens74.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
+	- Zebra-fish
+		> Ensembl81 (GRCz10), 			ens81.v9.17Jul2015 <- TODO!!!!
+	- Rat
+		> Ensembl81 (Rn6),    			ens81.v9.17Jul2015 <- TODO!!!!
+	- Pig
+		> Ensembl81 (Sscrofa10.2),		ens81.v9.17Jul2015 <- TODO!!!!
+
+	NEW SPECIES:
+	- Chimp
+		> Ensembl81 (CHIMP2.1.4), 		ens81.v9.17Jul2015 <- TODO!!!!
+	- Fruitfly
+		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015 <- TODO!!!! 
+	- WormBase
+		> Ensembl81 (WBcel235), 		ens81.v9.17Jul2015 <- TODO!!!!
+		
+		
+#######################
+# DATE: 	16Apr2015 #
+# RELEASE:  4.2.2.3.8 #
+#######################
+
+* HIGHLIGHTS:
+	- Hand-over for e80: Mouse, Zebra-fish and Rat.
+	- New assemblies for Zebra-fish (GRCz10) and Rat (Rnor_6.0).
+
+* APPRIS-SERVER, v4.2
+	- Fix a bug when UCSC image is shown.	
+	- Include AWStats is a free powerful and featureful tool that generates advanced web, streaming, ftp or mail server statistics, graphically.
+	http://apprisws.bioinfo.cnio.es/awstats/awstats.pl?month=all&year=2015&output=main&config=appris&framename=index
+		
+* APPRIS-CODE, v2.3
+	- APPRIS
+		- Fixing a bug where we detect "start/stop" codons
+		
+* APPRIS-DATA, v8
+	- Human
+		> Ensembl80/Gencode22 (GRCh38),	ens80.v8.16Apr2015 = ens79.v8.2Apr2015 
+		> Ensembl76/Gencode20 (GRCh38),	ens76.v8.16Apr2015 <- FREEZE!!
+	- Mouse
+		> Ensembl80/GencodeM5 (GRCm38),	ens80.v8.16Apr2015
+		> Ensembl74/GencodeM2 (GRCm38),	ens74.v8.16Apr2015 <- FREEZE!!
+	- Zebra-fish
+		> Ensembl80 (GRCz10),			ens80.v8.16Apr2015
+	- Rat
+		> Ensembl80 (Rn6),				ens80.v8.16Apr2015
+	- Pig
+		> Ensembl80 (Sscrofa10.2),		ens80.v8.16Apr2015 <- TODO: ENSEMBL DOESN'T GIVE ME THE DATA!!!!
+		
+#######################
+# DATE: 	9Feb2015  #
+# RELEASE:  4.1.2.2.7 #
+#######################
+
+* HIGHLIGHTS:
+	- Fixing a bug in the CORSAIR filter.
+	- We have increase the number of the version for the release. The reason is the same number.
+	- The annotations for GRCh37 of human have been frozen: gen19.v7.9Feb2015
+
+* APPRIS-SERVER, v4.1
+
+* APPRIS-CODE, v2.2
+	- APPRIS 
+		- Fixing a bug in the CORSAIR filter
+		- Fixing a bug in the filter of length sequences.
+		
+* APPRIS-DATA, v7
+	- Human
+		> Ensembl77/Gencode21 (GRCh38), ens77.v7.9Feb2015
+		> Ensembl76/Gencode20 (GRCh38), ens76.v7.9Feb2015
+		> Ensembl74/Gencode19 (GRCh37), gen19.v7.9Feb2015 <- FREEZE!!
+	- Mouse
+		> Ensembl78/GencodeM4 (GRCm38), ens78.v7.9Feb2015
+	- Zebra-fish
+		> Ensembl77 (Zv9),    ens77.v7.9Feb2015 <- FREEZE!!
+	- Rat
+		> Ensembl77 (Rn5),    ens77.v7.9Feb2015 <- FREEZE!!
+	- Pig
+		> Ensembl77 (Sscrofa10.2), ens77.v7.9Feb2015
+		
+#######################
+# DATE: 	27Jan2014 #
+# RELEASE:  4.0.2.1.1 #
+#######################
+
+* HIGHLIGHTS:
+	- NEW APPRIS SERVER
+	- New APPRIS algorithm using oldest CCDS ids as principal isoforms:
+
+* APPRIS-SERVER, v4.0
+
+* APPRIS-CODE, v2.1
+	- New tags of PRINCIPAL ISOFORMS
+	- New script to retrieve the list of principal isforms for Ensembl
+	- APPRIS
+		- New APPRIS algorithm using oldest CCDS ids as principal isoforms:
+			- With the 'appris_candiates' we check:
+				1. unique CCDS
+				2. the oldest CCDS (smaller than 10numbers comparing with the next CCDS number)
+				3. the longest CCDS
+				4. the longes protein sequence
+				
+* APPRIS-DATA, v1
+	- Human
+		> Ensembl79 (GRCh38), ens79.v1.26Jan2015 # TEMPORAL
+		> Ensembl77/Gencode21 (GRCh38), ens77.v5.27Jan2015
+		> Ensembl74/Gencode19 (GRCh37), gen19.v6.27Jan2015
+	- Mouse
+		> Ensembl78/GencodeM4 (GRCm38), ens78.v3.27Jan2015
+	- Zebra-fish
+		> Ensembl77 (Zv9),    ens77.v3.27Jan2015
+	- Rat
+		> Ensembl77 (Rn5),    ens77.v3.27Jan2015
+	- Pig
+		> Ensembl77 (Sscrofa10.2), ens77.v2.27Jan2015
+		
+###############################################
+# DESCRIPTION OF APPRIS RELEASES: WS.C1.D	  #
+# WS -> Release of web server				  #
+# C1 -> Release of code (the second number)	  #
+# D  -> Release of data files			 	  #
+###############################################
+		 
+#######################
+# DATE: 	1Nov2014  #
+# RELEASE:  3.4.4     #
+#######################
+
+* HIGHLIGHTS:
+	- APPRIS improvements included in for Dominant Isoform paper.
+	- Frozen version (tag release-1.4 in svn repository).
+
+* APPRIS-DATA
+	- Human
+		> Ensembl77/Gencode21 (GRCh38), ens77.v4.31Oct2014
+		> Gencode19/Ensembl74 (GRCh37), gen19.v5.31Oct2014
+	- Mouse
+		> Ensembl78 (GRCm38), ens78.v2.31Oct2014
+		> GencodeM3/Ensembl77 (GRCm38), genM3.v4.31Oct2014
+	- Zebra-fish
+		> Ensembl77 (Zv9),    ens77.v2.31Oct2014
+	- Rat
+		> Ensembl77 (Rn5),    ens77.v2.31Oct2014
+	- Pig
+		> Ensembl77 (Sscrofa10.2), ens77.v1.13Jan2015
+		
+* APPRIS-CODE, v1.4 (-> v.2.0)
+	- APPRIS
+		- New APPRIS algorithm:
+			- new weights for methods.
+			
+#######################
+# DATE: 	31Oct2014 #
+# RELEASE:  3.4.3     #
+#######################
+
+* HIGHLIGHTS:
+	- New filter in APPRIS in the case of CORSAIR decision.
+	- Release for Ensembl.
+
+* APPRIS-DATA
+	- Human
+		> Ensembl77/Gencode21 (GRCh38), ens77.v3.28Oct2014
+	- Mouse
+		> Ensembl78 (GRCm38), ens78.v1.28Oct2014
+	- Zebra-fish
+		> Ensembl77 (Zv9),    ens77.v1.28Oct2014
+	- Rat
+		> Ensembl77 (Rn5),    ens77.v1.30Oct2014
+		
+		
+* APPRIS-CODE, v1.4
+	- APPRIS
+		- New APPRIS algorithm:
+			- filter by aa length in CORSAIR
+			- new weights for CORSAIR.
+			- new normalization for methods. 
+	
+#######################
+# DATE: 	09Oct2014 #
+# RELEASE:  3.4.3     #
+#######################
+
+* HIGHLIGHTS:
+	- Include CCDS correctly for Ensembl77/Gencode21.
+
+* APPRIS-DATA
+	- Human
+		> Gencode21/Ensembl77 (GRCh38), ens77.v2.08Oct2014
+		
+#######################
+# DATE: 	08Oct2014 #
+# RELEASE:  3.4.2     #
+#######################
+
+* HIGHLIGHTS:
+	- Include CCDS correctly for Gencode20 and GencodeM3.
+
+* APPRIS-DATA
+	- Human
+		> Gencode21/Ensembl77 (GRCh38), ens77.v1.29Aug2014
+		> Gencode20 (GRCh38), gen20.v2.13Aug2014
+	- Mouse
+		> GencodeM3 (GRCm38), genM3.v2.13Aug2014
+	- Zebra-fish
+		> Ensembl76 (Zv9),    ens76.v1.03Oct2014
+		
+* APPRIS-CODE, v1.4
+	- GENCODE has changed the comment line of FASTA translation file.
+	- Include method which parser the input files coming from Ensembl (gtf, pep.fa, cdna.fa).
+	- Cached files for gene. 
+						
+#######################
+# DATE: 	16Jul2014 #
+# RELEASE:  3.4.1     #
+#######################
+
+* APPRIS-DATA
+	- Human
+		> Gencode20 (GRCh38), gen20.v1.16Jul2014
+		> Gencode19, gen19.v4.16Jul2014
+		> Gencode18, gen18.v1.16Jul2014
+	- Mouse
+		> GencodeM3 (GRCm38), genM3.v1.16Jul2014
+		
+* APPRIS-CODE, v1.4
+	- Print parameters within log file
+	- Gencode methods do not need connect to Ensembl (Parser.pm)
+	- Include RESTful web services of APPRIS Runner.
+	- New Export format (TXT.pm)	
+	- apprisall.pl executes in a cluster when is located with itself host.
+	- apprisall.pl and appris.pl accepts new parameter of alignments. Now, 'compara' alignments needs ensembl version.
+	- Skeleton of TEST battery
+	
+	- Update scripts of stats. CExonic output of appris rst has been deleted.
+	
+	- SPADE (NOT USED YET: IN TEST)
+		- Normalized lengths for each DOMAIN, plus template gap penalties.
+		
+	- APPRIS
+		- Score output prints for the following methods:
+			-- spade: "(Num. Whole Domains+Num. Possible Domains) - (Num. Wrong Domains+Num. Damaged Domains)"
+			-- thump: "Num. TMH - Num. Damaged TMH" 
+
+	- PROTEO
+		- New script that saves peptides by gene
+		
+	- APPRIS
+		- New algorithm to select the main variant. We normalize the scores of methods.
+		- Delete CExonic output.
+		- We take into account the CLASS of transcript for decisition but we don't use "codon start/end not found" label yet.
+		
+	- CEXONIC
+		- Has been deleted
+				
+	- Export PROTEO features by means RESTful services.
+	
+* APPRIS-WEBSITE, v1.3
+	- CExonic is DEPRECATED
+	- Add PROTEO annotations
+	- Improve Web Site features.
+	- Include PROTEO RESTful service into web site.
+	
+	- New Archives: Gencode18, and Gencode19... (Finish as soon as possible the new web site because it is a nightmare!!!)	
+					
+#######################
+# SKIP      --------- #
+# DATE: 	--------- #
+# RELEASE:  3.3.1     # 
+#######################
+
+* APPRIS-DATA
+	- Human
+		> Gencode19, gen19.v3
+	- Mouse
+		> GencodeM2, genM2.v2
+		
+* APPRIS-CODE, v1.3
+	- Print parameters within log file
+	- Gencode methods do not need connect to Ensembl (Parser.pm)
+	- Include RESTful web services of APPRIS Runner.
+	- New Export format (TXT.pm)
+	
+	- INERTIA
+		- INERTIA is executed only for the transcripts with CDS (protein-coding), and CDS start-end have been founded.
+
+	- CORSAIR
+		- Exon data is not required.
+		- We have added the conservation score by exons by exon.
+
+	- MATADOR3D
+		- New threshold of identity/gaps when we parse the alignment of "Blast".
+		
+	- FIRESTAR
+		- New version of firestar.
+		- New FireDB.
+		- Now, the score of SQUARE is a median of site.
+		- appris-firestar takes into account all residues coming from firestar's core.
+		- appris-firestar: I have reduced the difference between the number of residues when a variant wins. From 6 to 2.
+		
+	- THUMP
+		- Fix the count of helixes.
+		
+	- PROTEO
+		- Add new method into APPRIS database (but REMEMBER it is NOT within appris decision)
+		
+#######################
+# DATE: 	20Dec2013 #
+# RELEASE:  3.2.3     #
+#######################
+
+* MAIN DESCRIPTION
+	- New release of annotations of Gencode19. Preliminar gencode data did not contain external name of genes.
+
+* APPRIS-DATA
+	- Human
+		> Gencode19, gen19.v2.18Dec2013
+
+#######################
+# DATE: 	 2Dec2013 #
+# RELEASE:  3.2.2     #
+#######################
+
+* MAIN DESCRIPTION
+
+* APPRIS-DATA
+	- Change the format of list of principal isoforms.
+	For more information:
+		http://appris.bioinfo.cnio.es/download/README.txt 
+	- Human
+		> Gencode19, gen19.v1.25Nov2013
+	- Mouse
+		> GencodeM2, genM2.v1.2Dec2013
+	- Rat
+		> Ensembl70, e70.v4.29Oct2013
+	- Zebra-fish
+		> Ensembl70, e70.v1.25Nov2013		
+
+
+#######################
+# DATE: 	25Nov2013 #
+# RELEASE:  3.2.1     #
+#######################
+
+* MAIN DESCRIPTION
+
+* APPRIS-DATA
+	- Include "chromosome" column within "conserved_exons" data.
+	- Human
+		> Gencode15, g15.v4.16Oct2013		
+	- Mouse
+		> Ensembl70, e70.v4.29Oct2013
+	- Rat
+		> Ensembl70, e70.v4.29Oct2013
+	- Lynx (private data)
+		> p23A.v3.14Oct2013 
+
+* APPRIS-CODE, v1.2
+	- Put together README files
+	- Include all code of APPRIS in GitHub (https://github.com/inab/appris)
+	
+	- (main) APPRIS
+		- Modify the way to obtain the inputs
+			- Type of inputs: 
+				- directory data (cached)
+				- gencode data
+				- ensembl data
+				- sequence (protein) data
+			- Type of alignment:
+				- compara
+		- Delete runner files				
+
+		- Add INERTIA script
+		- Accepts new parameters. 't-align' that describes the type of alignment.
+			- Type of alignment:
+				- compara		
+
+	- CORSAIR
+		- New scores for the Lynx pardinus
+		- New cutoff of 1.5
+		- Include the list of species for 'Danio rerio'
+	
+	- MATADOR3D
+		- The gene ENSG00000160404 is rejecting ENST00000373284 with an negative alignment -0.20125 because 
+		the percentage of gaps is bigger than 25.
+		We have modify the threshold of percentages of gaps to:
+		
+				elsif ($gaps > 25)
+					{ $totalgaps = 0 }
+				elsif ($gaps > 33)
+					{ $totalgaps = -0.5 }
+				elsif ($gaps > 40)
+				
+		- Take the correct transcript		
+		- Change the threshold of Matador3D to 0.65
+
+	- APPRIS
+		- Reliability scores:
+			If transcript is UNKOWN, its reliability score is NR (not rejected).
+			And if the transcript has the longest protein sequences, its reliability score is NR*
+			
+			Only the transcripts with PRICIPAL have reliability scores.
+		- If we don't have information of codons, we continue saving the appris score.
+
+	- THUMP		
+		- Changes the regular expresion to parse transcript for any kind of identifier. 
+			
+
+#########################
+# DATE: 	16Aug2013   #
+# RELEASE:  3.1.1       #
+#########################
+
+* APPRIS-WEBSITE, v1.3
+
+- Links of archives redirect to more specific website.
+
+- Rename the suffix of data files of 'rattus_norvegicus'.
+
+- Change the annotations of SPADE and THUMP. Now, we print their "scores" in the website:
+	- SPADE shows an float number where the absolute number is the pfam domains that are detected. Then, the number after the decimal indicates the numbers of partial domains.
+	- THUMP shows the number of TMH detected. Again, the number after the decimal indicates the partial TMH.
+ 
+- Delete the phrase "on Human (GRCh37/hg19) Assembly" from the 'report' web page.
+
+- Fix the URL that retrieves proteomics data as BED format.
+
+- Update the proteomic data (gencode12):
+	- Peptides were assembled from five previously available proteomics data sets. Three of the peptide data sets came from published large-scale experiments (Ezkurdia, Nagaraj, Geiger) 
+	and the others were from two large spectra libraries, PeptideAtlas (Farrah) and NIST (http://peptide.nist.gov/).
+	These tracks show where peptide evidence exists (0 or 1) , but there is no means of scoring these tracks.  
+
+
+#########################
+# DATE: 	25Jul2013   #
+# RELEASE:  3.1         #
+#########################
+
+
+* MAIN DESCRIPTION:
+
+
+* APPRIS-CODE, v1.1
+
+We have decided to establish new nomenclature of version of appris's code.
+
+	- SPADE does not migrate domains of variants with the same sequence where pfamscan does not provide results. 
+		For example, ENSG00000021300.7 (Gencode15)
+		
+	- FIRESTAR prints results whose cutoff is smaller than 65%. This is bad!!! 
+	For example, ENSG00000184361 (Gencode15)
+
+	- CORSAIR, has new scores of the rest of species (including Lynx pardinus):
+		'Rest of species'
+			'Homo sapiens'				=> 1,
+			'Pan troglodytes'			=> 1,
+			'Mus musculus'				=> 1.1,
+			'Rattus norvegicus'			=> 1.1,
+			'Bos taurus'				=> 1.2,
+			'Canis lupus familiaris'	=> 1.2,
+			'Sus scrofa'				=> 1.2,
+			'Monodelphis domestica'		=> 1.3,
+			'Gallus gallus'				=> 2,
+			'Taeniopygia guttata'		=> 2,
+			'Anolis carolinensis'		=> 2,
+			'Xenopus tropicalis'		=> 2.2,
+			'Tetraodon nigroviridis'	=> 2,
+			'Danio rerio'				=> 2.5,
+
+* APPRIS-DATA:
+
+- Human
+	> Gencode12, rel12.27Jun2013.v5
+		- SPADE did not migrate variant domains with the same sequence.
+		- INERTIA new results.
+
+	> Gencode15, g15.v3.15Jul2013
+		- SPADE did not migrate variant domains with the same sequence.		
+		- FIRESTAR printed results whose cutoff was smaller than 65%.
+
+* NEW GENOMES:
+
+- Mouse
+	> Ensembl70, e70.v3.15Jul2013
+		- SPADE did not migrate variant domains with the same sequence.		
+		- FIRESTAR printed results whose cutoff was smaller than 65%.
+
+- Rat
+	> Ensembl70, e70.v3.10Jul2013
+		- SPADE did not migrate variant domains with the same sequence.		
+		- FIRESTAR printed results whose cutoff was smaller than 65%.
+
+
+* APPRIS-WEBSITE, v1.3
+	
+	- Add script for the rest of species
+	
+	- Include new data files into website:
+		- appris data exon by exon
+		
+	- Modify "download" web page.
+
+
+
+
