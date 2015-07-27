@@ -1,0 +1,330 @@
+=head2 Thu Dec  5 14:58:48 2013: C<Module> L<JSON|JSON>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/code/opt/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.90>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Dec  5 15:06:50 2013: C<Module> L<SVG|SVG>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/code/opt/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.59>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Fri May 23 16:17:49 2014: C<Module> L<parent|parent>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.228>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Fri Aug 22 17:14:27 2014: C<Module> L<XML::RegExp|XML::RegExp>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.04>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Fri Aug 22 17:14:30 2014: C<Module> L<libxml-perl|libxml-perl>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.08>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Fri Aug 22 17:14:33 2014: C<Module> L<XML-DOM|XML-DOM>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.44>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Sep 10 09:05:07 2014: C<Module> L<Data::Printer|Data::Printer>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.35>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Sep 11 08:57:41 2014: C<Module> L<Sort::Naturally|Sort::Naturally>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.03>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Sep 11 10:19:35 2014: C<Module> L<Clone::PP|Clone::PP>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.06>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Oct  2 14:51:14 2014: C<Module> L<MIME::Types|MIME::Types>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.09>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Oct  2 14:52:37 2014: C<Module> L<Capture::Tiny|Capture::Tiny>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.25>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Oct  2 14:52:38 2014: C<Module> L<Email::Date::Format|Email::Date::Format>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.004>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Oct  2 14:52:40 2014: C<Module> L<MIME::Lite|MIME::Lite>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 3.030>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Oct  2 15:09:29 2014: C<Module> L<Mail::Sender|Mail::Sender>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.8.23>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Thu Jan 29 13:00:06 2015: C<Module> L<Parse::RecDescent|Parse::RecDescent>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.967009>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
