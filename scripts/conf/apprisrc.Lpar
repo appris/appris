@@ -1,0 +1,102 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ----------------------------------#
+# Setting up vars of APPRIS program #
+# ----------------------------------#
+
+export APPRIS_HOME="/local/jmrodriguez/appris"
+
+source "${APPRIS_HOME}/code/conf/apprisrc"
+
+# ----------------------------#
+# Setting up vars for scripts #
+# ----------------------------#
+
+export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
+
+export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_SCRIPTS_DIR}/bin"
+
+export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_SCRIPTS_DIR}/conf"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/local/jmrodriguez/pardinus23B"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_WORKSPACE}/logs"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features"
+
+export APPRIS_SEQ_DIR="${APPRIS_WORKSPACE}/sequences"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=23B
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/LYPA23B.20140225.annot.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/LYPA23B.20140225.transl.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/LYPA23B.20140225.transl.fa"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIE="Lynx pardinus"
+
+#export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
+export APPRIS_WS_NAME="lynx_pardinus/Lpar23B"
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/lynx_pardinus/Lpar23A"
+
+export APPRIS_NUM_PARALLEL_PROC=1
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+
+# ----------------------------------------------#
+# Setting up PERL LIBRARY PATH and binary files #
+# ----------------------------------------------#
+
+export APPRIS_PERL_LIB="${APPRIS_HOME}/lib/appris_perllib"
+
+export APPRIS_PROGRAMS_MODULES_DIR="${APPRIS_HOME}/modules"
+
+export APPRIS_MODULES_PERL_LIB="${APPRIS_PROGRAMS_MODULES_DIR}/lib/perl5"
+
+export PERL5LIB="${PERL5LIB}:${APPRIS_PERL_LIB}:${APPRIS_MODULES_PERL_LIB}"
+
+export PATH="${APPRIS_SCRIPTS_BIN_DIR}:${PATH}"
+
+# ---------------------------#
+# Setting up the ENSEMBL API #
+# ---------------------------#
+
+module load ensembl/ensembl70
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl70/ensembl/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl70/ensembl-compara/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl70/ensembl-variation/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl70/ensembl-functgenomics/modules/:${PERL5LIB}"

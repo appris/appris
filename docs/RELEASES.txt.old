@@ -1,0 +1,1082 @@
+
+###########################
+# RELEASE 7 (15-Mar-2011) #
+###########################
+
+* v1: 26-Aug-2011
+	 The same schema of APPRIS than release 3c of Gencode.
+	 
+* v2: 30-Aug-2011
+	The schema of APPRIS has changed:
+		1. firestar+Matador3D
+		2. INERTIA+CORSAIR
+		3. SPADE
+		4. CORSAIR
+		5. CRASH+THUMP
+		6. CExonic
+		7. INERTIA
+	(See APPRIS project)
+	
+* v3: 3-Sep-2011 
+	New order of APPRIS:
+		1. firestar - matador - corsair+inertia
+		2. spade
+		3. corsair
+		4. inertia+(crash || thump)
+		5. cexonic+(crash || thump)
+		6. crash+thump
+		7. inertia+cexonic
+* v4: 4-Nov-2011
+	Fixing a bug of Matador3D
+	New firestar
+
+* v5: 14-Nov-2011
+	Fixing a bug of Firestar
+	
+* v6: 1-Dec-2011
+	Fixing a bug of SPADE
+	New Firestar with reliability score
+	Add the Inertia results of ENSGR* genes of chrY
+	Add new columns within APPRIS report (changes in library and database)
+
+* v7: 15-Dec-2011
+	Firestar run using HH-PsiBlast and the new version of fireDB (18Nov2011)
+
+* v8: 20-Dec-2011
+	Fixing a bug of Firestar:
+		Thereis a problem with firestar. Sometimes (I gues due the cluster), one
+		transcript output is not retrieved. I have made some changes trying to fix that:
+			- I have cached the output of firestar
+			- Consensus motifs appear when must not (eg, ENSG00000007168)
+	Export/BED.pm:
+		BED chromStarts[i]+chromStart must be less or equal than chromEnd:
+	
+* v9: 27-Dec-2011
+	Firestar: the frequency score has to be higger than 0.25
+	Add reliability score of APPRIS's methods.
+
+* v10: 12-Jan-2012
+	New difference score of among species, 1.5 of CORSAIR
+
+* v11: 27-Jan-2012
+	- SPADE: New cuttof that depennds on HMM length.
+	- The cutoff of CORSAIR within INCOR (INERTIA+CORSAIR) will be 2 but CORSAIR running 
+	independenly will be 1.5.
+	All this changes have done within APPRIS. We have created new version v5.
+	Note: Think about to improve this changes...they are quite dirty.
+	
+* v12: 9-Mar-2012
+	- New decision algorith of APPRIS:
+		Now the methods give one score for each transcript. The decision score depends on 
+		the reliability of method:
+			* firestar =>  5
+			* Matador3D => 5
+			* CORSAIR =>   4
+			* SPADE =>     3
+			* INERTIA =>   2
+			* CExonic =>   1
+			* THUMP =>     1
+			* CRASH =>     1
+	- Fixing a possible bug of INERTIA: Bad result of ENST00000344746, ENST00000369817, ENST00000424325
+	- Fixing a bug in APPRIS code
+
+* v13: 10-Apr-2012
+
+	PIPELINE CORE:
+		- Fix a problem with INERTIA (ENSG00000066279)
+		- New filter for INERTIA. Now we don't reject a transcript whose rejected exon is not
+		within the shortest transcript.
+		- Modify the algorithm of APPRIS in the case of CRASH method. We separate the annotations of 
+		SignalP and TargetP as was originally. (appris v7)
+		- Add the filter that controls the "start-end codon not found". (appris v7)
+		
+	WEB PAGE:
+		- Include the columns of peptide signal and mitochondrial signal within Annotations detail table.
+		- New labels on the UCSC browser:
+			Mapping to functional residues
+			Mapping to 3D structures
+			Whole Pfam functional domains
+			Damaged Pfam functional domains (including the "Slightly damaged", and "Damaged domains")
+			Best conservation against vertebrates (instead of "doubtful ...")
+			Neutrally evolving exons
+			Unusually evolving exons
+			Signal sequences
+			Mitochonrial signal sequences			
+		- Fix bugs of REST web services that retrieve BED outputs. Specially, 
+				- the boxes of "firestar" are badly drawn for the following genes: 
+					ENSG00000180176, ENSG00000130540, ENSG00000159216
+				
+* v14: 19-Apr-2012 (version that was sent to Nature methods)
+
+	PIPELINE CORE:
+		- INERTIA still working badly. So, we fixed again. Example of gene ENSG00000002016.
+		
+	WEB PAGE:
+		- Fix bugs of REST web services that retrieve BED outputs. Specially, 
+ 				- the boxes of "spade" are badly drawn for the following genes:
+ 					ENSG00000180176, ENSG00000000457
+				- We don't print the 'domain_wrong' alignments. This is helpful because
+					we don'r dirty the genome browser picture, and we solve the problems 
+					of BED files for the following genes: ENSG00000007341, ENSG00000003056
+ 					
+* v15: 21-Apr-2012
+
+	PIPELINE CORE:
+		- Fixing a "bug" in APPRIS. The variants that have not method results are rejected
+		instead to be "unknown".
+
+* v16: 09-May-2012
+
+	PIPELINE CORE:
+		- Fix problems with SPADE (ENSG00000203985, ENSG00000159216): The domain alignments repeated so many times.
+		
+* v17: 29-May-2012
+	PIPELINE CORE:
+		- New release of firestar (27Jan2012)
+		
+* v18: 06-Sep-2012
+	PIPELINE CORE:
+		- New release of CORSAIR. Now it selects the constitutive isoform when there are two species of difference. (3Sep2012)
+		- New release of Matador3D. Now it is fixed the bug in ENSG00000163793. (29Aug2012)
+		
+* v18.2: 31-Oct-2012
+		- New fields for Matador3D. Now, Matador3D saves the mini-exon alignments. Changes in the API (Paser, Registry, Intruder, and 
+		Matador3DRegion) and DB.
+
+* v18.3: 20-Nov-2012
+		- Matador3d retrieves the coordinates of peptides incorrectly. For ENST00000229416 (Gencode7) which the number of aa residues is 637, Matador3D 
+	retrieves 640 residues.
+
+* v18.4: 9-Dec-2012
+		- New release of PDB database for Matador3D.
+		- New release of Matador3D:
+			- New thresholds calculating the mini-exon values:
+				- Identity of mini-exon:
+						elsif ($identity >= 25)
+							{$totalidentity = 0.50}
+						elsif ($identity >= 20)
+							{$totalidentity = 0.33}
+							
+				- Gaps within mini-exon:
+						elsif ($gaps <= 18)
+							{$totalgaps = 0.33}
+						elsif ($gaps > 25)
+							{ $totalgaps = -0.5 }
+						elsif ($gaps > 40)
+							{ $totalgaps = -1 }
+							
+			- Add the percentage of identity for each mini-exon
+			
+			- Now, it can not give a bigger score when a cds region has the same pdb. 
+
+			- Add alignment position in the output
+			
+* v19: 13-Dec-2012
+		- New release of APPRIS. New scores:
+			firestar - 6
+			matador - 5
+			spade - 4
+			corsair - 3
+			thump - 2
+			crash - 1
+			(the rest 0) 
+		
+* v20:
+		- INERTIA was wrong. Include the new script that masks the stop codons with gaps.
+
+			
+	
+############################
+# RELEASE 12 (29-Jul-2012) #
+############################
+	
+* v1: 30-Jul-2012
+
+	PRELIMINAR RESULTS for GENCODE12:
+		- Annotations using firestar, Matador3D, CORSAIR, SPADE, CExonic, and CRASH methods.
+
+* v2: 22-Nov-2012
+		- New release of CORSAIR (3Sep2012)
+		- New release of Matador3D (29Aug2012)
+		- Including THUMP results.
+
+* v3: 21-Dec-2012
+		- Use the last version of Matador3D (Dec2012). Matador3D saves the mini-exon alignments. Changes in the API (Paser, Registry, Intruder, and 
+		Matador3DRegion) and DB. New release of PDB database for Matador3D.
+		- Including INERTIA results (It is included but now APPRIS is not taking into account.)
+		
+* v4: 22-Feb-2013
+		- Fix the problem during migration of domains among variants, SPADE. For example, ENSG00000140416 (Gencode 12) !!!
+		We will not migrate domain information between alignments when the variant have already a domain aligment.. Any kind of overlap.		
+		- CHECK if SPADE is correct comaring with CCDS. TODO:!!!!
+		- INERTIA was wrong. Include the new script that masks the stop codons with gaps. TODO!!!
+		
+* v5: 24-Jun-2013
+
+APPRIS-CORE:
+	
+	- SPADE does not migrate domains of variants with the same sequence where pfamscan does not provide results. 
+		For example, ENSG00000021300 (Gencode 12)
+		
+		 
+
+############################
+# RELEASE 15 (22-Jan-2013) #
+############################
+
+* v1: 2-May-2013
+	- Use the last version of Firestar (Jan2013)
+	- Run CORSAIR with the new release of database. RefSeq instead of nr.
+	- Error in firestar with the gene/transcript ENSG00000154358/ENST00000570156 (memory problems in hhblits)
+		
+
+* v2: 9-Jun-2013
+	- New score for species in CORSAIR:
+	
+	'Homo sapiens'
+		'Homo sapiens'				=> 0.5,
+		'Pan troglodytes'			=> 1,
+		'Mus musculus'				=> 1.1,
+		'Rattus norvegicus'			=> 1.1,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+				
+	'Mus musculus'
+		'Mus musculus'				=> 0.5,
+		'Rattus norvegicus'			=> 1,	
+		'Homo sapiens'				=> 1.2,
+		'Pan troglodytes'			=> 1.2,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,	
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+
+	'Rattus norvegicus'
+		'Rattus norvegicus'			=> 0.5,
+		'Mus musculus'				=> 1,
+		'Homo sapiens'				=> 1.2,
+		'Pan troglodytes'			=> 1.2,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,	
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+		
+		BE CAREFULL!!!! THIS ONLY WORKS FOR HUMAN,MOUSE, and RAT!!!!
+
+	- FIX the PROBLEM with APPRIS. A variant never can win when is a NMD or its codons have not found.
+
+	- Cutoff in FIRESTAR for reability score
+
+
+################################################################################################################
+
+FROM HERE, I HAVE DECIDED TO ESTABLISH NEW NOMENCLATURE OF VERSION OF APPRIS'S CODE!!!
+
+################################################################################################################
+
+
+* v1.1: ????
+
+	- SPADE, v11. does not migrate domains of variants with the same sequence where pfamscan does not provide results. 
+		For example, ENSG00000021300.7 (Gencode 15)
+		
+	- FIRESTAR prints results whose cutoff is smaller than 65%. This is bad!!! 
+	For example, ENSG00000184361 (Gencode 15)
+
+	- CORSAIR, v10. We have added the new scores of the rest of species (including Lynx pardinus):
+		'Rest of species'
+			'Homo sapiens'				=> 1,
+			'Pan troglodytes'			=> 1,
+			'Mus musculus'				=> 1.1,
+			'Rattus norvegicus'			=> 1.1,
+			'Bos taurus'				=> 1.2,
+			'Canis lupus familiaris'	=> 1.2,
+			'Sus scrofa'				=> 1.2,
+			'Monodelphis domestica'		=> 1.3,
+			'Gallus gallus'				=> 2,
+			'Taeniopygia guttata'		=> 2,
+			'Anolis carolinensis'		=> 2,
+			'Xenopus tropicalis'		=> 2.2,
+			'Tetraodon nigroviridis'	=> 2,
+			'Danio rerio'				=> 2.5,
+
+	
+* v1.X:
+
+	- Include the new script that map the stop codons with gaps into INERTIA. TODO!!!
+	- FIX the PROBLEM with the score of MATADOR3D (ENSG00000070526) TODO:!!!!
+	
+	
+	
+	
+	
+################################################################################################################
+
+BELOND WE COLLECT THE README.TXT FILES OF EACH METHOD
+
+################################################################################################################
+
+
+---------- FIRESTAR ------------
+
+This readme should help you get started with "firestar.pl".
+
+--------------------------------------------------------------------------------
+- Running searches using "firestar.pl" -------------------------------------------
+--------------------------------------------------------------------------------
+
+Using firestar.pl
+==================
+
+"firestar.pl" is a program that searches a FASTA file against a library of PDB.
+
+The program predicts functionally important residues from structural templates 
+and alignment reliability.
+
+Note: You have to comment the line "require "$cwd/SSH1.pm" "
+REQUIREMENTS
+============
+
+To recap, "firestar.pl" requires:
+
+	* Blastpgp software
+	
+	* Perl packages:
+		Getopt::Long
+		Data::Dumper
+		FindBin
+		DBI
+		Time::localtime
+		File::Basename
+		Exporter
+
+	* Database requirements:
+		Mysql connection to FireDB database (user: 'firedb', pwd: '')
+		Connection to 'sprot_clean_trembl_clean_90' database.
+		Connection to PDB database and SQUARE database
+		
+
+Usage
+=====
+
+firestar.pl --fasta <fasta file> --output <output file>
+
+Additonal options:
+
+	--appris <Flag that enables the output for APPRIS (default: NONE)>
+
+
+Logger options:
+
+	--loglevel=LEVEL <define log level (default: NONE)>	
+
+	--logfile=FILE <Log to FILE (default: *STDOUT)>
+	
+	--logpath=PATH <Write logfile to PATH (default: .)>
+	
+	--logappend <Append to logfile (default: truncate)>
+	
+
+For more help, check the perldoc:
+
+  shell% perldoc firestar.pl
+
+
+Output format
+=============
+
+The output contains several sections:
+
+
+# ============================================ #
+# Functional residues and structural templates #
+# ============================================ #
+######
+<position of residue {1}>	<score of residue {1}>	<motif of residue {1}>	<list of PDBs {1}>
+		...
+<position of residue {i}>	<score of residue {i}>	<motif of residue {i}>	<list of PDBs {i}>
+>>>     <identifier of sequence {x}>	<num. residues>	<list of positions>
+######
+<position of residue {1}>	<score of residue {1}>	<motif of residue {1}>	<list of PDBs {1}>
+		...
+<position of residue {j}>	<score of residue {j}>	<motif of residue {j}>	<list of PDBs {j}>
+>>>     <identifier of sequence {z}>	<num. residues>	<list of positions>
+
+# ============================== #
+# Prediction of consensus motifs #
+# ============================== #
+######
+<position of residue {1}>	<score of residue {1}>	<motif of residue {1}>	<list of PDBs {1}>
+		...
+<position of residue {i}>	<score of residue {i}>	<motif of residue {i}>	<list of PDBs {i}>
+C>>     <identifier of sequence {x}>	<num. residues>	<list of positions>
+######
+<position of residue {1}>	<score of residue {1}>	<motif of residue {1}>	<list of PDBs {1}>
+		...
+<position of residue {j}>	<score of residue {j}>	<motif of residue {j}>	<list of PDBs {j}>
+C>>     <identifier of sequence {z}>	<num. residues>	<list of positions>
+
+# ================================ #
+# Potential main variants -APPRIS- #
+# ================================ #
+ACCEPT: <identifier of sequence {x}>	<total score of residues>	<num. res. with score 6>	<num. res. with score 5>	<num. res. with score 4>
+REJECT: <identifier of sequence {z}>	<total score of residues>	<num. res. with score 6>	<num. res. with score 5>	<num. res. with score 4>
+
+
+
+
+
+
+---------- MATADOR3D ------------
+
+#################
+# PREREQUISITES #
+#################
+
+use strict;
+use FindBin;
+use Getopt::Long;
+use Data::Dumper;
+
+APPRIS API:
+require APPRIS::Utils::Logger;
+require APPRIS::Utils::File;
+
+
+####################################
+# REALEASE of Matador3D's database #
+####################################
+
+Building a BLAST (version 2.2.27+) database with local sequences:
+
+* v0: May-2010 
+
+* v1: 15-Nov-2012
+
+	Discard empty sequences:
+	
+		perl discardEmptySeqs.pl releases/oct2012/orig/missingOutput.fasta 1> pdb
+		
+	Create database indexes:
+			
+		makeblastdb -in pdb  -dbtype prot
+		
+
+##################################
+# REALEASE of Matador3D's schema #
+##################################
+
+* v4: 15-Nov-2012
+	- New PDB release trying to fix the result of the following gene: ENSG00000060566.
+	- Matador3d retrieves the coordinates of peptides incorrectly. For ENST00000229416 (Gencode7) which the number of aa residues is 637, Matador3D 
+	retrieves 640 residues.
+	- New thresholds calculating the mini-exon values:
+		- Identity of mini-exon:
+				elsif ($identity >= 25)
+					{$totalidentity = 0.50}
+				elsif ($identity >= 20)
+					{$totalidentity = 0.33}
+					
+		- Gaps within mini-exon:
+				elsif ($gaps <= 18)
+					{$totalgaps = 0.33}
+				elsif ($gaps > 40)
+					{ $totalgaps = -1 }
+
+	- Add the percentage of identity for each mini-exon
+
+* v5:
+
+	- New threshold for gaps:
+				elsif ($gaps > 25)
+				{ $totalgaps = -0.5 }
+	- Now, it can not give a bigger score when a cds region has the same pdb. 
+
+	- Add alignment position in the output
+	
+* v6: 
+	- Change the tmp directory
+
+* v7-8: 
+	
+* v9: 
+	- Admit config file.
+	- New distribution of cached files.
+
+* v10: 25-Jul-2013
+	- The gene ENSG00000160404 is rejecting ENST00000373284 with an negative alignment -0.20125 because 
+	the percentage of gaps is bigger than 25.
+	We have modify the threshold of percentages of gaps to:
+	
+			elsif ($gaps > 25)
+				{ $totalgaps = 0 }
+			elsif ($gaps > 33)
+				{ $totalgaps = -0.5 }
+			elsif ($gaps > 40)	
+
+	- Take the correct transcript	
+
+* v11: ????
+	- New decision in the algorithm:
+		The first variants have to overcome in 0.5 to seconds.
+		Then, the seconds have to overcome in 0.5 to the thirds.
+	
+
+---------- CORSAIR ------------
+
+Using spade.pl
+==================
+
+"corsair.pl" is a program that searches the conservation against vertebrates.
+
+
+REQUIREMENTS
+============
+
+1) Install blastpgp. For more information:
+ftp://ftp.ncbi.nih.gov/blast/documents/blastpgp.html
+
+2) Export APPRIS API and export env vars. Add into "bashrc":
+
+	source ${HOME}/.apprisrc_rel12
+
+3) Other Perl APIs:
+use FindBin;
+use Getopt::Long;
+use Bio::SeqIO;
+use Config::IniFiles;
+use Data::Dumper;
+
+
+
+RELEASES
+============
+...
+
+* v7:
+	- Admit config file.
+	- New distribution of cached files.
+		
+* v8: 5-Apr-2013
+	- Take into account the specie of protein sequences.
+		
+* v9: 28-May-2013
+	- New scores for species:
+	'Homo sapiens'
+		'Homo sapiens'				=> 0.5,
+		'Pan troglodytes'			=> 1,
+		'Mus musculus'				=> 1.1,
+		'Rattus norvegicus'			=> 1.1,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+				
+	'Mus musculus'
+		'Mus musculus'				=> 0.5,
+		'Rattus norvegicus'			=> 1,	
+		'Homo sapiens'				=> 1.2,
+		'Pan troglodytes'			=> 1.2,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,	
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+
+	'Rattus norvegicus'
+		'Rattus norvegicus'			=> 0.5,
+		'Mus musculus'				=> 1,
+		'Homo sapiens'				=> 1.2,
+		'Pan troglodytes'			=> 1.2,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,	
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+		
+		BE CAREFULL!!!! THIS ONLY WORKS FOR HUMAN,MOUSE, and RAT!!!!
+		
+* v10: 27-Jun-2013
+	- New scores for the rest of species (including Lynx pardinus):
+	'Rest of species'
+		'Homo sapiens'				=> 1,
+		'Pan troglodytes'			=> 1,
+		'Mus musculus'				=> 1.1,
+		'Rattus norvegicus'			=> 1.1,
+		'Bos taurus'				=> 1.2,
+		'Canis lupus familiaris'	=> 1.2,
+		'Sus scrofa'				=> 1.2,
+		'Monodelphis domestica'		=> 1.3,
+		'Gallus gallus'				=> 2,
+		'Taeniopygia guttata'		=> 2,
+		'Anolis carolinensis'		=> 2,
+		'Xenopus tropicalis'		=> 2.2,
+		'Tetraodon nigroviridis'	=> 2,
+		'Danio rerio'				=> 2.5,
+		
+* v11: 25-Jul-2013
+		- New cutoff of 1.5
+		- Include the list of species for 'Danio rerio'
+			'Danio rerio'
+				'Danio rerio'				=> 0.5,			
+				'Homo sapiens'				=> 2.5,
+				'Pan troglodytes'			=> 2,
+				'Mus musculus'				=> 2.3,
+				'Rattus norvegicus'			=> 2.3,
+				'Bos taurus'				=> 2.2,
+				'Canis lupus familiaris'	=> 2.2,
+				'Sus scrofa'				=> 2.2,
+				'Monodelphis domestica'		=> 2.1,
+				'Gallus gallus'				=> 1,
+				'Taeniopygia guttata'		=> 1,
+				'Anolis carolinensis'		=> 1,
+				'Xenopus tropicalis'		=> 1.1,
+				'Tetraodon nigroviridis'	=> 1,
+				
+* v12: 14-Sep-2013
+	- New scores for the Lynx pardinus:
+		'Lynx pardinus'
+			'Homo sapiens'				=> 1,
+			'Pan troglodytes'			=> 1,
+			'Mus musculus'				=> 1,
+			'Rattus norvegicus'			=> 1,
+			'Bos taurus'				=> 1,
+			'Canis lupus familiaris'	=> 0.8,
+			'Sus scrofa'				=> 1,
+			'Monodelphis domestica'		=> 1,
+			'Gallus gallus'				=> 2,
+			'Taeniopygia guttata'		=> 2,
+			'Anolis carolinensis'		=> 2,
+			'Xenopus tropicalis'		=> 2.2,
+			'Tetraodon nigroviridis'	=> 2,
+			'Danio rerio'				=> 2.5,		
+		
+
+
+
+---------- SPADE ------------
+
+Using spade.pl
+==================
+
+"spade.pl" is a program that searches a FASTA file against a library of Pfam HMMs, using "pfam_scan.pl" script.
+
+
+REQUIREMENTS
+============
+
+1) Install pfam_scan script. For more information:
+ftp://ftp.sanger.ac.uk/pub/databases/Pfam/Tools/README
+
+2) Export APPRIS API from subversion:
+
+	2.1) Export the last release of APPRIS subversion:
+		svn export svn+ssh://jmrodriguez@terril.cnio.es/home/jmrodriguez/svn-repository/Encode/release_7/lib/Perl ${HOME}/lib/appris_rel7
+
+	2.2) Export the APPRIS library path
+		export PERL5LIB=${HOME}/lib/appris_rel7:${PERL5LIB}
+
+3) Other Perl APIs:
+use FindBin;
+use Getopt::Long;
+use Bio::SeqIO;
+use FindBin;
+use Data::Dumper;
+
+
+RELEASES
+============
+...
+
+* v7: 28-Mar-2012
+	- Fixing problems during the selection of consesus of domain alignment. During the consensus aligment, 
+	we don't take into account the alignments that don't pass the threshold. For example, ENSG00000203985, and ENSG00000159216.
+	
+* v9: 7-Feb-2013
+	- Fix the problem during migration of domains among variants. For example, ENSG00000140416 (Gencode 12)
+	We will not migrate domain information between alignments when the variant have already a domain aligment.. Any kind of overlap.
+	- Sort the printed domains by coordinated.
+* v10: 7-Mar-2013
+	- PfamScan is updated and its directory has been changed.
+* v11: 14-Jun-2013
+	- SPADE does not migrate the domains from variants with the same sequence where pfamscan does not provide results. 
+	For example, ENSG00000021300.7 (Gencode 15)
+	
+	
+	
+	
+---------- INERTIA ------------
+
+Using inertia.pl
+==================
+
+"inertia.pl" is a program that searches the unusual evolution exons. Script to calculate omega average 
+in order to flag "strange" exons based on gff coordinates and slr output.
+
+	Required arguments:
+		--gff <GFF file that contains UTR annotations>
+		--slr_dir  <Directory where will be storing SLR results for each transcript>
+	
+	Optional arguments:
+		--appris <Flag that enables the output for APPRIS (default: NONE)>
+		--loglevel=LEVEL <define log level (default: NONE)>	
+		--logfile=FILE <Log to FILE (default: *STDOUT)>
+		--logpath=PATH <Write logfile to PATH (default: .)>
+		--logappend <Append to logfile (default: truncate)>
+		
+	Example:
+	
+		perl inertia.pl
+			--gff=data/gencode.v3c.annotation.GRCh37.gtf
+			--slr_dir=example/inertia/
+			--loglevel=DEBUG
+			--logfile=example/inertia/inertia.log		
+
+
+REQUIREMENTS
+============
+
+1) Export APPRIS API from subversion:
+
+	1.1) Export the last release of APPRIS subversion:
+		svn export svn+ssh://jmrodriguez@terril.cnio.es/home/jmrodriguez/svn-repository/Encode/release_7/lib/Perl ${HOME}/lib/appris_rel7
+
+	1.2) Export the APPRIS library path
+		export PERL5LIB=${HOME}/lib/appris_rel7:${PERL5LIB}
+
+2) Other Perl APIs:
+
+	use FindBin;
+	use Getopt::Long;
+	use FindBin;
+	use Data::Dumper;
+	use POSIX;
+	use Statistics::Descriptive;
+
+
+RELEASES
+============
+...
+
+* v8: 28-Mar-2012 
+	- Fix a problem with INERTIA (ENSG00000066279)
+	- New filter for INERTIA. Now we don't reject a transcript whose rejected exon is not
+	within the shortest transcript.
+	
+* v9: 15-Feb-2013 
+	- Fine Testing for the genes: ENSG00000183454, ENSG00000072071, and ENSG00000078487. 
+	Something strange are happend. The omega mean is 0 in exons when is wrong.
+	The reason is because the peptide coordinates for slr alignment is obtained wrongly.
+	
+* v10: 20-Feb-2013
+	- Try to fix a problem of bash "Can't exec "/bin/sh": Argument list too long at /home/inb/gridded-apps/appris/INERTIA/inertia.pl line 195."
+
+* v11:
+	- Improve the way to obtain the list of genes and transcripts. Try to use "parse_gencode" method.
+	- We get the peptide coordinates from input file.
+
+* v12:
+	- New version of inertia that runs all pipeline in one script.
+	
+	
+	
+---------- CEXONIC ------------
+
+
+---------- THUMP ------------
+							#########
+							  THUMP
+							#########
+ 
+This is a consensus program that combines the predictions of 3 algorithms:
+	Memsat3 [ref], Phobius [ref]  and Prodiv [ref]
+for predict alpha transmembrane helices in proteins using a strict filter schema, 
+in order to minimize the False Positive Ratio.
+
+						       ###########
+						          STEPS
+						       ###########
+
+1. First of all you should run the Path_finder.pl program. The usage is:
+
+	perl Path_finder.pl [path of THUMP dir in your pc] [path of your Blast formatted database]
+
+The script will parse the THUMP scripts in order to set the work directories. 
+Blast package installed is required and also Digest::MD5 and Getopt::Long perl modules.
+
+						    ##################
+				            How does it work ?
+						    ##################
+
+THUMP works with a single sequence or with an entire directory:
+
+Usage:       perl THUMP.pl [option] <your path> -psi [y/n]
+options:
+             -d      all the FASTA files in the directory will be analyzed;
+             -f      the single FASTA file will be analyzed;
+             -psi    if you want to keep the PSIBLAST results in the final output.
+
+The program will generate in the same target directory a new directory called THUMP_pred. The program only analyzes FASTA files;
+It will contain two files:
+
+	files.tgz    is a tar zipped file containing all the intermediate files generated: single predictions by the 3
+                     programs mentioned above, fasta file(s) containing all the homologs found, the related MSA and, 
+                     if you choose the option, all psiblast file(s);
+
+	THUMP.txt    is the plain text file that contains THUMP consensus prediction. The results are represented in a
+		     easy parseable format:
+				>your_sequence_header	length <number of aa> a.a.
+				# helix starts: <start coordinate> ends: <end coordinate>
+
+						     ################
+					         CONSENSUS Schema
+						     ################
+
+THUMP only marks a residue like a TM one if the three predictions agree. Addictionally applicates a length filter, so all
+TM predicted segments with less than 10 residues are eliminated.
+
+
+RELEASES
+============
+...
+
+* v6: 7-Mar-2013
+	- Directories have been changed.
+	
+* v7: 3-Apr-2013
+	- Changes the regular expresion to parse transcript identifier of all species in Ensembl. 
+
+* v8: 7-Sep-2013
+	- Changes the regular expresion to parse transcript for any kind of identifier. 
+
+
+
+
+
+---------- CRASH ------------
+
+#################
+# Output format #
+#################
+
+DESCRIPTION OF THE SCORES
+
+The neural networks in SignalP produce three output scores for each position in the input sequence:
+
+* C-score (raw cleavage site score)
+	The output from the CS networks, which are trained to distinguish signal peptide cleavage sites from everything else.
+	Note the position numbering of the cleavage site: the C-score is trained to be high at the position immediately after the cleavage site (the first residue in the mature protein).
+* S-score (signal peptide score)
+	The output from the SP networks, which are trained to distinguish positions within signal peptides from positions in the mature part of the proteins and from proteins without signal peptides.
+* Y-score (combined cleavage site score)
+	A combination (geometric average) of the C-score and the slope of the S-score, resulting in a better cleavage site prediction than the raw C-score alone. This is due to the fact that multiple high-peaking C-scores can be found in one sequence, where only one is the true cleavage site. The Y-score distinguishes between C-score peaks by choosing the one where the slope of the S-score is steep.
+
+The graphical output from SignalP (see below) shows the three different scores, C, S and Y, for each position in the sequence.
+In the summary below the plot, the maximal values of the three scores are reported. In addition, the following two scores are shown:
+
+* mean S
+	The average S-score of the possible signal peptide (from position 1 to the position immediately before the maximal Y-score).
+D-score (discrimination score)
+	A weighted average of the mean S and the max. Y scores. This is the score that is used to discriminate signal peptides from non-signal peptides.
+
+For non-secretory proteins all the scores represented in the SignalP output should ideally be very low (close to the negative target value of 0.1).
+
+
+
+
+
+---------- APPRIS ------------		
+
+#################
+# PREREQUISITES #
+#################
+
+APPRIS API:
+require APPRIS::Parser;
+require APPRIS::Utils::Logger;
+require APPRIS::Utils::File;
+
+ENSEMBL API:
+
+##############
+# RUN SCRIPT #
+##############
+
+./run_example.sh CHR ID (for example, ./run_example.sh chr21 ENSG00000142185 )
+
+
+###############################
+# REALEASE of APPRIS's schema #
+###############################
+
+* v1: 26-Aug-2011
+	 The same schema of APPRIS than release 3c of Gencode.
+	 
+* v2: 30-Aug-2011
+	The schema of APPRIS has changed:
+		1. firestar+Matador3D
+		2. INERTIA+CORSAIR
+		3. SPADE
+		4. CORSAIR
+		5. CRASH+THUMP
+		6. CExonic
+		7. INERTIA
+	
+* v3: 3-Sep-2011 
+	New order of APPRIS:
+		1. firestar - matador3d - corsair+inertia
+		2. spade
+		3. corsair
+		4. inertia+(crash || thump)
+		5. cexonic+(crash || thump)
+		6. crash+thump
+		7. inertia && cexonic
+		( 
+		or 
+		7. cexonic
+		8. inertia
+		) 	
+* v4: 17-Nov-2011
+	Add the columns 'fun_struct_u_evol_con_vert'	
+
+* v5: 27-Jan-2012
+	- The cutoff of CORSAIR within INCOR (INERTIA+CORSAIR) will be 2 but CORSAIR running 
+	independenly will be 1.5.
+	All this changes have done within APPRIS. We have created new version v5.
+	Note: Think about to improve this changes...they are quite dirty.
+
+* v6: 8-Feb-2012
+	- New decision algorith of APPRIS. Now the methods give one score for each transcript. 
+	The decision score depends on the reliability of method:
+		* firestar =>  5
+		* Matador3D => 5
+		* CORSAIR =>   4
+		* SPADE =>     3
+		* INERTIA =>   2
+		* CExonic =>   1
+		* THUMP =>     1
+		* CRASH =>     1
+
+* v7: 19-Apr-2012
+	- Modify the algorithm of APPRIS in the case of CRASH method. We separate the annotations of 
+	SignalP and TargetP as was originally.
+	- Add the filter that controls the "start-end codon not found"
+
+* v8: 21-Apr-2012
+	- Fixing a "bug" in APPRIS. The variants that have not method results are rejected
+	instead to be "unknown".
+	
+* v10: 22-Oct-2012
+	- APPRIS is updated for new THUMP output.
+	
+* v11: 7-Dec-2012 (appris11)
+	- New decision algorith of APPRIS.
+		* firestar =>  6
+		* Matador3D => 5
+		* SPADE =>     4
+		* CORSAIR =>   3
+		* THUMP =>     2
+		* CRASH =>     1
+		* INERTIA =>   0
+		* CExonic =>   0
+		
+...
+
+* v14: 3-Apr-2013
+	- New format for detailed output.
+	
+* v15: 19-Apr-2013
+	- New detailed output.
+
+* v16: 28-May-2013	
+	- FIX the PROBLEM with APPRIS algorithm. A variant never can win when is a NMD or its codons have not found.
+	
+* v17: 25-Jul-2013
+	- Reliability scores:
+		If transcript is UNKOWN, its reliability score is NR (not rejected).
+		And if the transcript has the longest protein sequences, its reliability score is NR*
+		
+		Only the transcripts with PRICIPAL have reliability scores.
+		
+		NOTE: See the output "appris.results.rel12.27Jun2013.v5.output.detail.scoreNR" 
+
+* v18: 7-Sep-2013
+	- If we don't have information of codons, we continue saving the appris score.
+
+	
+
+---------- ENSEMBL ------------
+
+#################
+# PREREQUISITES #
+#################
+
+* For whole scripts:
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Data::Dumper;
+use FindBin;
+
+APPRIS API:
+APPRIS::Parser;
+APPRIS::Utils::Logger;
+APPRIS::Utils::File;
+
+
+#######################
+# RUN EXAMPLE SCRIPTS #
+#######################
+
+* getGTF:
+
+./run_getGTF.sh ENSEMBL_GENE_ID SPECIE CONF_INI
+
+Examples:
+	./run_getGTF.sh ENSG00000099904 'Homo sapiens' config.ini
+	./run_getGTF.sh ENSMUSG00000017167 'Mus musculus' config.ini
+
+* getEComparaAlign:
+
+./run_getEComparaAlign.sh ENSEMBL_GENE_ID SPECIE CONF_INI
+
+Examples:
+	./run_getEComparaAlign.sh ENSG00000099904 'Homo sapiens' config.ini
+	./run_getEComparaAlign.sh ENSMUSG00000017167 'Mus musculus' config.ini

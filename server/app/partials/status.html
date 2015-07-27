@@ -1,0 +1,14 @@
+<div>
+    <progressbar class="progress-striped active" min="0" max="100" value="status.progress"
+                 type="{{status.type}}"><span>{{status.progress | number:0}}%</span></progressbar>
+    <div class="panel panel-info panel-{{status.type}}">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{status.header}}</h3>
+        </div>
+        <div class="panel-body">
+            <p>The result of your job will appear in this browser window. This page refreshes automatically.</p>
+            <p>You may bookmark this page to view your results later if you wish. Results are stored for 7 days</p>
+            <pre>{{status.log}}</pre>
+        </div>
+    </div>
+</div>

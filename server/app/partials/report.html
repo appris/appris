@@ -1,0 +1,97 @@
+
+<div data-ng-controller="RootController"></div>
+<alert-tpl data-ng-if="alert.enable" ></alert-tpl>
+
+<result-info-isof-tpl></result-info-isof-tpl>
+<result-info-annot-tpl></result-info-annot-tpl>
+<result-info-browser-tpl></result-info-browser-tpl>
+<result-info-browser-annot-tpl></result-info-browser-annot-tpl>
+<result-info-browser-seq-tpl></result-info-browser-seq-tpl>
+<result-info-browser-gen-tpl></result-info-browser-gen-tpl>
+
+<div class="control-group" data-ng-controller="GeneResultController">
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered table-condensed">
+        <tbody>
+        <th data-ng-repeat="info in geneInfo">{{info.label}}</th>
+        <tr>
+            <td data-ng-repeat="info in geneInfo">{{info.value}}
+                <a class="pull-right" data-ng-if="info.link_ensembl" data-ng-href="{{info.link_ensembl}}" target="_blank">
+                    <img data-ng-src="img/e.ico">
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+
+<div class="control-group">
+<h2>Principal Isoforms
+<small><span tooltip-placement="top"
+             tooltip="Click for more information" class="glyphicon glyphicon-info-sign pointer"
+                                    aria-label="true" aria-hidden="true" data-toggle="modal"
+                                    data-target="#infoIsof"></span></small>
+<small><span
+        tooltip-placement="top" tooltip="Show/Hide"
+        class="pull-right pointer glyphicon"
+        data-ng-class="{'glyphicon-chevron-right': isCollapsedMainAnnot, 'glyphicon-chevron-down': !isCollapsedMainAnnot}" data-ng-click="isCollapsedMainAnnot = !isCollapsedMainAnnot"></span></small>
+</h2>
+<div collapse="isCollapsedMainAnnot">
+    <div class="table-responsive">
+        <table class="appris-table-main table table-striped table-bordered table-hover table-condensed">
+        <tr>
+            <th data-ng-repeat="head in resultMainAnnotHeads">{{head.label}}</th>
+        </tr>
+        <tr data-ng-repeat="result in resultAnnots | orderBy:'transcript_id'"
+            class="{{result['principal_isoform'] | activeAnnotClass}}">
+            <td data-ng-repeat="head in resultMainAnnotHeads"
+                class="{{result[head.id] | activeAnnotClass:label}}">{{result[head.id] || "-"}}</td>
+        </tr>
+        </table>
+    </div>
+</div>
+</div>
+<hr />
+
+<h2>APPRIS annotations
+    <small><span tooltip-placement="top" tooltip="Click for more information"
+                             class="glyphicon glyphicon-info-sign pointer" aria-label="true" aria-hidden="true"
+                 data-toggle="modal" data-target="#infoAnnot"></span></small>
+    <small><span
+            tooltip-placement="top" tooltip="Show/Hide"
+            class="pull-right pointer glyphicon"
+            data-ng-class="{'glyphicon-chevron-right': isCollapsedDetailAnnot, 'glyphicon-chevron-down': !isCollapsedDetailAnnot}" data-ng-click="isCollapsedDetailAnnot = !isCollapsedDetailAnnot"></span></small>
+</h2>
+
+<div collapse="isCollapsedDetailAnnot">
+    <div class="table-responsive">
+        <table class="appris-table-detail table table-striped table-bordered table-hover table-condensed">
+        <tr>
+            <th><input type="checkbox" class="pointer" data-ng-model="browserDataSeqs" data-ng-click="addBrowserDatalSeqs()"><span
+                    tooltip="Select the seq. to refresh the annotations in the Browser panels"> All
+                / None</span></input></th>
+            <th data-ng-repeat="head in resultDetailAnnotHeads">{{head.label}}</th>
+        </tr>
+        <tr data-ng-repeat="result in resultAnnots | orderBy:'transcript_id'"
+            class="{{result['principal_isoform'] | activeAnnotClass}}">
+            <td><input type="checkbox" class="pointer" data-ng-model="result.selected"></td>
+            <td data-ng-repeat="head in resultDetailAnnotHeads">{{result[head.id] || "-" }}</td>
+        </tr>
+        </table>
+    </div>
+</div>
+<hr />
+
+<h2>APPRIS browsers    <small><span tooltip-placement="top" tooltip="Click for more information"
+                                    class="glyphicon glyphicon-info-sign pointer" aria-label="true" aria-hidden="true"
+                                    data-toggle="modal" data-target="#infoBrowser"></span></small>
+    <small><span
+            tooltip-placement="top" tooltip="Show/Hide"
+            class="pull-right pointer glyphicon"
+            data-ng-class="{'glyphicon-chevron-right': isCollapsedBrowsers, 'glyphicon-chevron-down': !isCollapsedBrowsers}" data-ng-click="isCollapsedBrowsers = !isCollapsedBrowsers"></span></small>
+</h2>
+<div collapse="isCollapsedBrowsers">
+<report-browsers></report-browsers>
+</div>

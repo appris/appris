@@ -1,0 +1,337 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+VER=0.1b
+VERDATE="1-Apr-2013"
+
+FILENAME=`basename $0`
+FILENAME="${FILENAME%.*}"
+DIRNAME=`dirname $0`
+
+OUTPUT_DIR=""
+LOG_LEVEL=""
+
+# -----------------------------------------------------------------------------
+# Load external functions
+source ${DIRNAME}/appris_env
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_retrieve_annots\n
+\n
+ Description:\n
+\t Retrieves annotations from APPRIS methods.\n
+\n Files that they will be downloaded from the website.\n
+\n
+ Required arguments:\n
+\t -c [-conf]\n
+\t\t Hsap  - Homo sapiens -\n
+\t\t Mmus  - Mus musculus -\n
+\t\t Rnor  - Rattus norvegicus -\n
+\t\t Drer  - Danio rerio -\n
+\t\t Sscr  - Sus scrofa -\n
+\t\t Dmel  - Drosophila melanogaster -\n
+\t\t Cele  - Caenorhabditis elegans -\n
+\t\t Lpar  - Lynx pardinus -\n
+\n
+\t\t Source file for species\n
+\n
+\t -f [-format]\n
+\t\t gtf\n
+\t\t gff3\n
+\t\t bed\n
+\t\t json\n
+\n
+\t -o [-out]\n
+\t\t Output path\n
+\t\t data/g15.v3.15Jul2013/\n
+\n
+\t -l, -loglevel\n
+\t\t info\n
+\t\t debug\n
+\n
+\t -v [-version]\n
+\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			case "$2" in
+				Hsap | Mmus | Rnor | Drer | Sscr | Dmel | Cele | Lpar )
+					SPECIES=$2
+					;;
+				* )
+					if [ ! -e $2 ]; then
+						echo Unknown config file: "$2" 
+						echo -e $USAGE
+						exit 1
+					else
+						CONF_FILE=$2
+					fi
+					;;
+			esac
+			shift
+			;;		
+		-f | -format )
+			case "$2" in
+				gtf | gff3 | bed | json )      
+					FORMAT=$2
+					;;
+				* )
+					echo Unknown format name: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;
+		-o | -out )
+        	OUTPUT_DIR=$2
+        	shift
+			;;
+		-l | -loglevel )
+			case "$2" in
+				info | debug )
+		        	LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		-v | -version )
+			echo "$VER", "$VERDATE"
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [[ "${SPECIES}" == "" && "${CONF_FILE}" == "" ]]; then
+	echo You must specify at least one SPECIES! or config file!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${FORMAT}" == "" ]; then
+	echo You must specify at least one format!
+	echo -e $USAGE
+	exit 1
+fi  
+
+# -----------------------------------------------------------------------------
+# Prepare Environment
+if [ "${SPECIES}" != "" ]; then
+	# from given SPECIES
+	load_species_env "${SPECIES}"
+else
+	# from config file
+	echo "source ${CONF_FILE}"
+	source ${CONF_FILE}	
+fi
+
+# -----------------------------------------------------------------------------
+# Get method script name
+METHOD_SCRIPT_2="retrieve_method_data"
+
+# -----------------------------------------------------------------------------
+# Var declarations
+SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+
+if [ "${OUTPUT_DIR}" != "" ]; then
+	OUTPUT_DIR = "${APPRIS_DATA_DIR}"
+fi
+OUTPUT_PRINCIPAL="${OUTPUT_DIR}/appris_data.principal.txt"
+OUTPUT_PREFIX="${OUTPUT_DIR}/appris_data"
+OUTPUT_SCORES="${OUTPUT_DIR}/appris_data.appris_score.txt"
+OUTPUT_PRIN_SCORES="${OUTPUT_DIR}/appris_data.prin_scores.txt"
+
+# -----------------------------------------------------------------------------
+# Run method
+SCRIPT_2="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT_2}.pl"
+METHODS=('appris' 'firestar' 'matador3d' 'spade' 'corsair' 'crash' 'thump' 'inertia' 'proteo')
+
+# from a given list of genes
+if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
+
+	# local parameters
+	LOG_PARAMETERS=""
+	if [ "$LOG_LEVEL" != "" ]; then
+		LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/${FILENAME}.${SPECIES_ID}.log"
+		LOG_PARAMETERS="--loglevel=${LOG_LEVEL} --logappend --logfile=${LOG_FILENAME}"
+	fi	
+
+	# export the annotations of methods
+	echo "================="
+	echo "perl ${SCRIPT_2}"
+	echo " --species="${APPRIS_SPECIES}""
+	echo " --format=${FORMAT}"
+	echo " --output=${OUTPUT_PREFIX}"
+	echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+	echo " ${LOG_PARAMETERS}"
+
+	perl ${SCRIPT_2} \
+		--species="${APPRIS_SPECIES}" \
+		--format=${FORMAT} \
+		--output=${OUTPUT_PREFIX} \
+		--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+		${LOG_PARAMETERS}
+	echo "================="
+	
+	# extract principal scores
+	echo "================="
+	for PRINC_TRANSC_ID in `cut -f 3 ${OUTPUT_PRINCIPAL}`; do
+		echo "grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}"
+		grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}
+	done	
+	echo "================="
+	
+# for the whole genome chromsome by chromosome
+else
+
+	CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+	INDEX=${#CHROMOSOME[@]}
+	for ((i=0;i<$INDEX;i++)); do
+	
+		# local vars
+		CHR="${CHROMOSOME[${i}]}"
+		POSITION="${CHR}"	
+		APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_DB_INI}"
+		CHR_OUTPUT_PREFIX="${OUTPUT_PREFIX}.${POSITION}"
+		
+		# local parameters
+		LOG_PARAMETERS=""
+		if [ "$LOG_LEVEL" != "" ]; then
+			LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/${FILENAME}.${SPECIES_ID}.${POSITION}.log"
+			LOG_PARAMETERS="--loglevel=${LOG_LEVEL} --logappend --logfile=${LOG_FILENAME}"
+		fi	
+	
+		# export the annotations of methods
+		echo "================="
+		echo "perl ${SCRIPT_2}"
+		echo " --species="${APPRIS_SPECIES}""
+		echo " --chr=${CHR}"
+		echo " --format=${FORMAT}"
+		echo " --output=${CHR_OUTPUT_PREFIX}"
+		echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+		echo " ${LOG_PARAMETERS}"
+	
+		perl ${SCRIPT_2} \
+			--species="${APPRIS_SPECIES}" \
+			--chr=${CHR} \
+			--format=${FORMAT} \
+			--output=${CHR_OUTPUT_PREFIX} \
+			--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+			${LOG_PARAMETERS}
+		echo "================="
+	
+		# concatenate outputs
+		echo "================="	
+		INDEX2=${#METHODS[@]}	
+		for ((j=0;j<$INDEX2;j++)); do
+		
+			M=${METHODS[${j}]}
+			CHR_OUTPUT_METHOD="${CHR_OUTPUT_PREFIX}.${M}.${FORMAT}"
+			OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
+			
+			echo "cat ${CHR_OUTPUT_METHOD} >> ${OUTPUT_METHOD}"
+			cat ${CHR_OUTPUT_METHOD} >> ${OUTPUT_METHOD}
+		done	
+		echo "================="
+		
+	done
+	
+	# delete tmp files
+	echo "================="
+	CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+	INDEX=${#CHROMOSOME[@]}
+	for ((i=0;i<$INDEX;i++)); do
+		CHR="${CHROMOSOME[${i}]}"
+		POSITION="${CHR}"
+		CHR_OUTPUT_PREFIX="${OUTPUT_PREFIX}.${POSITION}.*"
+		echo "rm ${CHR_OUTPUT_PREFIX}"
+		rm ${CHR_OUTPUT_PREFIX}
+	done
+	echo "================="
+	
+	# extract principal scores
+	echo "================="
+	for PRINC_TRANSC_ID in `cut -f 3 ${OUTPUT_PRINCIPAL}`; do
+		echo "grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}"
+		grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}
+	done	
+	echo "================="
+
+fi
+
+# -----------------------------------------------------------------------------
+# Prepare output depending on the type of FORMAT
+echo "================="	
+INDEX=${#METHODS[@]}	
+for ((j=0;j<$INDEX;j++)); do
+
+	M=${METHODS[${j}]}
+	OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
+	
+	if [ "${FORMAT}" == "bed" ]; then
+		# Sort the the tracks
+		echo "sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2"
+		sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2
+		mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}
+		
+		# Convert to BigBed
+		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb"
+		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb		
+	
+	else
+		# compress outputs
+		echo "gzip -9 ${OUTPUT_METHOD}"
+		gzip -9 ${OUTPUT_METHOD}	
+	fi	
+done
+echo "================="
+	
+
+

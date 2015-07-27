@@ -1,0 +1,116 @@
+<div class="row clearfix">
+    <div class="col-md-3 column">
+        <menu-help-tpl></menu-help-tpl>
+    </div>
+    <div class="col-md-9 column">
+
+        <div data-ng-if="help == 'intro'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs</h2></div>
+                <div class="panel-body">
+                    <p><strong>{APPRIS}</strong> is a system that deploys a range of computational methods to provide annotations of alternative splice isoforms and identify principal isoforms for vertebrate species. These annotations are based on the modules of the <a href="#/help/database">APPRIS
+                        Database</a>.
+                    </p>
+                    <p>The <strong>APPRIS principal isoform</strong> for each gene is selected as the
+                        principal isoform by combining <strong>protein structural information</strong>,
+                        <strong>functionally important residues</strong> and
+                        <strong>evidence from cross-species alignments</strong>.
+                    </p>
+                    <p>The server has been used to annotate the Human genome as part of the
+                        <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a> consortium but {APPRIS} also has annotations for other vertebrate species. The main data source for {APPRIS} are the <a href="http://www.ensembl.org" target="_blank">Ensembl</a> annotations and sequences.
+                    </p>
+                    <p>
+                        <img src="img/APPRIS_tools.png" class="img-thumbnail img-responsive">
+                    </p>
+                    <p>There are three ways to retrieve annotations for alternative splice isoforms:
+                    <ul>
+                    <li>The <a href="#/help/database">APPRIS Database</a>, a web database that houses splice isoform annotations and principal isoforms for five vertebrate species (human, mouse, rat, pig, and zebrafish).</li>
+                    <li>The <a href="#/help/server">APPRIS WebServer</a>, web server that provides annotations of alternative splice isoforms and identifies principal isoforms for six other vertebrate species (dog, cat, cow, opossum, chicken and fugu).</li>
+                    <li>The <a href="#/help/services">APPRIS WebServices</a>, a collection of RESTful web services that provides automatic access to annotations from the server and database for the two lists of vertebrate species.</li>
+                    </ul>
+                    </p>
+                    <p>In both the APPRIS WebServer and the APPRIS WebServices, the annotation and analysis is based
+                        on the modules in the <a href="#/help/database">APPRIS Database</a>.
+                    </p>
+
+                    <div class="panel panel-info panel-warning">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Note</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Clearing the cache helps to fix pages that freeze or don't finish loading or that have error messages. It is also useful in those cases when outdated annotations appear in the web pages.</p>
+                            <p>If these problems persistent, Please,
+                                contact the <a href="#about">administrators</a></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'database'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>The APPRIS Database</small></h2></div>
+                <div class="panel-body">
+                    <help-database></help-database>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'database/report'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Report View, visualising the annotations</small></h2></div>
+                <div class="panel-body">
+                    <help-report></help-report>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'server'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>The APPRIS WebServer</small></h2></div>
+                <div class="panel-body">
+                    <help-server></help-server>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'server/queries'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Queries, What do you need to start</small></h2></div>
+                <div class="panel-body">
+                    <help-queries></help-queries>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'server/report'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs
+                    <small>Report View, visualising the predictions</small></h2></div>
+                <div class="panel-body">
+                    <help-report></help-report>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'services'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>The APPRIS WebServices</small></h2></div>
+                <div class="panel-body">
+                    <help-services></help-services>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'species'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Available Species</small></h2></div>
+                <div class="panel-body">
+                    <help-species></help-species>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

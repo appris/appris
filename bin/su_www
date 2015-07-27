@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Execute command line with www-data user
+echo "su www-data -p -s /bin/bash -c 'cd $PWD && $*'"
+su www-data -p -c "cd ${PWD} && $*" 

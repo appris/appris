@@ -1,0 +1,78 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WS_NAME="rattus_norvegicus/e80"
+
+export APPRIS_WS_ANNOT="rattus_norvegicus/ens80.v8.16Apr2015"
+
+export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
+
+export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_ANNOT}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_ANNOT}"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIES="Rattus norvegicus"
+
+#export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
+#export APPRIS_CHR_LIST="1,6,11,16,X"
+#export APPRIS_CHR_LIST="2,7,12,17,MT"
+#export APPRIS_CHR_LIST="3,8,13,18"
+#export APPRIS_CHR_LIST="4,9,14,19"
+#export APPRIS_CHR_LIST="5,10,15,20"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=80
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.80.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.cdna.all.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.pep.all.fa"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+
+# -----------------------------------#
+# Setting up the vars for cached dir #
+# -----------------------------------#
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/rnorvegicus_e77"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_NUM_PARALLEL_PROC=4
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+

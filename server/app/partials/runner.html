@@ -1,0 +1,114 @@
+<div data-ng-controller="RootController"></div>
+
+<h2>APPRIS WebServer</h2>
+<p>Analyze protein sequences or gene to determine the principal isoform.</p>
+<runner-info-species-tpl></runner-info-species-tpl>
+<runner-info-inputs-tpl></runner-info-inputs-tpl>
+<runner-info-methods-tpl></runner-info-methods-tpl>
+<runner-info-optional-tpl></runner-info-optional-tpl>
+
+<form name="runnerForm" role="form" class="form-horizontal" data-ng-submit="runJob(runnerForm)" novalidate>
+
+    <!--<div class="view-status" data-ng-show="status">-->
+        <!--<pre class="alert alert-{{status.type}}">{{status.status}}<br>{{status.log}}</pre>-->
+    <!--</div>-->
+    <div class="control-group runner-input">
+        <label>1: Choose species</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
+              data-target="#infoSpecies"></span>
+        <div class="input-group-addon">
+            <select class="form-control"  data-ng-model="runnerForm.species" data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.category for ( specie_id, specie_val ) in species | orderObjectBy:'order' " required>
+                <option value="" selected>-- Select species --</option>
+            </select>
+        </div>
+            <span class="help-block has-error" data-ng-show="speInvalid">
+                <label class="control-label">Species is required</label>
+            </span>
+    </div>
+
+    <hr>
+
+    <div class="control-group runner-input">
+        <label>2: Query Input</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
+              data-target="#infoInputs"></span>
+        <div class="input-group-addon" style="text-align: left;">
+            <label>FASTA format protein sequences</label>
+            <textarea class="form-control" data-ng-model="runnerForm.sequences" rows="10" style="font-size: smaller; font-family: monospace"></textarea>
+            <span class="help-block has-error" data-ng-show="seqInvalid">
+                <label class="control-label">Protein sequence is required</label>
+            </span>
+            <br/><br/>
+            <label>OR</label>
+            <br/><br/>
+            <div class="form-inline">
+                <label>Gene Name / Ensembl ID <br><small>(by default this will be the current assembly version for most species)</small></label><br>
+                <select class="form-control" data-ng-model="runnerForm.ensembl"
+                        data-ng-options="assembly.name for (id,assembly) in runnerForm.species.assemblies ">
+                    <option value="" selected>-- Select Assembly version --</option>
+                </select>
+                <input type="text" class="form-control" data-ng-model="runnerForm.gene">
+            </div>
+        </div>
+        <span class="help-block has-error" data-ng-show="genInvalid">
+            <label class="control-label">Assembly version and gene name/id are required</label>
+        </span>
+        <span class="help-block has-error" data-ng-show="dupInvalid">
+            <label class="control-label">Input are duplicated. Choose only one type of input</label>
+        </span>
+        <span class="help-block has-error" data-ng-show="inpInvalid">
+            <label class="control-label">One type of input is required.</label>
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="control-group runner-input">
+        <label>3: Select methods</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
+              data-target="#infoMethods"></span>
+        <div class="input-group-addon checkbox">
+            <!--<label class="input-group-addon" data-ng-repeat="method in methods">-->
+                <!--<input type="checkbox" value="{{method.name}}" data-ng-model="method.selected">{{method.name}}-->
+            <!--</label>-->
+            <label class="input-group method-table" data-ng-init="runnerForm.methods[method.name] = true" data-ng-repeat="method in methods | runnerMethods | orderObjectBy:'order' ">
+                <input type="checkbox" value="{{method.name}}" data-ng-model="runnerForm.methods[method.name]" >{{method.label}}, {{method.name | uppercase}}</input>
+            </label>
+        </div>
+        <span class="help-block has-error" data-ng-show="metInvalid">
+            <label class="control-label">At least one method is required</label>
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="control-group runner-input">
+        <label>4: Optional parameters</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true"
+              data-toggle="modal" data-target="#infoOptional"></span>
+        <div class="input-group-addon" style="text-align: left;">
+            <div class="form-inline">
+                <label>Email address  </label>
+                <input type="email" class="form-control" name="runnerForm.email" data-ng-model="runnerForm.email"
+                       placeholder="name@example.com" required>
+            </div>
+        </div>
+
+        <span class="help-block has-error" data-ng-show="emailInvalid">
+            <label class="control-label">The email has to be valid</label>
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="form-actions runner-input">
+        <button type="submit" class="btn btn-primary" ng-disabled="submitted">Submit</button>
+        <!--<button type="reset" class="btn">Reset</button>-->
+        &nbsp;<a data-ng-click="exRunnerController('seq')">Use example</a>&nbsp;|
+        &nbsp;<a data-ng-click="exRunnerController('id')">Use another example</a>&nbsp;|
+        &nbsp;<a data-ng-click="exRunnerController('clear')">Clear</a>
+                <span class="help-block has-error" data-ng-show="formInvalid">
+                    <label class="control-label">Invalid submission</label>
+                </span>
+    </div>
+</form>

@@ -1,0 +1,14 @@
+<h2>APPRIS Database</h2>
+<p>Access our annotations from specific species, from a gene name or from an Ensembl id.</p>
+
+<div class="form-group">
+    <seeker-tpl></seeker-tpl>
+    <span class="help-block has-error" data-ng-show="queInvalid">
+        <label class="control-label">Query is required</label>
+    </span>
+    <span class="help-block">e.g.
+            <a data-ng-click="seekerForm.inQuery = 'TRMT2A'">TRMT2A</a> or
+            <a data-ng-click="seekerForm.inQuery = 'ENSG00000099904'">ENSG00000099904</a> or
+            <a data-ng-click="seekerForm.inQuery = 'RNF215'">RNF215</a>
+    </span>
+</div>

@@ -1,0 +1,71 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WS_NAME="caenorhabditis_elegans/e81"
+
+export APPRIS_WS_ANNOT="caenorhabditis_elegans/ens81.v9.17Jul2015"
+
+export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
+
+export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_ANNOT}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_ANNOT}"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIES="Caenorhabditis_elegans"
+
+#export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
+export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=81
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.81.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.cdna.all.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.pep.all.fa"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+# -----------------------------------#
+# Setting up the vars for cached dir #
+# -----------------------------------#
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/caenorhabditis_elegans/e79"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_NUM_PARALLEL_PROC=4
+
+export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+

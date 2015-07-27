@@ -1,0 +1,36 @@
+<div>
+    <p>The <strong>APPRIS WebServices</strong> make use of standard HTTP method calls (often termed RESTful services), and the HTTP request methods GET and POST can be used to send and receive queries and data. APPRIS Database and APPRIS WebServer can be accessed through these RESTful web services.
+    </p>
+    <p>In the <a ng-href="http://apprisws.bioinfo.cnio.es">WebServices</a> top menu you will connect with an API interface where all web services are described in detail and it allows the interaction with them.
+    </p>
+    <!--<hr>-->
+    <!--<p>RESTful calls can access the APPRIS Database and APPRIS WebServer using Universal Resource Locators (URLs) by means of a simple web browser query. The general syntax of URLs is as follows:        <pre>http://apprisws.bioinfo.cnio.es/{service_name}/{query_id}?{optional_parameters}</pre>    </p><p>The “service_name” field indicates the type of services we are going to call: “runner” (“run”, “status”, “result”, and “resulttypes”), “exporter”, “seeker”, and “sequencer” (see below).    </p><p>The “query_id” is the query that requests the services. They are two kinds of queries:</p><ul>        <li>“jobId” (MD5 hash), the identifier of a job when APPRIS server is executed.</li>        <li>“[id/name/position]/{species}/{query}”.</li>        <ul>            <li>The first field is the 'type of query': “id” for Ensembl gene identifier, “name” for a HUGO gene name, and “position” for a genomic region.</li>            <li>The second field is the species name, e.g. homo_sapiens, mus_musculus, danio_rerio.</li>            <li>The third field is the “query” string, e.g. ENSG00000099904, ZDHHC8, or chr22:30773835-30821305</li>        </ul>        </li>    </ul>    </p>    <p>The “optional_parameters” are the specific parameters for a determined RESTful service.    </p>-->
+
+    <!--<p>The list of available APPRIS web services are categorized in three groups:-->
+    <!--</p>-->
+    <!--<h3>runner<small> Asynchronous services that execute the APPRIS analysis</small></h3>-->
+    <!--<p>By calling a web service asynchronously, the client can continue its work without interruption, and will be-->
+        <!--notified when the asynchronous response is returned. To address these issues we have provided a mechanism for making asynchronous requests:-->
+    <!--</p>-->
+    <!--<ul>-->
+        <!--<li><h5>run</h5>Submit a job from a specific gene (gene name or Ensembl gene id), or from protein sequences-->
+            <!--as FASTA format. Return job identifier (MD5 hash).</li>-->
+        <!--<li><h5>status</h5>Get the status of a submitted job. Return a status log in JSON with the status 'PENDING' or 'RUNNING' or 'FINISHED' or 'ERROR' or 'FAILURE' or 'NOT_FOUND'.</li>-->
+        <!--<li><h5>result</h5>Get the results for a finished job. The response is reported in JSON (by default), GTF, BED, or TSV (tabular) format. The optional parameters allow the filtering of methods and format output.</li>-->
+        <!--<li><h5>resultypes</h5>Get available result types for a finished job. Return a JSON with the executed methods from the given job.</li>-->
+    <!--</ul>-->
+    <!--<h3>exporter<small> Services that retrieve data from APPRIS Database</small></h3>-->
+    <!--<p>Service that retrieves data from the APPRIS Database. Finds APPRIS data from a specific gene (gene name or Ensembl gene id), or from a genome position. The response is reported in JSON (by default), GTF, BED, or TSV (tabular) format. The optional parameters allow the filtering of methods and format output.-->
+    <!--</p>-->
+    <!--<h3>seeker<small> seeker : Services that retrieve genes info</small></h3>-->
+    <!--<p>Service that retrieves the info of the available genes that come from the APPRIS Database or from the WebServer/WebServices.-->
+    <!--</p>-->
+    <!--<h3>sequencer-->
+        <!--<small> Services that retrieve features mapped onto amino acid sequences</small></h3>-->
+    <!--<p>Services that retrieve the protein features mapped onto the amino acid sequences of the genes that come from the APPRIS Database or from the WebServer/WebServices.-->
+    <!--</p>-->
+    <!--<hr>-->
+    <!--<p>While any language capable of making standard HTTP requests can be used, RESTful calls can be accessed using Universal Resource Locators (URLs) by means of a simple web browser query, or from a command-line (using CURL). Client scripts in Perl programming have been provided to allow the execution of APPRIS analyses (“runner” RESTful services), and the retrieval of the stored annotations (“exporter” RESTful services). The responses of the requests are reported in JSON (by default), GTF, BED, or TSV (tabular) format.-->
+    <!--</p>-->
+
+</div>

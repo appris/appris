@@ -1,0 +1,83 @@
+<div data-ng-controller="BrowsersController">
+    <div class="browser-form">
+        <form>
+            <nav class="navbar navbar-default navbar-browser">
+                <div class="btn-group">
+                    <label>
+                        <input type="checkbox" data-ng-model="browserDataAlign"> Align the sequences
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button
+                            class="btn btn-sm"
+                            data-ng-click="submitBrowsers(resultAnnots,browserDataMethods,browserDataAlign)">
+                        <span class="glyphicon glyphicon-refresh"></span> Refresh browsers</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                            data-on="true">Select methods  <span class="caret"></span>
+                    </button>
+                    <ul class="navbar-browser-menu-method dropdown-menu" dropdownchoice>
+                        <li class="browser-form-{{method.name}}">
+                            <label class="pointer" data-ng-repeat="method in currentMethods" >
+                                <input type="checkbox" checklist-model="browserDataMethods" checklist-value="method" checked> {{method.desc}}
+                            </label>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a id="close" class="label pointer">Close menu</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                            data-on="true">Export as  <span class="caret"></span>
+                    </button>
+                    <ul class="navbar-browser-menu-export dropdown-menu">
+                        <li data-ng-model="browserDataExport"
+                            data-ng-repeat="save in saveAs">
+                            <div class="pull-right">
+                                {{save.name}} {{save.format | uppercase}}
+                                <button class="btn btn-sm"
+                                        download-type="link"
+                                        download-response="exportData(save)"
+                                        download-name="{{saveName}}.{{save.format}}"
+                                        download-mime="{{save.mimetype}}"
+                                        download-backup-url="/Backup/File.pdf">
+                                    <span class="glyphicon glyphicon glyphicon-eye-open pointer"></span>
+                                </button>
+                                <button class="btn btn-sm"
+                                        download-type="download"
+                                        download-response="exportData(save)"
+                                        download-name="{{saveName}}.{{save.format}}"
+                                        download-mime="{{save.mimetype}}"
+                                        download-backup-url="/Backup/File.pdf">
+                                    <span class="glyphicon glyphicon glyphicon-floppy-save pointer"></span>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </form>
+    </div>
+
+    <tabset>
+        <tab data-ng-repeat="browser in browsers" active="browser.active">
+            <tab-heading>
+                <div class="loading-browser">
+                    <spin-js data-ng-show="browser.refresh" lines="9" width="2" length="4"
+                             radius="5" position="absolute" top="0" left="0"></spin-js>
+                </div>
+                <!--<span>{{browser.title}}&nbsp;&nbsp;</span><span tooltip-placement="top" tooltip="Click for more information" class="glyphicon glyphicon-info-sign pointer" aria-label="true" aria-hidden="true" data-toggle="modal" data-target="{{browser.info}}"></span>-->
+                <span>{{browser.title}}&nbsp;&nbsp;</span><span
+                    class="glyphicon glyphicon-info-sign pointer" data-toggle="modal" data-target="{{browser.info}}"></span>
+            </tab-heading>
+            <div data-ng-include="browser.template"></div>
+        </tab>
+    </tabset>
+
+    <!--<div bs-active-pane="browsers.activeTab" bs-tabs>-->
+        <!--<div ng-repeat="browser in browsers" title="{{ browser.title }}" data-ng-include="browser.template" bs-pane>-->
+        <!--</div>-->
+    <!--</div>-->
+
+</div>

@@ -1,0 +1,51 @@
+<div>
+<p>APPRIS analysis is based on a range of complementary computational methods. The methods in APPRIS are the
+    following:</p>
+<ol>
+    <li>Functionally important residues, <strong>firestar</strong></li>
+    <li>Protein structural information, <strong>Matador3D</strong></li>
+    <li>Presence of whole protein domains, <strong>SPADE</strong></li>
+    <li>Conservation against vertebrates, <strong>CORSAIR</strong></li>
+    <li>Presence of whole trans-membrane helices, <strong>THUMP</strong></li>
+    <li>Prediction of signal peptide and sub-cellular location, <strong>CRASH</strong></li>
+    <li>Selection of primary variant, <strong>APPRIS</strong></li>
+</ol>
+
+<h4>Firestar: Functionally Important Residues</h4>
+<p><strong><a href="http://firedb.bioinfo.cnio.es/Php/FireStar.php" target="_blank">firestar</a></strong> predicts functionally
+    important residues based on the <a href="http://firedb.bioinfo.cnio.es/Php/FireDB.php" target="_blank">fireDB</a> database. The predictions are based on the local evaluation of alignments between the query sequence and the structures with functional information that are stored in FireDB. The reliability of predictions is assessed with <a href="http://firedb.bioinfo.cnio.es/Php/square.php" target="_blank">SQUARE</a> and the functional information is highlighted along with a reliability score.</p>
+<p>Functional residues are highly conserved, even across large evolutionary distances. Since these residues are unlikely to have arisen by chance we can also use this to help determine the principal isoform. Variants that have "lost" conserved functional residues are unlikely to be the principal isoform.</p>
+
+<h4>Matador3D: Protein structural information</h4>
+<p>Protein structural information is analysed with <strong>Matador3D</strong>. In practice variant sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>.</p>
+<p>Protein structure is much more conserved than sequence and isoforms with large inserts or deletions relative to homologous crystal structures are also not likely to be principal.</p>
+
+<h4>SPADE: Scanning Pfam Alignments for Damaged Entities</h4>
+<p>Proteins are generally comprised of one or more functional regions commonly termed domains. Identifying the functional domains present in a variant can provide insights into the function and to determine the most likely principal isoform.</p>
+<p>The presence of functional domains is analysed with <a href="http://pfam.sanger.ac.uk" target="_blank">Pfamscan</a>.</p>
+<p>Variants that have "lost" conserved functional domains are unlikely to be principal isoforms.</p>
+
+<h4>CORSAIR: Conservation against vertebrates</h4>
+<p><strong>CORSAIR</strong> carries out <a href="http://blast.ncbi.nlm.nih.gov/" target="_blank">BLAST</a> searches against
+    vertebrates to determine the most likely principal isoform.</p>
+<p>Transcripts that are conserved over greater evolutionary distances are more likely to be the main variant.</p>
+<p>CORSAIR counts the number of species that align correctly and without gaps for each variant.</p>
+
+<h4>THUMP: Detecting reliable trans-membrane helices</h4>
+<p><strong>THUMP</strong> makes unanimous predictions of trans-membrane helices using three different methods: <a
+        href="http://bioinf.cs.ucl.ac.uk/psipred" target="_blank">MEMSAT 3.0</a>, <a href="http://phobius.sbc.su.se/" target="_blank">Phobius</a>, and <a href="http://topcons.cbr.su.se/index.php?about=proprodiv" target="_blank">PRODIV</a>. A helix has to be predicted by all three methods to be considered reliable.</p><p>Transcripts that have "lost" trans-membrane helices are less likely to be the principal isoform.</p>
+
+<h4>CRASH: Signal Peptide and Mitochondrial Signal Sequences.</h4>
+<p>The presence and location of signal peptides and cleavage sites in amino acid sequences are analysed with <a
+        href="http://www.cbs.dtu.dk/services/SignalP/" target="_blank">SignalP</a> program. And
+    <a href="http://www.cbs.dtu.dk/services/TargetP/" target="_blank">TargetP</a> predicts the sub-cellular location of eukaryotic proteins. <strong>CRASH</strong> uses a rule-based analysis of these two programs to select only reliable predictions.</p>
+
+<!--<h4>PROTEO: Proteomic evidence for the human genome</h4>-->
+<!--<p>We collected peptides from seven separate MS sources. Two came from large-scale proteomics databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and <a href="http://peptide.nist.gov/">NIST</a>. Another four datasets that were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as “CNIO") in house from an <a-->
+        <!--href="http://www.ncbi.nlm.nih.gov/pubmed/14558131">X!Tandem</a> search against spectra-->
+    <!--from the <a href="http://www.ncbi.nlm.nih.gov/pubmed/15595733">GPM</a> and PeptideAtlas databases, following-->
+    <!--the protocol set out in <a href="http://www.ncbi.nlm.nih.gov/pubmed/22446687">Ezkurdia et al</a> with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.</p>-->
+<!--<p>In order to improve reliability the peptides from each of these studies were filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.</p>-->
+<!--<p><strong>Note: At the moment, we only have proteomic evidences for human.</strong></p>-->
+
+</div>

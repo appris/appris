@@ -1,0 +1,15 @@
+DESCRIPTION OF METHODS IN DETAIL* CRASHThe presence and location of signal peptides and cleavage sites in amino acid sequences are analysed with SignalP program. And TargetP service that predicts the sub-cellular location of eukaryotic proteins. Both methods form CRASH that have signal sequences are reinforced positively.- SignalP:	If (score >= 2)		annotation = 'Signal sequence'	Elsif(score = 0 or score = 1)		annotation = 'Doubtful signal sequence' 	Elsif(score <= -1)		annotation = 'No signal sequence' - TargetP:	If (score >= 2)		annotation = 'Mitochondrial signal sequence'	Elsif(score = 0 or score = 1)		annotation = 'Doubtful mitochondrial signal sequence' 	Elsif(score <= -1)		annotation = 'No mitochondrial signal sequence' * PfamScan	Proteins are generally comprised of one or more functional regions, commonly termed domains. Identifying the domains present in a variant can provide insights into the function and to determine the most likely principal isoform.
+	The e-value of the alignments MUST be less than 0.00001. We work only with Pfam A domains (this is already OK in pfamscan). The domains shouldn't overlap (this is already OK in pfamscan).
+	The decision on whether a domain is damaged or not comes from: 
+			<hmm start> <hmm end> <hmm length>
+
+			If (<hmm length> - (<hmm end> - <hmm start>)) > 10
+				{Damaged pfam domain}
+			If (<hmm length> - (<hmm end> - <hmm start>)) > 5
+				{Slightly damaged pfam domain}
+			Else
+				{Whole domain}
+			
+	Variants that have "lost" conserved protein domains are eliminated as potential principal isoforms.
+
+* CExonicThe conservation of exonic structure between orthologous splicing isoforms of two species (human-mouse) would suggest that they exist in both species and that their biological function may be conserved. If one transcript does not have conserved exonic structure, while all the rest have, this not likely to be the principal isoform, so will be eliminated.	If (num_exons_human == num_exons_mouse) and 	    (num_introns == (num_exons_mouse - 1)			annotation = 'Exonic structure conserved in mouse'	Else		annotation = 'Exonic structure not conserved in mouse'* THUMP In addition to the signal sequence predictor (CRASH) APPRIS includes a method that makes unanimous predictions of trans-membrane helices using three different methods (MEMSAT 3.0, Phobius, and PRODIV).Transcripts that have "lost" trans-membrane helices relative to other transcripts from the same gene are eliminated as the principal isoform.	If (Transmembrane helix is damaged by Consensus)		annotation = 'Damaged transmembrane helix '	Else		annotation = 'Transmembrane helix '

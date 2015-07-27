@@ -1,0 +1,147 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+DATABASE=""
+HOST=""
+USER=""
+PASSWD=""
+BACKUP_FILE=""
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_db_import\n
+\n
+ Description:\n
+\t import APPRIS database from mysql dump file.\n
+\n
+Required arguments:\n
+\t -d [-database]\n
+\t\t Name of database (eg, appris_homo_sapiens_gencode_19_dev)\n
+\n
+\t -h [-host]\n
+\t\t Host of database (eg, jabba.cnio.es)\n
+\n
+\t -u [-user]\n
+\t\t User of database (eg, wensembl)\n
+\n
+\t -i [-in]\n
+\t\t Input file (mysql-gzip format)\n
+\n
+Optional arguments:\n
+\t -p [-passwd]\n
+\t\t Password of database\n
+\n
+\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-d | -database )
+			DATABASE=$2
+			shift
+			;;
+		-h | -host )
+			HOST=$2
+			shift
+			;;
+		-u | -user )
+			USER=$2
+			shift
+			;;
+		-p | -passwd )
+        	PASSWD=$2
+        	shift
+			;;
+		-i | -in )
+        	BACKUP_FILE=$2
+        	shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${DATABASE}" == "" ]; then
+	echo You must specify a database!
+	echo -e $USAGE
+	exit 1
+fi
+if [ "${HOST}" == "" ]; then
+	echo You must specify a host!
+	echo -e $USAGE
+	exit 1
+fi  
+if [ "${USER}" == "" ]; then
+	echo You must specify a user!
+	echo -e $USAGE
+	exit 1
+fi  
+if [ "${BACKUP_FILE}" == "" ]; then
+	echo You must specify a out file!
+	echo -e $USAGE
+	exit 1
+fi  
+
+
+# -----------------------------------------------------------------------------
+# Optional var declarations
+
+PASSWD_PARAMETERS=""
+if [ "${PASSWD}" != "" ]; then
+	PASSWD_PARAMETERS="-p${PASSWD}"
+fi  
+
+
+# -----------------------------------------------------------------------------
+# Create database
+echo "---------------------------"
+echo "Create database"
+echo "mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}"
+mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}
+echo ""
+
+
+# -----------------------------------------------------------------------------
+# Import database
+echo "---------------------------"
+echo "Import database"
+echo "gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}"
+gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}
+echo ""
+

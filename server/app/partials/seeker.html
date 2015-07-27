@@ -1,0 +1,33 @@
+<h2>Search Summary</h2>
+<div>
+    <ul>
+        <li data-ng-repeat="seekerRst in seekerResult"><h4>{{seekerRst.species}}</h4>
+            <ul>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <tbody>
+                        <tr>
+                            <th>ENSEMBL Gene</th>
+                            <th>Name</th>
+                            <th>Assembly</th>
+                            <th>Position</th>
+                            <th>Biotype</th>
+                            <th>Latest Version</th>
+                        </tr>
+                        <tr
+                                data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Ensembl_Gene_Id'}" data-ng-if="queryRst.namespace == 'Ensembl_Gene_Id'">
+                            <td><a
+                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?db={{queryRst.assembly.id}}">{{queryRst.id}}</a></td>
+                            <td data-ng-repeat="dbRst in queryRst.dblink | filter:{namespace:'External_Id'}">{{dbRst.id}}</td>
+                            <td>{{queryRst.assembly.name}}</td>
+                            <td>{{queryRst.position}}</td>
+                            <td>{{queryRst.biotype}}</td>
+                            <td>Ensembl{{queryRst.dataset}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ul>
+        </li>
+    </ul>
+</div>

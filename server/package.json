@@ -1,0 +1,26 @@
+{
+  "name": "appris",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/web-server.js"
+  },
+  "dependencies": {
+    "express": "3.4.7",
+    "forever": "~0.13.0"
+  },
+  "devDependencies": {
+    "karma-junit-reporter": "~0.2.1",
+    "karma-chrome-launcher": "~0.1.3",
+    "karma-firefox-launcher": "~0.1.3",
+    "karma-jasmine": "~0.1.5",
+    "karma-ng-scenario": "~0.1.0",
+    "qunitjs": "~1.12.0",
+    "karma-qunit": "~0.1.1",
+    "karma-script-launcher": "~0.1.0",
+    "karma-safari-launcher": "~0.1.1",
+    "karma-ie-launcher": "~0.1.4",
+    "karma": "~0.12.3",
+    "protractor": "~0.21.0"
+  }
+}

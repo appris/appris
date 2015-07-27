@@ -1,0 +1,154 @@
+/*
+ *
+ * Sequence Browser Style
+ *
+ */
+
+.browser-seq-seqs {
+    font-family: monospace;
+    white-space: pre;
+    font-size: small;
+}
+.browser-seq-legends {
+    font-size: small;
+}
+.browser-seq-legends label {
+    display: block;
+}
+
+/* APPRIS */
+/* seq-viewer */
+browser-seq-res.a {
+color: rgba(180,95,4,1);
+cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .a label {
+    color: rgba(180,95,4,1);
+    text-decoration: underline;
+}
+/* FIRESTAR */
+/* seq-viewer */
+browser-seq-res.f {
+    color: rgba(244,169,39,1) !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .f label {
+    color: rgba(244,169,39,1);
+    text-decoration: underline;
+}
+/* MATADOR3D */
+/* seq-viewer */
+browser-seq-res.m {
+    color: #800000;
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .m label {
+    color: #800000;
+}
+/* SPADE */
+/* seq-viewer */
+browser-seq-res.s {
+    background-color: rgba(164,189,83,1);
+    cursor: pointer;
+}
+browser-seq-res.sd {
+    background-color: rgba(164,189,83,0.5);
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .s label {
+    background-color: rgba(164,189,83,1);
+    color: #ffffff;
+}
+/* CORSAIR */
+/* seq-viewer */
+browser-seq-res.c {
+    /*background-color: rgba(4,95,180,1);;*/
+    color: rgba(4,95,180,1);
+    text-decoration: underline;
+}
+/* legend */
+.browser-seq-legend > .c label {
+    background-color: rgba(4,95,180,1);
+    color: #ffffff;
+}
+/* THUMP */
+/* seq-viewer */
+browser-seq-res.t {
+    background-color: rgba(245,169,208,1);
+    cursor: pointer;
+}
+browser-seq-res.td {
+    background-color: rgba(245,169,208,0.5);
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .t label {
+    background-color: rgba(245,169,208,1);
+    color: #ffffff;
+}
+/* CRASH */
+/* seq-viewer */
+browser-seq-res.cr {
+    background-color: rgba(153,153,102,1);
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .cr label {
+    background-color: rgba(153,153,102,1);
+    color: #ffffff;
+}
+
+/* CDS */
+/* seq-viewer */
+.cds_0 {
+    color: #000000;
+}
+.cds_1 {
+    color: #5D5D5D;
+}
+/* legend */
+.browser-seq-legend > .cds label {
+    background-image: linear-gradient(right, #000000 50%, #5D5D5D 50%);
+    background-image: -o-linear-gradient(right, #000000 50%, #5D5D5D 50%);
+    background-image: -moz-linear-gradient(right, #000000 50%, #5D5D5D 50%);
+    background-image: -webkit-linear-gradient(right, #000000 50%, #5D5D5D 50%);
+    background-image: -ms-linear-gradient(right, #000000 50%, #5D5D5D 50%);
+    color: #ffffff;
+}
+
+/* legend for all methods of browser-seq-legend */
+input[type='checkbox'].pseudo-checkbox + label:before,
+input[type='checkbox'].pseudo-checkbox + label:after{
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding-right: 5px;
+}
+input[type='checkbox'].pseudo-checkbox + label:before{ /* unchecked icon */
+    content: "\e157";
+}
+input[type='checkbox']:checked.pseudo-checkbox + label:before{ /* checked icon */
+    content: "\e067";
+}
+
+
+
+/* POPOVER PANEL FOR ANNOTATIONS */
+.popover {
+    max-width: 360px;
+    width: 360px;
+}
+.popover-content {
+    padding: 4px 4px 4px 4px;
+}

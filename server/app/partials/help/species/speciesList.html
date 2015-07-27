@@ -1,0 +1,15 @@
+<div class="species-list media-list" data-ng-repeat="specie in species | orderObjectBy:'order' ">
+    <!--<a class="media-left" data-ng-href="/#/species/{{specie.common}}">-->
+    <a class="media-left">
+        <img class="img-thumbnail" data-ng-src="img/{{specie.common | lowercase}}_logo.jpg" style="width: 65px" />
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading">{{specie.common}}</h4>
+        <h6 class="media-heading">{{specie.scientific}}</h6>
+        <ul class="list-unstyled">
+            <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}.
+                Latest dataset version: <em>Ensembl{{assembly.dataset}}</em></li>
+            <!--<li><strong>Archives:</strong> <scan data-ng-repeat="ens in specie.archives">Ensembl{{ens}}  </scan> </li>-->
+        </ul>
+    </div>
+</div>

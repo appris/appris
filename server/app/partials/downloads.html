@@ -1,0 +1,55 @@
+<div data-ng-controller="DownloadsController">
+<h2>Downloads</h2>
+    <p>The annotations of the following species are available. Here you can download the annotations as TABULAR format (TSV) and GTF (a Gene Transfer Format).</p>
+Filter by Species:
+<select data-ng-model="elemSpecie">
+    <option value="" selected>All</option>
+    <option data-ng-repeat="specie in species" value="{{specie}}" selected>{{specie}}</option>
+</select>
+Assembly Version:
+<select data-ng-model="elemAssembly">
+    <option value="" selected>All</option>
+    <option data-ng-repeat="assembly in assemblies" value="{{assembly}}" selected>{{assembly}}</option>
+</select>
+Gene Dataset:
+<select data-ng-model="elemDataset">
+    <option value="" selected>All</option>
+    <option data-ng-repeat="dataset in datasets" value="{{dataset}}" selected>{{dataset}}</option>
+</select>
+<br><br>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed">
+        <tbody>
+        <tr>
+            <th data-ng-repeat="head in headers">{{head.label}}</th>
+        </tr>
+        <tr dir-paginate="datafile in datafiles | filter: {specie:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
+            <td data-ng-repeat="head in headers">
+                <!--<a data-ng-if="datafile.scientific && datafile.dataset && datafile.release && datafile[head.id].file && datafile[head.id].format" ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.scientific | capitalize}}.{{datafile.assembly}}.{{datafile[head.id].file}}">{{datafile[head.id]-->
+                    <!--.format}}</a>-->
+                <a data-ng-if="datafile.scientific && datafile.dataset && datafile.release && datafile[head.id].file && datafile[head.id].format"
+                   ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.release}}/{{datafile[head.id].file}}">{{datafile[head.id]
+                    .format}}</a>
+                <span data-ng-if="datafile[head.id] && !(datafile[head.id].format && datafile[head.id].file && datafile.scientific)">{{datafile[head.id]}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-controller="pagDownloadsController">
+    <div class="text-center">
+        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>
+    </div>
+</div>
+    <hr>
+    <help-flags></help-flags>
+
+    <h4>APPRIS Scores</h4>
+    <p>APPRIS detects principal isoforms based on a range of methods, the scores they report can be downloaded.
+    </p>
+    <h4>Method annotations</h4>
+    <p>Here we show tracks as genome coordinate positions (in compressed GTF format) of the APPRIS methods.
+    </p>
+    <p>For more information of data files, read the following README <a data-ng-href="{{urlREADME}}">link</a>.</p>
+
+</div>
