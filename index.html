@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Appris : Annotating principal splice isoforms">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Appris</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/josemrc/appris">View on GitHub</a>
+
+          <h1 id="project_title">Appris</h1>
+          <h2 id="project_tagline">Annotating principal splice isoforms</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/josemrc/appris/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/josemrc/appris/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="welcome-to-appris---a-system-for-annotating-alternative-splice-isoforms" class="anchor" href="#welcome-to-appris---a-system-for-annotating-alternative-splice-isoforms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to APPRIS - A system for annotating alternative splice isoforms</h1>
+
+<p>APPRIS [1] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.</p>
+
+<p>APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.</p>
+
+<p>The server has been used in the context of the scale up of the GENCODE (<a href="http://www.gencodegenes.org/">http://www.gencodegenes.org/</a>, a sub-project of the ENCODE) project to annotate the Human genome but APPRIS is being used for other species:</p>
+
+<ul>
+<li>Human</li>
+<li>Mouse</li>
+<li>Rat</li>
+<li>Zebrafish</li>
+</ul>
+
+<h1>
+<a id="system-overview" class="anchor" href="#system-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>System overview</h1>
+
+<p>The goals of the APPRIS system are to annotate alternative variants with reliable biological data and to select the primary variant for each gene. APPRIS is based on a range of complementary computational methods.</p>
+
+<p>The methods in APPRIS are the following:
+  == Functionally important residues, firestar
+  == Protein structural information, Matador3D
+  == Presence of whole protein domains, SPADE
+  == Conservation against vertebrates, CORSAIR
+  == Presence of whole trans-membrane helices, THUMP
+  == Prediction of signal peptide and sub-cellular location, CRASH
+  == Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]</p>
+
+<h1>
+<a id="data-access" class="anchor" href="#data-access" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data access</h1>
+
+<p>The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.</p>
+
+<p>== Web Services, APPRIS data can be returned remotely using web services.
+  <a href="http://apprisws.bioinfo.cnio.es/">http://apprisws.bioinfo.cnio.es/</a></p>
+
+<p>== Downloads, APPRIS data text files.
+  <a href="http://appris.bioinfo.cnio.es/#/downloads">http://appris.bioinfo.cnio.es/#/downloads</a></p>
+
+<h1>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h1>
+
+<p>[1] Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A, Tress ML.
+APPRIS: annotation of principal and alternative splice isoforms. 
+Nucleic Acids Res. 2013 Jan;41(Database issue):D110-7.</p>
+
+<h1>
+<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact</h1>
+
+<p>This APPRIS website is powered by the Structural Computational Biology Group at
+    Centro Nacional de Investigaciones Oncologicas, (CNIO, <a href="http://www.cnio.es">http://www.cnio.es</a>)
+        and
+    Instituto Nacional de Bioinformatica, (INB, <a href="http://www.inab.org">http://www.inab.org</a>)</p>
+
+<p>If you have questions or comments, please write to:
+    Jose Manuel Rodríguez, <a href="mailto:jmrodriguez@cnio.es">jmrodriguez@cnio.es</a>
+    Michael Tress, <a href="mailto:mtress@cnio.es">mtress@cnio.es</a>.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Appris maintained by <a href="https://github.com/josemrc">josemrc</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
