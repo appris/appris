@@ -1,0 +1,127 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ----------------------------------#
+# Setting up vars of APPRIS program #
+# ----------------------------------#
+
+export APPRIS_HOME="/local/jmrodriguez/appris"
+
+source "${APPRIS_HOME}/code/conf/apprisrc"
+
+# ----------------------------#
+# Setting up vars for scripts #
+# ----------------------------#
+
+export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
+
+export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_SCRIPTS_DIR}/bin"
+
+export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_SCRIPTS_DIR}/conf"
+
+# ---------------------------------------------------------------------#
+# Setting up vars of workspaces directories (including PROTEO dataset) #
+# ---------------------------------------------------------------------#
+
+export APPRIS_WORKSPACE="/local/jmrodriguez/gencode19"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_WORKSPACE}/logs"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features"
+
+export APPRIS_SEQ_DIR="${APPRIS_WORKSPACE}/sequences"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data"
+
+export APPRIS_PROTEO_HOME="${APPRIS_WORKSPACE}/proteo"
+
+export APPRIS_PROTEO_DATA_DIR="${APPRIS_PROTEO_HOME}/data"
+
+export APPRIS_PROTEO_DATA_FILE="${APPRIS_PROTEO_DATA_DIR}/AllPeptideData3_sortu.csv.gz"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=74
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.annotation.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_transcripts.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_translations.fa"
+
+#export APPRIS_TYPE_ALIGN=compara
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIE="Homo sapiens"
+
+#export APPRIS_CHR_LIST="19"
+#export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y,M"
+#export APPRIS_CHR_LIST="1,6,11,16,21"
+#export APPRIS_CHR_LIST="2,7,12,17,22"
+#export APPRIS_CHR_LIST="3,8,13,18,X"
+#export APPRIS_CHR_LIST="4,9,14,19,Y"
+#export APPRIS_CHR_LIST="5,10,15,20,M"
+
+export APPRIS_WS_NAME="test"
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/gencode15"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+#export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.TST.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.TST.ini"
+
+# ---------------------------#
+# Overwrite for TEST scripts #
+# ---------------------------#
+
+export APPRIS_FEATURES_DIR="${APPRIS_TEST_DIR}/features"
+
+export APPRIS_ANNOT_DIR="${APPRIS_TEST_DIR}/annotations"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_TEST_DIR}/logs"
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/TEST2.gencode.v19.annotation.gtf"
+
+# ----------------------------------------------#
+# Setting up PERL LIBRARY PATH and binary files #
+# ----------------------------------------------#
+
+export APPRIS_PERL_LIB="${APPRIS_HOME}/lib/appris_perllib"
+
+export APPRIS_PROGRAMS_MODULES_DIR="${APPRIS_HOME}/modules"
+
+export APPRIS_MODULES_PERL_LIB="${APPRIS_PROGRAMS_MODULES_DIR}/lib/perl5"
+
+export PERL5LIB="${PERL5LIB}:${APPRIS_PERL_LIB}:${APPRIS_MODULES_PERL_LIB}"
+
+export PATH="${APPRIS_SCRIPTS_BIN_DIR}:${PATH}"
+
+# ---------------------------#
+# Setting up the ENSEMBL API #
+# ---------------------------#
+
+#module load ensembl/ensembl74
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-compara/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-variation/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl74/ensembl-functgenomics/modules/:${PERL5LIB}"
