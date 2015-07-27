@@ -1,0 +1,291 @@
+.TH signalp 1 \" -*- nroff -*-
+
+.SH NAME
+signalp \- predict signal peptides in proteins
+
+.SH SYNOPSIS
+\fBsignalp\fP \fB-t euk\fP|\fBgram+\fP|\fBgram-\fP 
+[\fIother options\fP] [\fIfile\fP ...]
+
+.SH DESCRIPTION
+.B signalp
+predicts the presence and location of signal peptide cleavage sites in
+amino acid sequences from different organisms: Gram-positive
+bacteria, Gram-negative bacteria, and eukaryotes. The method
+incorporates a prediction of cleavage sites and a signal
+peptide/non-signal peptide prediction based on a combination of several
+artificial neural networks. It also incorporates predictions
+done by a hidden Markov model specifically designed to distinguish
+between signal peptides, non-secretory proteins, and (for eukaryotes
+only) uncleaved signal anchors.
+
+The method is described in detail in the references quoted below.
+
+.B Input
+
+The input is taken from \fIfile\fPs or, if no file is specified, the
+standard input. The input format, described below, is Pearson \fBFASTA\fP.
+
+Each sequence must be preceded by a sequence header line starting by
+the symbol `>' immediately followed by the name (identifier) of the
+sequence. The rest of the header line, separated from the name by
+whitespace, is ignored. The sequences must be written using the one
+letter abbreviations for the amino acids:
+
+.in +5n
+\fBacdefghiklmnpqrstvwy\fP or \fBACDEFGHIKLMNPQRSTVWY\fP
+.in -5n
+
+Other letters will be converted to `X' and treated as unknown amino
+acids. Other characters, such as blanks and numbers, will be ignored. 
+
+It is recommended that the N-terminal part only (typically, 50-70
+amino acids) of each sequence is used for prediction (see \fB\-trunc\fP
+option).
+
+.B Neural network output
+
+For each input sequence the neural network (\fBnn\fP) module of
+\fBsignalp\fP will first return three scores between 0 and 1 for
+each sequence position:
+.TP
+.B C-score (raw cleavage site score)
+The output score from networks trained to recognize cleavage sites 
+vs. other sequence positions. Trained to be high at position +1
+(immediately after the cleavage site), and low at all other positions. 
+.TP
+.B S-score (signal peptide score)
+The output score from networks trained to recognize signal peptide 
+vs. non-signal-peptide positions. Trained to be high at all positions
+before the cleavage site, and low at positions after the cleavage site
+and in the N-terminals of non-secretory proteins.  
+.TP
+.B Y-score (combined cleavage site score)
+The prediction of cleavage site location is optimized by observing where
+the C-score is high and the S-score changes from a high to a low value.
+The Y-score formalizes this by combining the height of the C-score with
+the slope of the S-score.
+
+Specifically, the Y-score is a geometric average between the C-score and
+a smoothed derivative of the S-score (i.e. the difference between the
+mean S-score over d positions before and d positions after the current
+position, where d varies with the chosen network ensemble).
+.PP
+\fBsignalp\fP\-\fBnn\fP will then report the maximal C-, S-, and Y-scores,
+the mean S-score in the interval between the N-terminal and the site with
+the maximal Y-score and, finally, the D-score, the average of the S-mean
+and Y-max score. 
+
+All the above values give rise to separate predictions; they are reported
+together with the position of occurrence, the cutoff used to generate the
+specific prediction and the prediction itself. The final, combined
+prediction of the presence of a signal peptide in the sequence is based
+on the D-score.
+
+The high detail level of the output is intended to allow for
+interpretation of borderline cases by the user.
+
+If the sequence is predicted to have a signal peptide, the cleavage site
+is located immediately before the position with the maximal Y-score.
+                                               
+.B Hidden markov model output
+
+The hidden markov model (\fBhmm\fP) module of \fBsignalp\fP
+will return posterior probabilities for cleavage site (C) and 
+signal peptide (S)  for each position in the input sequences. The
+cleavage site probability is the probability that a specific position
+is in the +1 state, i.e. immediately after the cleavage site. In addition,
+the signal peptide probability is divided into three region probabilities:
+n-, h-, and c-region. This can be used to assign region boundaries
+to the signal peptides in the data set.
+
+For each sequence, \fBsignalp\fP\-\fBhmm\fP will report the overall
+signal peptide probability (this is equal to the posterior
+probability of signal peptide (S) for position 1). For eukaryotic
+data, the signal anchor probability is also reported. In addition,
+the maximal cleavage site probability is reported together with the
+position where it occurs.
+.SH OPTIONS
+.TP
+.BI \-t \ type \ \| | \ -type \ type
+Use networks and models trained on sequences from the 
+specified \fItype\fP of
+organisms. The valid \fItype\fPs are: 
+
+.in +5n
+\fBgram-\fP \ Gram-negative bacteria
+.br
+\fBgram+\fP \ Gram-positive bacteria
+.br
+\fBeuk\fP \ \ \ eukaryotes  
+.in -5n
+
+This option must always be set! There is no default. Only one \fItype\fP
+can be selected in a given run.
+
+.TP
+.BI \-d \ dir \ \| | \ -destination \ dir
+Place output and graphics files in directory \fIdir\fP. The default is
+the current directory.
+
+.TP
+.BI \-f \ format \ \| | \ -format \ format
+Produce output in the specified \fIformat\fP. The valid \fIformat\fPs
+are:
+.RS
+.TP
+.B full
+Write the entire output, including nn and hmm score for each position
+in each sequence. This is the default.
+.TP
+.B summary
+Write only the concluding scores for each sequence.
+.TP
+.B short
+Write only one line of concluding scores per sequence. Intended for
+analysis of large datasets where machine-readable output
+is required. Incompatible with graphics. 
+.RE
+
+.TP
+.BI \-g
+Equivalent to 
+.B \-graphics ps
+
+.TP
+.BI \-graphics \ mode
+Produce plots of the C-, S-, and Y-scores (from \fBsignalp\fP\-\fBnn\fP)
+and the n-, h-, and c-region and cleavage site probabilities (from
+\fBsignalp\fP\-\fBhmm\fP). The default is text output only. The valid
+\fImode\fPs are: 
+.RS
+.TP
+.B gif
+Save plots in Graphics Interchange Format (\fBGIF\fP)
+under the names 'plot.\fImethod\fP.\fI#\fP.gif', 
+where \fImethod\fP is \fBnn\fP or \fBhmm\fP, and \fI#\fP is the number
+of the input sequence. 
+.TP
+.B eps
+Save plots in Encapsulated PostScript format (\fBEPS\fP)
+under the names 'plot.\fImethod\fP.\fI#\fP.eps', 
+where \fImethod\fP is \fBnn\fP or \fBhmm\fP, and \fI#\fP is the number
+of the input sequence.. 
+.TP
+.B gif+eps
+Save plots in both \fBGIF\fP and \fBEPS\fP formats as described above.
+
+.TP
+.B ps
+Save all plots in one multipage PostScript (\fBPS\fP) file with the 
+name 'plot.ps'. Cannot be combined with gif plotting.
+.RE
+
+.TP
+.BI \-G
+Display postscript output on screen. This implies \fB-g\fP.
+
+.TP
+.BR \-k\  | \ -keepall
+Keep the gnuplot script and data files used to produce the graphics
+output for later modification. The files are placed in the
+destination directory (\fB\-d\fP) under the names `plot.gnu',
+`nn-score.\fI#\fP', and `hmm-score.\fI#\fP', where \fI#\fP is the
+input sequence number. Implies \fB-g\fP.
+
+.TP
+.BI \-m \ method \ \| | \ -method \ method
+Use the specified prediction \fImethod\fP. The valid \fImethod\fPs are
+\fInn\fP (neural networks), \fIhmm\fP (hidden Markov models) and
+.I nn+hmm
+(both, the default). 
+
+.TP
+.BR \-q\  | \ -quiet
+Do not send the text format output to \fIstdout\fP, but place it in the  
+destination directory (\fB\-d\fP) under the name `output.txt'.
+
+.TP
+.B \-short
+Equivalent to
+.B \-format short
+
+.TP
+.BI \-synver \ ver
+Use neural network trained weights from SignalP version \fIver\fPGG. The
+possible versions are \fB1.1\fP, \fB2.0\fP and \fB3.0\fP (the default,
+this version). This option has no effect on the \fBhmm\fP module of
+\fBsignalp\fP.
+
+.TP
+.BI \-trunc \ n
+Truncate each sequence to maximally \fIn\fP N-terminal residues. It
+is recommended that the N-terminal part only (typically, 50-70
+amino acids) of each sequence is used for prediction. A longer 
+sequence will increase the risk of false positives and make the
+graphical output difficult to read. If \fIn\fP equals 0 (zero) or
+the option is absent, truncation is disabled.
+
+.TP
+.BR \-v\  | \ -version
+Print the current version and release date and exit.
+
+.SH VERSION
+This manpage describes SignalP 3.0, from May 2004.
+
+Additional information can be found at:
+
+        http://www.cbs.dtu.dk/services/SignalP/
+.SH PROBLEMS AND QUESTIONS
+In the case of technical problems (bugs etc.) please
+contact support@cbs.dtu.dk.
+
+Questions on the scientific aspects of the SignalP method
+should go to Jannick Dyrloev Bendtsen, jannick@cbs.dtu.dk.
+.SH REFERENCES
+.br
+.B Ver. 3.0 (this version)
+
+"Improved prediction of signal peptides - SignalP 3.0"
+.br
+Jannick Dyrloev Bendtsen, Henrik Nielsen, Gunnar von Heijne (*) and
+Soren Brunak.
+.br
+Journal of Molecular Biology: accepted 2004.
+
+.B Ver. 2.0
+
+"Prediction of signal peptides and signal anchors by a hidden
+Markov model",
+.br
+Henrik Nielsen and Anders Krogh
+.br
+In: Proceedings of the Sixth International Conference on
+Intelligent Systems for Molecular Biology (ISMB 6), AAAI Press,
+Menlo Park, California, pages 122-130, 1998.
+
+.B Ver. 1.1 (original paper)
+
+"Identification of prokaryotic and eukaryotic
+signal peptides and prediction of their cleavage sites",
+.br
+Henrik Nielsen, Jacob Engelbrecht, Soren Brunak and Gunnar von Heijne (*)
+.br
+Protein Engineering, vol. 10, pages 1-6, 1997. 
+
+
+Center for Biological Sequence Analysis
+.br
+The Technical University of Denmark
+.br
+DK-2800 Lyngby, Denmark
+
+(*) Department of Biochemistry
+.br
+Arrhenius Laboratory
+.br
+Stockholm University
+.br
+S-106 91 Stockholm, Sweden
+.SH SEE ALSO
+chlorop(1), targetp(1), fasta(1)

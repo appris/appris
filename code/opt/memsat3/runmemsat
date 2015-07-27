@@ -1,0 +1,57 @@
+#!/bin/tcsh
+
+# This is a simple script which will carry out all of the basic steps
+# required to make a MEMSAT V3 prediction. Note that it assumes that the
+# following programs are in the appropriate directories:
+# blastpgp - PSIBLAST executable (from NCBI toolkit)
+# makemat - IMPALA utility (from NCBI toolkit)
+# globmem - MEMSAT V3 program
+# mem_pred - MEMSAT V3 program
+# nnsat - MEMSAT V3 program
+
+# The name of the BLAST data bank
+set dbname = uniref90.fasta
+
+# Where the NCBI programs have been installed
+
+# Where the PSIPRED V2 programs have been installed
+#set execdir = /home/pmaietta/Predictors/Memsat3/trunk/bin
+set execdir = ${PWD}/bin
+
+# Where the PSIPRED V2 data files have been installed
+#set datadir = /home/pmaietta/Predictors/Memsat3/trunk/data
+set datadir = ${PWD}/data
+
+# Type of database
+set dbdir = ${PWD}/../../../db
+
+set basename = $1:r
+set rootname = $basename:t
+set outname = $basename.chk
+
+\cp -f $1 $rootname.fasta 
+
+echo "Running PSI-BLAST with sequence" $1 "..."
+
+#blastpgp -b 0 -v 100 -j 2 -h 1e-4 -e 1e-3 -d /home/iezkurdia/ENCODE/nr/$dbname -i $rootname.fasta -C $rootname.chk >& $rootname.blast
+blastpgp -b 0 -v 100 -j 2 -h 1e-4 -e 1e-3 -a 4 -d $dbdir/$dbname -i $rootname.fasta -C $rootname.chk >& $rootname.blast
+
+echo "Predicting transmembrane topology..."
+
+echo $rootname.chk > $rootname.pn
+echo $rootname.fasta > $rootname.sn
+makemat -P $rootname
+
+$execdir/globmem $datadir/glob_weights.dat $rootname.mtx > $rootname.globmem
+
+$execdir/mem_pred $datadir/weights.dat $rootname.mtx > $rootname.nn
+
+$execdir/nnsat $rootname.nn > $rootname.memsat
+
+#Remove temporary files
+
+echo Cleaning up ...
+\rm -f $rootname.fasta $rootname.nn $rootname.globmem error.log $rootname.sn $rootname.pn $rootname.mtx $rootname.mn $rootname.aux $rootname.chk
+
+echo "Final output files:" $rootname.blast $rootname.memsat
+echo "Finished."

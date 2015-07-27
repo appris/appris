@@ -1,0 +1,23 @@
+#! /usr/bin/perl
+
+open (BENCHFILE, "$ARGV[1]/$ARGV[0]")	
+	or die "Cannot open benchfile\n";
+
+open (PNFILE, ">$ARGV[1]/$ARGV[0].pn")	
+	or die "Cannot open benchfile\n";
+open (SNFILE, ">$ARGV[1]/$ARGV[0].sn")	
+	or die "Cannot open benchfile\n";
+open (LSTFILE, ">$ARGV[1]/$ARGV[0].lst")	
+	or die "Cannot open benchfile\n";
+
+while (<BENCHFILE>) #go thru all .sw files and do PSIBLAST on them
+	{	
+	@id = split " ";
+	print LSTFILE "$id[0]\n";
+	print PNFILE "$id[0].chk\n";
+	print SNFILE "$id[0].chd\n";
+	}
+close BENCHFILE;
+close OUTFILE;
+
+

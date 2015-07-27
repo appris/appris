@@ -1,0 +1,6 @@
+drange=12
+Cmaxcut=0.30
+Ymaxcut=0.28
+Smaxcut=0.95
+Smeancut=0.5
+Cscales=1,1,1,1,1

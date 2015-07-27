@@ -1,0 +1,259 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Anders Krogh">
+   <title>TMHMM2.0</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+&nbsp;
+<h1>
+<font color="#000099"><font size=+4>TMHMM2.0 User's guide</font></font></h1>
+This program 
+is for prediction of transmembrane helices in proteins.
+<p>
+
+July 2001:
+TMHMM has been rated best in an independent comparison of programs
+for prediction of TM helices:
+<UL>
+<LI>S.&nbsp;Moller, M.D.R.&nbsp;Croning, R.&nbsp;Apweiler.<BR>
+Evaluation of methods for the prediction of membrane spanning regions.<BR>
+<CITE>Bioinformatics</CITE>, 17(7):646-653, July 2001.
+(<A HREF="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=11448883&dopt=Abstract">medline</A>)
+</UL>
+Quote from the abstract:<br>
+<font color="#CC0000">
+`Our results show that TMHMM is currently the best performing transmembrane
+prediction program.'
+</font>
+
+
+
+
+
+
+<p>
+TMHMM is described in
+
+<UL>
+
+<LI><A NAME="KroghEtal01"></A>A.&nbsp;Krogh,
+  B.&nbsp;Larsson, G.&nbsp;von Heijne, and E.&nbsp;L.&nbsp;L. Sonnhammer.<BR>
+Predicting transmembrane protein topology with a hidden
+  Markov model: Application to complete genomes.<BR>
+<CITE>Journal of Molecular Biology</CITE>, 305(3):567-580, January 2001.<BR>
+(<A HREF="http://www.cbs.dtu.dk/krogh/publications/pdf/KroghEtal01.pdf">PDF</A>, 959503 bytes)<P>
+
+<LI><A NAME="SonnhammerEtal98">E</A>.&nbsp;L.L.
+  Sonnhammer, G.&nbsp;von Heijne, and A.&nbsp;Krogh.<BR>
+A hidden Markov model for predicting transmembrane
+  helices in protein sequences.<BR>
+In J.&nbsp;Glasgow, T.&nbsp;Littlejohn, F.&nbsp;Major, R.&nbsp;Lathrop, D.&nbsp;Sankoff, and C.&nbsp;Sensen,
+  editors, <CITE>Proceedings of the Sixth International Conference on
+  Intelligent Systems for Molecular Biology</CITE>, pages 175-182, Menlo Park,
+  CA, 1998. AAAI Press.<BR>
+(<A HREF="http://www.cbs.dtu.dk/krogh/publications/ps/SonnhammerEtal98.ps.gz">Gzipped PostScript</A>, 8 pages, 42470 bytes)
+(<A HREF="http://www.cbs.dtu.dk/krogh/publications/ps/SonnhammerEtal98.pdf">PDF</A>, 844205 bytes)<P>
+
+</UL>
+
+<p><font color="#CC0000">Please cite.</font>
+<p><a href="http://www.cbs.dtu.dk/krogh/TMHMM/">Press here to see other material (training data, etc).</a>
+
+
+<br>&nbsp;
+
+<br>&nbsp;
+<h4>
+<font color="#000099"><font size=+2>Setup</font></font></h4>
+The <font face="Arial,Helvetica">tmhmm</font> script and the auxiliary
+script <font face="Arial,Helvetica">tmhmmformat.pl </font>are written in
+perl and requires perl 5.0 or higher. The main program is written in C
+and runs on Unix computers. An executable version is needed for your platform.
+See the README file for instructions on how to set up the package. For
+graphics, the package uses: <a href="http://www.cs.dartmouth.edu/gnuplot_info.html">gnuplot</a>,
+<a href="http://www.cs.wisc.edu/~ghost/">ghostscript</a>
+and <a href="http://www.acme.com/software/pbmplus/">ppmtogif</a>.
+
+<br>&nbsp;
+<h4>
+<a NAME="input"></a><b><font color="#000099"><font size=+2>Input</font></font></b></h4>
+The program takes proteins in <b>FASTA format.</b> It&nbsp; recognizes
+the 20 amino acids and B, Z, and X, which are all treated equally as unknown.
+Any other character is changed to X, so please make sure the sequences
+are sensible proteins
+<p>This is an example (one protein):
+<p><tt>>5H2A_CRIGR you can have comments after the ID</tt>
+<br><tt>MEILCEDNTSLSSIPNSLMQVDGDSGLYRNDFNSRDANSSDASNWTIDGENRTNLSFEGYLPPTCLSILHL</tt>
+<br><tt>QEKNWSALLTAVVIILTIAGNILVIMAVSLEKKLQNATNYFLMSLAIADMLLGFLVMPVSMLTILYGYRWP</tt>
+<br><tt>LPSKLCAVWIYLDVLFSTASIMHLCAISLDRYVAIQNPIHHSRFNSRTKAFLKIIAVWTISVGVSMPIPVF</tt>
+<br><tt>GLQDDSKVFKQGSCLLADDNFVLIGSFVAFFIPLTIMVITYFLTIKSLQKEATLCVSDLSTRAKLASFSFL</tt>
+<br><tt>PQSSLSSEKLFQRSIHREPGSYTGRRTMQSISNEQKACKVLGIVFFLFVVMWCPFFITNIMAVICKESCNE</tt>
+<br><tt>HVIGALLNVFVWIGYLSSAVNPLVYTLFNKTYRSAFSRYIQCQYKENRKPLQLILVNTIPALAYKSSQLQA</tt>
+<br><tt>GQNKDSKEDAEPTDNDCSMVTLGKQQSEETCTDNINTVNEKVSCV</tt>
+<br>&nbsp;
+<br>&nbsp;
+<h4>
+<font color="#000099"><font size=+2>How to run it</font></font></h4>
+
+
+If your proteins are in file 'seq.fasta' you run it like this
+<blockquote><font face="Arial,Helvetica">cat seq.fasta | tmhmm</font></blockquote>
+or
+<blockquote><font face="Arial,Helvetica">&nbsp;tmhmm seq.fasta</font></blockquote>
+Both versions can take several files with several proteins in each. You
+can edit the tmhmm script (perl5) to your liking.
+<p>You can also by-pass the script and run the program directly
+<blockquote>
+<pre><font face="Arial,Helvetica">cat seq.fasta&nbsp; | decodeanhmm -f &lt;path>/TMHMM2.0.options -modelfile &lt;path>/TMHMM2.0.model</font></pre>
+</blockquote>
+where &lt;path> is the directory of the TMHMM files.
+<p><font face="Arial,Helvetica">decodeanhmm</font> takes some options that
+are specified in <font face="Arial,Helvetica">TMHMM2.0.options</font>.
+Take a look at that file if you don't like the output.&nbsp; These options
+can also be given on the command line.
+<br>&nbsp;
+<br>&nbsp;
+<h4>
+<a NAME="output"></a><font color="#000099"><font size=+2>Output</font></font></h4>
+There are two output formats: Long and short.
+<h4>
+<font color="#000099"><font size=+1>Long output format</font></font></h4>
+For the long format (default), tmhmm
+gives some statistics and a list of the location of the predicted transmembrane
+helices and the predicted location of the intervening loop regions.
+<p>Here is an example:
+<p><tt># COX2_BACSU Length: 278</tt>
+<br><tt># COX2_BACSU Number of predicted TMHs:&nbsp; 3</tt>
+<br><tt># COX2_BACSU Exp number of AAs in TMHs: 68.6888999999999</tt>
+<br><tt># COX2_BACSU Exp number, first 60 AAs:&nbsp; 39.8875</tt>
+<br><tt># COX2_BACSU Total prob of N-in:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0.99950</tt>
+<br><tt># COX2_BACSU POSSIBLE N-term signal sequence</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+inside&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 6</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TMhelix&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7&nbsp;&nbsp;&nbsp; 29</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+outside&nbsp;&nbsp;&nbsp;&nbsp; 30&nbsp;&nbsp;&nbsp; 43</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TMhelix&nbsp;&nbsp;&nbsp;&nbsp; 44&nbsp;&nbsp;&nbsp; 66</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+inside&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 67&nbsp;&nbsp;&nbsp; 86</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TMhelix&nbsp;&nbsp;&nbsp;&nbsp; 87&nbsp;&nbsp; 109</tt>
+<br><tt>COX2_BACSU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMHMM2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+outside&nbsp;&nbsp;&nbsp; 110&nbsp;&nbsp; 278</tt>
+<p>If the whole sequence is labeled as inside or outside, the prediction&nbsp;
+is that it contains no membrane
+<br>helices.&nbsp; <i>It is probably not wise to interpret it as a prediction
+of location. </i>The prediction gives the most probable location and orientation
+of transmembrane helices in the sequence. It is found by an algorithm called
+N-best (or 1-best in this case) that sums over all paths through the model
+with the same location and direction of the helices.
+<p>The first few lines gives some statistics:
+<blockquote>
+<li>
+Length: the length of the protein sequence.</li>
+
+<li>
+Number of predicted TMHs: The number of predicted transmembrane helices.</li>
+
+<li>
+Exp number of AAs in TMHs: The expected number of amino acids intransmembrane
+helices. If this number is larger than 18 it is very likely to be a transmembrane
+protein (OR have a signal peptide).</li>
+
+<li>
+Exp number, first 60 AAs: The expected number of amino acids in transmembrane
+helices in the first 60 amino acids of the protein. If this number more
+than a few, you should be warned that a predicted transmembrane helix in
+the N-term could be a signal peptide.</li>
+
+<li>
+Total prob of N-in: The total probability that the N-term is on the cytoplasmic
+side of the membrane.</li>
+
+<li>
+POSSIBLE N-term signal sequence: a warning that is produced when "Exp number,
+first 60 AAs" is larger than 10.</li>
+</blockquote>
+
+<h3>
+<font color="#000099"><font size=+0>Plot of probabilities</font></font></h3>
+A plot is made in postscript.
+The plot shows the posterior probabilities
+of inside/outside/TM helix. Here one can see possible weak TM helices that
+were not predicted,&nbsp; and one can get an idea of the certainty of each
+segment in the prediction.
+<p>At the top of the plot (between 1 and 1.2) the N-best prediction is
+shown.
+<p>The plot is obtained by calculating the total probability that a&nbsp;
+residue sits in helix, inside, or outside summed over all possible&nbsp;
+paths through the model.&nbsp; Sometimes it seems like the plot and the
+prediction are contradictory, but that is because the plot shows probabilities
+for each residue, whereas the prediction is the over-all most probable
+structure.&nbsp; Therefore the plot should be seen as a complementary source
+of information.
+<p>Below the plot there are links to
+<ul>
+<li>
+The plot in encapsulated postscript</li>
+
+<li>
+A script for making the plot in&nbsp; <a href="http://www.cs.dartmouth.edu/gnuplot_info.html">gnuplot</a>.</li>
+
+<li>
+The data for the plot.</li>
+</ul>
+
+<h4>
+<font color="#000099"><font size=+1>Short output format</font></font></h4>
+In the short output format one line is produced for each protein with no
+graphics. Each line starts with the sequence identifier and then these
+fields:
+<blockquote>
+<li>
+"len=": the length of the protein sequence.</li>
+
+<li>
+"ExpAA=": The expected number of amino acids intransmembrane helices (see
+above).</li>
+
+<li>
+<tt>"First60="</tt>: The expected number of amino acids in transmembrane
+helices in the first 60 amino acids of the protein (see above).</li>
+
+<li>
+<tt>"PredHel=": </tt>The number of predicted transmembrane helices by N-best.</li>
+
+<li>
+"Topology=": The topology predicted by N-best.</li>
+</blockquote>
+For the example above the short output would be (except that it would be
+on one line):
+<p><tt>COX2_BACSU</tt>
+<br><tt>len=278</tt>
+<br><tt>ExpAA=68.69</tt>
+<br><tt>First60=39.89</tt>
+<br><tt>PredHel=3</tt>
+<br><tt>Topology=i7-29o44-66i87-109o</tt>
+<p>The topology is given as the position of the transmembrane helices separated
+by 'i' if the loop is on the inside or 'o' if it is on the outside. The
+above example '<tt>i7-29o44-66i87-109o' means that it starts on the inside,
+has a predicted TMH at position 7 to 29, the outside, then a TMH at position
+44-66 etc.</tt>
+<br>&nbsp;
+<h3>
+<font color="#000099"><font size=+2>Final remarks</font></font></h3>
+Predicted TM segments in the n-terminal region sometime turn out to be
+signal peptides.
+<p>One of the most common mistakes by the program is to reverse the direction
+of proteins with one TM segment.
+<p>Do not use the program to predict whether a non-membrane protein is
+cytoplasmic or not.
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

@@ -1,0 +1,5302 @@
+***********************Header***************************
+NAME: S_TMHMM_0.92b
+TIME OF CREATION: Fri Aug  8 11:54:53 2003
+ALPHABET: A;C;D;E;F;G;H;I;K;L;M;N;P;Q;R;S;T;V;W;Y;
+ALPHABET LENGTH: 20
+NR OF MODULES: 93
+NR OF VERTICES: 135
+NR OF TRANSITIONS: 283
+NR OF DISTRIBUTION GROUPS: 7
+NR OF TRANSITION TIE GROUPS: 42
+NR OF EMISSION PRIOR FILES: 1
+EMISSION PRIORFILES: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri 
+NR OF TRANSITION PRIOR FILES: 0
+TRANSITION PRIORFILES: 
+
+
+***********************Modules*************************
+Module: s
+Type: Singlenode
+NrVertices: 1
+Emission prior file: null
+Transition prior file: null
+
+Vertex 0:
+Vertex type: start
+Vertex label: 0
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 2
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 1: 0.781919
+	Vertex 43: 0.218081
+End transition probabilities
+Emission probabilities
+	A: 0.000000
+	C: 0.000000
+	D: 0.000000
+	E: 0.000000
+	F: 0.000000
+	G: 0.000000
+	H: 0.000000
+	I: 0.000000
+	K: 0.000000
+	L: 0.000000
+	M: 0.000000
+	N: 0.000000
+	P: 0.000000
+	Q: 0.000000
+	R: 0.000000
+	S: 0.000000
+	T: 0.000000
+	V: 0.000000
+	W: 0.000000
+	Y: 0.000000
+
+-------------------------------------------------------
+Module: in10
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 1:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 2: 0.965223
+	Vertex 20: 0.026062
+	Vertex 64: 0.008715
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in11
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 2:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 3: 0.993745
+	Vertex 19: 0.006250
+	Vertex 20: 0.000005
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in12
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 3:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 4: 0.961618
+	Vertex 18: 0.000007
+	Vertex 19: 0.038375
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in13
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 4:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 5: 0.892421
+	Vertex 17: 0.107574
+	Vertex 18: 0.000005
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in14
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 5:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 6: 0.955955
+	Vertex 16: 0.000006
+	Vertex 17: 0.044039
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in15
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 6:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 7: 0.841669
+	Vertex 15: 0.158321
+	Vertex 16: 0.000010
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in16
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 7:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 8: 0.999951
+	Vertex 14: 0.000024
+	Vertex 15: 0.000025
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in17
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 8:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 9: 0.930210
+	Vertex 13: 0.069769
+	Vertex 14: 0.000021
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in18
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 9:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 10: 0.997092
+	Vertex 12: 0.002871
+	Vertex 13: 0.000038
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in19
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 10:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 11: 0.349537
+	Vertex 12: 0.000055
+	Vertex 21: 0.650409
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in20
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 11:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 12: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in21
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 12:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 13: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in22
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 13:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 14: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in23
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 14:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 15: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in24
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 15:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 16: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in25
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 16:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 17: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in26
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 17:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 18: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in27
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 18:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 19: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in28
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 19:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 20: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: in29
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 20:
+Vertex type: standard
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 64: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.069390
+	C: 0.007903
+	D: 0.047544
+	E: 0.052274
+	F: 0.037586
+	G: 0.065486
+	H: 0.022430
+	I: 0.039483
+	K: 0.092560
+	L: 0.066896
+	M: 0.034937
+	N: 0.050178
+	P: 0.048946
+	Q: 0.044012
+	R: 0.101012
+	S: 0.076016
+	T: 0.060493
+	V: 0.040052
+	W: 0.012312
+	Y: 0.030490
+
+-------------------------------------------------------
+Module: inglob1
+Type: Singleloop
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 21:
+Vertex type: locked
+Vertex label: i
+Transition prior scaler: 1.000000
+Emission prior scaler: 1000.000000
+Nr transitions = 2
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 11: 0.017054
+	Vertex 21: 0.982946
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.075537
+	C: 0.016977
+	D: 0.053041
+	E: 0.063219
+	F: 0.040771
+	G: 0.068464
+	H: 0.022411
+	I: 0.057297
+	K: 0.059412
+	L: 0.093421
+	M: 0.023574
+	N: 0.045303
+	P: 0.049273
+	Q: 0.040240
+	R: 0.051585
+	S: 0.072231
+	T: 0.057467
+	V: 0.065267
+	W: 0.012516
+	Y: 0.031992
+
+-------------------------------------------------------
+Module: outglob10
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 22:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 23: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob11
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 23:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 24: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob12
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 24:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 25: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob13
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 25:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 26: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob14
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 26:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 27: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob15
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 27:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 28: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob16
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 28:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 29: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob17
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 29:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 30: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob18
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 30:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 31: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob19
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 31:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 42: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob20
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 32:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 33: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob21
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 33:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 34: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob22
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 34:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 35: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob23
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 35:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 36: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob24
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 36:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 37: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob25
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 37:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 38: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob26
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 38:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 39: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob27
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 39:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 40: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob28
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 40:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 41: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglob29
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 41:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 127: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.082651
+	C: 0.020820
+	D: 0.052653
+	E: 0.057102
+	F: 0.040753
+	G: 0.075737
+	H: 0.024694
+	I: 0.061943
+	K: 0.057226
+	L: 0.090484
+	M: 0.025008
+	N: 0.042217
+	P: 0.039571
+	Q: 0.037288
+	R: 0.051098
+	S: 0.065484
+	T: 0.054486
+	V: 0.074410
+	W: 0.012661
+	Y: 0.033715
+
+-------------------------------------------------------
+Module: outglobLong
+Type: Singleloop
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 42:
+Vertex type: locked
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1000.000000
+Nr transitions = 2
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 32: 0.003916
+	Vertex 42: 0.996084
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.075537
+	C: 0.016977
+	D: 0.053041
+	E: 0.063219
+	F: 0.040771
+	G: 0.068464
+	H: 0.022411
+	I: 0.057297
+	K: 0.059412
+	L: 0.093421
+	M: 0.023574
+	N: 0.045303
+	P: 0.049273
+	Q: 0.040240
+	R: 0.051585
+	S: 0.072231
+	T: 0.057467
+	V: 0.065267
+	W: 0.012516
+	Y: 0.031992
+
+-------------------------------------------------------
+Module: out10
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 43:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 2
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 44: 0.929796
+	Vertex 62: 0.070204
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out11
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 44:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 2
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 45: 0.925311
+	Vertex 61: 0.074689
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out12
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 45:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 46: 0.914830
+	Vertex 60: 0.000014
+	Vertex 61: 0.085157
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out13
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 46:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 47: 0.884061
+	Vertex 59: 0.111025
+	Vertex 60: 0.004914
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out14
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 47:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 48: 0.944697
+	Vertex 58: 0.055268
+	Vertex 59: 0.000035
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out15
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 48:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 49: 0.880105
+	Vertex 57: 0.030631
+	Vertex 58: 0.089263
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out16
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 49:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 50: 0.958383
+	Vertex 56: 0.000072
+	Vertex 57: 0.041545
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out17
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 50:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 51: 0.833607
+	Vertex 55: 0.091188
+	Vertex 56: 0.075206
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out18
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 51:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 52: 0.974166
+	Vertex 54: 0.005327
+	Vertex 55: 0.020507
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out19
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 52:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 3
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 53: 0.269463
+	Vertex 54: 0.005300
+	Vertex 63: 0.725237
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out20
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 53:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 54: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out21
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 54:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 55: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out22
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 55:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 56: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out23
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 56:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 57: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out24
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 57:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 58: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out25
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 58:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 59: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out26
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 59:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 60: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out27
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 60:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 61: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out28
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 61:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 62: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: out29
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 62:
+Vertex type: standard
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 127: 1.000000
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.057761
+	C: 0.004663
+	D: 0.048712
+	E: 0.057040
+	F: 0.043338
+	G: 0.086499
+	H: 0.016877
+	I: 0.042887
+	K: 0.056233
+	L: 0.085712
+	M: 0.033220
+	N: 0.054872
+	P: 0.066542
+	Q: 0.046305
+	R: 0.049039
+	S: 0.086458
+	T: 0.056265
+	V: 0.047914
+	W: 0.022758
+	Y: 0.036904
+
+-------------------------------------------------------
+Module: outglobShort
+Type: Singleloop
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 63:
+Vertex type: locked
+Vertex label: o
+Transition prior scaler: 1.000000
+Emission prior scaler: 1000.000000
+Nr transitions = 2
+Nr end transitions = 1
+Nr emissions = 20
+Transition probabilities
+	Vertex 53: 0.022529
+	Vertex 63: 0.977471
+End transition probabilities
+	Vertex 134: 1.000000
+Emission probabilities
+	A: 0.075537
+	C: 0.016977
+	D: 0.053041
+	E: 0.063219
+	F: 0.040771
+	G: 0.068464
+	H: 0.022411
+	I: 0.057297
+	K: 0.059412
+	L: 0.093421
+	M: 0.023574
+	N: 0.045303
+	P: 0.049273
+	Q: 0.040240
+	R: 0.051585
+	S: 0.072231
+	T: 0.057467
+	V: 0.065267
+	W: 0.012516
+	Y: 0.031992
+
+-------------------------------------------------------
+Module: ohelixi1
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 64:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 65: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi2
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 65:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 66: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi3
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 66:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 67: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi4
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 67:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 68: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi5
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 68:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 69: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi6
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 69:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 70: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelixi7
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 70:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 71: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ohelix
+Type: Forward_std
+NrVertices: 22
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 71:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 12
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 72: 0.000933
+	Vertex 75: 0.001029
+	Vertex 77: 0.001025
+	Vertex 78: 0.007157
+	Vertex 79: 0.032759
+	Vertex 83: 0.040968
+	Vertex 84: 0.027291
+	Vertex 85: 0.171163
+	Vertex 86: 0.528832
+	Vertex 87: 0.166244
+	Vertex 88: 0.021776
+	Vertex 89: 0.000823
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 72:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 73: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 73:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 74: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 74:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 75: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 75:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 76: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 76:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 77: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 77:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 78: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 78:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 79: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 79:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 80: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 80:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 81: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 81:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 82: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 82:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 83: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 83:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 84: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 84:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 85: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 85:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 86: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 86:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 87: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 87:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 88: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 88:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 89: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 89:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 90: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 90:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 91: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 91:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 92: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 92:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 93: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+-------------------------------------------------------
+Module: ohelixo2
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 93:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 94: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ohelixo3
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 94:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 95: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ohelixo4
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 95:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 96: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ohelixo5
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 96:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 97: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ohelixo6
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 97:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 98: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ohelixo7
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 98:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 43: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixi2
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 99:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 100: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelixi3
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 100:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 101: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelixi4
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 101:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 102: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelixi5
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 102:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 103: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelixi6
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 103:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 104: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelixi7
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 104:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 1: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.105746
+	C: 0.022494
+	D: 0.008265
+	E: 0.007008
+	F: 0.092820
+	G: 0.073536
+	H: 0.010610
+	I: 0.106844
+	K: 0.009742
+	L: 0.210711
+	M: 0.036193
+	N: 0.018617
+	P: 0.019901
+	Q: 0.008069
+	R: 0.012467
+	S: 0.049968
+	T: 0.038092
+	V: 0.107484
+	W: 0.027967
+	Y: 0.033467
+
+-------------------------------------------------------
+Module: ihelix
+Type: Forward_std
+NrVertices: 22
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 105:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 12
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 106: 0.000933
+	Vertex 109: 0.001029
+	Vertex 111: 0.001025
+	Vertex 112: 0.007157
+	Vertex 113: 0.032759
+	Vertex 117: 0.040968
+	Vertex 118: 0.027291
+	Vertex 119: 0.171163
+	Vertex 120: 0.528832
+	Vertex 121: 0.166244
+	Vertex 122: 0.021776
+	Vertex 123: 0.000823
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 106:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 107: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 107:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 108: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 108:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 109: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 109:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 110: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 110:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 111: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 111:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 112: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 112:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 113: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 113:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 114: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 114:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 115: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 115:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 116: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 116:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 117: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 117:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 118: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 118:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 119: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 119:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 120: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 120:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 121: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 121:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 122: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 122:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 123: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 123:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 124: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 124:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 125: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 125:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 126: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+Vertex 126:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 99: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.118653
+	C: 0.024305
+	D: 0.003853
+	E: 0.007248
+	F: 0.087248
+	G: 0.074602
+	H: 0.003319
+	I: 0.129851
+	K: 0.002790
+	L: 0.180549
+	M: 0.042282
+	N: 0.010866
+	P: 0.013441
+	Q: 0.007652
+	R: 0.006377
+	S: 0.056850
+	T: 0.054679
+	V: 0.140969
+	W: 0.014069
+	Y: 0.020395
+
+-------------------------------------------------------
+Module: ihelixo1
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 127:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 128: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo2
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 128:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 129: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo3
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 129:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 130: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo4
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 130:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 131: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo5
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 131:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 132: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo6
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 132:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 133: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: ihelixo7
+Type: Singlenode
+NrVertices: 1
+Emission prior file: /home/pmaietta/Trabajo/Programitas/pro//util/amino_multi.pri
+Transition prior file: null
+
+Vertex 133:
+Vertex type: standard
+Vertex label: M
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 1
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+	Vertex 105: 1.000000
+End transition probabilities
+Emission probabilities
+	A: 0.097438
+	C: 0.009764
+	D: 0.008160
+	E: 0.005759
+	F: 0.106252
+	G: 0.084864
+	H: 0.009210
+	I: 0.092235
+	K: 0.005069
+	L: 0.177328
+	M: 0.049764
+	N: 0.014162
+	P: 0.022575
+	Q: 0.011890
+	R: 0.009235
+	S: 0.064109
+	T: 0.053285
+	V: 0.101072
+	W: 0.028187
+	Y: 0.049642
+
+-------------------------------------------------------
+Module: e
+Type: Singlenode
+NrVertices: 1
+Emission prior file: null
+Transition prior file: null
+
+Vertex 134:
+Vertex type: end
+Vertex label: 0
+Transition prior scaler: 1.000000
+Emission prior scaler: 1.000000
+Nr transitions = 0
+Nr end transitions = 0
+Nr emissions = 20
+Transition probabilities
+End transition probabilities
+Emission probabilities
+	A: 0.000000
+	C: 0.000000
+	D: 0.000000
+	E: 0.000000
+	F: 0.000000
+	G: 0.000000
+	H: 0.000000
+	I: 0.000000
+	K: 0.000000
+	L: 0.000000
+	M: 0.000000
+	N: 0.000000
+	P: 0.000000
+	Q: 0.000000
+	R: 0.000000
+	S: 0.000000
+	T: 0.000000
+	V: 0.000000
+	W: 0.000000
+	Y: 0.000000
+
+-------------------------------------------------------
+
+**********************Emission distribution groups*******************
+Group 1: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
+Group 2: 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 
+Group 3: 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 
+Group 4: 93 94 95 96 97 98 127 128 129 130 131 132 133 
+Group 5: 99 100 101 102 103 104 64 65 66 67 68 69 70 
+Group 6: 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 
+Group 7: 21 42 63 
+
+**********************Transition tie groups*******************
+Tie 1: 105->106 71->72 
+Tie 2: 105->107 71->73 
+Tie 3: 105->108 71->74 
+Tie 4: 105->109 71->75 
+Tie 5: 105->110 71->76 
+Tie 6: 105->111 71->77 
+Tie 7: 105->112 71->78 
+Tie 8: 105->113 71->79 
+Tie 9: 105->114 71->80 
+Tie 10: 105->115 71->81 
+Tie 11: 105->116 71->82 
+Tie 12: 105->117 71->83 
+Tie 13: 105->118 71->84 
+Tie 14: 105->119 71->85 
+Tie 15: 105->120 71->86 
+Tie 16: 105->121 71->87 
+Tie 17: 105->122 71->88 
+Tie 18: 105->123 71->89 
+Tie 19: 105->124 71->90 
+Tie 20: 105->125 71->91 
+Tie 21: 105->126 71->92 
+Tie 22: 106->107 72->73 
+Tie 23: 107->108 73->74 
+Tie 24: 108->109 74->75 
+Tie 25: 109->110 75->76 
+Tie 26: 110->111 76->77 
+Tie 27: 111->112 77->78 
+Tie 28: 112->113 78->79 
+Tie 29: 113->114 79->80 
+Tie 30: 114->115 80->81 
+Tie 31: 115->116 81->82 
+Tie 32: 116->117 82->83 
+Tie 33: 117->118 83->84 
+Tie 34: 118->119 84->85 
+Tie 35: 119->120 85->86 
+Tie 36: 120->121 86->87 
+Tie 37: 121->122 87->88 
+Tie 38: 122->123 88->89 
+Tie 39: 123->124 89->90 
+Tie 40: 124->125 90->91 
+Tie 41: 125->126 91->92 
+Tie 42: 126->99 92->93 

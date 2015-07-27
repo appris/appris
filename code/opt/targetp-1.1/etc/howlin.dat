@@ -1,0 +1,92 @@
+********************************************************************************
+                   HOW INPUT PARAMETERS (C) COPYRIGHT 1989
+********************************************************************************
+********************************************************************************
+ RUN IDENTIFICATION ************************************************************
+********************************************************************************
+TESTRUNID
+(RUNID   ** RUN IDENTIFIER)
+********************************************************************************
+ MODE SELECTION ****************************************************************
+********************************************************************************
+-1
+(IVIRGN  ** OLD WEIGHTS READ FROM FILE (-1) OR GENERATED RANDOMLY DE NOVO (1))
+********************************************************************************
+ CODING ************************************************************************
+********************************************************************************
+0.1
+(OFFNUM  ** `ZERO' INPUT VALUE)
+0.5
+(ONNUM   ** `ONE' INPUT VALUE)          
+********************************************************************************
+ NETWORK INITIATION ************************************************************
+********************************************************************************
+0.1
+(SYNFAC  ** ABSOLUTE VALUE FOR RANDOM WEIGHTS)
+30
+(CUTOFF  ** ABSOLUTE VALUE OF LIMIT FOR TRANSFER FUNCTION TABLE)
+********************************************************************************
+ LEARNING AND TEST PARAMETERS **************************************************
+********************************************************************************
+1
+(LOGERR  ** STANDARD ERROR FUNCTION, OR LOGARITHMIC)
+0.001
+(ETA     ** LEARNING RATE)
+-1
+(ICETA   ** ENABLE BALACED TRAINING)
+2
+(IBIN    ** NUMBER OF BINS FOR BALANCING OF REAL VALUED OUTPUT, NOUT = 1 ONLY)
+0
+(LSTOP   ** MAXIMAL NUMBER OF TRAINING SWEEPS)
+1
+(IRPEAT  ** NUMBER OF BACKPROPAGATION REPEATS WITH SAME INPUT)
+1
+(ITEST   ** TEST FREQUENCY)
+0.0001
+(BPLIM   ** ABSOLUTE VALUE FOR BACKPROPAGATION TO TAKE PLACE)
+1
+(IRAN    ** LEARNING SAMPLE SHUFFLE)
+-1
+(IEUP    ** SYNAPS UPDATE: FULL SAMPLE OR FOR EACH WINDOW CONFIGURATION)
+********************************************************************************
+ LEARNING AND TEST SAMPLES *****************************************************
+********************************************************************************
+l1no
+(NINPUT  ** NUMBER OF INPUT PARAMETERS)
+l2no
+(N2HID   ** NUMBER OF UNITS IN FIRST HIDDEN LAYER)
+0
+(N3HID   ** NUMBER OF UNITS IN SECOND HIDDEN LAYER)
+l3no
+(NOUT    ** NUMBER OF OUTPUT PARAMETERS)
+0
+(LEARNC  ** NUMBER OF SEQUENCES IN TRAINING FILE)
+0
+(LSKIP   ** NUMBER OF SEQUENCES TO SKIP IN TRAINING FILE)
+noofseq
+(TESTC   ** NUMBER OF SEQUENCES IN TEST FILE)
+0
+(ITSKIP  ** NUMBER OF SEQUENCES TO SKIP IN TEST FILE)
+-1
+(ISEQL   ** SEQUENCE INPUT > 0 VS. REAL VALUES < 0; INDICATES SEQUENCE LENGTH)
+********************************************************************************
+ OUTPUT LEVELS AND FREQUENCIES *************************************************
+********************************************************************************
+-1
+(IWIN    ** COMPUTE CC'S AND DUMP WHEN BEST)
+200
+(ISYN    ** SYNAPS DUMP FREQUENCY WHEN IWIN NEGATIVE)
+1
+(ICPER   ** ERROR OUTPUT FOR EVERY EXAMPLE)
+********************************************************************************
+ INPUT/OUTPUT FILE NAMES *******************************************************
+********************************************************************************
+synfile
+(SYNFIL  ** SYNAPS FILENAME)
+sequencefile
+(TESFIL  ** TEST SEQUENCE CODE FILENAME)
+none
+(LEAFIL  ** LEARN SEQUENCE CODE FILENAME)
+activity_levels
+(LEVFIL  ** ACTIVITY LEVELS FILENAME)
+********************************************************************************

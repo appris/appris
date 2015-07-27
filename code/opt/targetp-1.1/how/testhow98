@@ -1,0 +1,412 @@
+#!/bin/sh
+##NAME
+##	testhow - run how in test-only mode using an existing synapse file
+##
+##SYNOPSIS
+##	testhow [-swh] [-n n] [-t n] [-p m:k] synaps-file data-file
+##
+##DESCRIPTION
+##	The script testhow runs the neural network simulator how, using
+##	an existing synapse file to test the sequences given in
+##	data-file.  Testhow reads the architecture parameters of a how
+##	network (LETIN LETOUT NIALPH NOALPH NLAYER NWSIZE ICOVER N2HID
+##	N3HID N4HID) directly from the synaps-file and inserts them
+##	into the parameter file which is given to the how program.
+##	Testhow will also set TESTC by counting the number of sequences
+##	in the data-file (unless the number of sequences to be tested
+##	is given with the -n option).
+##
+##	The data-file must be in how format.  To read from standard
+##	input, use '-' as data-file name.
+##	
+##	The default output is to show statistics for the whole test set
+##	only, including DISTRIBUTION and CORRELATION, but excluding the
+##	whole header.
+##
+##OPTIONS
+##	-H how  Give the name (full pathname or relative name) of the
+##		how program you want to use, if "how" is not in your
+##		path.  The name may also be specified in the environment
+##		variable HOW.  Note: it must be the new version (1994).
+##
+##	-s	Show statistics and sequence output for every sequence 
+##		(set ICPER, ICANSW, and ICSEQ on)
+##
+##	-w      Show score for every window in every sequence (set
+##		ICPER, ICANSW, and IACTIV on)
+##
+##	-n n    Use only n sequences of data-file (set TESTC; data-file
+##		must contain at least n sequences)
+##
+##	-t n	Skip the first n sequences of data-file (set ITSKIP)
+##
+##	-p m:k	Divide data-file into k parts and use only part m 
+##		(set TESTC and ITSKIP; overrides -n and -t options)
+##
+##	-f	Reduce the sequences to full window configurations (set
+##		IFULL on)
+##
+##	-h	Do not remove HOW output header
+##
+##BUGS AND CAVEATS
+##	testhow has not been tested on networks using more than two
+##	categories.  Please report problems, failure, or success!
+##
+##	If your network has been trained using holes (IHOLEL and
+##	IHOLER), you must set the unused synapse values in the synapse
+##	file to 0.0.  Currently, how will leave them as initial values,
+##	and testhow has no way of recognising them as holes.  You may
+##	use the undocumented hack /home/rna/hnielsen/bin/cleansyn to
+##	change the synapse values.
+##
+##AUTHOR
+##	Henrik Nielsen, hnielsen@cbs.dtu.dk
+##
+##MODIFICATION FOR HOW98
+##	Olof Emanuelsson, olof@cbs.dtu.dk
+
+USAGE='Usage: testhow [-H how] [-swh] [-n n] [-t n] [-p m:k] synaps-file data
+	-H how	Name of how program to use	
+	-s	Show output for every sequence 
+	-w	Show output for every window 
+	-n n	Use only n sequences of data-file
+	-t n	Skip the first n sequences of data-file 
+	-p m:k	Use only part m of k of data-file
+		(overrides -n and -t options)
+	-f	Reduce the sequences to full window configurations
+	-h	Do not remove HOW output header'
+
+# Default values:
+ICPER=-1 ICANSW=-1 IACTIV=-1 ICSEQ=-1 ITSKIP=0 IFULL=-1
+
+if [ ! "$AWK" ]
+then
+	AWK=`which nawk`
+fi
+
+# Parse options:
+while getopts H:swn:t:p:fh c
+do
+	case $c in
+	H)	HOW=$OPTARG;;
+	s)	ICPER=1 ICANSW=1 
+		ICSEQ=1;;
+	w)	ICPER=1 ICANSW=1 
+		IACTIV=1;;
+	n)	TESTC=$OPTARG;;
+	t)	ITSKIP=$OPTARG;;
+	p)	part=`expr $OPTARG : '\(.*\):'`
+		parts=`expr $OPTARG : '.*:\(.*\)'`
+		;;
+	f)	IFULL=1;;
+	h)	HEAD=1;;
+	\?)	echo "$USAGE"; exit 2;;
+	esac
+done
+shift `expr $OPTIND - 1`
+if [ $# != 2 ]
+then 
+	echo "$USAGE"; exit 2
+fi
+
+if [ -z "$HOW" ]
+then
+	HOW=how
+fi
+if [ ! -x "$HOW" ]
+then
+	echo how program $HOW not found or permission denied
+	exit 2
+fi
+
+SYNFIL=$1
+if [ ! -r $SYNFIL ] 
+then echo "Cannot read $SYNFIL" >&2 ; exit 2
+fi
+DATA=$2
+if [ $DATA = - ]
+then DATA=testhow.$$.data 
+	RMDATA=1
+	cat - > $DATA || exit 2
+else
+	if [ ! -r $DATA ] 
+	then echo "Cannot read $DATA" >&2 ; exit 2
+	fi
+fi
+
+# Count number of sequence entries in data-file:
+ALLC=`grep -c '^[ 0-9]' $DATA `
+if [ $parts ]		# -p option used
+then
+	TESTC=`expr $ALLC / $parts`
+	if [ $part = 0 ] 	# part 0 means last
+	then ITSKIP=`expr $ALLC - $TESTC`
+	else ITSKIP=`expr \( $part - 1 \) \* $TESTC`
+	fi
+elif [ -z "$TESTC" ] 	# -n option not used
+then
+	if [ $ITSKIP -gt 0 ]
+	then TESTC=`expr $ALLC - $ITSKIP`
+	else TESTC=$ALLC
+	fi
+fi
+
+# Read variables from synaps-file:
+set `$AWK '
+	NR==1 {	
+		runid=substr($0,1,19)
+		split(substr($0,20),rest)
+		letin=rest[2]
+		letout=rest[4]
+		nialph=length(letin)
+		noalph=length(letout)
+	}
+	/LAYER:/ {
+		nlayer=$3
+		n[nlayer]=$1
+	}
+	/:ILEARN/ {
+		nwsize=$3; icover=$5
+		exit
+	}
+	END { 
+		if (nlayer>2) n2hid=n[2]; else n2hid=0
+		if (nlayer>3) n3hid=n[3]; else n3hid=0
+		if (nlayer>4) n4hid=n[4]; else n4hid=0
+		if (n[nlayer] != noalph)
+			problem="last layer size"
+		if (n[1] != nwsize*nialph)
+			problem="first layer size"
+		print runid, letin, letout, nialph, noalph, \
+			nlayer, nwsize, icover, \
+			n2hid, n3hid, n4hid, \
+			problem
+	}' $SYNFIL `
+for HOWVAR in RUNID LETIN LETOUT NIALPH NOALPH \
+	NLAYER NWSIZE ICOVER  \
+	N2HID N3HID N4HID 
+do 
+	if [ ! $1 ]
+	then echo "***Error in $SYNFIL concerning $HOWVAR" >&2; exit 2
+	fi
+	eval $HOWVAR=$1
+	shift 
+done
+if [ $1 ]
+then echo "***Error in $SYNFIL concerning $*" >&2; exit 2
+fi
+
+$HOW <<END_OF_HOW | $AWK -v head=$HEAD '
+	BEGIN {if (head) out=1}		# Get everything
+	/^ T\*SAMPLE\*/ {out=1}		# Get default output
+	/^ #/ {out=1}			# Get -w or -s output
+	/^ *\*\**[^*]/ {out=1;error=1} 	# Get error messages always!
+	out==1
+	END { if (!out) error=1 	# No output = error
+		exit(error)
+	}
+' || exit 1
+**************************************************************************
+	    HOW INPUT PARAMETERS (C) COPYRIGHT 1989, 1992, 1994
+**************************************************************************
+**************************************************************************
+ RUN IDENTIFICATION ******************************************************
+**************************************************************************
+$RUNID     
+(RUNID   ** RUN IDENTIFIER)
+**************************************************************************
+ NETWORK ARCHITECTURE ****************************************************
+**************************************************************************
+$NIALPH
+(NIALPH  ** NUMBER OF LETTERS IN THE INPUT ALPHABET)
+$NOALPH  
+(NOALPH  ** NUMBER OF LETTERS IN THE OUTPUT ALPHABET)
+$NWSIZE
+(NWSIZE  ** WINDOW SIZE IN LETTERS)
+$N2HID   
+(N2HID   ** NUMBER OF UNITS IN THE SECOND LAYER)
+$N3HID   
+(N3HID   ** NUMBER OF UNITS IN THE THIRD LAYER)
+$N4HID   
+(N4HID   ** NUMBER OF UNITS IN THE FOURTH LAYER)
+$NLAYER  
+(NLAYER  ** NUMBER OF LAYERS, INCLUDING INPUT AND OUTPUT)  
+$ICOVER  
+(ICOVER  ** SIZE OF RECEPTIVE FIELDS FOR NEURONS IN FIRST HIDDEN LAYER)
+-2
+(IHOLEL  ** LEFT POSITION OF HOLE IN WINDOW)
+-1
+(IHOLER  ** RIGHT POSITION OF HOLE IN WINDOW)
+-1 
+(LENPOS  ** ADD SEQUENCE POSITION UNITS TO INPUT LAYER)
+-1 
+(LSIZE   ** ADD SEQUENCE SIZE UNITS TO INPUT LAYER)
+6671
+(MAXLEN  ** MAXIMAL SEQUENCE LENGTH FOR NORMALIZATION IN LSIZE MODE)
+-1       
+(LCOMPO  ** ADD COMPOSITION UNITS TO INPUT LAYER)
+**************************************************************************
+ MODE SELECTION **********************************************************
+**************************************************************************
+1     
+(MODE    ** SAMPLE OR HOMOLOGY (ONE-SEQUENCE-AT-TIME))       
+1
+(INORM   ** IN SAMPLE MODE: FULL OR INCREMENTAL TRAINING)
+-1                                                             
+(IPRIM   ** SAMPLE/HOMOLOGY MODES: PRIMARY OR SECONDARY OUTPUT CATAGORIES)
+-1
+(IDIST   ** SAMPLE AND SECONDARY MODE: DISTANCE MATRIX OUTPUT OR NOT)
+-1
+(IVIRGN  ** SYNAPSES READ FROM FILE OR RANDOM) 
+**************************************************************************
+ CODING ******************************************************************
+**************************************************************************
+$LETIN 
+(LETIN   ** INPUT ALPHABET - INPUT CATEGORIES)  
+$LETALT  
+(LETALT  ** ALTERNATIVE INPUT ALPHABET) FIVWMLCHYAGNRTPDEQSK  
+$LETOUT  
+(LETOUT  ** OUTPUT ALPHABET - OUTPUT CATEGORIES)
+0
+(NRULES  ** NUMBER OF CONVERSION RULES FOR OUTPUT CATAGORIES) 
+(RULES   ** CONVERSION RULES FOR OUTPUT CATAGORIES) 
+0.0    
+(SATMIN  ** 'ZERO' TRAINING TARGET VALUE)             
+1.0
+(SATMAX  ** 'ONE' TRAINING TARGET VALUE)
+0.0
+(OFFNUM  ** 'ZERO' INPUT VALUE)
+1.0
+(ONNUM   ** 'ONE' INPUT VALUE)
+-32
+(LENPAT  ** LENGTH OF INPUT CATEGORY PATTERNS)
+**************************************************************************
+ NETWORK INITIATION ******************************************************
+**************************************************************************
+0.1
+(SYNFAC  ** ABSOLUTE VALUE FOR RANDOM SYNAPSES)  
+30
+(CUTOFF  ** ABSOLUTE VALUE OF LIMIT FOR TRANSFER FUNCTION TABLE)
+**************************************************************************
+ INPUT FORMATS ***********************************************************
+**************************************************************************
+-1
+(IDNA    ** USE DNA SEQUENCE (AND AMINO ACID SEQUENCE) AS NETWORK INPUT)
+1
+(ITMODE  ** READ SECONDARY- AND/OR DM INPUT FROM TEST FILE - 0,1,2)  
+**************************************************************************
+ LEARNING AND TEST PARAMETERS ********************************************
+**************************************************************************
+0.1
+(ETA     ** LEARNING RATE)                            
+-1
+(ICETA   ** SEPARATE LEARNING RATE FOR EACH CATEGORY)
+0.0
+(ALPHA   ** MOMENTUM STRENGTH)
+0
+(LSTOP   ** MAXIMAL NUMBER OF TRAINING SWEEPS)
+1 1 
+(IRPEAT  ** NUMBER OF BACKPROPAGATION REPEATS WITH SAME INPUT (NOALPH VALUES))  
+1
+(ITEST   ** TEST FREQUENCY)    
+0.01 
+(BPLIM   ** ABSOLUTE VALUE FOR BACKPROPAGATION TO TAKE PLACE)
+99.999
+(CLIMIT  ** WHEN LEARNING SAMPLE IS INCREMENTED (NORMAL OUTPUT SUCCESS)
+99.0
+(DLIMIT  ** WHEN LEARNING SAMPLE IS INCREMENTED (DISTANCE OUTPUT SUCCESS)
+1
+(IRAN    ** LEARNING SAMPLE SHUFFLE)
+4
+(IPIECE  ** INCREMENTAL LEARNING MODE: NUMBER OF PARTS IN LEARNING SAMPLE)
+-1                             
+(IEUP    ** SYNAPS UPDATE: SAMPLE OR SINGLE WINDOW CONFIGURATION)
+5432199 
+(ISSEED  ** SYNAPS INITIALISATION SEED)
+**************************************************************************
+ LEARNING AND TEST SAMPLES ***********************************************
+**************************************************************************
+0  
+(LEARNC  ** NUMBER OF SEQUENCES IN TRAINING FILE)  
+0
+(LSKIP   ** NUMBER OF SEQUENCES TO SKIP IN TRAINING FILE)
+$IFULL
+(IFULL   ** REDUCE THE SEQUENCES TO FULL WINDOW CONFIGURATIONS)
+-5
+(IREDUC  ** REDUCE THE TRAINING SET TO SUBSEQUENCES OF SPECIFIC SITES)
+30
+(ILEFT   ** THE NUMBER OF LETTERS TO THE LEFT OF EACH SPECIFIC SITE)
+30
+(IRIGHT  ** THE NUMBER OF LETTERS TO THE RIGHT OF EACH SPECIFIC SITE)
+E
+(LREDUC  ** THE OUTPUT LETTER CENTRAL IN SPECIFIC SITE REDUCTION)
+$TESTC
+(TESTC   ** NUMBER OF SEQUENCES IN TEST FILE) 
+$ITSKIP
+(ITSKIP  ** NUMBER OF SEQUENCES TO SKIP IN TEST FILE)
+**************************************************************************
+ EVALUATION OF NETWORK OUTPUT ********************************************
+**************************************************************************
+1
+(MEVAL   ** EVAL MODE, 1:WINNER-TAKE-ALL, 2:VARIABLE FIRST LETTER CUTOFF)
+0.5
+(EVAL    ** ASSIGNMENT CUTOFF FOR THE FIRST LETTER /0.0 - 1.0/  
+1
+(IWIN    ** FOR NETS = 2, 1:HIGHEST ACTIVITY OUTPUT, 2:LETOUT(1) OR OUTPUT
+**************************************************************************
+ OUTPUT LEVELS AND FREQUENCIES *******************************************
+**************************************************************************
+500
+(ISYN    ** SYNAPS DUMP FREQUENCY) 
+1000
+(IHIST   ** SYNAPS HISTOGRAM GENERATION FREQUENCY) 
+$ICPER   
+(ICPER   ** PERCENTAGE OUTPUT FOR EVERY EXAMPLE)
+$ICSEQ  
+(ICSEQ   ** SEQUENCE OUTPUT FOR EVERY EXAMPLE)
+$ICANSW  
+(ICANSW  ** CATEGORY STATISTICS FOR EVERY EXAMPLE)
+1
+(IANSW   ** CATEGORY STATISTICS FOR SAMPLES)
+-1
+(I1LET   ** FIRST LETTER DEVIATION - SAMPLES AND/OR EXAMPLES)
+1
+(ICOR    ** COMPUTATION OF CORRELATION COEFFICIENTS (NIALPH = 2))  
+$IACTIV  
+(IACTIV  ** SINGLE WINDOW OUTPUT ACTIVITIES, TEST ONLY)
+-1
+(IWHERE  ** TEST: LOCALIZATION OF MATCH)
+-1
+(IQUAL   ** TEST: CONFIDENCE LEVELS)
+-1
+(ILEVEL  ** WRITE OUTPUT NEURON ACTIVITIES ON FILE)
+-1
+(IAFILE  ** WRITE OUTPUT CATEGORY ASSIGNMENTS ON FILE)
+-1
+(ILIST   ** WRITE LEARNT SUBSEQUENCES OF SPECIFIC SITES ON FILE)
+-1
+(IDMOUT  ** TEST: FULL DISTANCE MATRIX OUTPUT) 
+**************************************************************************
+ INPUT/OUTPUT FILE NAMES *************************************************
+**************************************************************************
+$SYNFIL
+(SYNFIL  ** SYNAPS FILE NAME)                
+$DATA
+(TESFIL  ** TEST SEQUENCE CODE FILE NAME)
+none
+(LEAFIL  ** LEARN SEQUENCE CODE FILE NAME)
+none
+(LEVFIL  ** ACTIVITY LEVELS FILE NAME)
+none
+(RECFIL  ** CATEGORY ASSIGNMENT FILE NAME)
+none
+(DNFIL   ** LEARNT SUBSEQUENCE FILE NAME) 
+none
+(PATFIL  ** INPUT CATEGORY PATTERN FILE NAME) 
+**************************************************************************
+**************************************************************************
+END_OF_HOW
+
+if [ $RMDATA ]
+then rm $DATA
+fi

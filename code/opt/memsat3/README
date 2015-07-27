@@ -1,0 +1,405 @@
+MEMSAT3 Usage Notes
+===================
+
+Program  and documentation  is  Copyright  (C)  2006  David T. Jones, all
+rights reserved.
+
+All Trademarks and Registered Names are acknowledged in this document.
+
+THIS SOFTWARE MAY ONLY BE USED FOR NON-COMMERCIAL PURPOSES. PLEASE CONTACT
+THE AUTHOR IF YOU REQUIRE A LICENSE FOR COMMERCIAL USE.
+
+
+Introduction
+============
+
+The enclosed program  implements a new method  for the prediction of  the
+secondary structure and topology of all-helix  integral membrane proteins
+based  on the recognition of topological models. The method employs a set
+of statistical tables (log likelihoods) compiled from  well-characterized
+membrane  protein  data, and  a  novel dynamic  programming algorithm  to
+recognize  membrane  topology  models  by expectation  maximization.  The
+statistical  tables  show  definite biases  towards  certain  amino  acid
+species on the inside, middle and outside of a cellular membrane.
+
+The method is described in the following references:
+
+Jones, D.T., Taylor, W.R. and Thornton, J. M. (1994) Biochemistry.
+33:3038-3049.
+
+Jones, D. T. (1998) Do transmembrane protein superfolds exist? FEBS letters.
+423: 281-285.
+
+Jones, D. T. (2006) Accurate prediction of transmembrane protein topology using
+evolutionary information. Bioinformatics. Submitted.
+
+
+Compiling MEMSAT3
+=================
+
+C compilers differ from system to system. However on a standard Unix or Linux
+system, MEMSAT2 can be compiled as follows:
+
+cd src
+make
+make install
+
+
+Running MEMSAT3
+===============
+
+After compilation, MEMSAT3 may  be run using the runmemsat script.
+
+runmemsat sequence.fasta
+
+
+In the first case the script will automatically run PSIBLAST and use the resulting
+profile to generate a more accurate prediction.
+
+In the second case the prediction will be based solely on the target sequence itself and
+PSIBLAST will not be run. Prediction accuracy will be lower when only a single sequence is
+used.
+
+
+Example Results
+===============
+
+In this  example MEMSAT2  is used to  predict the secondary  structure and
+topology of  bacterial archaerhodopsin.  The input file  (in FASTA
+format) is as follows:
+
+>BAC1_HALS1 ARCHAERHODOPSIN 1 PRECURSOR (AR 1).
+MDPIALTAAVGADLLGDGRPETLWLGIGTLLMLIGTFYFIVKGWGVTDKEAREYYSITILVPGIASAAYLSM
+FFGIGLTEVQVGSEMLDIYYARYADWLFTTPLLLLDLALLAKVDRVSIGTLVGVDALMIVTGLVGALSHTPL
+ARYTWWLFSTICMIVVLYFLATSLRAAAKERGPEVASTFNTLTALVLVLWTAYPILWIIGTEGAGVVGLGIE
+TLLFMVLDVTAKVGFGFILLRSRAILGDTEAPEPSAGAEASAAD
+
+runmemsat baca.fasta
+
+The  following output is produced in baca.memsat (the  comments in  square brackets are
+not part of the actual program output):
+
+
+MEMSAT Version 3.4 (ACADEMIC VERSION) - Copyright 1998 D. Jones
+
+
+COMMERCIAL USE OF THIS PROGRAM IS FORBIDDEN
+
+examples/baca.psi
+260 residues read from file.
+
+[Check  the number  of  residues  matches the  number  in  the file  -  a
+discrepancy indicates that MEMSAT2 has not read the sequence correctly
+
+This intermediate information shows the progress of MEMSAT2's analysis  of
+different topologies.  Due to the way  the algorithm  works, it considers
+the single helix topologies first.]
+
+Helix 1 from  22 (in) to  40 (out) : 3176
+[This  summarises one  of the evaluated  topologies. The  final number is
+the helix score - a value > 2000 indicates a strongly
+predicted helix; a value < 500 indicates a weakly predicted helix. These
+values have been scaled up by a factor of 1000 to convert them to
+integers - this is done to speed up the program.]
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO-------------------------------
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+--------------------------------------------
+[This is  a simple string representation  of the  predicted structure and
+topology.  A '-' indicates an outside  loop residue, '+' inside loop, 'O'
+outside helix cap, 'X' helix middle and 'I' inside helix cap]
+Score = -11.2050000
+Helix 1 from 148 (out) to 164 (in) : 3939
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII+++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+Score = -8.0150000
+[The overall score  for the above topology -  a value of -10000 indicates
+that the  topology violates one of  MEMSAT2's constraints  such as minimum
+helix score]
+Helix 1 from   6 (in) to  22 (out) : -3776
+Helix 2 from  29 (out) to  45 (in) : 1175
+Helix 3 from  53 (in) to  77 (out) : 3353
+Helix 4 from  95 (out) to 111 (in) : 882
+Helix 5 from 119 (in) to 138 (out) : 2021
+Helix 6 from 148 (out) to 164 (in) : 3939
+Helix 7 from 178 (in) to 194 (out) : 1568
+Helix 8 from 201 (out) to 221 (in) : 129
+Helix 9 from 228 (in) to 244 (out) : -1554
+++++++IIIIXXXXXXXXXOOOO------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO-----------------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII+++++++++++++IIIIXXXXXXXXXOOOO------OOOOXXXXXXXXXXX
+XXIIII++++++IIIIXXXXXXXXXOOOO---------------
+Score = -100000.0000000
+Helix 1 from  22 (out) to  40 (in) : 3815
+Helix 2 from  53 (in) to  77 (out) : 3353
+Helix 3 from  95 (out) to 111 (in) : 882
+Helix 4 from 119 (in) to 138 (out) : 2021
+Helix 5 from 148 (out) to 164 (in) : 3939
+Helix 6 from 178 (in) to 194 (out) : 1568
+Helix 7 from 201 (out) to 221 (in) : 129
+Helix 8 from 228 (in) to 244 (out) : -1554
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO-----------------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII+++++++++++++IIIIXXXXXXXXXOOOO------OOOOXXXXXXXXXXX
+XXIIII++++++IIIIXXXXXXXXXOOOO---------------
+Score = -100000.0000000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from  56 (out) to  77 (in) : 3202
+Helix 3 from  94 (in) to 112 (out) : 737
+Helix 4 from 119 (out) to 138 (in) : 2158
+Helix 5 from 146 (in) to 167 (out) : 3309
+Helix 6 from 178 (out) to 202 (in) : 2665
+Helix 7 from 209 (in) to 233 (out) : 835
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO---------------OOOOXXXXXXXXXXXX
+XXIIII++++++++++++++++IIIIXXXXXXXXXXXOOOO------OOOOXXXXXXXXXXXXIIII+++++
+++IIIIXXXXXXXXXXXXXXOOOO----------OOOOXXXXXXXXXXXXXXXXXIIII++++++IIIIXXX
+XXXXXXXXXXXXXXOOOO--------------------------
+Score = 18.5380000
+Helix 1 from  22 (out) to  40 (in) : 3815
+Helix 2 from  53 (in) to  77 (out) : 3353
+Helix 3 from  95 (out) to 111 (in) : 882
+Helix 4 from 119 (in) to 138 (out) : 2021
+Helix 5 from 148 (out) to 164 (in) : 3939
+Helix 6 from 185 (in) to 204 (out) : 3106
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO-----------------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+--------------------------------------------
+Score = 25.2460000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from  56 (out) to  77 (in) : 3202
+Helix 3 from 117 (in) to 138 (out) : 2172
+Helix 4 from 148 (out) to 164 (in) : 3939
+Helix 5 from 185 (in) to 204 (out) : 3106
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO---------------OOOOXXXXXXXXXXXX
+XXIIII+++++++++++++++++++++++++++++++++++++++IIIIXXXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+--------------------------------------------
+Score = 15.7350000
+Helix 1 from  22 (out) to  40 (in) : 3815
+Helix 2 from  53 (in) to  77 (out) : 3353
+Helix 3 from 148 (out) to 164 (in) : 3939
+Helix 4 from 185 (in) to 204 (out) : 3106
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+--------------------------------------------
+Score = 16.5840000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from 148 (out) to 164 (in) : 3939
+Helix 3 from 185 (in) to 204 (out) : 3106
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO-------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+--------------------------------------------
+Score = 5.9440000
+Helix 1 from 148 (out) to 164 (in) : 3939
+Helix 2 from 185 (in) to 204 (out) : 3106
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+--------------------------------------------
+Score = 1.4670000
+Helix 1 from   6 (out) to  22 (in) : -4082
+Helix 2 from  29 (in) to  45 (out) : 1608
+Helix 3 from  53 (out) to  69 (in) : 2478
+Helix 4 from  76 (in) to  92 (out) : -3470
+Helix 5 from  99 (out) to 115 (in) : 347
+Helix 6 from 122 (in) to 138 (out) : 2058
+Helix 7 from 148 (out) to 164 (in) : 3939
+Helix 8 from 185 (in) to 204 (out) : 3106
+Helix 9 from 216 (out) to 235 (in) : 1402
+------OOOOXXXXXXXXXIIII++++++IIIIXXXXXXXXXOOOO-------OOOOXXXXXXXXXIIII++
+++++IIIIXXXXXXXXXOOOO------OOOOXXXXXXXXXIIII++++++IIIIXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = -100000.0000000
+Helix 1 from   6 (in) to  22 (out) : -3776
+Helix 2 from  29 (out) to  45 (in) : 1175
+Helix 3 from  53 (in) to  77 (out) : 3353
+Helix 4 from  95 (out) to 111 (in) : 882
+Helix 5 from 119 (in) to 138 (out) : 2021
+Helix 6 from 148 (out) to 164 (in) : 3939
+Helix 7 from 185 (in) to 204 (out) : 3106
+Helix 8 from 216 (out) to 235 (in) : 1402
+++++++IIIIXXXXXXXXXOOOO------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO-----------------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = -100000.0000000
+Helix 1 from  22 (out) to  40 (in) : 3815
+Helix 2 from  53 (in) to  77 (out) : 3353
+Helix 3 from  95 (out) to 111 (in) : 882
+Helix 4 from 119 (in) to 138 (out) : 2021
+Helix 5 from 148 (out) to 164 (in) : 3939
+Helix 6 from 185 (in) to 204 (out) : 3106
+Helix 7 from 216 (out) to 235 (in) : 1402
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO-----------------OOOOXXXXXXXXXIIII+++++++IIIIXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = 31.8460000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from  56 (out) to  77 (in) : 3202
+Helix 3 from 117 (in) to 138 (out) : 2172
+Helix 4 from 148 (out) to 164 (in) : 3939
+Helix 5 from 185 (in) to 204 (out) : 3106
+Helix 6 from 216 (out) to 235 (in) : 1402
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO---------------OOOOXXXXXXXXXXXX
+XXIIII+++++++++++++++++++++++++++++++++++++++IIIIXXXXXXXXXXXXXXOOOO-----
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = 22.3350000
+Helix 1 from  22 (out) to  40 (in) : 3815
+Helix 2 from  53 (in) to  77 (out) : 3353
+Helix 3 from 148 (out) to 164 (in) : 3939
+Helix 4 from 185 (in) to 204 (out) : 3106
+Helix 5 from 216 (out) to 235 (in) : 1402
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXXXXXXXXXXXXXX
+XXOOOO------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = 23.1840000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from 148 (out) to 164 (in) : 3939
+Helix 3 from 185 (in) to 204 (out) : 3106
+Helix 4 from 216 (out) to 235 (in) : 1402
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO-------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = 12.5440000
+Helix 1 from 148 (out) to 164 (in) : 3939
+Helix 2 from 185 (in) to 204 (out) : 3106
+Helix 3 from 216 (out) to 235 (in) : 1402
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII++++++++++++++++++++IIIIXXXXXXXXXXXXOOOO-----------
+OOOOXXXXXXXXXXXXIIII++++++++++++++++++++++++
+Score = 8.0670000
+Helix 1 from  22 (in) to  40 (out) : 3176
+Helix 2 from 148 (out) to 164 (in) : 3939
+++++++++++++++++++++++IIIIXXXXXXXXXXXOOOO-------------------------------
+------------------------------------------------------------------------
+----OOOOXXXXXXXXXIIII+++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+Score = -3.5380000
+
+Summary of topology analysis:
+ 1 helix   (+) : Score = 5.683
+ 1 helix   (-) : Score = 5.629
+ 2 helices (+) : Score = 6.743
+ 2 helices (-) : Score = 10.306
+ 3 helices (+) : Score = 8.365
+ 3 helices (-) : Score = 13.057
+ 4 helices (+) : Score = 11.234
+ 4 helices (-) : Score = 15.851
+ 5 helices (+) : Score = 11.358
+ 5 helices (-) : Score = 16.26
+ 6 helices (+) : Score = 15.487
+ 6 helices (-) : Score = 20.868
+ 7 helices (+) : Score = 18.099
+ 7 helices (-) : Score = 24.47
+ 8 helices (+) : Score = -100000
+ 8 helices (-) : Score = -100000
+ 9 helices (+) : Score = -100000
+ 9 helices (-) : Score = -100000
+
+[The scores  for  all of  the  considered  topologies are  listed  before
+finally outputting the  highest scoring one. A '+'  indicates that the N-
+terminus is inside, a '-' that it is outside.]
+
+
+FINAL PREDICTION
+================
+1: (out) 23-41	(4.34) [These scores are not multiplied by 1000!]
+2: 54-78	(4.28)
+3: 95-113	(2.32)
+4: 120-139	(2.54)
+5: 147-165	(4.84)
+6: 188-204	(2.90)
+7: 218-236	(0.71)
+
+[The last lines output are the ASCII representation of the highest
+scoring topology and the input sequence.]
+
+        10        20        30        40        50        60
+----------------------OOOOXXXXXXXXXXXIIII++++++++++++IIIIXXX
+MDPIALTAAVGADLLGDGRPETLWLGIGTLLMLIGTFYFIVKGWGVTDKEAREYYSITIL
+
+        70        80        90       100       110       120
+XXXXXXXXXXXXXXOOOO----------------OOOOXXXXXXXXXXXIIII++++++I
+VPGIASAAYLSMFFGIGLTEVQVGSEMLDIYYARYADWLFTTPLLLLDLALLAKVDRVSI
+
+       130       140       150       160       170       180
+IIIXXXXXXXXXXXXOOOO-------OOOOXXXXXXXXXXXIIII+++++++++++++++
+GTLVGVDALMIVTGLVGALSHTPLARYTWWLFSTICMIVVLYFLATSLRAAAKERGPEVA
+
+       190       200       210       220       230       240
++++++++IIIIXXXXXXXXXOOOO-------------OOOOXXXXXXXXXXXIIII++++
+STFNTLTALVLVLWTAYPILWIIGTEGAGVVGLGIETLLFMVLDVTAKVGFGFILLRSRA
+
+       250       260
+++++++++++++++++++++
+ILGDTEAPEPSAGAEASAAD
+
+[The precise results you get may differ  from the above depending on  the
+initial sequence alignment, options you set, and updates to the program]
+
+
+DISCRIMINATING TRANSMEMBRANE PROTEINS FROM GLOBULAR
+===================================================
+
+To help decide whether your protein is really a transmembrane protein or
+not, an additional output file is generated with the extension ".globmem".
+This prediction just attempts to recognise transmembrane helical segments
+and nothing else. At the end of the file, a summary is given - for example:
+
+.
+.
+.
+K X 0.616
+V X 0.662
+G X 0.894
+F X 0.864
+G X 0.944
+F X 0.863
+I X 0.919
+L . 0.378
+L . 0.201
+R . 0.015
+S . 0.007
+.
+.
+
+134 residues predicted to be in TM segments. P(non-TM) = 6.83528e-31
+
+
+The summary tells us that 134 of the residues in the protein were predicted to
+be in TM segments and that the probability that a non-transmembrane protein would
+produce similar results is 6.8 x 10^-31 (a very low probability!). Typically it's
+recommended that only proteins with at least 7 residues predicted to be transmembrane
+be considered probable transmembrane proteins. At this threshold only 0.5% of
+non-membrane proteins would be predicted to be transmembrane and 0.5% of transmembrane
+proteins misclassified as being non-membrane proteins.
+
+
+FINALLY
+=======
+
+If you  need  assistance in  getting  MEMSAT3  working, then  contact  the
+author at the following address (E-mail is preferred):
+
+Prof. David T. Jones
+E-mail: dtj@cs.ucl.ac.uk
+
+Bioinformatics Unit
+Dept. of Computer Science
+University College
+Gower Street
+London
+WC1E 6BT
+
+Tel. +44 20 7 679 7982

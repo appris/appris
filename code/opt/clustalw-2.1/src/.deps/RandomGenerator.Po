@@ -1,0 +1,6 @@
+RandomGenerator.o: tree/RandomGenerator.cpp config.h \
+ tree/RandomGenerator.h
+
+config.h:
+
+tree/RandomGenerator.h:

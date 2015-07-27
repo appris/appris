@@ -1,0 +1,151 @@
+BLASTP 2.2.14 [May-07-2006]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+
+Reference for composition-based statistics:
+Schaffer, Alejandro A., L. Aravind, Thomas L. Madden,
+Sergei Shavirin, John L. Spouge, Yuri I. Wolf,  
+Eugene V. Koonin, and Stephen F. Altschul (2001), 
+"Improving the accuracy of PSI-BLAST protein database searches with 
+composition-based statistics and other refinements",  Nucleic Acids Res. 29:2994-3005.
+
+Query= sp|P19585|BAC1_HALS1 ARCHAERHODOPSIN 1 PRECURSOR (AR 1).
+         (260 letters)
+
+Database: swiss 
+           207,132 sequences; 75,438,310 total letters
+
+Searching..................................................done
+
+
+Results from round 1
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+sp|P69051|BACR1_HALS1 Archaerhodopsin-1 precursor (AR 1).             429   e-120
+sp|P69052|BACR1_HALSS Archaerhodopsin-1 precursor (AR 1) (Bacter...   429   e-120
+sp|P96787|BACR3_HALSD Archaerhodopsin-3 precursor (AR 3).             400   e-111
+sp|P29563|BACR2_HALS2 Archaerhodopsin-2 precursor (AR 2).             350   3e-96
+sp|P33969|BACR_HALHM Bacteriorhodopsin (BR) (Fragment).               259   4e-69
+sp|P02945|BACR_HALSA Bacteriorhodopsin precursor (BR).                236   4e-62
+sp|O93740|BACR_HALS4 Bacteriorhodopsin (BR).                          184   2e-46
+sp|Q57101|BACR_HALAR Cruxrhodopsin-1 (COP-1) (CR-1).                  173   6e-43
+sp|P94854|BACR_HALVA Cruxrhodopsin-3 (COP-3) (CR-3).                  172   1e-42
+sp|Q53496|BACR_HALSR Cruxrhodopsin-2 (COP-2) (CR-2).                  164   2e-40
+sp|P33971|BACR_HALHP Bacteriorhodopsin (BR) (Fragment).               149   7e-36
+sp|P33972|BACR_HALHS Bacteriorhodopsin (BR) (Fragment).               142   8e-34
+sp|P42197|BACS2_HALVA Sensory rhodopsin II (SR-II).                   101   2e-21
+sp|P42196|BACS2_NATPH Sensory rhodopsin II (SR-II).                   100   6e-21
+sp|P16102|BACH_HALSA Halorhodopsin precursor (HR).                     97   7e-20
+sp|P94853|BACH_HALVA Cruxhalorhodopsin-3 precursor (CHR-3).            95   2e-19
+sp|Q48315|BACH_HALHP Halorhodopsin precursor (HR).                     94   3e-19
+sp|O93742|BACH_HALSD Halorhodopsin (HR).                               94   3e-19
+sp|P33742|BACH_HALSS Halorhodopsin (HR).                               94   3e-19
+sp|Q48314|BACH_HALHS Halorhodopsin precursor (HR).                     94   4e-19
+sp|P15647|BACH_NATPH Halorhodopsin (HR).                               92   2e-18
+sp|O93741|BACH_HALS4 Halorhodopsin (HR).                               91   5e-18
+sp|P71411|BACS2_HALSA Sensory rhodopsin II (SR-II).                    87   7e-17
+sp|P33970|BACH_HALHM Halorhodopsin (HR) (Fragment).                    79   2e-14
+sp|Q9UW81|NOP1_NEUCR Opsin-1 (NR).                                     79   2e-14
+sp|Q48334|BAC3_HALVA Bacterial rhodopsin CSR3.                         72   1e-12
+sp|O93743|BACS_HALSD Sensory rhodopsin (SR).                           71   3e-12
+sp|P25964|BACS1_HALSA Sensory rhodopsin I (SR-I).                      71   3e-12
+sp|Q53461|BACH_HALAR Cruxhalorhodopsin-1 (CHR-1) (Fragment).           69   2e-11
+sp|P33743|BACS1_HALSS Sensory rhodopsin I (SR-I).                      68   2e-11
+sp|P38079|YRO2_YEAST Protein YRO2.                                     51   3e-06
+sp|O74631|FD123_TRAVE Protein FDD123 (CvHSP30/1).                      49   1e-05
+
+Searching..................................................done
+
+
+Results from round 2
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+Sequences used in model and found again:
+
+sp|P69051|BACR1_HALS1 Archaerhodopsin-1 precursor (AR 1).             310   2e-84
+sp|P69052|BACR1_HALSS Archaerhodopsin-1 precursor (AR 1) (Bacter...   310   2e-84
+sp|P96787|BACR3_HALSD Archaerhodopsin-3 precursor (AR 3).             303   3e-82
+sp|P29563|BACR2_HALS2 Archaerhodopsin-2 precursor (AR 2).             281   9e-76
+sp|P02945|BACR_HALSA Bacteriorhodopsin precursor (BR).                263   3e-70
+sp|Q57101|BACR_HALAR Cruxrhodopsin-1 (COP-1) (CR-1).                  253   6e-67
+sp|P94854|BACR_HALVA Cruxrhodopsin-3 (COP-3) (CR-3).                  243   5e-64
+sp|O93740|BACR_HALS4 Bacteriorhodopsin (BR).                          236   6e-62
+sp|P94853|BACH_HALVA Cruxhalorhodopsin-3 precursor (CHR-3).           229   6e-60
+sp|Q48314|BACH_HALHS Halorhodopsin precursor (HR).                    226   5e-59
+sp|Q48315|BACH_HALHP Halorhodopsin precursor (HR).                    226   7e-59
+sp|Q53496|BACR_HALSR Cruxrhodopsin-2 (COP-2) (CR-2).                  225   1e-58
+sp|O93742|BACH_HALSD Halorhodopsin (HR).                              218   2e-56
+sp|P33742|BACH_HALSS Halorhodopsin (HR).                              218   2e-56
+sp|P33971|BACR_HALHP Bacteriorhodopsin (BR) (Fragment).               217   3e-56
+sp|O93741|BACH_HALS4 Halorhodopsin (HR).                              213   6e-55
+sp|Q9UW81|NOP1_NEUCR Opsin-1 (NR).                                    212   8e-55
+sp|P33972|BACR_HALHS Bacteriorhodopsin (BR) (Fragment).               212   9e-55
+sp|P33969|BACR_HALHM Bacteriorhodopsin (BR) (Fragment).               206   6e-53
+sp|P16102|BACH_HALSA Halorhodopsin precursor (HR).                    204   2e-52
+sp|O93743|BACS_HALSD Sensory rhodopsin (SR).                          202   8e-52
+sp|P15647|BACH_NATPH Halorhodopsin (HR).                              200   4e-51
+sp|P33743|BACS1_HALSS Sensory rhodopsin I (SR-I).                     199   5e-51
+sp|P42196|BACS2_NATPH Sensory rhodopsin II (SR-II).                   197   3e-50
+sp|Q48334|BAC3_HALVA Bacterial rhodopsin CSR3.                        196   6e-50
+sp|P25964|BACS1_HALSA Sensory rhodopsin I (SR-I).                     193   4e-49
+sp|P33970|BACH_HALHM Halorhodopsin (HR) (Fragment).                   181   2e-45
+sp|O74631|FD123_TRAVE Protein FDD123 (CvHSP30/1).                     176   5e-44
+sp|P42197|BACS2_HALVA Sensory rhodopsin II (SR-II).                   176   7e-44
+sp|P71411|BACS2_HALSA Sensory rhodopsin II (SR-II).                   175   1e-43
+sp|P38079|YRO2_YEAST Protein YRO2.                                    158   1e-38
+sp|Q53461|BACH_HALAR Cruxhalorhodopsin-1 (CHR-1) (Fragment).          140   5e-33
+
+Sequences not found previously or not previously below threshold:
+
+sp|Q12117|MRH1_YEAST Protein MRH1 (Membrane protein related to H...   129   7e-30
+sp|P25619|HSP30_YEAST 30 kDa heat shock protein.                       75   2e-13
+sp|Q9AFF7|PRRB_PRB02 Blue-light absorbing proteorhodopsin precur...    58   3e-08
+sp|Q9F7P4|PRRG_PRB01 Green-light absorbing proteorhodopsin precu...    55   2e-07
+
+  Database: swiss
+    Posted date:  Feb 10, 2006  1:21 AM
+  Number of letters in database: 75,438,310
+  Number of sequences in database:  207,132
+  
+Lambda     K      H
+   0.316    0.172    0.505 
+
+Lambda     K      H
+   0.267   0.0526    0.140 
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Hits to DB: 86,776,197
+Number of Sequences: 207132
+Number of extensions: 4338010
+Number of successful extensions: 17368
+Number of sequences better than 1.0e-03: 36
+Number of HSP's better than  0.0 without gapping: 61
+Number of HSP's successfully gapped in prelim test: 9
+Number of HSP's that attempted gapping in prelim test: 17118
+Number of HSP's gapped (non-prelim): 75
+length of query: 260
+length of database: 75,438,310
+effective HSP length: 109
+effective length of query: 151
+effective length of database: 52,860,922
+effective search space: 7981999222
+effective search space used: 7981999222
+T: 11
+A: 40
+X1: 15 ( 6.8 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 40 (20.8 bits)
+S2: 101 (43.2 bits)

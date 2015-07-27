@@ -1,0 +1,37 @@
+
+# You can add/remove options to decodeanhmm.
+# Options also work on the command line with a `-' in front.
+#	Command line options overrule those in this file.
+# To see options, try `decodeanhmm -h'.
+#            - some options might not work (fossils in the code)
+# You can turn a switch by putting `no' in front, e.g. `-noPrintSeq'
+
+modelfile TMHMM2.0.model
+
+# You can try to comment/uncomment these to get more or less
+# of the output lines preceeded by '%'
+
+PrintNumbers
+PrintScore
+PrintStat
+
+# Print sequence
+PrintSeq
+
+# One-best decoding
+N 1
+
+
+
+# Background distribution used for calculation of background score.
+#
+#  Overall background distribution:
+# A:0.081 C:0.015 D:0.054 E:0.061 F:0.040
+# G:0.068 H:0.022 I:0.057 K:0.056 L:0.093
+# M:0.025 N:0.045 P:0.049 Q:0.039 R:0.057
+# S:0.068 T:0.058 V:0.067 W:0.013 Y:0.032
+#
+# Background distribution has to be given in order of the protein
+# alphabet in the model, wich is alphabetical
+#
+background 0.081 0.015 0.054 0.061 0.040 0.068 0.022 0.057 0.056 0.093 0.025 0.045 0.049 0.039 0.057 0.068 0.058 0.067 0.013 0.032

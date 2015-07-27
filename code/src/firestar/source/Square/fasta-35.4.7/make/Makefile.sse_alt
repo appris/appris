@@ -1,0 +1,12 @@
+#
+# $Name:  $ - $ Id: $
+#
+# sets of files for no (DROPGSW_NA_O), SSE2, or Altivec Smith-Waterman acceleration
+#
+DROPGSW_NA_O = dropgsw2.o wm_align.o calcons_sw.o
+DROPGSW_SSE_O = dropgsw2_sse.o smith_waterman_sse2.o wm_align.o calcons_sw.o
+DROPGSW_ALT_O = dropgsw2_alt.o smith_waterman_altivec.o wm_align.o calcons_sw.o
+
+DROPLAL_NA_O = droplal2.o lsim4.o calcons_la.o
+DROPLAL_SSE_O = droplal2_sse.o smith_waterman_sse2.o lsim4.o calcons_la.o
+DROPLAL_ALT_O = droplal2_alt.o smith_waterman_altivec.o lsim4.o calcons_la.o

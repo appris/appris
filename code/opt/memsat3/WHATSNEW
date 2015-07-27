@@ -1,0 +1,7 @@
+October 2006
+============
+
+This is a completely new version of MEMSAT (MEMSAT3) which employs a neural network scoring
+system in place of the original single-residue scoring table.
+
+This should be considered a pre-release - there are almost certainly a lot of bugs.

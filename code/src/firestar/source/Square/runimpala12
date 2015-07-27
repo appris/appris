@@ -1,0 +1,25 @@
+#! /usr/bin/perl
+
+use strict;
+
+my %ALLTEMP=();
+open(ALLTEMP,"/usr/people/glopez/FIREDB/newRelease/allTempChads");
+my @ALLTEMP=<ALLTEMP>;	close ALLTEMP;
+for(my$i=0;$i<$#ALLTEMP+1;$i=$i+2){
+	my $key=$ALLTEMP[$i];	chomp $key;	$key=~s/>//;
+	my $seq=$ALLTEMP[$i+1];	chomp $seq;	$seq=lc$seq;
+	$ALLTEMP{$key}=$seq;
+	}
+
+foreach my$key(keys%ALLTEMP){
+	if(open(TMP,"chads/$key")){close TMP;}
+	else{
+		open(TMP,">chads/$key");
+		print TMP ">$key\n$ALLTEMP{$key}";	close TMP;
+		}
+	if(open(CHK,"chads/$key.psi")){
+		close CHK;
+		}
+	else{	system "/usr/people/glopez/utiles/blast_exec/blast-2.2.12/bin/blastpgp -C /usr/people/glopez/FIREDB/Square/chads/$key.chk -d /usr/people/glopez/FIREDB/Square/databases/nrdb90ebi -e0.01 -h0.01 -j4 -b0 -v50 -i /usr/people/glopez/FIREDB/Square/chads/$key -o  /usr/people/glopez/FIREDB/Square/chads/$key.psi";
+        	}
+	}

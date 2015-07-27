@@ -1,0 +1,214 @@
+#!/usr/local/bin/perl
+
+# This is version 2.0c of tmhmm
+
+
+# Give ONE fasta file on cmdline OR use stdin
+# A single sequence can be given WITHOUT the ID line (">ID")
+# Such a sequence will be called "WEBSEQUENCE"
+
+# OPTION PARSING ##########################################
+use Getopt::Long;
+
+# $opt_basedir: basis directory for TMHMM package
+# $opt_scrdir: Script directory (defaults basedir/bin)
+# $opt_bindir: Bin directory (defaults basedir/bin)
+# $opt_libdir: Library directory (defaults basedir/lib)
+
+$opt_d = 0;          # DEBUGGING
+$opt_workdir = ".";  # Working dir.
+$opt_wwwdir = ".";   # The place where the www server looks for files
+                     # (The www name for the working dir)
+$opt_serverhome = ".";
+$opt_html = 0;       # Produce HTML output
+$opt_short = 0;      # Short output format
+$opt_plot = 1;       # Produce graphics
+$opt_v1 = 0;         # Use old model (version 1)
+
+# Process options
+$result = GetOptions ('workdir=s','wwwdir=s','serverhome=s','html!','short!','plot!','v1!','basedir=s','bindir=s','scrdir=s','libdir=s','d!');
+die ("Error on command line") unless $result;
+
+
+
+if (!defined($opt_basedir)) {
+   # Record the name under which the program was called
+   # and construct reasonable base directory name
+   $opt_basedir = $0;
+   # Remove program name so only the path remains
+   $opt_basedir =~ s/[^\/]*$//;
+   $opt_basedir =~ s/[^\/]*\/$//;
+   $opt_basedir = "." if ($opt_basedir =~ /^\s*$/ );
+}
+$opt_basedir .= "/" if ($opt_basedir !~ /\/$/ );
+
+$opt_scrdir = $opt_basedir."bin" if (!defined($opt_scrdir));
+$opt_bindir = $opt_basedir."bin" if (!defined($opt_bindir));
+$opt_libdir = $opt_basedir."lib" if (!defined($opt_libdir));
+
+###########################################
+
+# Choose old model if requested
+if ( $opt_v1) { $modelfile="$opt_libdir/TMHMM1.0.model"; }
+else {          $modelfile="$opt_libdir/TMHMM2.0.model"; }
+
+$optfile="$opt_libdir/TMHMM2.0.options";
+
+# Debugging?
+if ($opt_d) { $err = ""; }
+else { $err = "2>/dev/null"; }
+
+# Make working dir (initail path MUST exist)
+$wd = "TMHMM_$$";
+mkdir "$opt_workdir/$wd",0777 if ($opt_plot);
+
+# Programs to run
+$tmhmmformat = "$opt_scrdir/tmhmmformat.pl -workdir $opt_workdir/$wd -wwwdir $opt_wwwdir/$wd -serverhome $opt_serverhome";
+$decode = "$opt_bindir/decodeanhmm $modelfile -f $optfile -plp";
+
+# options to $tmhmmformat
+$tmhmmformat .= " -html" if ($opt_html);
+$tmhmmformat .= " -v1" if ($opt_v1);
+if ( $opt_short ) {
+    $tmhmmformat .= " -short -noplot";
+}
+elsif (!$opt_plot) {
+    $tmhmmformat .= " -noplot";
+}
+
+# Set up the proper pipe
+open(DECODE,"| $decode $err | $tmhmmformat $err");
+
+# Read and process sequences
+$lastline = ">WEBSEQUENCE";
+
+
+if ($#ARGV<0) {
+#    print STDERR "Reading from STDIN\n";
+    do_file(\*STDIN,\*DECODE);
+}
+else {
+    # Read all files given on cmdline
+    while ($sfile = shift @ARGV) {
+
+#	print "$sfile<p><pre>\n";
+#	system "echo KURT; cat $sfile; wc $sfile; echo 'KURT</pre>\n'";
+#	print "</pre>\n";
+
+#	$sfile = "$dir/$sfile" if ( $sfile !~ /^\// );
+#	print STDERR "Reading from $sfile\n";
+	next if ( -z $sfile );
+	open(SEQF,"<$sfile");
+	do_file(\*SEQF,\*DECODE);
+	close(SEQF);
+    }
+}
+
+close(DECODE);
+
+
+
+# You MUST give a file handle as argument
+sub do_file {
+    die "do_file: Must give in/out filehandles" if ($#_<1);
+
+    $infile = $_[0];
+    $outfile = $_[1];
+
+    $nodd=0;
+
+    while ( @entry = &read_fasta($infile) ) {
+
+	if (!$entry[1]) { next; }
+	$id = $entry[0];
+	$id =~ s/>//;
+	$id =~ s/\s.*$//;
+
+	# Translate to upper case.
+	$entry[1] =~ tr/a-z/A-Z/;
+	$nodd = ( $entry[1] =~ s/[^ACDEFGHIKLMNPQRSTWVYBZX]/X/g ) ;
+	if ( $opt_d && $nodd >0 ) {
+	    print STDERR "WARNING: $nodd characters different from ACDEFGHIKLMNPQRSTWVYBZX CANGED TO `X' in\n";
+	    print "WARNING: $id\n";
+	}
+
+	print_entry(\@entry,$outfile);
+    }
+}
+
+
+
+
+# print_entry ##########################################
+
+# Print an entry
+# First arg is the entry, second (optional) is the filehandle
+# Eg.
+#         print_entry(\@entry,\*OFILE);
+sub print_entry {
+    if (defined($_[1])) { $fh = $_[1]; }
+    else {$fh = \*STDOUT;}
+
+    $linelen = 70;
+    @entry = @{$_[0]};
+    print $fh "$entry[0]\n";
+    $movein = "";
+    if (defined($entry[2])) {
+	$movein = '  ';
+	$labpref = '# ' 
+    }
+    $l = length($entry[1]);
+    for ($i=0; $i<$l; $i += $linelen) {
+	print $fh $movein . substr($entry[1],$i,$linelen) . "\n";
+	if (defined($entry[2])) {
+	    print $fh $labpref . substr($entry[2],$i,$linelen) . "\n";
+	}
+    }
+}
+
+
+
+# read_fasta ##########################################
+
+# Read a FASTA entry
+sub read_fasta {
+    if (defined($_[0])) { $fh = $_[0]; }
+    else {$fh = \*STDIN;}
+    @entry = ();
+
+    # Individual characters in the sequence fitting this reg. exp.
+    # are deleted
+    $ignore = '[^a-zA-Z]';
+
+    $nr=0;
+    $entry[0] = "";
+    if ($lastline) {
+	$entry[0]=$lastline;
+	$lastline = "";
+	$nid=1;
+    }
+    else {$nid=0;}
+    $entry[1] = "";
+
+    while (<$fh>) {
+	chop $_ if ( $_ =~ /\\n$/ );
+	# Ignore blank lines
+	if ($_ =~ /^\s*$/ ) {next;}
+	if ($_ =~ /^>/) {
+	    if ( $nid>0 && $nr>0 ) {
+		$lastline = $_;
+		return @entry;
+	    }
+	    $entry[0] = $_;
+	    ++$nid;
+	    $nr = 0;
+	}
+	elsif ($nid) {
+	    $_ =~ s/$ignore//g;
+	    $entry[1] .= $_;
+	    ++$nr;
+	}
+    }
+    if (!$nr) { @entry = () ;}
+    return @entry;
+}

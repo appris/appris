@@ -1,0 +1,31 @@
+
+ $Id: README.versions 5 2008-04-28 13:12:42Z pearson $
+
+April, 2008
+
+The latest versions of the FASTA search programs are in fasta3.tar.gz.
+This file contains the fasta35 series of programs.  fasta35 also runs
+the exact same functions threaded (fasta35, fasta35_t) and in parallel
+using PVM and MPI.
+
+As of late 2007, there is almost no reason to use the fasta2 programs;
+the major programs present in fasta2 that were not present in fasta3
+(version 34) -- align (global alignments) and lalign (non-overlapping
+local alignments) are now available in fasta version 35.
+
+For more information about the programs in the current FASTA v35
+package, see the "changes_v35.html" and "readme.v35" files.
+
+There are still a very few programs in the fasta2 package that are not
+available in the fasta3 package - programs for global alignments
+without end-gap penalties, the "grease" Kyte-Doolittle plot, and
+"garnier" and "chofas" for classic (but inaccurate) secondary
+structure prediction. You should not use the fasta2 programs for
+library searching; the fasta3 programs are more sensitive and have
+better statistics.
+
+Precompiled versions of the programs for Windows are available in the
+win32_fasta directory.  If you are running MacOSX from the command
+line, use the Unix version (fasta3.tar.gz and Makefile.os_x or
+Makefile.os_x86).
+

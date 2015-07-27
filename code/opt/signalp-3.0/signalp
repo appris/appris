@@ -1,0 +1,496 @@
+#!/bin/sh
+
+# SignalP 3.0a, May 2004
+# 
+# VERSIONS	3.0a	18 May 2004	launch
+# 		3.0b	15 Dec 2005	bugfixes, see README
+# 
+
+
+SYSTEM=`uname -s`			# which platform?
+
+###############################################################################
+#       GENERAL SETTINGS, CUSTOMIZE TO YOUR SITE
+###############################################################################
+
+# Full path to the SignalP 3.0 software (MUST BE SET!):
+SIGNALP="${APPRIS_PRG_OPT_SIGNALP_BIN_DIR}"
+
+# Other programs (assumed to be in the path)
+# mandatory
+SH=/bin/sh				# POSIX-compliant shell
+AWK=nawk				# nawk, gawk, or equivalent
+PASTE=paste
+# optional
+PLOTTER=gnuplot				# needed only for graphics
+PPMTOGIF=ppmtogif			# needed only for graphics
+SIGNALPDISP="ghostview -landscape"	# needed only for graphics
+
+# If you do not trust the path, configure below:
+if [ "$SYSTEM" = IRIX64 ]
+then
+	AWK=/usr/freeware/bin/gawk
+	PLOTTER=/usr/freeware/bin/gnuplot
+	PPMTOGIF=/usr/freeware/bin/ppmtogif
+elif [ "$SYSTEM" = IRIX ]
+then
+	AWK=/usr/freeware/bin/gawk
+	PLOTTER=/usr/freeware/bin/gnuplot
+	PPMTOGIF=/usr/freeware/bin/ppmtogif
+elif [ "$SYSTEM" = Linux ]
+then
+	AWK=/usr/bin/gawk
+	PLOTTER=/usr/bin/gnuplot
+	PPMTOGIF=/usr/bin/ppmtogif
+elif [ "$SYSTEM" = HP-UX ]
+then 
+	SH=/bin/posix/sh
+elif [ "$SYSTEM" = OSF1 ]
+then
+	SH=/bin/ksh
+fi
+
+
+###############################################################################
+#       OTHER SETTINGS: NOTHING SHOULD NEED CHANGING BELOW THIS LINE!
+###############################################################################
+
+export AWK
+LANG=C					# otherwise AWK will not work :-(
+LC_NUMERIC=en_US			# 06-03-09, see README
+
+VER=3.0b
+VERDATE="Dec 2005"
+
+#Not necessary if using -destination
+## Only necessary if run as WWW server (option -www): 
+## substitute the location of the server root in your file system:
+WWWROOT=/usr/opt/www/pub/CBS
+
+# Maximal number of sequences (command line and WWW):
+MAXSEQ=4000
+MAXWWWSEQ=4000
+
+# -----------------------------------------------------------------------------
+# Auxiliary programs, scripts, directories, and files:
+
+HOW=$SIGNALP/how/how_$SYSTEM
+export HOW			# passed to TESTHOW as environment variable
+
+TESTHOW="$SH $SIGNALP/bin/testhow"
+
+DECODE="$SIGNALP/hmm/decodeanhmm_$SYSTEM"
+
+BIN=$SIGNALP/bin
+
+#MAILHELP=$SIGNALP/doc/helpsignalp.txt
+#MAILERROR=$SIGNALP/doc/mailerror.txt
+#MAILHEAD=$SIGNALP/doc/mailhead.txt
+#MAILHEAD_SHORT=$SIGNALP/doc/mailheadshort.txt
+#MAILTAIL=$SIGNALP/doc/mailtail.txt
+
+#WWWERROR=$SIGNALP/doc/wwwerror.html
+#WWWHEAD=$SIGNALP/doc/wwwhead.html
+#WWWTAIL=$SIGNALP/doc/wwwtail.html
+
+# -----------------------------------------------------------------------------
+# Check site settings
+if [ ! -x "$SIGNALP" ]
+then
+	echo "signalp: cannot open \"$SIGNALP\""
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Command line
+
+USAGE='Usage: signalp -t euk|gram+|gram- [options] seqfile'
+
+# Defaults: (see also below)
+CURR_HOME=`pwd | sed 's|^/tmp_mnt||'`
+DESTINATION=$CURR_HOME
+INFORMAT=fasta
+METHOD=nn+hmm
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+        -g )				# generate graphics
+		GRAPHICS=ps
+		;;
+        -G )				# generate and display graphics
+		GRAPHICS=ps
+		SHOW_GRAPHICS=1
+		;;
+	-graphics )
+		case "$2" in
+		gif | eps | gif+eps | ps )	
+			GRAPHICS=$2
+			;;
+		* )
+			echo Unknown graphics mode: "$2" 
+			echo $USAGE
+			exit 1
+			;;
+		esac
+		shift
+		;;	
+	-t | -type )
+		case "$2" in 
+		euk | gram+ | gram- ) 
+			TYPE=$2
+			;;
+		* ) 	
+			echo Unknown organism type: "$2" 
+			echo $USAGE
+			exit 1
+			;;
+		esac
+		shift
+		;;
+	-m | -method )
+		case "$2" in 
+		nn | hmm | nn+hmm ) 
+			METHOD=$2
+			;;
+		* ) 	
+			echo Unknown method specification: "$2" 
+			echo $USAGE
+			exit 1
+			;;
+		esac
+		shift
+		;;
+	-d | -destination )
+		if expr "X$2" : X/ >/dev/null
+		then
+			DESTINATION=$2
+		else
+			DESTINATION=$CURR_HOME/$2
+		fi
+		shift
+		;;
+	-q | -quiet )
+		QUIET=1
+		;;
+	-k | -keepall )
+		#GRAPHICS=1	# HN bugfix 05-12-15, cmd not needed
+		KEEPALL=1
+		;;
+	-how )
+		INFORMAT=how
+		;;
+	-short )
+		FORMAT=short
+		;;
+	-trunc )
+		if [ "$2" -gt 0 ]
+		then
+			MAXLEN=$2
+		fi
+		shift
+		;;
+	-f | -format )
+		case "$2" in 
+		summary | full | short ) 
+			FORMAT=$2
+			;;
+		* ) 	
+			echo Unknown output format: "$2" 
+			echo $USAGE
+			exit 1
+			;;
+		esac
+		shift
+		;;
+#	-mail )
+#		MAILSRV=1
+#		;;
+#	-mailhelp )
+#		cat $MAILHELP
+#		exit
+#		;;
+	-www )
+		WWW="$2"
+		shift
+		;;
+	-synver )
+		SYNVER="$2"
+		shift
+		;;
+	-v | -version )
+		echo "$VER", "$VERDATE"
+		exit
+		;;
+	* )
+		echo Unknown option: "$1"
+		echo $USAGE
+		exit 1
+		;;
+	esac
+	shift
+done
+
+# More defaults: (see also above)
+if [ ! "$FORMAT" ]
+then 
+	if [ "$WWW" ]
+	then
+		FORMAT=summary			
+	else
+		FORMAT=full
+	fi
+fi
+
+# Module check
+if [ \( "$METHOD" = hmm -o "$METHOD" = nn+hmm \) -a ! -x "$DECODE" ]
+then
+	echo "HMM module not installed, resetting method to nn"
+	METHOD=nn
+fi
+if [ \( "$METHOD" = nn -o "$METHOD" = nn+hmm \) -a ! -x "$HOW" ]
+then
+	echo "NN module not installed, resetting method to hmm"
+	METHOD=hmm
+fi
+if [ ! -x "$DECODE" -a ! -x "$HOW" ]
+then
+	echo "No modules found for this platform"
+	exit 1
+fi
+
+# Option compatibility:		
+if [ "$FORMAT" = short ]
+then
+	GRAPHICS=""
+#	MAILHEAD=$MAILHEAD_SHORT
+fi
+
+if [ ! "$TYPE" ]
+then
+	echo You must specify an organism type with the -t option!
+	exit 1
+fi
+
+# Arguments:
+SEQFILES=$*
+if [ ! "$SEQFILES" ]
+then
+#	echo $USAGE
+#	exit 1
+	SEQFILES=""	# stdin will be used, KR
+fi
+
+# -----------------------------------------------------------------------------
+# Initialize
+
+TMPDIRNAME=TMP`date '+%y%m%d%H%M%S'`.$$
+if [ $WWW ] 
+then
+	# TMPDIR=$WWWROOT/$WWW/$TMPDIRNAME
+	TMPDIR=$DESTINATION/$TMPDIRNAME
+else	
+	TMPDIR=$SIGNALP/tmp/$TMPDIRNAME
+fi	
+mkdir $TMPDIR || { echo Cannot create temporary directory; exit 1; }
+
+HOWFILE=input.how
+FASTAFILE=input.fa
+OUTFILE=output.txt
+LOG=log.txt
+
+# -----------------------------------------------------------------------------
+# Convert input sequence to both HOW and fasta format
+
+$AWK -f $BIN/in2how+fasta \
+	-v informat=$INFORMAT \
+	-v howout=$TMPDIR/$HOWFILE \
+	-v fastaout=$TMPDIR/$FASTAFILE \
+	-v maxlen=$MAXLEN \
+	$SEQFILES
+	
+cd $TMPDIR
+
+if [ ! -s "$HOWFILE" ] 
+then
+#	if [ $MAILSRV ]
+#	then
+#		cat $MAILERROR
+#		exit
+#	elif [ $WWW ]
+#	then
+#		cat $WWWERROR
+#		exit
+#	else
+		echo 'signalp: ERROR in sequence file(s), check syntax'
+		exit 1
+#	fi
+fi 
+
+NSEQ=`grep -c '^>' $FASTAFILE`
+if [ $NSEQ -gt $MAXSEQ ]
+then
+	echo signalp: too many sequences, the limit is $MAXSEQ
+	exit 1
+#elif [ "$WWW" -a \( "$NSEQ" -gt "$MAXWWWSEQ" \) ]
+#then
+#	cat $SIGNALP/doc/wwwtoomany.html | sed 's/_NUM_/'$MAXWWWSEQ'/'
+#	exit
+fi	
+
+# -----------------------------------------------------------------------------
+# Main
+
+# NN part -------------------------------------------------------
+
+if [ "$METHOD" = nn -o "$METHOD" = nn+hmm ]
+then
+
+NNOUTRAW=nn-raw
+NNOUT=nn-out
+NNSCORE=nn-score
+
+SYN=$SIGNALP/syn
+if [ "$SYNVER" ]; then
+	SYN=$SYN-$SYNVER
+fi	
+
+for p in 1 2 3 4 5
+do
+	$TESTHOW -w $SYN/CS.$TYPE.$p.syn $HOWFILE >$NNOUTRAW.C.$p &&
+	$TESTHOW -w $SYN/SP.$TYPE.$p.syn $HOWFILE >$NNOUTRAW.S.$p ||
+	{ echo error running HOW; exit 1; }
+done
+
+$PASTE $NNOUTRAW.C.? $NNOUTRAW.S.? |
+$AWK -f $BIN/combine-nn.awk \
+	-v type=$TYPE \
+	-v format=$FORMAT \
+	-v datafileprefix=$NNSCORE \
+	`cat $SYN/$TYPE.param` \
+	> $NNOUT ||
+	{ echo error running combine-nn.awk; exit 1; }
+
+fi
+
+# HMM part ------------------------------------------------------
+if [ "$METHOD" = hmm -o "$METHOD" = nn+hmm ]
+then
+
+HMMOUTRAW=hmm-raw
+HMMOUT=hmm-out
+HMMSCORE=hmm-score
+
+MOD=$SIGNALP/mod
+
+for p in 1 2 3 4 5
+do
+	$DECODE -plp -noPrintID \
+		$MOD/V.$TYPE.$p.bsmod $FASTAFILE > $HMMOUTRAW.plp.$p 2>$LOG
+done
+
+$PASTE $HMMOUTRAW.plp.? |
+$AWK -f $BIN/combine-hmm-plp.awk \
+	-v type=$TYPE \
+	-v format=$FORMAT \
+	-v datafileprefix=$HMMSCORE \
+	> $HMMOUT.plp ||
+	{ echo error running combine-hmm-plp.awk; exit 1; }
+
+fi
+# -----------------------------------------------------------------------------
+# Output
+
+GNUFILE=$TMPDIR/plot.gnu
+GRAPH_PREFIX=plot
+
+if [ "$FORMAT" = short ]
+then
+	case "$METHOD" in 
+	nn )		cat $NNOUT ;;
+	hmm )		cat $HMMOUT.plp ;;
+	nn+hmm )	$PASTE $NNOUT $HMMOUT.plp;;
+	esac > $OUTFILE
+else	
+	$AWK -f $BIN/mergeoutput.awk \
+		-v type=$TYPE \
+		-v graphics=$GRAPHICS \
+		-v www=$WWW \
+		-v format=$FORMAT \
+		-v method=$METHOD \
+		-v gf=$GNUFILE \
+		-v output_nn_file=$NNOUT \
+		-v output_hmm_file=$HMMOUT.plp \
+		-v data_nn_prefix=$NNSCORE \
+		-v data_hmm_prefix=$HMMSCORE \
+		-v graph_prefix=$GRAPH_PREFIX \
+		-v ppmtogif=$PPMTOGIF \
+		-v tmpdirname=$TMPDIRNAME \
+		$FASTAFILE > $OUTFILE ||
+		{ echo error running mergeoutput.awk; exit 1; }
+fi
+
+if [ $GRAPHICS ]
+then
+
+#	echo starting gnuplot
+	$PLOTTER $GNUFILE 2>/dev/null ||
+	{ echo error running $PLOTTER on $GNUFILE; exit 1; }
+#	echo gnuplot done
+
+	# In WWW mode, files should not be moved:
+	if [ ! "$WWW" ]
+	then
+		mv $GRAPH_PREFIX.* $DESTINATION ||
+		{ echo error: $DESTINATION not writable; exit 1; }
+	fi
+fi
+
+#if [ $WWW ] 
+#then
+#	cat $WWWHEAD
+#	[ "$FORMAT" = short ] && echo "<PRE>"
+#	cat $OUTFILE
+#	[ "$FORMAT" = short ] && echo "</PRE>"
+#	cat $WWWTAIL
+#elif [ $MAILSRV ]
+#then
+#	cat $MAILHEAD
+#	cat $OUTFILE
+#	cat $MAILTAIL
+#el
+if [ ! "$QUIET" ]
+then
+	cat $OUTFILE
+fi
+
+if [ $SHOW_GRAPHICS ] 
+then
+	$SIGNALPDISP $DESTINATION/$GRAPH_PREFIX.ps &
+fi
+
+# -----------------------------------------------------------------------------
+# Clean up
+
+if [ "$GRAPHICS" -a "$KEEPALL" ]
+then
+	cd $TMPDIR
+	#mv $GNUFILE $NNSCORE.* $HMMSCORE.* $DESTINATION
+	mv $NNSCORE.* $HMMSCORE.* $DESTINATION	# HN bugfix 05-12-15,
+						# gnufile already moved
+fi
+
+if [ "$QUIET" ]
+then
+	mv $OUTFILE $DESTINATION ||
+	{ echo error: $DESTINATION not writable; exit 1; }
+fi
+
+if [ ! "$WWW" ]
+then
+	cd $SIGNALP
+	rm -fr $TMPDIR
+fi	
+
+# End of script
+# -----------------------------------------------------------------------------

@@ -1,0 +1,4 @@
+In this directory you've to copy your chads directory.
+Remember to check CONFIG_fire_var.ini in order to set the right paths and names.
+
+Take in account that FireDB and chads release dates have to correspond.

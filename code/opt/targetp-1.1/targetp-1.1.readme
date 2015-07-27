@@ -1,0 +1,145 @@
+
+
+   TargetP 1.1		INSTALLATION INSTRUCTIONS
+
+
+   DESCRIPTION
+
+   TargetP predicts the subcellular location of eukaryotic protein sequences.
+   The assignment is based on the predicted presence of any of the N-terminal
+   presequences:  chloroplast transit peptide (cTP),  mitochondrial targeting
+   peptide (mTP) or secretory pathway signal peptide (SP).
+   
+   The method is described in detail in the following article:
+
+   Predicting subcellular localization of proteins  based on their N-terminal
+   amino acid sequence.
+   Olof Emanuelsson (1), Henrik Nielsen (2), Soren Brunak (2)  and Gunnar von
+   Heijne (1)
+   J. Mol. Biol. (2000) 300:1005-1016
+
+   (1) Stockholm Bioinformatics Center
+   Stockholm Center for Physics, Astronomy, and Biotechnology
+   Stockholm University
+   S-106 91 Stockholm, Sweden
+
+   (2) Center for Biological Sequence Analysis
+   The Technical University of Denmark
+   DK-2800 Lyngby, Denmark
+
+   DOWNLOAD
+
+   The TargetP 1.1 package  is a  property of  Center for Biological Sequence
+   Analysis.  It may be downloaded  only  by special agreement.  For academic
+   users there is a download site at:
+
+        http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?targetp
+
+   Other users are requested to contact software@cbs.dtu.dk.
+
+
+   PRE-INSTALLATION
+
+   TargetP 1.1 will run on the most common  UNIX platforms e.g.  Linux, SunOS
+   etc. The package consists of two files:
+  
+       targetp-1.1.readme	 this file
+       targetp-1.1.<unix>.tar.Z	 compressed TAR archive
+
+   where 'unix' is the UNIX platform on which you are about to install.  Make
+   sure that the following programs are available on your system:
+
+	uname	(usually /bin/uname)
+	paste	(        /bin/paste)
+	perl	(        /usr/bin/perl)
+	nawk	(or equivalent, e.g. gawk)
+	sh	(usually /bin/sh)
+	echo	(        /bin/echo)
+
+
+   INSTALLATION
+
+   1. Decide where  you wish to keep the software.  Uncompress and  untar the
+      package in that location:
+
+      cat TargetP-1.1.tar.Z | uncompress | tar xvf -
+
+      This will produce a directory 'TargetP-1.1'.  The size of the installed
+      package is at most 7 Mb, depending on which binaries are included.
+
+   2. Edit the paragraph labelled "GENERAL SETTINGS, CUSTOMIZE" at the top of
+      the file "targetp". Configure the following variables:
+
+		Variable	Set to the full path to:
+		-------------------------------------------
+		TARGETP		'targetp-1.1' directory
+		TMP		location for temporary data
+		PASTE		'paste' executable
+		PERL		'perl' executable
+		AWK		'awk' executable
+		SH		POSIX-compliant shell
+		ECHO		'echo' executable
+		-------------------------------------------
+
+      Make sure that the settings you enter point at existing and operational
+      utilities. You might need to modify them after the testing (see below).
+
+   3. Edit the paragraph  labelled  "HELPER APPLICATIONS, CUSTOMIZE"  further
+      down in the same file. Configure the following variables:
+
+		Variable	Set to the full path to:
+		----------------------------------------
+		CHLOROP		'chlorop' executable
+		SIGNALP		'signalp' executable
+
+      TargetP will need those softwares to produce the output as described in
+      the reference quoted above. They will be employed if the '-c' option is
+      used but not otherwise.  The decision whether to install them should be
+      with the future users of TargetP:
+      
+      * if prediction of chloroplast transit peptide cleavage sites is needed
+        you will have to install ChloroP;
+
+      * if prediction of secretory pathway  signal peptide  cleavage sites is
+        needed you will have to install SignalP.
+
+      ChloroP and SignalP can be obtained by mailing software@cbs.dtu.dk.
+
+   4. Make sure that the directory specified  by the variable TMP (see above)
+      has the sticky bit set.  The listing should read  "drwxrwxrwt ...".  If
+      the sticky bit is not set, set it:
+
+      chmod 1777 <dir name>
+
+   5. Test the package:
+   
+      ./targetp -P test/one.fsa			# one sequence
+      ./targetp -P test/twelve.fsa		# many sequences
+
+      If all the output values are equal to 0 (zero)  increase the swap space
+      on the machine.
+
+   6. Copy the 'targetp' script to a directory in the users' path.
+
+   7. Copy the 'targetp.1' file to a appropriate location in your manual
+      system. If you need a compiled version try running:
+
+      man -d targetp.1 | compress >targetp.Z
+
+      or:
+
+      neqn targetp.1 | tbl | nroff -man | col | compress >targetp.Z
+
+   8. Enjoy ...
+
+
+   PROBLEMS
+
+   Contact packages@cbs.dtu.dk in case of problems.
+   
+   Questions on the scientific aspects of the TargetP method should be sent
+   to Olof Emanuelsson, olof@sbc.su.se.
+
+
+   CBS, 6 Feb 2007
+   K. Rapacki

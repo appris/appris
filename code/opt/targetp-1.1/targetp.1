@@ -1,0 +1,174 @@
+.de Id
+.ds Rv \\$3
+.ds Dt \\$4
+..
+.Id $Header: targetp.1,v 1.3 00/10/11 12:00:00 rapacki Exp $
+.TH targetp 1 \" -*- nroff -*-
+.SH NAME
+targetp \- predict subcellular location of proteins
+.SH SYNOPSIS
+\fBtargetp\fP \fB-P\fP|\fB-N\fP [\fB-c\fP] [\fB-h\fP] [\fB-v\fP]
+[\fB-p\fP \fIPcut\fP] [\fB-t\fP \fITcut\fP] [\fB-s\fP \fIScut\fP]
+        [\fB-o\fP \fIOcut\fP] [\fIfile\fP] ...
+.SH DESCRIPTION
+.B targetp
+predicts the subcellular location of eukaryotic protein sequences. The
+assignment is based on the predicted presence of any of the N-terminal
+presequences: chloroplast transit peptide (\fBcTP\fP), mitochondrial
+targeting peptide (\fBmTP\fP) or secretory pathway signal peptide
+(\fBSP\fP). The method is described in detail in the reference quoted
+below.
+
+.B targetp
+comes in two versions, one for plant proteins (\fB\-P\fP) and one for
+non-plant proteins (\fB\-N\fP). In the latter case \fBcTP\fP is a forbidden
+prediction. For the sequences predicted to contain an N-terminal presequence
+a prediction of its length can be provided (\fB\-c\fP).
+
+The input has to be in \fBFASTA\fP format (see below). It is taken
+from \fIfiles\fP or, if no file is specified, from \fIstdin\fP.
+.SH Output
+The output is in plain text; it will go to \fIstdout\fP. For each input
+sequence the following is printed (on one line):
+.TP
+.B Name
+.br
+Sequence name truncated to 20 characters.
+.TP
+.B Len
+.br
+Sequence length.
+.TP
+.B cTP, mTP, SP, other
+Final NN scores on which the final prediction is based
+(\fBLoc\fP, see below). Note that the scores are not really probabilities,
+and they do not necessarily add to one. However, the location with the
+highest score is the most likely according to \fBtargetp\fP, and the
+relationship between the scores (the reliability class, see below) may be
+an indication of how certain the prediction is. 
+.TP
+.B Loc
+.br
+Prediction of localization, based on the scores above; the codes are:
+
+\fIC\fP : Chloroplast, i.e. the sequence contains \fBcTP\fP,
+    a chloroplast transit peptide;
+
+\fIM\fP : Mitochondrion, i.e. the sequence contains \fBmTP\fP,
+    a mitochondrial targeting peptide;
+
+\fIS\fP : Secretory pathway, i.e. the sequence contains \fBSP\fP,
+    a signal peptide;
+
+\fI_\fP : any other location;
+
+\fI*\fP : "don't know". This character appears if cutoff
+    restrictions were demanded (\fB\-p, \-t, \-s, \-o\fP, see
+    below) and the winning network output score was
+    below the requested cutoff for that category.
+.TP
+.B RC
+.br
+Reliability class, from 1 to 5, where 1 indicates the strongest
+prediction. RC is a measure of the size of the difference ('diff') between
+the highest (winning) and the second highest output scores. There are 5
+reliability classes, defined as follows:
+
+\fI1\fP : diff > 0.8
+.br
+\fI2\fP : 0.800 > diff > 0.600
+.br
+\fI3\fP : 0.600 > diff > 0.400
+.br
+\fI4\fP : 0.400 > diff > 0.200
+.br
+\fI5\fP : 0.200 > diff
+
+Thus, the lower the value of \fBRC\fP the safer the prediction.
+.TP
+.B TPlen
+predicted presequence length (only when the \fB-c\fP option is given).
+.SH OPTIONS
+.TP
+.B \-P|\-N
+Use the plant or non-plant version. It is mandatory to give one of the two.
+.TP
+.B \-c
+Include cleavage site prediction.
+.TP
+.B \-h
+Show the allowed command line syntax and exit.
+.TP
+.B \-v
+Show the current version and exit.
+.TP
+.BI \-p " Pcut"
+In order to increase the specificity of \fBcTP\fP prediction, use 
+.I Pcut
+as a cutoff for predicting \fBcTP\fP: if the winning score is the chloroplast
+(\fBcTP\fP) score, specifying \fIPcut\fP means that the score also has to be
+above that value; if not, the sequence will be left unpredicted, and an
+asterisk (*) will be output in the \fBLoc\fP column. The value of \fIPcut\fP
+must be between 0.0 and 1.0.
+.TP
+.BI \-t " Tcut"
+Same as above but for mTP.
+.TP
+.BI \-s " Scut"
+Same as above but for SP.
+.TP
+.BI \-o " Ocut"
+Same as above but for "other".
+.TP
+.I file ...
+The input files to process. If no file is specified, \fIstdin\fP will be
+used instead.
+.SH CAVEATS
+Submit if possible 130 N-terminal residues. The suggested length is due
+to the fact that \fBtargetp\fP was trained taking into account the 130
+N-terminal residues, and the fact that using longer sequences does not
+influence the prediction in any way (apart from making it slower). The
+.B cTP
+and
+.B mTP
+cleavage site predictions are restricted to search for a potential cleavage
+site within the 100 or 120 N-terminal amino acids, respectively. 
+.SH AUTHOR
+Olof Emanuelsson, olof@sbc.su.se, August 2001.
+.SH REFERENCES
+The method is described in detail in the following article:
+
+Predicting subcellular localization of proteins based on their
+N-terminal amino acid sequence.
+.br
+Olof Emanuelsson (1), Henrik Nielsen (2), Soren Brunak (2) and Gunnar 
+von Heijne (1)
+.br
+J. Mol. Biol. (2000) \fB300\fP:1005-1016 
+
+(1) Stockholm Bioinformatics Center
+.br
+Stockholm Center for Physics, Astronomy, and Biotechnology
+.br
+Stockholm University
+.br
+S-106 91 Stockholm, Sweden
+
+(2) Center for Biological Sequence Analysis
+.br
+The Technical University of Denmark
+.br
+DK-2800 Lyngby, Denmark
+
+Information on the method can also be found at:
+
+     http://www.cbs.dtu.dk/services/TargetP/
+     .../targetp-1.1.readme (installation instructions)
+
+.SH FILES
+\fB/usr/opt/bin/targetp\fP                main executable
+.SH SEE ALSO
+fasta(1), how(1), howlin(1)
+
+
+

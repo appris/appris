@@ -1,0 +1,345 @@
+{
+	"REST_OF_SPECIES": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1,
+            "Pan troglodytes":			1,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1.2,
+            "Bos taurus":				1.2,
+            "Canis lupus familiaris":	1.2,
+            "Monodelphis domestica":	1.3,
+            "Gallus gallus":			2,
+            "Taeniopygia guttata":		2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Tetraodon nigroviridis":	2,
+            "Danio rerio":				2.5
+        }
+	},	
+	"Homo sapiens": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				0.5,
+            "Pan troglodytes":			1,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1.2,
+            "Bos taurus":				1.2,
+            "Canis lupus familiaris":	1.2,
+            "Monodelphis domestica":	1.3,
+            "Gallus gallus":			2,
+            "Taeniopygia guttata":		2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Tetraodon nigroviridis":	2,
+            "Danio rerio":				2.5
+        }
+	},
+	"Mus musculus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				0.5,
+            "Rattus norvegicus":		1,
+            "Sus scrofa":				1.2,
+            "Bos taurus":				1.2,
+            "Canis lupus familiaris":	1.2,
+            "Monodelphis domestica":	1.3,
+            "Gallus gallus":			2,
+            "Taeniopygia guttata":		2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Tetraodon nigroviridis":	2,
+            "Danio rerio":	        	2.5
+        }
+	},
+    "Danio rerio": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				2.5,
+            "Pan troglodytes":			2,
+            "Mus musculus":				2.3,
+            "Rattus norvegicus":		2.3,
+            "Sus scrofa":				2.2,
+            "Bos taurus":				2.2,
+            "Canis lupus familiaris":	2.2,
+            "Monodelphis domestica":	2.1,
+            "Gallus gallus":			1,
+            "Taeniopygia guttata":		1,
+            "Anolis carolinensis":		1,
+            "Xenopus tropicalis":		1.1,
+            "Tetraodon nigroviridis":	1,
+            "Danio rerio":				0.5
+        }
+    },
+	"Rattus norvegicus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1,
+            "Rattus norvegicus":		0.5,
+            "Sus scrofa":				1.2,
+            "Bos taurus":				1.2,
+            "Canis lupus familiaris":	1.2,
+            "Monodelphis domestica":	1.3,
+            "Gallus gallus":			2,
+            "Taeniopygia guttata":		2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Tetraodon nigroviridis":	2,
+            "Danio rerio":				2.5
+        }
+	},
+    "Sus scrofa": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":               0.5,
+            "Bos taurus":				1,
+            "Canis lupus familiaris":	1,
+            "Monodelphis domestica":	1,
+            "Gallus gallus":			1.1,
+            "Taeniopygia guttata":		1.1,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.2,
+            "Tetraodon nigroviridis":	1.2,
+            "Danio rerio":				1.3
+        }
+    },
+    "Bos taurus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1,
+            "Bos taurus":				0.5,
+            "Canis lupus familiaris":	1,
+            "Monodelphis domestica":	1,
+            "Gallus gallus":			1.1,
+            "Taeniopygia guttata":		1.1,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.2,
+            "Tetraodon nigroviridis":	1.2,
+            "Danio rerio":				1.3
+        }
+    },
+    "Canis familiaris": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1,
+            "Bos taurus":				1,
+            "Canis lupus familiaris":	0.5,
+            "Monodelphis domestica":	1,
+            "Gallus gallus":			1.1,
+            "Taeniopygia guttata":		1.1,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.2,
+            "Tetraodon nigroviridis":	1.2,
+            "Danio rerio":				1.3
+        }
+    },
+    "Felis catus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1,
+            "Bos taurus":				1,
+            "Canis lupus familiaris":	1,
+            "Felis catus":              0.5,
+            "Monodelphis domestica":	1,
+            "Gallus gallus":			1.1,
+            "Taeniopygia guttata":		1.1,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.2,
+            "Tetraodon nigroviridis":	1.2,
+            "Danio rerio":				1.3
+        }
+    },
+    "Monodelphis domestica": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.2,
+            "Pan troglodytes":			1.2,
+            "Mus musculus":				1.1,
+            "Rattus norvegicus":		1.1,
+            "Sus scrofa":				1,
+            "Bos taurus":				1,
+            "Canis lupus familiaris":	1,
+            "Monodelphis domestica":	0.5,
+            "Gallus gallus":			1.1,
+            "Taeniopygia guttata":		1.1,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.2,
+            "Tetraodon nigroviridis":	1.2,
+            "Danio rerio":				1.3
+        }
+    },
+    "Gallus gallus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.3,
+            "Pan troglodytes":			1.3,
+            "Mus musculus":				1.2,
+            "Rattus norvegicus":		1.2,
+            "Sus scrofa":				1.1,
+            "Bos taurus":				1.1,
+            "Canis lupus familiaris":	1.1,
+            "Monodelphis domestica":	1.1,
+            "Gallus gallus":			0.5,
+            "Taeniopygia guttata":		1.2,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.1,
+            "Tetraodon nigroviridis":	1.1,
+            "Danio rerio":				1.3
+        }
+    },
+    "Taeniopygia guttata": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.3,
+            "Pan troglodytes":			1.3,
+            "Mus musculus":				1.2,
+            "Rattus norvegicus":		1.2,
+            "Sus scrofa":				1.1,
+            "Bos taurus":				1.1,
+            "Canis lupus familiaris":	1.1,
+            "Monodelphis domestica":	1.1,
+            "Gallus gallus":			1,
+            "Taeniopygia guttata":		0.5,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":		1.1,
+            "Tetraodon nigroviridis":	1.1,
+            "Danio rerio":				1.3
+        }
+    },
+    "Anolis carolinensis": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1.3,
+            "Pan troglodytes":			1.3,
+            "Mus musculus":				1.2,
+            "Rattus norvegicus":		1.2,
+            "Sus scrofa":				1.1,
+            "Bos taurus":				1.1,
+            "Canis lupus familiaris":	1.1,
+            "Monodelphis domestica":	1.1,
+            "Gallus gallus":			1,
+            "Taeniopygia guttata":		1,
+            "Anolis carolinensis":		0.5,
+            "Xenopus tropicalis":		1.1,
+            "Tetraodon nigroviridis":	1.1,
+            "Danio rerio":				1.3
+        }
+    },
+    "Xenopus tropicalis": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				2.5,
+            "Pan troglodytes":			2,
+            "Mus musculus":				2.3,
+            "Rattus norvegicus":		2.3,
+            "Sus scrofa":				2.2,
+            "Bos taurus":				2.2,
+            "Canis lupus familiaris":	2.2,
+            "Monodelphis domestica":	2.1,
+            "Gallus gallus":			1,
+            "Taeniopygia guttata":		1,
+            "Anolis carolinensis":		1,
+            "Xenopus tropicalis":       0.5,
+            "Tetraodon nigroviridis":	1,
+            "Danio rerio":				1.1
+        }
+    },
+    "Takifugu rubripes": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				2.5,
+            "Pan troglodytes":			2,
+            "Mus musculus":				2.3,
+            "Rattus norvegicus":		2.3,
+            "Sus scrofa":				2.2,
+            "Bos taurus":				2.2,
+            "Canis lupus familiaris":	2.2,
+            "Monodelphis domestica":	2.1,
+            "Gallus gallus":			1.2,
+            "Taeniopygia guttata":		1.2,
+            "Anolis carolinensis":		1.2,
+            "Xenopus tropicalis":       1.1,
+            "Tetraodon nigroviridis":	1,
+            "Takifugu rubripes":        0.5,
+            "Danio rerio":				1
+        }
+    },
+	"Lynx pardinus": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				1,
+            "Pan troglodytes":			1,
+            "Mus musculus":				1,
+            "Rattus norvegicus":		1,
+            "Sus scrofa":				1,
+            "Bos taurus":				1,
+            "Canis lupus familiaris":	0.8,
+            "Monodelphis domestica":	1,
+            "Gallus gallus":			2,
+            "Taeniopygia guttata":		2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Tetraodon nigroviridis":	2,
+            "Danio rerio":				2.5
+        }
+	},
+	"Drosophila melanogaster": {
+        "animal": "invertebrates",
+        "scores": {
+            "Drosophila melanogaster":	0.5,
+            "Drosophila yakuba":		1,
+            "Drosophila erecta":		1,
+            "Drosophila persimilis":	1,
+            "Drosophila ananassae":		1,
+            "Drosophila virilis":		1,
+            "Drosophila mojavensis":	1,
+            "Drosophila grimshawi":		1,
+            "Drosophila willistoni":	1,
+            "Anopheles gambiae":		1.2,
+            "Culex quinquefasciatus":	1.2,
+            "Aedes aegypti":			1.2,
+            "Tribolium castaneum":		1.3,
+            "Bombyx mori":				1.3,
+            "Pediculus humanus corporis":	1.3,
+            "Acyrthosiphon pisum":		1.3,
+            "Atta cephalotes":			1.3,
+            "Solenopsis invicta":		1.3,
+            "Apis mellifera":			1.3,
+            "Nasonia vitripennis":		1.3,
+            "Ixodes scapularis":		1.5
+        }
+	},
+	"Caenorhabditis elegans": {
+        "animal": "invertebrates",
+		"scores": {		
+            "Caenorhabditis elegans": 	0.5,
+            "Caenorhabditis briggsae":	1,
+            "Caenorhabditis remanei":	1,
+            "Loa loa":					1.2,
+            "Brugia malayi":			1.2,
+            "Trichinella spiralis":		1.4
+        }
+	}	
+}

@@ -1,0 +1,84 @@
+TMHMM2.0c
+
+The TMHMM package is obtained from
+	Anders Krogh, krogh@cbs.dtu.dk
+
+       ******   PLEASE DO NOT REDISTRIBUTE THE PACKAGE   ******
+
+
+This software is provided ``AS IS'' and any express or implied
+warranties, including, but not limited to, the implied warranties of
+merchantability and fitness for a particular purpose, are disclaimed.
+In no event shall the author be liable for any direct, indirect,
+incidental, special, exemplary, or consequential damages (including,
+but not limited to, procurement of substitute goods or services; loss
+of use, data, or profits; or business interruption) however caused and
+on any theory of liability, whether in contract, strict liability, or
+tort (including negligence or otherwise) arising in any way out of the
+use of this software, even if advised of the possibility of such
+damage.
+
+
+TMHMM is described in
+
+Anders Krogh and Bjorn Larsson, Gunnar von Heijne, and Erik L.L. Sonnhammer:
+Predicting Transmembrane Protein Topology with a Hidden Markov
+Model: Application to Complete Genomes.
+J. Mol. Biol. 305:567-580, 2001.
+
+and
+
+Erik L.L. Sonnhammer, Gunnar von Heijne, and Anders Krogh:
+A hidden Markov model for predicting transmembrane helices in protein
+sequences.
+In J. Glasgow et al., eds.: Proc. Sixth Int. Conf. on Intelligent
+Systems for Molecular Biology, pages 175-182. AAAI Press, 1998.
+
+
+
+DEPENDENCIES:
+=============
+
+You need an executable of the program decodeanhmm that runs under
+Unix. The program may already be in bin/decodeanhmm.
+
+The scripts require perl 5.x
+
+For plotting gnuplot is needed (making postscript plots).
+
+When generating html output the postscript plots are converted to
+gif, and for this you need the programs ghostscript (gs) and ppmtogif.
+
+
+INSTALLATION:
+=============
+
+The package is packed with tar and possibly compressed (gzip).
+
+It unpacks in a directory called TMHMM2.0a
+
+The directory contains these files:
+
+        README               This file
+	TMHMM2.0.html        TMHMM user's guide
+	bin/decodeanhmm      Binary executable
+	bin/tmhmm            a perl script to run the program
+	bin/tmhmmformat.pl   a perl script used by tmhmm
+	lib/TMHMM1.0.model   Model used in version one (used with tmhmm -v1)
+	lib/TMHMM2.0.model   Default model
+	lib/TMHMM2.0.options File containing options for TMHMM
+
+
+After unpacking the directory you should
+
+1. Insert the correct path for perl 5.x in the first line of the scripts
+   bin/tmhmm and bin/tmhmmformat.pl (if not /usr/local/bin/perl).
+2. Make sure you have an executable version of decodeanhmm in the bin
+   directory.
+3. Include the directory containing tmhmm in your path.
+4. Read the TMHMM2.0.guide.html.
+5. Run the program.
+
+
+Anders Krogh
+krogh@cbs.dtu.dk

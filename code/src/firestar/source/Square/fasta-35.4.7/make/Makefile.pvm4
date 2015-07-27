@@ -1,0 +1,53 @@
+#
+# $Name:  $ - $Id: Makefile.pvm4,v 1.39 2007/12/13 14:38:19 wrp Exp $
+#
+# generic PVM3 Makefile without altivec or SSE2 acceleration for Smith-Waterman
+#
+
+#CC=/opt/parasoft/bin.linux2/insure -g -DDEBUG
+CC= cc -O -ggdb
+#CC= cc -O -ggdb -DDEBUG
+#CC= cc -ggdb -O3 -falign-loops=32 -mcpu=7450 -DMacOSX -faltivec
+
+NCC= cc -O -ggdb
+#NCC= cc -g -falign-loops=32 -O3 -mcpu=7450 -DMacOSX -faltivec -DSW_ALTIVEC
+#NCC= gcc -g  -O -DSW_SSE2 -msse2 -ffast-math
+#ARCH   =       NETBSDPOWERPC
+
+PLIB    =       ${PVM_ROOT}/lib/$(ARCH)/libpvm3.a
+XDIR    =       /home/slib/pvm3/bin/$(ARCH)
+#XDIR    =       /wrpx00.p0/users/wrp/pvm3/bin/$(ARCH)
+SDIR    =       .
+PVMSRC  =	${PVM_ROOT}/src
+
+CFLAGS= -DPVM_SRC -DUNIX -DPCOMPLIB -DBFR=1200 -I${PVM_ROOT}/include -DSRAND=srandom -DRAND=random -DHAS_INTTYPES  -DSAMP_STATS -DSHOWSIM
+
+HFLAGS= -o
+NFLAGS= -o
+
+#NCBL_LIB=ncbl2_mlib.o mysql_lib.o
+NCBL_LIB=ncbl2_mlib.o
+#LIB_M= -L/usr/lib/mysql -lmysqlclient -lm -lz
+LIB_M=  -lm
+LIB_WM= -lm
+
+# standard nxgetaa, no memory mapping for 0 - 6
+#LGETLIB=lgetlib.o
+#NGETLIB=nmgetlib
+
+# memory mapping for 0FASTA, 5PIRVMS, 6GCGBIN
+LGETLIB=lgetlib.o lgetaa_m.o
+NGETLIB=nmgetlib
+
+NRAND=nrandom
+
+# no acceleration
+#
+DROPGSW_NA_O = dropgsw2.o wm_align.o calcons_sw.o
+DROPGSW_O = $(DROPGSW_NA_O)
+
+# common pv35comp programs
+include ../make/Makefile.pvcom
+
+# common *.o files for all environments
+include ../make/Makefile.fcom

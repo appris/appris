@@ -1,0 +1,160 @@
+### 0046872  metal ion binding
+MG	0046872	0000287	Magnesium binding
+FE2	0046872	0005506	Iron binding
+FE	0046872	0005506	Iron binding
+CU	0046872	0005507	copper binding
+CD	0046872	0046870	cadmium binding
+CA	0046872	0005509	Calcium binding
+MN	0046872	0030145	Manganese binding
+NI	0046872	0016151	Nickel binding
+SE	0046872	0008430	Selenium binding
+MO	0046872	0030151	Molybdenum binding
+K	0046872	0030955	Potasium binding
+NA	0046872	0031402	Sodium binding
+LI	0046872	0031403	Lithium binding
+CO	0046872	0050897	Cobalt binding
+ZN	0046872	0008270	Zinc binding
+# Other inoorganic
+FES	0051536	0051536	iron-sulfur cluster binding
+NO	0070026	0070026	nitric oxide binding
+O2	0019825	0019825	oxygen binding
+O	0019825	0019825	oxygen binding
+SE	0008430	0008430	selenium binding
+CMO	0070025	0070025	carbon monoxide binding
+### Coenzyme A binding
+COA	0005504	0000062	acyl-CoA binding
+# Amide binding
+URE	0033219	0033219	Urea binding
+### aminoacid binding
+ARG	0016597	0034618	arginine binding
+ASP	0016597	0070335	aspartate binding
+FOL	0016597	0005542	folic acid binding
+GLU	0016597	0016595	glutamate binding
+GLN	0016597	0070406	glutamine binding
+GLY	0016597	0016594	glycine binding
+LEU	0016597	0070728	leucine binding
+PNS	0016597	0031177	phosphopantetheine binding
+SEP	0016597	0050815	phosphoserine binding
+SER	0016597	0070905	serine binding
+#other amines
+ACH	0042166	0042166	acetylcholine binding
+CHT	0033265	0033265	choline binding
+LDP	0035240	0035240	dopamine binding
+ALE	0051379	0051379	epinephrine binding
+HSM	0051381	0051381	histamine binding
+LNR	0051380	0051380	norepinephrine binding
+#	0031210	0031210	phosphatidylcholine binding
+SRO	0051378	0051378	serotonin binding
+#	0030977	0030977	taurine binding
+### sugar binding	0005529	
+LAT	0005529	0030395	lactose binding
+LBT	0005529	0030395	lactose binding
+FRU	0005529	0070061	fructose binding
+FCA	0005529	0042806	fucose binding
+FCB	0005529	0042806	fucose binding
+FUC	0005529	0042806	fucose binding
+FUL	0005529	0042806	fucose binding
+GLA	0005529	0005534	galactose binding
+GLB	0005529	0005534	galactose binding
+#	0005529	0016936	galactoside binding
+#	0005529	0048032	galacturonate binding
+GLU	0005529	0005536	glucose binding
+MAN	0005529	0005537	mannose binding
+nag	0005529	0046871	N-acetylgalactosamine binding
+RAA	0005529	0033296	rhamnose binding
+RAM	0005529	0033296	rhamnose binding
+RNS	0005529	0033296	rhamnose binding
+SIA	0005529	0033691	sialic acid binding
+XLS	0005529	0033222	xylose binding
+STE	0005504	0070540	stearic acid binding
+### CARBOXYLIC ACIDS
+GA3	0010331	0010331	gibberellin binding
+GA4	0010331	0010331	gibberellin binding
+ASC	0031418	0031418	L-ascorbic acid binding
+LPA	0031405	0031405	lipoic acid binding
+RED	0031405	0031405	lipoic acid binding
+MTX	0051870	0051870	methotrexate binding
+A8S	0010427	0010427	abscisic acid binding
+#	0032052	0032052	bile acid binding
+BTN	0009374	0009374	biotin binding
+BTQ	0009374	0009374	biotin binding
+4CS	0033294	0033294	ectoine binding
+#	0033295	0033295	hydroxyectoine binding
+REA	0001972	0001972	retinoic acid binding
+PNN	0008658	0008658	penicillin binding
+IP1	0008658	0008658	penicillin binding
+### icosanoid binding	0050542
+#	0050542	0050648	5(S)-hydroxyperoxy-6E,8Z,11Z,14Z-icosatetraenoic acid binding
+#	0050542	0050647	5-hydroxy-6E,8Z,11Z,14Z-icosatetraenoic acid binding
+#	0050542	0050646	5-oxo-6E,8Z,11Z,14Z-icosatetraenoic acid binding
+ACD	0050542	0050544	arachidonic acid binding
+### fatty acid binding 0005504	
+EIC	0005504	0070539	linoleic acid binding
+OLA	0005504	0070538	oleic acid binding
+OLI	0005504	0070538	oleic acid binding
+PAM	0005504	0005504	PALMITOLEIC ACID BINDING
+### several coenzymes
+#	0070967	0070967	coenzyme F420 binding
+FAD	0050660	0050660	FAD binding
+FMN	0010181	0010181	FMN binding
+PCD	0043546	0043546	molybdopterin cofactor binding
+NAD	0051287	0051287	NAD or NADH binding
+NAH	0051287	0051287	NAD or NADH binding
+NAP	0050661	0050661	NADP or NADPH binding
+NDP	0050661	0050661	NADP or NADPH binding
+THB	0034617	0034617	tetrahydrobiopterin binding
+H4B	0034617	0034617	tetrahydrobiopterin binding
+TPP	0030976	0030976	thiamin pyrophosphate binding
+# hormones
+#0010427 : abscisic acid binding [6 gene products]
+#0055100 : adiponectin binding [5 gene products]
+#0004978 : adrenocorticotropin receptor activity [10 gene products]
+#0005497 : androgen binding [11 gene products]
+#0010011 : auxin binding [20 gene products]
+#0042654 : ecdysis-triggering hormone receptor activity [1 gene product]
+#0035100 : ecdysone binding [1 gene product]
+#0048408 : epidermal growth factor binding [8 gene products]
+#0051740 : ethylene binding [5 gene products]
+#0010331 : gibberellin binding [0 gene products]
+#0005500 : juvenile hormone binding [2 gene products]
+#0004980 : melanocyte-stimulating hormone receptor activity [21 gene products]
+#0070324 : thyroid hormone binding [20 gene products]
+#0017046 : peptide hormone binding [133 gene products]
+#0017047 : adrenocorticotropin-releasing hormone binding [7 gene products]
+#0032841 : calcitonin binding [6 gene products]
+#0051424 : corticotropin-releasing hormone binding [4 gene products]
+#0051448 : gonadotropin-releasing hormone binding [0 gene products]
+#0043559 : insulin binding [27 gene products]
+#0051449 : thyrotropin-releasing hormone binding [0 gene products]
+### Nucleic acid
+#	purine binding
+PUR	0002060	0002060	purine binding
+ADE	0002060	0002055	adenine binding
+GUN	0002060	0002057	guanine binding
+#	0002061	pyrimidine binding
+CYT	0002061	0002056	cytosine binding
+TDR	0002061	0002059	thymine binding
+URA	0002061	0002058	uracil binding
+#	nucleotides
+ADP	0032559	0043531	ADP binding
+AMP	0032559	0016208	AMP binding
+ATP	0032559	0005524	ATP binding
+GDP	0032561	0019003	GDP binding
+GMP	0032561	0019002	GMP binding
+GTP	0032561	0005525	GTP binding
+CTP	0032557	0002135	CTP binding
+UTP	0032557	0002134	UTP binding
+###	tetrapyrrole binding
+CLA	0016168	0016168	chlorophyll binding
+CHL	0016168	0016168	chlorophyll binding
+BCL	0042314	0042314	bacteriochlorophyll binding
+BCB	0042314	0042314	bacteriochlorophyll binding
+B12	0031419	0031419	cobalamin binding
+HEM	0020037	0020037	heme binding
+###	Other vitamines
+RET	0016918	0016918	retinal binding
+RTL	0019841	0019841	retinol binding
+PLP	0030170	0030170	pyridoxal phosphate binding
+VD3	0005499	0005499	vitamin D binding
+D2V	0005499	0005499	vitamin D binding
+VIT	0008431	0008431	vitamin E binding

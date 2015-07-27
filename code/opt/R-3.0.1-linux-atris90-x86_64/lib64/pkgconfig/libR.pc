@@ -1,0 +1,10 @@
+rhome=/workspace/jmrodriguez/appris/code/opt/R-3.0.1-linux-atris90-x86_64/lib64/R
+rlibdir=${rhome}/lib
+rincludedir=/workspace/jmrodriguez/appris/code/opt/R-3.0.1-linux-atris90-x86_64/lib64/R/include
+
+Name: libR
+Description: R as a library
+Version: 3.0.1
+Libs: -L${rlibdir} -lR
+Cflags: -I${rincludedir} -I${rincludedir}
+Libs.private:

@@ -1,0 +1,83 @@
+#!/usr/bin/nawk -f
+# Translate sequences from input (fasta format or HOW format)
+# to output (fasta format *and* HOW format)
+# 
+# These variables MUST be set:
+#	informat: 	fasta | how
+#	howout:		<filename>
+#	fastaout:	<filename>
+# These variables MAY be set:
+#	maxlen:		<number>
+#
+# Non-letters are deleted from the sequence(s).
+# Letters not in AA alphabet are converted to "X".
+# Lowercase AA letters are converted to uppercase.
+# Association character will be "." for all positions.
+
+# Sequence header line (fasta format):
+$0~/^>/ && informat=="fasta" {	
+	if (prelseq!="")
+		printseq(name,prelseq);
+
+	header = $0
+	
+	# Use first word after ">" as name 
+	if ($1==">") 
+		name = $2 
+	else         
+		name = substr($1,2)
+	prelseq="";
+	infasta=1;
+	next; 	# Don't include this line in sequence
+}
+# All other lines (fasta format):
+# Add current line to preliminary sequence:
+(infasta) { prelseq = prelseq $0 }
+
+# Sequence entry (how format):
+#       Association lines are lost
+#       stuff (such as position number) after column 80 is lost 
+$0~/^[ 0-9]/ && informat=="how" {
+	name = $2
+	prelseq="";
+	header = ">" $2 " " $1 " " substr($0, 18)
+	for(i=0; i<len; i+=80) {
+                getline
+                prelseq = prelseq substr($0,1,80)
+        }	
+}
+
+END {	
+	if (informat=="fasta" && prelseq!="")
+		printseq(name,prelseq);
+}
+
+function printseq(name,seq) {
+	# Convert to uppercase:
+	seq=toupper(seq);
+	# Delete spaces, numbers, and punctuation:
+	gsub(/[^A-Z]/,"",seq);
+	# Convert non-AA letters to X:
+	gsub(/[^ACDEFGHIKLMNPQRSTVWY]/,"X",seq);
+	# Truncate:
+	if (maxlen) 
+		seq = substr(seq,1,maxlen)
+	# Set association line to dots:
+	ass=seq;
+	gsub(/./,".",ass);
+	len=length(seq);
+	if (len) { # If the sequence is non-empty
+		
+		# Print how output
+		printf("%6d %-11s\n",len,substr(name,1,20)) > howout
+	   	for (i=1; i<=len; i+=80)
+	       		printf("%-80s%7d\n",substr(seq,i,80),i+79) > howout
+	   	for (i=1; i<=len; i+=80)
+	       		printf("%-80s%7d\n",substr(ass,i,80),i+79) > howout
+		
+		# Print fasta output
+		print header > fastaout	
+	   	for (i=1; i<=len; i+=80)
+	       		print substr(seq,i,80) > fastaout
+	}
+}

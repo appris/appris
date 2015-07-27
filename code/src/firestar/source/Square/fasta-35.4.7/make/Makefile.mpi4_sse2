@@ -1,0 +1,65 @@
+#
+# $Name:  $ - $Id: Makefile.mpi4_sse2,v 1.4 2007/12/13 14:38:19 wrp Exp $
+#
+# 21 July, 2000
+#
+# Makefile for MPI versions of the parallel library comparison programs.
+# this file is derived from Makefile.pvm, with only a few differences:
+# (1) -DMPI_SRC instead of -DPVM_SRC
+# (2) programs are mp35comp*, ms35comp*, and mu35comp* rather than pv35comp*, etc.
+# (3) MPI does not require/allow a "worker" program, thus no c3.work*
+#
+
+# setenv MPI_CC gcc-3.3 for best performance
+
+#MPI_ROOT = /m0/xshare/mpich2
+#MPI_ROOT = /share64/opt/mpich2
+#MPICC = ${MPI_ROOT}/bin/mpicc
+MPICC = mpicc
+
+CC= ${MPICC} -g -O
+NCC= ${MPICC} -g -O
+LCC= ${MPICC}
+
+PLIB    =       -L${MPI_ROOT}/lib -lmpich
+XDIR    =       /home/slib/mpi/bin/
+SDIR    =       .
+
+CFLAGS= -DMPI_SRC -DUNIX -DPCOMPLIB -DBFR=120 -DSHOWSIM -I${MPI_ROOT}/include -DSRAND=srand -DRAND=random -DHAS_INTTYPES -DSAMP_STATS
+# -DMYSQL_DB -I/usr/include/mysql
+# -DSFCHAR="'|'" -DSUPERFAMNUM 
+
+# standard nxgetaa, no memory mapping for 0 - 6
+#LGETLIB=getseq.o lgetlib.o
+#NGETLIB=nmgetlib
+
+# memory mapping for 0FASTA, 5PIRVMS, 6GCGBIN
+LGETLIB=getseq.o lgetlib.o lgetaa_m.o
+NGETLIB=nmgetlib
+
+NRAND=nrandom
+
+SHOWBESTC = mshowbest.c
+SHOWALIGN = mshowalign
+MWH = p_mw.h
+MWHP = p_mw.h w_mw.h
+
+#NCBL_LIB=ncbl2_mlib.o mysql_lib.o
+NCBL_LIB=ncbl2_mlib.o
+#LIB_M= -L/usr/lib/mysql -lmysqlclient -lz -lm
+LIB_M= -lm
+
+LFLAGS= -o
+
+# set up files for SSE2/Altivec acceleration
+#
+include ../make/Makefile.sse_alt
+
+# SSE acceleration
+#
+DROPGSW_O = $(DROPGSW_SSE_O)
+
+include ../make/Makefile.mpcom
+
+include ../make/Makefile.fcom
+

@@ -1,0 +1,57 @@
+#
+# $Name:  $ - $Id: Makefile.pvm4_sse2,v 1.6 2008/04/16 10:35:00 wrp Exp $
+#
+# tested with pvm3.4.beta7 and pvm3.3.11.  Tested on DEC Alpha, x86
+# and Alpha LINUX for DEC/Compaq Alpha/LINUX
+#
+
+#CC=/usr/local/parasoft/bin/insure -g -DDEBUG
+CC= cc -O -ggdb -msse2 -ffast-math
+#CC= cc -DDEBUG -ggdb -msse2 -ffast-math -DSW_SSE2
+
+
+#NCC= cc -O3 -ggdb 
+NCC= cc -O -ggdb -msse2 -ffast-math
+#NCC= cc -DDEBUG -ggdb -msse2 -ffast-math
+
+PLIB    =       ${PVM_ROOT}/lib/$(ARCH)/libpvm3.a
+#XDIR    =       /home/slib/pvm3/bin/$(ARCH)
+XDIR    =       /rdhome/users/wrp/pvm3/bin/$(ARCH)
+SDIR    =       .
+PVMSRC  =	${PVM_ROOT}/src
+
+CFLAGS= -DPVM_SRC -DUNIX -DPCOMPLIB -DBFR=1200 -I${PVM_ROOT}/include -DSRAND=srandom -DRAND=random -DHAS_INTTYPES  -DSAMP_STATS -DSHOWSIM
+
+HFLAGS= -o
+NFLAGS= -o
+
+#NCBL_LIB=ncbl2_mlib.o mysql_lib.o
+NCBL_LIB=ncbl2_mlib.o
+#LIB_M= -L/usr/lib/mysql -lmysqlclient -lm -lz
+LIB_M=  -lm
+LIB_WM= -lm
+
+# standard nxgetaa, no memory mapping for 0 - 6
+#LGETLIB=lgetlib.o
+#NGETLIB=nmgetlib
+
+# memory mapping for 0FASTA, 5PIRVMS, 6GCGBIN
+LGETLIB=lgetlib.o lgetaa_m.o
+NGETLIB=nmgetlib
+
+NRAND=nrandom
+
+# set up files for SSE2/Altivec acceleration
+#
+include ../make/Makefile.sse_alt
+
+# no acceleration
+#
+DROPGSW_O = $(DROPGSW_SSE_O)
+DROPLAL_O = $(DROPLAL_SSE_O)
+
+# common pv35comp programs
+include ../make/Makefile.pvcom
+
+# common *.o files for all environments
+include ../make/Makefile.fcom

@@ -1,0 +1,561 @@
+#! /bin/sh
+
+# FILE:         targetp
+# VERSION:      1.1
+# DATE:         October 1, 2001. 
+# AUTHOR:       Olof Emanuelsson, olof@sbc.su.se
+
+# This software is now maintained by Kristoffer Rapacki, rapacki@cbs.dtu.dk
+# 
+# The versions numbered 1.1a, 1.1b etc. are described in:
+# 
+# 		/usr/cbs/packages/targetp/1.1/README
+# 
+# No scientific work is being done on 1.1. The changes are technical only e.g.
+# bug fixes and recompilations.
+#
+
+SYSTEM=`uname -s`
+STARTDIR=`pwd`
+
+### GENERAL SETTINGS, CUSTOMIZE +++++++++++++++++++++++++++++++++++++++++++++++
+# Substitute your chosen location for TargetP software:
+TARGETP="${APPRIS_PRG_OPT_TARGETP_BIN_DIR}"
+
+# determine where to store temporary files
+TMP=/tmp
+
+# Substitute paste:
+PASTE=paste
+
+# Substitute perl:
+#PERL=/usr/sbin/perl
+PERL=/usr/bin/perl
+
+# Substitute nawk, gawk or equivalent:
+AWK=/usr/freeware/bin/gawk
+#AWK=nawk
+if [ "$SYSTEM" = HP-UX ]
+	then AWK=awk
+elif [ "$SYSTEM" = OSF1 ]
+	then AWK=gawk
+elif [ "$SYSTEM" = Linux ]
+	then AWK=gawk
+fi
+export AWK
+
+# Substitute POSIX-compliant shell:
+SH=/bin/sh
+if [ "$SYSTEM" = HP-UX ]
+	then SH=/bin/posix/sh
+elif [ "$SYSTEM" = OSF1 ]
+	then SH=/bin/ksh
+fi
+
+# Substitute echo:
+ECHO=echo
+if [ "$SYSTEM" = Linux ]
+	then ECHO='/bin/echo -e'
+fi
+
+### HELPER APPLICATIONS, CUSTOMIZE ++++++++++++++++++++++++++++++++++++++++++++
+# Substitute the full path to the ChloroP executable:
+CHLOROP=/usr/cbs/bio/bin/chlorop		# options: none	
+
+# Substitute the full path to the SignalP executable:
+SIGNALP=/usr/cbs/bio/bin/signalp		# options: '-m nn -t euk' 
+
+### NO CHANGES EXPECTED BELOW THIS LINE +++++++++++++++++++++++++++++++++++++++
+
+# other settings:
+HOWLIN=$TARGETP/how/howlin_$SYSTEM
+HOW=$TARGETP/how/how98_$SYSTEM
+TESTHOW=$TARGETP/how/testhow98
+
+LANG=C						# else AWK might fail ...
+
+TARGETPTMP=$TMP/targetp-$$
+HTML=$TARGETP/etc/html
+USAGE='\nUsage: targetp options files\n\nThe options:\t
+	-P|-N\tuse plant/non-plant networks (mandatory)\n\t\t
+	-c\tinclude cleavage site predictions\n\t\t
+	-h\tprint this note and exit\n\t\t
+	-v\tprint version info and exit\n\t\t
+	-p #\tchloroplast prediction cutoff, default 0.00\n\t\t
+	-s #\tsecretory pathway prediction cutoff, default 0.00\n\t\t
+	-t #\tmitochondrial prediction cutoff, default 0.00\n\t\t
+	-o #\t"other location" prediction cutoff, default 0.00\n\n\t\t
+	If no files are specified the standard input will be used.\n'
+
+# current 1.1? version    
+VERSION='targetp v1.1b, March 2006'
+
+INFORMAT=fasta
+Pcutoff=0.00
+Tcutoff=0.00
+Scutoff=0.00
+Ocutoff=0.00
+
+# concerning only CS predictions:
+SCRIPTTCS=$TARGETP/bin/mTPcsbin
+MATRIX=$TARGETP/etc/mTPcsmat
+mTPCS_max_len=120	# max allowed predicted len. of mTPs; if len<thislen, no mTP-CS predicted
+seq_max_len=180		# max len. of seq. that is submitted to NNs        
+					# (also max len. for submission to ChP & SiP)
+					# (must be <cut_len in script in2how+fasta.awk)
+
+
+### get the options +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+typechosen=no
+INPUT=
+#while expr "//$1" : //- >/dev/null	# parse ALL args, not only opts
+while [ "$1" != "" ]
+do
+        case "$1" in
+        -h ) 
+		$ECHO $USAGE
+		exit 1
+		;;
+	-v )
+		$ECHO $VERSION
+		exit 1
+		;;
+	-P )
+		TYPE=plant
+		SCRIPT=bin/plantbin	
+		SYN=etc/plantsyn
+		DATFILE=etc
+		l1no=300
+		l2no=0
+		l3no=4
+		typechosen=yes
+		;;
+	-N )	
+		TYPE=nonpl
+		SCRIPT=bin/nonplbin
+		SYN=etc/nonplsyn
+		DATFILE=etc
+		l1no=200
+		l2no=0
+		l3no=3
+		typechosen=yes
+		;;
+	-c )
+		CSCALC=yes
+		;;	
+	-H )
+		INFORMAT=how
+		;;
+	-p )	
+		Pcutoff=$2
+		shift
+		;;
+	-t )
+		Tcutoff=$2
+		shift
+		;;
+	-s )
+		Scutoff=$2
+		shift
+		;;
+	-o )
+		Ocutoff=$2
+		shift
+		;;
+	-w )
+		WWW=yes
+		;;
+	-T )					# -T plant/non_plant
+		TYPEOPT=$2			# active when -N/-P not given
+		shift				# not mentioned on manpage
+		;;
+	-S )					# -S 0|1|2|3 predef cutoffs
+		SPEC=$2				# 0: no cutoffs, 1: spec>0.95
+		shift				# 2: spec>0.90, 3: user custom
+		;;				# not mentioned on manpage
+	* )					# allow infile among options
+		INPUT="$INPUT $1"
+#		$ECHO Unknown targetp option: "$1"
+#		$ECHO $USAGE
+#		exit 1
+		;;
+	esac
+	shift
+done
+
+### handle ad hoc options +++++++++++++++++++++++++++++++++++++++++++++++++++++
+if [ "$typechosen" = no ]		# -N/-P have not been given ...
+then
+	if [ "$TYPEOPT" = plant ]	# 	-T plant = -P
+	then
+		TYPE=plant
+		SCRIPT=bin/plantbin	
+		SYN=etc/plantsyn
+		DATFILE=etc
+		l1no=300
+		l2no=0
+		l3no=4
+		typechosen=yes
+	else				# 	-T non_plant = -N
+		TYPE=nonpl
+		SCRIPT=bin/nonplbin
+		SYN=etc/nonplsyn
+		DATFILE=etc
+		l1no=200
+		l2no=0
+		l3no=3
+		typechosen=yes
+	fi
+fi
+
+if [ "$TYPE" = plant ]			# PLANT
+then
+	if [ "$SPEC" = 0 ]		# -S 0: no cutoffs
+	then
+		Pcutoff=0.00
+		Tcutoff=0.00
+		Scutoff=0.00
+		Ocutoff=0.00
+	elif [ "$SPEC" = 1 ]		# -S 1: spec >0.95
+	then
+		Pcutoff=0.73
+		Tcutoff=0.86
+		Scutoff=0.43
+		Ocutoff=0.84
+        elif [ "$SPEC" = 2 ]		# -S 2: spec >0.90
+	then
+		Pcutoff=0.62
+		Tcutoff=0.76
+		Scutoff=0.00
+		Ocutoff=0.53
+	fi
+else					# NON-PLANT
+	if [ "$SPEC" = 0 ]		# -S 0: no cutoffs
+	then
+		Tcutoff=0.00
+		Scutoff=0.00
+		Ocutoff=0.00
+	elif [ "$SPEC" = 1 ]		# -S 1: spec >0.95
+	then
+		Tcutoff=0.78
+		Scutoff=0.00
+		Ocutoff=0.73
+        elif [ "$SPEC" = 2 ]		# -S 2: spec >0.90
+	then
+		Tcutoff=0.65
+		Scutoff=0.00
+		Ocutoff=0.52
+	fi
+fi
+
+
+### enforce plant/non-plant specification +++++++++++++++++++++++++++++++++++++
+if [ "$typechosen" = no ]
+then
+	$ECHO You must choose plant \(-P\) or non-plant \(-N\) version
+	$ECHO $USAGE
+	exit 1
+fi
+
+
+### if '-c' issued check SIGNALP and CHLOROP ++++++++++++++++++++++++++++++++++
+if [ "$CSCALC" = yes ]
+then
+	if [ ! -x "$SIGNALP" ]
+	then
+		$ECHO WARNING: SIGNALP not found, no SP length prediction.
+	fi
+	if [ \( "$TYPE" = plant \) -a ! -x "$CHLOROP" ]
+	then
+		$ECHO WARNING: CHLOROP not found, no cTP length prediction.
+	fi
+fi
+
+
+### prepare temporary directory +++++++++++++++++++++++++++++++++++++++++++++++
+mkdir $TARGETPTMP || { $ECHO targetp: cannot create temporary directory; \
+		       exit 1; }
+
+
+### store the raw infile ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#cat $* | tr -d '\r' >$TARGETPTMP/rawinfile
+cat $* $INPUT | tr -d '\r' >$TARGETPTMP/rawinfile
+cd $TARGETPTMP
+# symptom treatment by KR, May 26, 2004: takes away an error message
+touch P_cs_pred T_cs_pred S_cs_pred
+INFILE=rawinfile
+
+### prepare input files in HOW and fasta format +++++++++++++++++++++++++++++++
+$AWK -f $TARGETP/$SCRIPT/in2how+fasta.awk \
+	-v informat=$INFORMAT \
+	-v howout=$TARGETPTMP/infile_how \
+	-v fastaout=$TARGETPTMP/infile_fasta \
+	-v maxlen=$seq_max_len \
+	$INFILE
+$AWK -f $TARGETP/$SCRIPT/in2how+fasta.awk \
+	-v informat=$INFORMAT \
+	-v howout=$TARGETPTMP/infile_full_how \
+	-v fastaout=$TARGETPTMP/infile_full_fasta \
+	$INFILE
+infile=infile_how
+
+# name and length file
+$AWK '/^ .[0-9]* / {printf("%30s\t%5d\n", $2,$1)}' infile_full_how > namefile
+
+
+### do the job ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+antal=`cat $infile |  grep -c '^ .[0-9]*'`
+
+if  [ "$WWW" = yes ] 
+then
+       cat $HTML/head.html
+fi
+
+### Run cTP/mTP/SS HOW networks +++++++++++++++++++++++++++++++++++++++++++++++
+for p in 1 2 3 4 5
+do
+	# PLANT version only
+	if [ "$TYPE" = plant ]
+	then
+	        $SH $TESTHOW -H $HOW -w \
+			$TARGETP/$SYN/cTP.$p.syn $infile > \
+			korn.cTPtesthow.$p
+	fi
+
+	# both PLANT and NON-PLANT
+        $SH $TESTHOW -H $HOW -w \
+		$TARGETP/$SYN/mTP.$p.syn $infile > \
+		korn.mTPtesthow.$p
+        $SH $TESTHOW -H $HOW -w \
+		$TARGETP/$SYN/SS.$p.syn $infile > \
+		korn.SStesthow.$p
+done
+
+### Combine 5 HOW network outputs to one ++++++++++++++++++++++++++++++++++++++
+if [ "$TYPE" = plant ] 
+then
+	# PLANT version only
+	$PASTE korn.cTPtesthow.? | $AWK -f $TARGETP/$SCRIPT/combine.ctp.awk \
+		> cTP5to1HOW_scores
+fi
+
+# both PLANT and NON-PLANT
+$PASTE korn.mTPtesthow.? | $AWK -f $TARGETP/$SCRIPT/combine.ctp.awk \
+	> mTP5to1HOW_scores
+$PASTE korn.SStesthow.?  | $AWK -f $TARGETP/$SCRIPT/combine.ctp.awk \
+	> SS5to1HOW_scores
+
+
+### Convert HOW output to HOWLIN input ++++++++++++++++++++++++++++++++++++++++
+if [ "$TYPE" = plant ] 
+then			# PLANT version
+$PASTE cTP5to1HOW_scores mTP5to1HOW_scores \
+	SS5to1HOW_scores | $AWK -f \
+	$TARGETP/$SCRIPT/analys2data_A-4S.awk \
+	-v w=100 -v name_file=name_file > HOWLIN_in
+else					# NON-PLANT verion
+$PASTE mTP5to1HOW_scores SS5to1HOW_scores | $AWK -f \
+	$TARGETP/$SCRIPT/analys2data_A-3S.awk \
+	-v w=100 -v name_file=name_file >> HOWLIN_in
+fi
+
+
+### run HOWLIN networks +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+HLSYNFILE=$TARGETP/$SYN/howlin.syn.
+HOWLINSEQFILE=HOWLIN_in       
+for nr in 1 2 3 4 5 		
+do
+
+# create howlin.dat-file
+$AWK -f $TARGETP/$SCRIPT/make_howlin_dat.awk \
+	-v sequencefile=$HOWLINSEQFILE \
+	-v synfile=$HLSYNFILE \
+	-v number=$nr \
+	-v noofseq=$antal \
+	-v l1no=$l1no \
+	-v l2no=$l2no \
+	-v l3no=$l3no \
+	$TARGETP/$DATFILE/howlin.dat > howlin.dat.$nr
+
+# run howlin (HOWLIN output fixed
+$HOWLIN < howlin.dat.$nr | tr -d '\0' | sed 's/ *$//' > howlin.result.$nr
+
+done
+
+# paste 5 howlin output together, calc. ave.
+if [ "$TYPE" = plant ]
+then			# assign location and reliability class
+$PASTE howlin.result.? | $AWK -f $TARGETP/$SCRIPT/howlin_ave_calc-4S.awk \
+	-v noofseq=$antal -v Pcut=$Pcutoff -v Tcut=$Tcutoff -v Scut=$Scutoff \
+	-v Ocut=$Ocutoff > ave_result
+else
+$PASTE howlin.result.? | $AWK -f $TARGETP/$SCRIPT/howlin_ave_calc-3S.awk \
+	-v noofseq=$antal -v Tcut=$Tcutoff -v Scut=$Scutoff \
+	-v Ocut=$Ocutoff > ave_result
+fi
+
+
+### Prediction of cleavage sites ================================================
+if [ "$CSCALC" = yes ]
+then
+
+### General settings ============================================================
+					# create name files for all categories:
+$PASTE namefile ave_result | $AWK '{if ($7=="C") print $1}' \
+	> P_pred
+P_pred=P_pred
+$PASTE namefile ave_result | $AWK '{if ($7=="M" || $6=="M") print $1}' \
+	> T_pred
+T_pred=T_pred
+$PASTE namefile ave_result | $AWK '{if ($7=="S" || $6=="S") print $1}' \
+	> S_pred
+S_pred=S_pred
+$PASTE namefile ave_result | $AWK '{if ($7=="_" || $6=="_") print $1}' \
+	> oth_pred
+oth_pred=oth_pred
+$PASTE namefile ave_result | $AWK '{if ($7=="*" || $6=="*") print $1}' \
+	> un_pred
+un_pred=un_pred
+					# files *_pred	  contain name
+					# files *_pred.how contain name and sequence
+					# files *_cs_pred contain name and TP len
+### create .how-files and do the CS predictions =================================
+					# cTP CS prediction using ChloroP:
+if [ -s $P_pred ] 
+then
+	$PERL $SCRIPTTCS/getfasta.pl $P_pred infile_fasta > P_pred.fasta
+					# ChloroP:
+	if [ -x $CHLOROP ]
+	then
+		$CHLOROP P_pred.fasta | \
+			$AWK 'BEGIN{nflag=0; getcs=0;} \
+			/^--------/ {nflag++; \
+				if (nflag>1) getcs=0; else getcs=1;} \
+			(getcs && length($6)>0) {print $6}' > P_cs_len
+	else
+		touch P_cs_len
+	fi
+	$PASTE $P_pred P_cs_len > P_cs_pred
+fi
+					# mTP CS prediction using TargetP method:
+if [ -s $T_pred ] 
+then 
+	$PERL $SCRIPTTCS/getfasta.pl $T_pred infile_fasta >  T_pred.fasta  #| \
+					# process through scoring matrices
+	$PERL $SCRIPTTCS/calc_of_motif_score-how-files.R-2-3-10.short-out.pl 2 $mTPCS_max_len \
+		$MATRIX/R-2.41.-8+4.meme.matrix T_pred.fasta > \
+		R-2.res
+	$PERL $SCRIPTTCS/calc_of_motif_score-how-files.R-2-3-10.short-out.pl 3 $mTPCS_max_len \
+		$MATRIX/R-3.39.-8+4.meme.matrix T_pred.fasta > \
+		R-3.res
+	$PERL $SCRIPTTCS/calc_of_motif_score-how-files.R-2-3-10.short-out.pl 10 $mTPCS_max_len \
+		$MATRIX/R-10.30.-16-5.meme.matrix T_pred.fasta > \
+		R-10.res
+	$PASTE R-2.res R-3.res R-10.res > \
+		R-2-3-10.res
+					# determine the CS 
+	$AWK -f $SCRIPTTCS/determine-CS.awk -v max_len=$mTPCS_max_len \
+		R-2-3-10.res > CS-results.txt
+	$PASTE CS-results.txt $T_pred | $AWK '{print $4" "$2}' > \
+		T_cs_pred
+fi
+					# SP CS prediction using SignalP
+if [ -s $S_pred ] 
+then	
+	$PERL $SCRIPTTCS/getfasta.pl $S_pred infile_fasta > S_pred.fasta
+					# perform SP CS prediction using SignalP
+
+	if [ -x $SIGNALP ]
+	then
+		$SIGNALP -m nn -t euk S_pred.fasta | $AWK  \
+			'/^  max\. Y /{print $3-1}' > S_cs_len
+	else
+		touch S_cs_len
+	fi
+	$PASTE $S_pred S_cs_len > S_cs_pred
+fi
+
+### arrange cleavage site prediction output ====================================
+
+### not needed any longer, included in 'present the results' 2006-03-28, KR
+
+fi					# end of if [ "$CSCALC" ], ie. end of CS pred
+
+
+### present the results +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+$ECHO " "
+$ECHO "### targetp v1.1 prediction results ##################################"
+$ECHO "Number of query sequences: " $antal
+if  [ "$CSCALC" = yes ] 
+then
+ $ECHO  "Cleavage site predictions included."
+ if  [ "$TYPE" = plant ] 
+ then
+  $ECHO "Using PLANT networks."
+  $ECHO ""
+  $ECHO "Name                  Len     cTP    mTP     SP  other  Loc  RC  TPlen"
+  $ECHO "----------------------------------------------------------------------"
+ $PASTE namefile ave_result | \
+  $AWK 'BEGIN {while ("cat ?_cs_pred" | getline) cs[$1]=$2; } \
+        {printf("%-20s %4d  %6.3f %6.3f %6.3f %6.3f   %c    %s %6s\n",\
+         substr($1,1,20),$2,$3,$4,$5,$6,$7,$8,cs[$1]==""?"    -":cs[$1]);}'
+ else
+  $ECHO "Using NON-PLANT networks."
+  $ECHO ""
+  $ECHO "Name                  Len            mTP     SP  other  Loc  RC  TPlen"
+  $ECHO "----------------------------------------------------------------------"
+ $PASTE namefile ave_result | \
+  $AWK 'BEGIN {while ("cat ?_cs_pred" | getline) cs[$1]=$2; } \
+        {printf("%-20s %4d         %6.3f %6.3f %6.3f   %c    %s %6s\n",\
+         substr($1,1,20),$2,$3,$4,$5,$6,$7,cs[$1]==""?"    -":cs[$1]);}'
+ fi
+
+else
+$ECHO "Cleavage site predictions not included."
+ if [ "$TYPE" = plant ]
+ then
+  $ECHO "Using PLANT networks."
+  $ECHO ""
+  $ECHO "Name                  Len     cTP    mTP     SP  other  Loc  RC"
+  $ECHO "----------------------------------------------------------------------"
+  $PASTE namefile ave_result | \
+   $AWK '{printf("%-20s %4d  %6.3f %6.3f %6.3f %6.3f   %c    %s\n",\
+          substr($1,1,20),$2,$3,$4,$5,$6,$7,$8);}'
+ else
+  $ECHO "Using NON-PLANT networks."
+  $ECHO ""
+  $ECHO "Name                  Len            mTP     SP  other  Loc  RC"
+  $ECHO "----------------------------------------------------------------------"
+  $PASTE namefile ave_result | \
+   $AWK '{printf("%-20s %4d         %6.3f %6.3f %6.3f   %c    %s\n",\
+          substr($1,1,20),$2,$3,$4,$5,$6,$7);}'
+ fi
+fi
+
+if [ "$TYPE" = plant ]
+then
+ $ECHO "----------------------------------------------------------------------"
+ $ECHO cutoff $Pcutoff $Tcutoff $Scutoff $Ocutoff | \
+  $AWK '{printf("%-26s %6.3f %6.3f %6.3f %6.3f\n",\
+         $1,$2,$3,$4,$5);}'
+
+else
+ $ECHO "----------------------------------------------------------------------"
+ $ECHO cutoff $Tcutoff $Scutoff $Ocutoff | \
+  $AWK '{printf("%-33s %6.3f %6.3f %6.3f\n",\
+         $1,$2,$3,$4);}'
+
+
+fi
+
+if [ "$WWW" = yes ]
+then
+        cat $HTML/foot.html
+fi
+
+
+### cleanup +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cd $STARTDIR
+rm -rf $TARGETPTMP
+
+### end of script #############################################################

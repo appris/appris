@@ -1,0 +1,394 @@
+.TH FASTA/SSEARCH/[T]FASTX/Y/LALIGN	1 local
+.SH NAME
+fasta35, fasta35_t \- scan a protein or DNA sequence library for similar
+sequences
+
+fastx35, fastx35_t \ - compare a DNA sequence to a protein sequence
+database, comparing the translated DNA sequence in forward and
+reverse frames.
+
+tfastx35, tfastx35_t \ - compare a protein sequence to a DNA sequence
+database, calculating similarities with frameshifts to the forward and
+reverse orientations.
+
+fasty35, fasty35_t \ - compare a DNA sequence to a protein sequence
+database, comparing the translated DNA sequence in forward and reverse
+frames.
+
+tfasty35, tfasty35_t \ - compare a protein sequence to a DNA sequence
+database, calculating similarities with frameshifts to the forward and
+reverse orientations.
+
+fasts35, fasts35_t \- compare unordered peptides to a protein sequence database
+
+fastm35, fastm35_t \- compare ordered peptides (or short DNA sequences)
+to a protein (DNA) sequence database
+
+tfasts35, tfasts35_t \- compare unordered peptides to a translated DNA
+sequence database
+
+fastf35, fastf35_t \- compare mixed peptides to a protein sequence database
+
+tfastf35, tfastf35_t \- compare mixed peptides to a translated DNA
+sequence database
+
+ssearch35, ssearch35_t \- compare a protein or DNA sequence to a
+sequence database using the Smith-Waterman algorithm.
+
+ggsearch35, ggsearch35_t \- compare a protein or DNA sequence to a
+sequence database using a global alignment (Needleman-Wunsch)
+
+glsearch35, glearch35_t \- compare a protein or DNA sequence to a
+sequence database with alignments that are global in the query and
+local in the database sequence (global-local).
+
+lalign35 \- produce multiple non-overlapping alignments for protein
+and DNA sequences using the Huang and Miller sim algorithm for the
+Waterman-Eggert algorithm.
+
+prss35, prfx35 \- discontinued; all the FASTA programs will estimate
+statistical significance using 500 shuffled sequence scores if two
+sequences are compared.
+
+.SH DESCRIPTION
+
+Release 3.5 of the FASTA package provides a modular set of sequence
+comparison programs that can run on conventional single processor
+computers or in parallel on multiprocessor computers. More than a
+dozen programs \- fasta35, fastx35/tfastx35, fasty35/tfasty35,
+fasts35/tfasts35, fastm35, fastf35/tfastf35, ssearch35, ggsearch35,
+and glsearch35 \- are currently available.
+
+All of the comparison programs share a set of basic command line
+options; additional options are available for individual comparison
+functions. 
+
+Threaded versions of the FASTA programs (fasta35_t, ssearch35_t, etc.)
+will run in parallel on modern Linux and Unix multi-core or
+multi-processor computers.  Accelerated versions of the Smith-Waterman
+algorithm are available for architectures with the Intel SSE2 or
+Altivec PowerPC architectures, which can speed-up Smith-Waterman
+calculations 10 - 20-fold.
+
+In addition to the serial and threaded versions of the FASTA programs,
+PVM and MPI parallel versions are available as \fCpv35compfa\fP,
+\fCmp35compfa\fPf, \fCpv35compsw\fP, \fCmp35compsw\fP, etc.  For more
+information, see \fCpvcomp.1\fP, \fCreadme.pvm_mpi\fP.  The PVM/MPI
+program versions use same command line options as the serial and
+threaded FASTA program versions.
+
+.SH Running the FASTA programs
+.LP
+Although the FASTA programs can be run interactively, prompting for a query
+file and a library, it is usually more convenient to run them from the Unix, MacOSX terminal, or Windows shell command line.  Thus,
+.sp
+.ti 0.5i
+\fCfasta35_t -q -option1 -option2 -option3 query.file library.file > fasta.output\fP
+.sp
+runs the threaded version of \fCfasta35\fP program, without asking for
+any input (\fC-q\fP), setting various parameter and output options,
+comparing the sequences in \fCquery.file\fP to the sequences in
+\fClibrary.file\fP.  Optional arguments to the FASTA programs must
+\fIprecede\fP the query.file, library.file, and optional \fIktup\fP
+arguments.  The FASTA program provides an option (\fC-O\fP) for
+sending output to a file, but generally it is better to simply
+redirect output with the ">" shell symbol.
+
+.SH FASTA program options
+.LP
+The default scoring matrix and gap penalties used by each of the
+programs have been selected for high sensitivity searches with the
+various algorithms.  The default program behavior can be modified by
+providing command line options \fIbefore\fP the query.file and
+library.file arguments.  Command line options can also be used in
+interactive mode.
+
+Command line arguments come in several classes.
+
+(1) Commands that specify the comparison type. FASTA, FASTS, FASTM,
+SSEARCH, GGSEARCH, and GLSEARCH can compare either protein or DNA
+sequences, and attempt to recognize the comparison type by looking the
+residue composition. \fC-n\fP, \fC-p\fP specify DNA (nucleotide) or
+protein comparison, respectively. \fC-U\fP specifies RNA comparison.
+
+(2) Commands that limit the set of sequences compared: \fC-1\fP,
+\fC-3\fP, \fC-M\fP.
+
+(3) Commands that modify the scoring parameters: \fC-f gap-open penalty\P, \fC-g
+gap-extend penalty\fP, \fC-h inter-codon frame-shift\fP, \fC-j
+within-codon frame-shift\fP, \fC-s scoring-matrix\fP, \fC-r
+match/mismatch score\fP, \fC-x X:X score\fP.
+
+(4) Commands that modify the algorithm (mostly FASTA and [T]FASTX/Y):
+\fC-c\fP, \fC-w\fP, \fC-y\fP, \fC-o\fP. The \fC-S\fP can be used to
+ignore lower-case (low complexity) residues during the initial score
+calculation.
+
+(5) Commands that modify the output: \fC-A\fP, \fC-b number\fP, \fC-C
+width\fP, \fC-d number\fP, \fC-L\fP, \fC-m 0-11\fP, \fC-w
+line-width\fP, \fC-W context-width\fP, \fC-X offset1,ofset2\fP
+
+(6) Commands that affect statistical estimates: \fC-Z\fP, \fC-k\fP.
+.SH Option summary:
+.TP
+\-1
+Sort by "init1" score (obsolete)
+.TP
+\-3
+(TFASTX/Y35 only) use only forward frame translations
+.TP
+\-a #
+"SHOWALL" option attempts to align all of both sequences in FASTA and SSEARCH.
+.TP
+\-A
+(FASTA35 DNA comparison only) force Smith-Waterman alignment for
+output.  Smith-Waterman is the default for FASTA protein alignment and
+[T]FASTX/Y, but not for DNA comparisons with FASTA.
+.TP
+\-b #
+number of best scores to show (must be <  expectation cutoff if -E is given).
+By default, this option is no longer used; all scores better than the
+expectation (E()) cutoff are listed.
+.TP
+\-B
+show z-scores rather than bit scores (for compatibility with much
+older versions).
+.TP
+\-c #
+threshold for band optimization (FASTA, [T]FASTX/Y)
+.TP
+\-C #
+length of name abbreviation in alignments, default = 6.  Must be less
+than 20.
+.TP
+\-d #
+number of best alignments to show ( must be < expectation (-E) cutoff)
+.TP
+\-D
+turn on debugging mode.  Enables checks on sequence alphabet that
+cause problems with tfastx35, tfasty35 (only available after compile
+time option).
+.TP
+\-E #
+expectation value upper limit for score and alignment display.
+Defaults are 10.0 for FASTA35 and SSEARCH35 protein searches, 5.0 for
+translated DNA/protein comparisons, and 2.0 for DNA/DNA searches.
+.TP
+\-f #
+penalty for opening a gap.
+.TP
+\-F #
+expectation value lower limit for score and alignment display.
+-F 1e-6 prevents library sequences with E()-values lower than 1e-6
+from being displayed. Use to shift focus to more distant
+relationships.
+.TP
+\-g #
+penalty for additional residues in a gap
+.TP
+\-h #
+([T]FASTX/Y only) penalty for a frameshift between two codons.
+.TP
+\-j #
+([T]FASTY only) penalty for a frameshift within a codon.
+.TP
+\-H
+turn off histogram display. (The meaning of -H is reversed with the
+PVM/MPI parallel versions, where the histogram display is off by default).
+.TP
+\-i
+(FASTA DNA, [T]FASTX/Y) compare against
+only the reverse complement of the library sequence.
+.TP
+\-k
+specify number of shuffles for statistical parameter estimation (default=500).
+.TP
+\-l str
+specify FASTLIBS file
+.TP
+\-L
+report long sequence description in alignments (up to 200 characters).
+.TP
+\-m 0,1,2,3,4,5,6,9,10,11
+alignment display options.  \fC-m 0, 1, 2, 3\fP
+display different types of alignments.  \fC-m 4\fP provides an
+alignment "map" on the query. \fC-m 5\fP combines the alignment map
+and a \fC-m 0\fP alignment.  \fC-m 6\fP provides an HTML output.
+.TP
+\fC-m 9\fP
+does not change the alignment output, but provides
+alignment coordinate and percent identity information with the best
+scores report.  \fC-m 9c\fP adds encoded alignment information to the
+\fC-m 9\fP; \fC-m 9i\fP provides only percent identity and alignment
+length information with the best scores.  With current versions of the
+FASTA programs, independent \fC-m\fP options can be combined;
+e.g. \fC-m 1 -m 9c -m 6\fP.
+.TP
+\-m 11
+provide \fClav\fP format output from lalign35.  It does not
+currently affect other alignment algorithms.  The \fClav2ps\fP and
+\fClav2svg\fP programs can be used to convert \fClav\fP format output
+to postscript/SVG alignment "dot-plots".
+.TP
+\-M #-#
+molecular weight (residue) cutoffs.  -M "101-200" examines only sequences that are 101-200 residues long.
+.TP
+\-n
+force query to nucleotide sequence
+.TP
+\-N #
+break long library sequences into blocks of # residues.  Useful for
+bacterial genomes, which have only one sequence entry.  -N 2000 works
+well for well for bacterial genomes.
+.TP
+\-o
+(FASTA) turn fasta band optimization off during initial phase.  This was
+the behavior of fasta1.x versions (obsolete).
+.TP
+\-O file
+send output to file.
+.TP
+\-p
+Force query sequence type to protein.
+.TP
+\-P "file type"
+specify a PSI-BLAST PSSM file of type "type". Available types are:
+.LP
+0 - ascii PSSM file, produced by blastpgp -Q file.pssm 
+1 - binary (architecture dependent) PSSM file, produced by blastpgp -C file.pssm -u 0
+2 - binary ASN.1 (architecture independent) PSSM file, produced by blastpgp -C file.pssm -u 2
+.TP
+\-q/-Q
+quiet option; do not prompt for input
+.TP
+\-r "+n/-m" 
+(DNA only) values for match/mismatch for DNA comparisons. \fC+n\fP is
+used for the maximum positive value and \fC-m\fP is used for the
+maximum negative value. Values between max and min, are rescaled, but
+residue pairs having the value -1 continue to be -1.
+.TP 
+\-R file
+save all scores to statistics file (previously -r file)
+.TP
+\-s name
+specify substitution matrix.  BLOSUM50 is used by default;
+PAM250, PAM120, and BLOSUM62 can be specified by setting -s P120,
+P250, or BL62.  With this version, many more scoring matrices are
+available, including BLOSUM80 (BL80), and MDM10, MDM20, MDM40 (Jones,
+Taylor, and Thornton, 1992 CABIOS 8:275-282; specified as -s M10, -s
+M20, -s M40). Alternatively, BLASTP1.4 format scoring matrix files can
+be specified.  BL80, BL62, and P120 are scaled in 1/2 bit units; all
+the other matrices use 1/3 bit units.  DNA scoring matrices can also
+be specified with the "-r" option.
+.TP
+\-S
+treat lower case letters in the query or database as low complexity
+regions that are equivalent to 'X' during the initial database scan,
+but are treated as normal residues for the final alignment display.
+Statistical estimates are based on the 'X'ed out sequence used during
+the initial search. Protein databases (and query sequences) can be
+generated in the appropriate format using John Wooton's "pseg"
+program, available from ftp://ncbi.nlm.nih.gov/pub/seg/pseg.  Once you
+have compiled the "pseg" program, use the command:
+.IP
+\fCpseg database.fasta -z 1 -q  > database.lc_seg\fP
+.TP
+\-t #
+Translation table - [t]fastx35 and [t]fasty35 support the BLAST
+tranlation tables.  See
+\fChttp://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi/\fP.
+In addition, you can score for the end of a protein match with '-t -t'
+which will add "*" to the end of your query sequences (but your
+protein library sequences must also have '*').  Built in protein
+matrices know about '*:*' matches; if you want to use '-t t' with your
+own matrix, you will need to include '*' in the matrix.
+.TP
+\-T #
+(threaded, parallel only) number of threads or workers to use
+(no limit for threaded version, set at compile time for PVM/MPI).
+.TP
+\-U
+Do RNA sequence comparisons: treat 'T' as 'U', allow G:U base pairs (by 
+scoring "G-A" and "T-C" as "G-G" -1).  Search only one strand.
+.TP
+\-V "?$%*"
+Allow special annotation characters in query sequence.  These characters
+will be displayed in the alignments on the coordinate number line.
+.TP
+\-w # 
+line width for similarity score, sequence alignment, output.
+.TP
+\-W # 
+context length (default is 1/2 of line width -w) for programs,
+like fasta and ssearch, that provide additional sequence context.
+.TP
+\-x #match,#mismatch
+scores used for matches to 'X:X','N:N', '*:*' matches, and the corresponding
+'X:not-X', etc, mismatches, overriding the values
+specified in the scoring matrix.  If only one value is given, it is
+used for both values.
+.TP
+\-X "#,#"
+offsets query, library sequence for numbering alignments
+.TP
+\-y #
+Width for band optimization; by default 16 for DNA and protein ktup=2;
+32 for protein ktup=1;
+.TP
+\-z #
+Specify statistical calculation. Default is -z 1 for local
+similarity searches, which uses regression against the length of the
+library sequence. -z -1 disables statistics.  -z 0 estimates
+significance without normalizing for sequence length. -z 2 provides
+maximum likelihood estimates for lambda and K, censoring the 250
+lowest and 250 highest scores. -z 3 uses Altschul and Gish's
+statistical estimates for specific protein BLOSUM scoring matrices and
+gap penalties. -z 4,5: an alternate regression method.  \-z 6 uses a
+composition based maximum likelihood estimate based on the method of
+Mott (1992) Bull. Math. Biol. 54:59-75.  -z 11,12,14,15,16: compute
+the regression against scores of randomly shuffled copies of the
+library sequences.  Twice as many comparisons are performed, but
+accurate estimates can be generated from databases of related
+sequences. -z 11 uses the -z 1 regression strategy, etc.
+.TP
+\-Z db_size
+Set the apparent database size used for expectation value calculations
+(used for protein/protein FASTA and SSEARCH, and for [T]FASTX/Y).
+.SH Reading sequences from STDIN
+.LP
+The FASTA programs have been modified to accept a query sequence from
+the unix "stdin" data stream.  This makes it much easier to use
+fasta35 and its relatives as part of a WWW page. To indicate that
+stdin is to be used, use "@" as the query sequence file name.  "@" can
+also be used to specify a subset of the query sequence to be used,
+e.g:
+.sp
+.ti 0.5i
+cat query.aa | fasta35 -q @:50-150 s
+.sp
+would search the 's' database with residues 50-150 of query.aa.  FASTA
+cannot automatically detect the sequence type (protein vs DNA) when
+"stdin" is used and assumes protein comparisons by default; the '-n'
+option is required for DNA for STDIN queries.
+.SH Environment variables:
+.TP
+FASTLIBS
+location of library choice file (-l FASTLIBS)
+.TP
+SMATRIX
+default scoring matrix (-s SMATRIX)
+.TP
+SRCH_URL
+the format string used to define the option to re-search the
+database.
+.TP
+REF_URL
+the format string used to define the option to lookup the library
+sequence in entrez, or some other database.
+
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU
+
+Version: $ Id: $

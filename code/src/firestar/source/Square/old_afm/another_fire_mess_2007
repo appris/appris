@@ -1,0 +1,539 @@
+#!/usr/bin/perl
+
+# Will have a program that aligns template sequence to sequence of linked chad via glopez linked_file by ssearch
+# So each residue's matrix scores will come via this alignment. No need for "line up"
+#
+
+# This one is for aligning for the purposes of evaluating sites
+#
+# # recommendation - a final score of "C" approximates to 99% reliable
+# 	    - a final score of 5 approximates to 90% reliable
+# 	    - a final score of 4 approximates to 85% reliable
+# 	    - a final score of 3 approximates to 75% reliable
+# 	    - a final score of 2 approximates to 60% reliable
+# 	    - a final score of 1 approximates to 45% reliable
+
+# initialise
+$mtx_path="/www-raid/data/FireDB/Square/chads";
+
+open (BLOSFILE, "</www-raid/data/FireDB/Square/BLOSUM62")
+        or die "nastily!!";
+
+@maxsequence = ();
+@pda_maximum = (); @tempresmax = (); 
+@pda_score = (); @tempresscore = (); 
+@cores = (); 
+@data = (); 
+$offset = 0; $offsetres = 0;
+$warning = 0;
+
+
+# These are the three inputs, self explanatory
+$target_sequence = $ARGV[0]; 
+$template_sequence = $ARGV[1];
+$pdb_code = $ARGV[2]; 
+
+# These options are optimised for PSI-BLAST alignments you can change them if you want by hand!)
+$peak_base = 4;
+$tail = 2; 
+$res_in_peak = 2;
+$score_90 = 4;
+$score_75 = 2;
+$score_60 = 1;
+$score_45 = 0;
+
+# Standardise gaps and case (in sequence and in ID) ...
+$target_sequence =~ tr/[a-z]/[A-Z]/;
+$template_sequence =~ tr/[a-z]/[A-Z]/;
+$target_sequence =~ s/\W/-/g;
+$template_sequence =~ s/\W/-/g;
+$randname = $target_sequence;
+$randname =~ s/-//g;
+
+$pdb4 = substr($pdb_code, 0, 4);
+$pdbchain = substr($pdb_code, 4, 1);
+$pdb4 =~ tr/[A-Z]/[a-z]/;
+$pdbchain =~ tr/[a-z]/[A-Z]/;
+$pdb_code = join "", $pdb4, $pdbchain; 
+
+system "/www-raid/data/FireDB/Square/prefilter_afm.pl $target_sequence  $template_sequence  $pdb_code > $randname.ali";
+
+open SEQSFILE, "$randname.ali"
+	or die "like a dog!";
+
+@input = <SEQSFILE>;
+chomp @input;
+close SEQSFILE;
+
+system "rm $randname.ali";
+
+$clus_code = $input[4];
+$cons_sequence = $input[3];
+$tempcon_sequence = $input[2];
+@identity = split " ", $input[5];
+chop $identity[3];
+
+# PDB code does not match clus code
+if ($identity[3] < 95)
+	{ $warning = 1 }
+
+# PDB code does not exist in database 
+if (!$clus_code)
+	{ exit 0 }
+
+if (!open (MTXFILE, "$mtx_path/$clus_code.mtx"))
+	{print "$mtx_path/$clus_code - no mtx file\n"; exit 1}
+
+# ... and off we go!
+@tempsequence = split "", $template_sequence;
+@targsequence = split "", $target_sequence;
+
+# Get the stored sequences for comparison
+@consen_sequence = split "", $cons_sequence;
+@tempcon_sequence = split "", $tempcon_sequence;
+
+# Check sequences are correct
+for ($i=0;$i<$#tempcon_sequence;$i++)
+	{ 
+	if ($tempcon_sequence[$i] ne "-")
+		{last}
+	}
+$offset = $i;
+
+@tempcon_sequence = @tempcon_sequence[$offset..$#tempcon_sequence];
+@consen_sequence = @consen_sequence[$offset..$#consen_sequence];
+
+# Load up pssm, 
+&getmtx;
+
+# Do the business
+&getscores;
+&smooth;
+&prep_for_out;
+
+
+
+sub prep_for_out
+{
+
+for ($i=0;$i<=$#targsequence;$i++)
+	{print "$targsequence[$i]"}
+print "\n";
+
+for ($i=0;$i<=$#tempsequence;$i++)
+	{print "$tempsequence[$i]"}
+print "\n";
+
+#You can change this too, this is so that the score outputs alongside the sequence
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($pda_score[$i] > 4.5 )
+		{$pda_int[$i] = 9}
+	elsif ($pda_score[$i] > 4 )
+		{$pda_int[$i] = 8}
+	elsif ($pda_score[$i] > 3.5 )
+		{$pda_int[$i] = 7}
+	elsif ($pda_score[$i] > 3 )
+		{$pda_int[$i] = 6}
+	elsif ($pda_score[$i] > 2.5 )
+		{$pda_int[$i] = 5}
+	elsif ($pda_score[$i] > 2 )
+		{$pda_int[$i] = 4}
+	elsif ($pda_score[$i] > 1.5 )
+		{$pda_int[$i] = 3}
+	elsif ($pda_score[$i] > 1 )
+		{$pda_int[$i] = 2}
+	elsif ($pda_score[$i] > 0.5)
+		{$pda_int[$i] = 1}
+	else
+		{$pda_int[$i] = 0}
+	}
+
+
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($pda_score[$i])
+		{print "$pda_int[$i]"}
+	else
+		{print "-"}
+	}
+print "  \n";
+
+
+&get_reliable_regions;
+
+for ($i=0;$i<=$#pda_maximum;$i++)
+        {
+	if ($pda_maximum[$i] > 4.5 )
+		{$pda_intmax[$i] = 9}
+	elsif ($pda_maximum[$i] > 4 )
+		{$pda_intmax[$i] = 8}
+	elsif ($pda_maximum[$i] > 3.5 )
+		{$pda_intmax[$i] = 7}
+	elsif ($pda_maximum[$i] > 3 )
+		{$pda_intmax[$i] = 6}
+	elsif ($pda_maximum[$i] > 2.5 )
+		{$pda_intmax[$i] = 5}
+	elsif ($pda_maximum[$i] > 2 )
+		{$pda_intmax[$i] = 4}
+	elsif ($pda_maximum[$i] > 1.5 )
+		{$pda_intmax[$i] = 3}
+	elsif ($pda_maximum[$i] > 1 )
+		{$pda_intmax[$i] = 2}
+	elsif ($pda_maximum[$i] > 0.5)
+		{$pda_intmax[$i] = 1}
+	else
+		{$pda_intmax[$i] = 0}
+	}
+
+
+#This is meant to be an integer value for alignment reliability ...
+
+for ($i=0;$i<=$#pda_score;$i++)
+	{
+	if ($pda_score[$i] ne "@" && $pda_score[$i] >= $score_90)
+                {$pda_score[$i] = "5"}
+	elsif ($pda_score[$i] ne "@" && $pda_score[$i] >= $score_75)
+                {$pda_score[$i] = "3"}
+	elsif ($pda_score[$i] ne "@" && $pda_score[$i] >= $score_60)
+                {$pda_score[$i] = "2"}
+	elsif ($pda_score[$i] ne "@" && $pda_score[$i] > $score_45)
+                {$pda_score[$i] = "1"}
+	elsif ($pda_score[$i] ne "@")
+                {$pda_score[$i] = "-"}
+	}
+
+
+#While this is meant for binding site reliability - it lowers the reliability when an aa is non-conserved ONLY 
+
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($tempsequence[$i] ne $targsequence[$i])
+	        { 
+		if ($pda_score[$i] eq "@" && $blomatrix[$Amino{$tempsequence[$i]}][$Amino{$targsequence[$i]}] >= 0)
+		        { $pda_score[$i] = 5; }
+		elsif ($pda_score[$i] eq "@")
+			{ $pda_score[$i] = 3; }
+		elsif ($pda_score[$i] eq "5" && $blomatrix[$Amino{$tempsequence[$i]}][$Amino{$targsequence[$i]}] >= 0)
+		        { $pda_score[$i] = 4; }
+		elsif ($pda_score[$i] eq "5")
+		        { $pda_score[$i] = 2; }
+		elsif ($pda_score[$i] eq "3" && $blomatrix[$Amino{$tempsequence[$i]}][$Amino{$targsequence[$i]}] >= 0)
+		        { $pda_score[$i] = 2; }
+		elsif ($pda_score[$i] eq "3")
+		        { $pda_score[$i] = 1; }
+		elsif ($pda_score[$i] eq "2" && $blomatrix[$Amino{$tempsequence[$i]}][$Amino{$targsequence[$i]}] >= 0)
+		        { $pda_score[$i] = "1"; }
+		elsif ($pda_score[$i] eq "2")
+		        { $pda_score[$i] = "-"; }
+		elsif ($pda_score[$i] eq "1" && $blomatrix[$Amino{$tempsequence[$i]}][$Amino{$targsequence[$i]}] >= 0)
+		        { }
+		elsif ($pda_score[$i] eq "1")
+		        { $pda_score[$i] = "-"; }
+		}
+	}
+
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($pda_score[$i])
+		{print "$pda_score[$i]"}
+	else
+		{print "-"}
+	}
+print "  \n";
+
+
+#Note maxsequence does something strange with gap splicing near the Cterminal
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($maxsequence[$i])
+		{print "$maxsequence[$i]"}
+	else
+		{print "-"}
+	}
+print "  \n";
+
+for ($i=0;$i<=$#pda_score;$i++)
+        {
+	if ($pda_score[$i])
+		{print "$pda_intmax[$i]"}
+	else
+		{print "-"}
+	}
+print "  \n";
+
+print "$warning\n";
+}
+
+
+
+
+
+
+sub getmtx
+{
+my @temp = ();
+my $i = 0;
+while ($string = <MTXFILE>)             #read in dead line
+        {if ($string =~ /^-32768/) {last}}
+$gaplimit = $offset - 1;
+for ($i=0;$i<$gaplimit;$i++)
+	{$string = <MTXFILE>}
+while ($string = <MTXFILE>)             #read in dead line
+        {
+	if ($consen_seq_res[$i] eq "-")
+		{ push @data, "-"; }
+	else
+		{
+		@temp = split ' ', $string;
+       		push @data, [ @temp ];
+		}
+	$i++;
+#print $string;
+        }
+close MTXFILE;
+}
+
+
+
+
+sub getscores			#pulls out PSIBLAST alignments
+{
+for ($i=0, $k=0; $i<=$#tempsequence; $i++)
+        {
+	if ($tempsequence[$i] eq "-" && $tempcon_sequence[$k] eq "-")
+		{$k++;}
+	elsif ($tempsequence[$i] eq "-")
+		{$tempresscore[$i] = -200;}
+	elsif ($consen_sequence[$k] eq "-")
+                {$tempresscore[$i] = 0; $k++;}
+	elsif ($tempcon_sequence[$k] eq "-")
+		{$k++; $i--}
+        elsif ($targsequence[$i] eq "-")
+                {$tempresscore[$i] = -100; $k++}
+        elsif ($targsequence[$i] eq "A")
+                {$tempresscore[$i] = "$data[$k][1]"; $k++}
+        elsif ($targsequence[$i] eq "C")
+                {$tempresscore[$i] = "$data[$k][3]"; $k++}
+        elsif ($targsequence[$i] eq "D")
+                {$tempresscore[$i] = "$data[$k][4]"; $k++}
+        elsif ($targsequence[$i] eq "E")
+                {$tempresscore[$i] = "$data[$k][5]"; $k++}
+        elsif ($targsequence[$i] eq "F")
+                {$tempresscore[$i] = "$data[$k][6]"; $k++}
+        elsif ($targsequence[$i] eq "G")
+                {$tempresscore[$i] = "$data[$k][7]"; $k++}
+        elsif ($targsequence[$i] eq "H")
+                {$tempresscore[$i] = "$data[$k][8]"; $k++}
+        elsif ($targsequence[$i] eq "I") 
+                {$tempresscore[$i] = "$data[$k][9]"; $k++}
+        elsif ($targsequence[$i] eq "K")
+                {$tempresscore[$i] = "$data[$k][10]"; $k++}
+        elsif ($targsequence[$i] eq "L")
+                {$tempresscore[$i] = "$data[$k][11]"; $k++}
+        elsif ($targsequence[$i] eq "M")
+                {$tempresscore[$i] = "$data[$k][12]"; $k++}
+        elsif ($targsequence[$i] eq "N")
+                {$tempresscore[$i] = "$data[$k][13]"; $k++}
+        elsif ($targsequence[$i] eq "P")
+                {$tempresscore[$i] = "$data[$k][14]"; $k++}
+        elsif ($targsequence[$i] eq "Q")
+                {$tempresscore[$i] = "$data[$k][15]"; $k++}
+        elsif ($targsequence[$i] eq "R")
+                {$tempresscore[$i] = "$data[$k][16]"; $k++}
+        elsif ($targsequence[$i] eq "S")
+                {$tempresscore[$i] = "$data[$k][17]"; $k++}
+        elsif ($targsequence[$i] eq "T")
+                {$tempresscore[$i] = "$data[$k][18]"; $k++}
+        elsif ($targsequence[$i] eq "V")
+                {$tempresscore[$i] = "$data[$k][19]"; $k++}
+        elsif ($targsequence[$i] eq "W")
+                {$tempresscore[$i] = "$data[$k][20]"; $k++} 
+        elsif ($targsequence[$i] eq "X")
+                {$tempresscore[$i] = "$data[$k][21]"; $k++}
+        elsif ($targsequence[$i] eq "Y")
+                {$tempresscore[$i] = "$data[$k][22]"; $k++}
+        else 
+                {$tempresscore[$i] = -200; $k++}
+#print "Temp is $tempsequence[$i], targ is $targsequence[$i] and the score is $tempresscore[$k-1] at residue $i and PDBATOMS $pdbatomnos[$i]\n";
+	}
+
+for ($i=0, $k=0; $i<=$#tempsequence; $i++)
+        {
+	if ($tempsequence[$i] eq "-" && $tempcon_sequence[$k] eq "-")
+		{$k++;}
+	elsif ($tempsequence[$i] eq "-")
+		{$tempresmax[$i] = -200;}
+	elsif ($consen_sequence[$k] eq "-")
+                {$tempresmax[$i] = 0; $k++;}
+	elsif ($tempcon_sequence[$k] eq "-")
+		{$k++; $i--}
+	else
+		{
+		$tempresmax[$i] = -200;
+		for ($m=1;$m<=22;$m++)
+			{
+			next if ($m == 2);
+			if ($data[$k][$m] > $tempresmax[$i])
+				{
+				$maxsequence[$i] = $m;
+				$tempresmax[$i] = $data[$k][$m]
+				}
+			}
+		$k++;
+		}
+        if ($maxsequence[$i] == 1)
+                {$maxsequence[$i] = "A"}
+        elsif ($maxsequence[$i] == 3)
+                {$maxsequence[$i] = "C"}
+        elsif ($maxsequence[$i] == 4)
+                {$maxsequence[$i] = "D"}
+        elsif ($maxsequence[$i] == 5)
+                {$maxsequence[$i] = "E"}
+        elsif ($maxsequence[$i] == 6)
+                {$maxsequence[$i] = "F"}
+        elsif ($maxsequence[$i] == 7)
+                {$maxsequence[$i] = "G"}
+        elsif ($maxsequence[$i] == 8)
+                {$maxsequence[$i] = "H"}
+        elsif ($maxsequence[$i] == 9) 
+                {$maxsequence[$i] = "I"}
+        elsif ($maxsequence[$i] == 10)
+                {$maxsequence[$i] = "K"}
+        elsif ($maxsequence[$i] == 11)
+                {$maxsequence[$i] = "L"}
+        elsif ($maxsequence[$i] == 12)
+                {$maxsequence[$i] = "M"}
+        elsif ($maxsequence[$i] == 13)
+                {$maxsequence[$i] = "N"}
+        elsif ($maxsequence[$i] == 14)
+                {$maxsequence[$i] = "P"}
+        elsif ($maxsequence[$i] == 15)
+                {$maxsequence[$i] = "Q"}
+        elsif ($maxsequence[$i] == 16)
+                {$maxsequence[$i] = "R"}
+        elsif ($maxsequence[$i] == 17)
+                {$maxsequence[$i] = "S"}
+        elsif ($maxsequence[$i] == 18)
+                {$maxsequence[$i] = "T"}
+        elsif ($maxsequence[$i] == 19)
+                {$maxsequence[$i] = "V"}
+        elsif ($maxsequence[$i] == 20)
+                {$maxsequence[$i] = "W"}
+        elsif ($maxsequence[$i] == 21)
+                {$maxsequence[$i] = "X"}
+        elsif ($maxsequence[$i] == 22)
+                {$maxsequence[$i] = "Y"}
+        else 
+                {$maxsequence[$i] = "-"}
+	}
+}
+
+
+
+
+sub smooth
+{
+$smooth5 = $tempresscore[0]*3+$tempresscore[1]*2+$tempresscore[2];
+$pda_score[0] = $smooth5/900;
+$smooth5 = $tempresscore[1]*3+$tempresscore[2]*2+$tempresscore[0]*2+$tempresscore[3];
+$pda_score[1] = $smooth5/900;
+$endloop = $#tempresscore-1;
+for ($i=2;$i<$endloop;$i++)
+	{
+	$smooth5 = $tempresscore[$i]*3+$tempresscore[$i+1]*2+
+		$tempresscore[$i-1]*2+$tempresscore[$i-2]+$tempresscore[$i+2];
+	$pda_score[$i] = $smooth5/900;
+	}
+$smooth5 = $tempresscore[$#tempresscore-1]*3+$tempresscore[$#tempresscore-2]*2
+	+$tempresscore[$#tempresscore]*2+$tempresscore[$#tempresscore-3];
+$pda_score[$#tempresscore-1] = $smooth5/900;
+$smooth5 = $tempresscore[$#tempresscore]*3+$tempresscore[$#tempresscore-1]*2
+	+$tempresscore[$#tempresscore-2];
+$pda_score[$#tempresscore] = $smooth5/900;
+
+
+$smooth5 = $tempresmax[0]*3+$tempresmax[1]*2+$tempresmax[2];
+$pda_maximum[0] = $smooth5/900;
+$smooth5 = $tempresmax[1]*3+$tempresmax[2]*2+$tempresmax[0]*2+$tempresmax[3];
+$pda_maximum[1] = $smooth5/900;
+$endloop = $#tempresmax-1;
+for ($i=2;$i<$endloop;$i++)
+	{
+	$smooth5 = $tempresmax[$i]*3+$tempresmax[$i+1]*2+
+		$tempresmax[$i-1]*2+$tempresmax[$i-2]+$tempresmax[$i+2];
+	$pda_maximum[$i] = $smooth5/900;
+	}
+$smooth5 = $tempresmax[$#tempresmax-1]*3+$tempresmax[$#tempresmax-2]*2
+	+$tempresmax[$#tempresmax]*2+$tempresmax[$#tempresmax-3];
+$pda_maximum[$#tempresmax-1] = $smooth5/900;
+$smooth5 = $tempresmax[$#tempresmax]*3+$tempresmax[$#tempresmax-1]*2
+	+$tempresmax[$#tempresmax-2];
+$pda_maximum[$#tempresmax] = $smooth5/900;
+}
+
+
+
+
+sub get_reliable_regions
+{
+#note, this doesnt actually do anything any more - you can take it out if you like
+my %Amino = (
+       'A'=>  0,   'R'=> 14,   'N'=> 11,   'D'=> 2,
+       'C'=>  1,   'Q'=> 13,   'E'=> 3,   'G'=>  5,
+       'H'=>  6,   'I'=>  7,   'L'=>  9,   'K'=> 8,
+       'M'=>  10,   'F'=>  4,   'P'=>  12,   'S'=> 15,
+       'T'=>  16,   'W'=>  18,   'Y'=>  20,   'V'=>  17, 'X'=>  19,
+       );
+
+#note, this doesnt actually do anything any more - you can take it out if you like
+&get_blosum;
+
+$above4 = 0;
+for ($i=0;$i<=$#pda_score;$i++)
+	{
+        if ($pda_score[$i] > $peak_base)
+                {$above4++}
+        if ($pda_score[$i] < $tail)
+                {$above4 = 0}
+        if ($above4 >= $res_in_peak)
+                {$pda_score[$i] = "@"}
+	}
+
+$above4 = 0;
+for ($i=$#pda_score;$i>=0;$i--)
+	{
+	if ($pda_score[$i] eq "@")
+                {$above4++}
+        elsif ($pda_score[$i] < $tail)
+                {$above4 = 0}
+        if ($above4 && $pda_score[$i] >= $tail)
+                {$pda_score[$i] = "@"}
+	}
+}
+
+
+
+#note, this doesnt actually do anything any more - you can take it out if you like
+sub get_blosum
+{
+$string = <BLOSFILE>;
+$string = <BLOSFILE>;
+$string = <BLOSFILE>;
+$string = <BLOSFILE>;
+$string = <BLOSFILE>;
+
+for ($j=0;$j<=20;$j++)
+	{ $blomatrix[$j] = [split " ", <BLOSFILE>]; }
+ 
+for ($j=0;$j<=20;$j++)
+	{
+	for ($k=0;$k<=20;$k++)
+		{
+		if ($blomatrix[$j][$k] eq "@")
+			{$blomatrix[$j][$k] = $blomatrix[$k][$j]}
+		}
+	}
+close BLOSFILE;
+}
+

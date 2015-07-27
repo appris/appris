@@ -1,0 +1,124 @@
+
+
+SignalP 3.0		INSTALLATION INSTRUCTIONS
+
+
+DESCRIPTION
+
+SignalP predicts the presence  and  location of signal peptide  cleavage sites
+in  amino acid  sequences  from  different organisms:  Gram-positive bacteria,
+Gram-negative bacteria,  and eukaryotes.  The method incorporates a prediction
+of  cleavage sites and  a signal peptide/non-signal peptide  prediction  based
+on a combination of  several artificial neural networks.  It also incorporates
+predictions done by a hidden Markov model specifically designed to distinguish
+between signal peptides, non-secretory proteins, and (for eukaryotes only)
+uncleaved signal anchors.
+
+The method is described in detail in the following articles - please cite:
+
+* Current version:
+
+Improved prediction of signal peptides: SignalP 3.0.
+Jannick Dyrløv Bendtsen, Henrik Nielsen, Gunnar von Heijne and Søren Brunak.
+J. Mol. Biol., 340:783-795, 2004.
+
+* Original paper:
+
+Identification of prokaryotic and eukaryotic signal peptides and prediction
+of their cleavage sites.
+Henrik Nielsen, Jacob Engelbrecht, Søren Brunak and Gunnar von Heijne.
+Protein Engineering, 10:1-6, 1997.
+
+* If you specifically use the SignalP-HMM output, please also cite:
+
+Prediction of signal peptides and signal anchors by a hidden Markov model.
+Henrik Nielsen and Anders Krogh.
+Proceedings of the Sixth International Conference on Intelligent Systems
+for Molecular Biology (ISMB 6),
+AAAI Press, Menlo Park, California, pp. 122-130, 1998. 
+
+
+DOWNLOAD
+
+The SIGNALP package is a property of  Center for Biological Sequence Analysis.
+It may be downloaded only by special agreement.  For academic users there is a
+download site at:
+
+	http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?signalp
+
+Other users are requested to contact software@cbs.dtu.dk.
+
+
+PRE-INSTALLATION
+
+SignalP 3.0 will run on the most common UNIX platforms e.g.  Linux, SunOS etc.
+Make sure that your server has a complete UNIX installation. Specifically, the
+following programs are necessary:
+
+	sh	 	Bourne shell (or equivalent, e.g. bash, ksh)
+	awk	 	- or equivalent, e.g. nawk, gawk 
+	paste	 	UNIX standard tool
+
+If you wish to be able to generate plots you will also need the following:
+ 
+	gnuplot	 	3.5 or higher (all graphics)
+	ppmtogif 	(graphics in GIF)
+	ghostview	- or equivalent PostScript viewer (display on screen)
+
+The SignalP 3.0 package consists of two files:
+  
+        signalp-3.0.readme		this file
+        signalp-3.0.<unix>.tar.Z	compressed TAR archive
+
+where 'unix' is the UNIX platform on which you are about to install.
+
+
+INSTALLATION
+
+1. Decide where you wish to keep the software. Uncompress and untar
+   the package in that location:
+
+	cat signalp-3.0.tar.Z | uncompress | tar xvf -
+
+   This will produce a directory  'signalp-3.0'.  The size of the uncompressed
+   package is at most 1.5 Mb x the number of platforms.
+
+2. Edit the paragraph labeled  "GENERAL SETTINGS, CUSTOMIZE ..." in the top of
+   the file 'signalp'.
+
+3. Test SIGNALP on the test sequences shipped with the package:
+
+	cd $SIGNALP
+	./signalp -t euk test/test.seq		(1) text 
+	./signalp -g -t euk test/test.seq	(2) text and graphics
+	./signalp -G -t euk test/test.seq	(3) text and graphics, display
+	./signalp -g -t euk test/test5.seq	(4) several sequences
+
+   The sequence 'test/test.seq' is extracted  from  SwissProt 43.3 14KD_DAUCA;
+   the full entry is quoted in extenso  in 'test/test.dat'.  The output of the
+   command (1) above should be identical to the file 'test/test.out'; the plot
+   you get in (2) should be very similar to the file 'test/test.ps'.
+
+4. Move or copy the 'signalp' script to a directory in the users' path.
+
+5. Move or copy the 'signalp.1' file to a appropriate location  in your manual
+   system. If you need a compiled version try running:
+
+	man -d signalp.1 | compress >signalp.Z
+
+	or:
+
+	neqn signalp.1 | tbl | nroff -man | col | compress >signalp.Z
+
+6. Enjoy ...
+
+
+PROBLEMS AND QUESTIONS
+
+In case of technical problems (bugs etc.) please contact packages@cbs.dtu.dk.
+
+Questions on the scientific aspects of the SignalP method  should go to Henrik
+Nielsen, hnielsen@cbs.dtu.dk.
+
+
+CBS, 5 Feb 2007

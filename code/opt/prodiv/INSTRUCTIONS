@@ -1,0 +1,56 @@
+This package contains 3 different topology predictors:
+1. PRODIV-TMHMM
+2. PRO-TMHMM
+3. S-TMHMM
+
+The first two are alignment based, whereas the last is sequence based.
+This is a walk through on how to run this software on a linux/unix box.
+The procedure is not intentionally complicated. It also assumes that
+some program for finding homologs and creating multiple sequence alignments
+is available.
+
+Initial setup:
+1. Compile the programs in the modhmm0.92b directory by typing 'make all'.
+2. Run the script init.pl <program-path>. The parameter is the path to
+	the prodiv-tmhmm directory. This script basically adds this path
+	to some places where it is needed within the program.
+
+To run PRODIV-TMHMM (or PRO-TMHMM or S-TMHMM)
+1. For PRODIV-TMHMM and PRO-TMHMM, create multiple sequence alignments and save
+	them in the modhmm standard
+ 	format (described below). For S-TMHMM, save the sequences to run
+	in fasta format, one sequence per file.
+2. Run the script all_tmhmm_runner.pl. This script takes 3 parameters.
+	1. The program to run: "s" for S-TMHMM, "pro" for PRO-TMHMM or
+	   "prodiv" for PRODIV-TMHMM.
+	2. The directory of the files to predict. All files in this directory
+	   will be run.
+	3. The directory to save the output in. Output is a file called
+	   'something.res'.
+	   
+
+
+
+The modhmm alignment format:
+	One alignment per file
+	Each alignment row starts with '<' and ends with '>'
+	Every residue is separated by a ';'.
+	Gaps are described by either '.', ' ', '_' or '-'.
+	Gaps at the end of a row may be omitted so that the row
+		simply ends prematurely.
+	No row may be longer than the first, which should contain
+		the original query sequence.
+	NOTE: Make sure that the original query sequence is the top
+		sequence in the alignment file	
+Example file for query ACDEFG
+<A;C;D;E;F;G;>
+<A;-;D;E;F;G;>
+<A;-;-;F;F;T;>
+<A;-;-;A;>
+.
+.
+.
+
+There is also a simple parser from selex to mod format included. This parser ignores all comments in
+the selex-file, both user comments an "machine" comments. It also needs the separation between the
+sequence name and the sequence to be just one space.
