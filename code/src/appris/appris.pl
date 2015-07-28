@@ -167,9 +167,9 @@ $logger->init_log($str_params);
 #####################
 sub get_scores($$);
 sub get_final_scores($$$);
-#sub filter_by_class_codons($$\$\$);
+sub filter_by_class_codons($$\$\$);
 sub get_annotations($$$);
-sub is_discarted_by_nmd_codons($);
+#sub is_discarted_by_nmd_codons($);
 sub is_unique($$);
 sub step_appris($$);
 sub step_ccds($$);
@@ -316,25 +316,25 @@ sub main()
 	$logger->debug("PRE_SCORES:\n".Dumper($pre_scores)."\n");
 	$logger->debug("PRE_MAX_SCORES:\n".Dumper($max_scores)."\n");
 	
+#	# get scores of each transcript
+#	$logger->info("-- get scores for each variant\n");
+#	my ($scores, $s_scores, $nscores) = get_final_scores($gene, $pre_scores, $max_scores);
+#	$logger->debug("SCORES:\n".Dumper($scores)."\n");
+#	$logger->debug("N_SCORES:\n".Dumper($nscores)."\n");
+#	$logger->debug("G_SCORES:\n".Dumper($s_scores)."\n");
+
 	# get scores of each transcript
 	$logger->info("-- get scores for each variant\n");
-	my ($scores, $s_scores, $nscores) = get_final_scores($gene, $pre_scores, $max_scores);
+	my ($scores, $pre_s_scores, $nscores) = get_final_scores($gene, $pre_scores, $max_scores);
+	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
+	$logger->debug("PRE2_S_SCORES:\n".Dumper($pre_s_scores)."\n");
+	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");
+
+	# filter list of transcripts/scores by CLASS (and CODONS is disabled)
+	my ($s_scores) = filter_by_class_codons($gene, $pre_s_scores, $scores, $nscores);
 	$logger->debug("SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("N_SCORES:\n".Dumper($nscores)."\n");
 	$logger->debug("G_SCORES:\n".Dumper($s_scores)."\n");
-
-	# get scores of each transcript
-	#$logger->info("-- get scores for each variant\n");
-	#my ($scores, $pre_s_scores, $nscores) = get_final_scores($gene, $pre_scores, $max_scores);
-	#$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
-	#$logger->debug("PRE2_S_SCORES:\n".Dumper($pre_s_scores)."\n");
-	#$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");
-
-	# filter list of transcripts/scores by CLASS (and CODONS is disabled)
-	#my ($s_scores) = filter_by_class_codons($gene, $pre_s_scores, $scores, $nscores);
-	#$logger->debug("SCORES:\n".Dumper($scores)."\n");
-	#$logger->debug("N_SCORES:\n".Dumper($nscores)."\n");
-	#$logger->debug("G_SCORES:\n".Dumper($s_scores)."\n");
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
@@ -716,42 +716,42 @@ sub get_final_scores($$$)
 	
 } # End get_final_scores
 
-#sub filter_by_class_codons($$\$\$)
-#{
-#	my ($gene, $i_s_scores, $ref_scores, $ref_nscores) = @_;
-#	my ($s_scores);
-#	my ($method) = 'appris';
-#	
-#	my (@sorted_scores) = keys (%{$i_s_scores});	
-#	for ( my $i = 0; $i < scalar(@sorted_scores); $i++ ) {
-#		my ($appris_score) = $sorted_scores[$i];
-#		foreach my $transcript_id (@{$i_s_scores->{$appris_score}}) {
-#			my ($index) = $gene->{'_index_transcripts'}->{$transcript_id};
-#			my ($transcript) = $gene->transcripts->[$index];
-#			my ($appris_nscore) = $$ref_nscores->{$transcript_id}->{$method};
-#			my ($frozen_score, $frozen_nscore) = ($appris_score, $appris_nscore);
-#			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
-#				($frozen_score, $frozen_nscore) = (0,0);
-#			}
-#			if ( $transcript->translate->codons ) {
-#				my ($aux_codons) = '';
-#				foreach my $codon (@{$transcript->translate->codons}) {
-#					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-#						$aux_codons .= $codon->type.',';							
-#					}
-#				}
-#				unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
-#					($frozen_score, $frozen_nscore) = (0,0);
-#				}
-#			}
-#			push(@{$s_scores->{$frozen_score}}, $transcript_id);
-#			$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
-#			$$ref_nscores->{$transcript_id}->{$method} = $frozen_nscore;
-#		}			
-#	}
-#	return $s_scores;
-#	
-#} # end filter_by_class_codons
+sub filter_by_class_codons($$\$\$)
+{
+	my ($gene, $i_s_scores, $ref_scores, $ref_nscores) = @_;
+	my ($s_scores);
+	my ($method) = 'appris';
+	
+	my (@sorted_scores) = keys (%{$i_s_scores});	
+	for ( my $i = 0; $i < scalar(@sorted_scores); $i++ ) {
+		my ($appris_score) = $sorted_scores[$i];
+		foreach my $transcript_id (@{$i_s_scores->{$appris_score}}) {
+			my ($index) = $gene->{'_index_transcripts'}->{$transcript_id};
+			my ($transcript) = $gene->transcripts->[$index];
+			my ($appris_nscore) = $$ref_nscores->{$transcript_id}->{$method};
+			my ($frozen_score, $frozen_nscore) = ($appris_score, $appris_nscore);
+			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
+				($frozen_score, $frozen_nscore) = (0,0);
+			}
+			if ( $transcript->translate->codons ) {
+				my ($aux_codons) = '';
+				foreach my $codon (@{$transcript->translate->codons}) {
+					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
+						$aux_codons .= $codon->type.',';							
+					}
+				}
+				unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
+					($frozen_score, $frozen_nscore) = (0,0);
+				}
+			}
+			push(@{$s_scores->{$frozen_score}}, $transcript_id);
+			$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
+			$$ref_nscores->{$transcript_id}->{$method} = $frozen_nscore;
+		}			
+	}
+	return $s_scores;
+	
+} # end filter_by_class_codons
 
 # get the final annotation
 sub get_annotations($$$)
@@ -881,13 +881,13 @@ sub step_appris($$)
 	
 	# get TSL(1) annot
 	my ($tsl_transcs) = get_tsl_annots($gene_id);
-	
+
 	# scan the transcripts from the sorted APPRIS scores
-	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$appris_scores});	
+	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$appris_scores});			
 	for ( my $i = 0; $i < scalar(@sorted_ap_scores); $i++ ) {
 		
 		# save the highest score (the first one)
-		if ( $i == 0 ) { $highest_score = $sorted_ap_scores[$i]; }		
+		if ( $i == 0 ) { $highest_score = $sorted_ap_scores[$i] }
 		
 		my ($ap_score) = $sorted_ap_scores[$i];		
 		foreach my $transc_id (@{$appris_scores->{$ap_score}}) {
@@ -932,7 +932,10 @@ sub step_appris($$)
 				$transc_rep->{'tsl'} = 1;
 			}
 			# save the APPRIS decision
-			if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) and ( is_discarted_by_nmd_codons($transcript) == 0 ) ) {
+			# say if the number total of transcripts is one			
+			#my ($unique_transc) = ( scalar(keys(%{$appris_scores})) == 1 and scalar(@{$appris_scores->{$sorted_ap_scores[0]}}) == 1 ) ? 1 : 0;
+			#if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) and ( is_discarted_by_nmd_codons($transcript) == 0 or $unique_transc == 1 ) ) {
+			if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) ) {
 				$transc_rep->{'principal'} = 1;
 				$princ_list->{$transc_id} = 1;
 			}

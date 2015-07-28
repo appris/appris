@@ -289,43 +289,33 @@ sub _get_coverage($$)
 		$report->{'genes'}++;
 		if ( $gene_flags->{'firestar'} == 1 ) {
 			$report->{'firestar'}++;
-print STDERR "COVERAGE_DECITION_FIRESTAR:\t$gene_id\n";			
 		}
 		if ( $gene_flags->{'matador3d'} == 1 ) {
 			$report->{'matador3d'}++;
-print STDERR "COVERAGE_DECITION_MATADOR3D:\t$gene_id\n";			
 		}
 		if ( $gene_flags->{'corsair'} == 1 ) {
 			$report->{'corsair'}++;
-print STDERR "COVERAGE_DECITION_CORSAIR:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'spade'} == 1 ) {
 			$report->{'spade'}++;
-print STDERR "COVERAGE_DECITION_SPADE:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'thump'} == 1 ) {
 			$report->{'thump'}++;
-print STDERR "COVERAGE_DECITION_THUMP:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'crash_sp'} == 1 ) {
 			$report->{'crash_sp'}++;
-print STDERR "COVERAGE_DECITION_CRASH_SP:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'crash_tp'} == 1 ) {
 			$report->{'crash_tp'}++;
-print STDERR "COVERAGE_DECITION_CRASH_TP:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'inertia'} == 1 ) {
 			$report->{'inertia'}++;
-print STDERR "COVERAGE_DECITION_INERTIA:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'proteo'} == 1 ) {
 			$report->{'proteo'}++;
-print STDERR "COVERAGE_DECITION_PROTEO:\t$gene_id\n";
 		}
 		if ( $gene_flags->{'appris'} == 1 ) {
 			$report->{'appris'}++;
-print STDERR "COVERAGE_DECITION_APPRIS:\t$gene_id\n";
 		}
 	}
 	return $report;

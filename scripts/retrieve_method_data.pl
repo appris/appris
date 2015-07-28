@@ -24,8 +24,7 @@ use vars qw(
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 $CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.DEV.ini';
 # TEMPORAL SOLUTION!!!!
-#$ENV{APPRIS_METHODS}="firestar,matador3d,spade,corsair,thump,crash,proteo,appris";
-$ENV{APPRIS_METHODS}="firestar,matador3d,domain,damaged_domain,corsair,thump,crash,proteo,appris";
+$ENV{APPRIS_METHODS}="firestar,matador3d,spade-domain,spade-damaged_domain,corsair,thump,crash,proteo,appris";
 # TEMPORAL SOLUTION!!!!
 
 # Input parameters
@@ -149,11 +148,9 @@ sub get_data_by_method($$)
 		my ($gene_id) = $gene->stable_id;
 		if ($gene and $format eq 'bed') {
 			my ($position) = undef;
-			#my ($typehead) = 'no:browser,no:name';
 			my ($typehead) = 'bed12_1';
 			my ($exporter) = APPRIS::Exporter->new();
 			$output .= $exporter->get_bed_annotations($gene, $method, $position, $typehead);
-			#$logger->debug("OUTPUT: $output\n");
 		}
 		elsif ($gene and $format eq 'gtf') {
 			my ($exporter) = APPRIS::Exporter->new();

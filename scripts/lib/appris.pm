@@ -488,16 +488,16 @@ sub send_email($$$$$$)
 	# send email
 	my ($subject,$content);
 	if ( defined $ENV{APPRIS_WSERVER_REPORT_URL} ) {
-		my ($subject) = $cfg_subject." Your jobid $wserver has finished";
-		my ($content) = "<p>The results for your query $wserver are now available at ";	
+		$subject = $cfg_subject." Your jobid $wserver has finished";
+		$content = "<p>The results for your query $wserver are now available at ";	
 		my ($rst_url) = $ENV{APPRIS_WSERVER_REPORT_URL} . '/' . $wserver;
 		$content	 .= "<a href='$rst_url'>$rst_url</a></p>";
 		$content	 .= "</p>";
 		#$content	 .= "<p>Please remember that your results will be stored in our server only for 3 weeks, than will be deleted !!</p>";		
 	}
 	else {
-		my ($subject) = $cfg_subject." Your jobid $species/$wserver has finished";
-		my ($content) = "<p>The results for your query $species/$wserver are now available.";	
+		$subject = $cfg_subject." Your jobid $species/$wserver has finished";
+		$content = "<p>The results for your query $species/$wserver are now available.";	
 	}
 	_semail($cfg_from, $email, $subject, $content, $gzip_file);
 	
