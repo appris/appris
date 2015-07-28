@@ -1,0 +1,9 @@
+# Ignore everything in this directory
+*
+# Except these files
+!.gitignore
+!BLOSUM62
+!README.txt
+!another_fire_mess_web
+!discardEmptySeqsPDB.pl
+
