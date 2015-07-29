@@ -1,3 +1,48 @@
+###########################################
+# TODO LIST	or DECLARATIONS OF INTENTIONS #
+###########################################
+
+* APPRIS-CODE,
+	- APPRIS # TODO!!!
+		- Create a cutoff for the decision of CORSAIR. If the longest isoform is bigger than 1000aa, then we don't
+		take into account CORSAIR score.
+		- New weight for CORSAIR.    
+
+	- SPADE # TODO!!! (NOT USED YET: IN TEST)
+		- Normalized lengths for each DOMAIN, plus template gap penalties.
+
+	- THUMP  # TODO: 2!!!
+		- There is a bug in the consensus... check the example, PDE3B, ENSMUSG00000098306
+		- Implement CACHED method. Take into account temporal files that are cached.
+	
+	- CRASH # TODO!!!
+		- Execute SignalP sequence by sequence because the program crashed for more than 3 sequences.
+
+	- MATADOR3D # TODO!!!
+		- Algorithm as CORSAIR. Create non-redundant PDB database.
+		
+	- FIRESTAR # TODO????? (ask Michael)
+		- Take into account the median of sites to final decision in appris-firestar.
+		
+	- INERTIA # TODO!!!!
+		- RUN in CALENDULA.FCSC.ES THE DIFF GENES of GENCODEM4 - GENCODE19 - GENCODE22 !!!
+		
+	- Include INERTIA annotations for Human (only Gencode19) and Mouse (GencodeM4).
+
+	- Think about create new STRUCTURE of Data:
+		- Concatenate the methods files for each gene...
+		- Concatenate the results for each gene in one file??? Whats happen when you execute appris for some methods?
+		
+	- APPRIS # TODO!!!
+		- Rename "scripts/apprisall.pl" script to "scripts/appris.pl" 
+		- Create "apprisall" script that executes the pipeline, checks the results and insert the annotations.
+		- Include INERTIA changes (for Gencode19)
+				
+	- INERTIA # TODO!!!!!!
+		- Include annotations for Human (Gencode19) and Mouse (GencodeM4). For Mouse we only used "compara" alignments.
+		NOTE: Be careful, the Human results come from Gencode12 and the Mouse results come from GencodeM2
+
+		
 ####################################################
 # DESCRIPTION OF APPRIS RELEASES: WS1.WS2.C1.C2.D  #
 # WS1.WS2	-> Release of web server			   #
@@ -8,7 +53,7 @@
 ############################
 # DATE: 		           #
 # RELEASE:  	4.2.2.4.10 #
-# INIT_DATE: 	18Jun2015  #
+# ANNOT_DATE: 	18Jun2015  #
 ############################
 
 * HIGHLIGHTS:
@@ -38,7 +83,7 @@
 ###########################
 # DATE: 		          #
 # RELEASE:  	4.3.2.4.9 #
-# INIT_DATE: 	17Jul2015 #
+# ANNOT_DATE: 	17Jul2015 #
 ###########################
 
 * HIGHLIGHTS:

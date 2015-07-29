@@ -3438,12 +3438,12 @@ sub _parse_inseq_transc($)
 		while ( my $seq = $in->next_seq() )
 		{
 			my ($sequence_id);
-			if ( $seq->id =~ /[sp|tr]\|([^|]*)\|([^|]*)/ ) { # UniProt sequences
+			if ( $seq->id =~ /^[sp|tr]\|([^|]*)\|([^|]*)/ ) { # UniProt sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
 				$sequence_id = $id1;
 			}
-			elsif ( $seq->id =~ /([^|]*)\|([^|]*)/ ) { # GENCODE sequences
+			elsif ( $seq->id =~ /^([^|]*)\|([^|]*)/ ) { # GENCODE sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
 				$sequence_id = $id1;
@@ -3509,12 +3509,12 @@ sub _parse_inseq_transl($)
 		while ( my $seq = $in->next_seq() )
 		{
 			my ($sequence_id);
-			if ( $seq->id =~ /[sp|tr]\|([^|]*)\|([^|]*)/ ) { # UniProt sequences
+			if ( $seq->id =~ /^[sp|tr]\|([^|]*)\|([^|]*)/ ) { # UniProt sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
 				$sequence_id = $id1;
 			}
-			elsif ( $seq->id =~ /([^|]*)\|([^|]*)/ ) { # GENCODE sequences
+			elsif ( $seq->id =~ /^([^|]*)\|([^|]*)/ ) { # GENCODE sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
 				$sequence_id = $id1;
