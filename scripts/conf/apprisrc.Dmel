@@ -12,17 +12,17 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="drosophila_melanogaster/e79"
+export APPRIS_WS_NAME="drosophila_melanogaster/e81"
 
-export APPRIS_WS_ANNOT="drosophila_melanogaster/ens79.v1.28Apr2015"
+export APPRIS_WS_DATE="drosophila_melanogaster/ens81.v9.17Jul2015"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
 
 export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
-
-export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
-
-export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_ANNOT}"
-
-export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_ANNOT}"
 
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
@@ -39,7 +39,7 @@ export APPRIS_CHR_LIST="dmel_mitochondrion_genome,2L,2R,3L,3R,4,X,Y"
 
 #export APPRIS_E_VERSION=79
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.79.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.81.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.cdna.all.fa"
 
@@ -53,7 +53,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/drosophila_melanogaster/dmelanogaster_e79"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/drosophila_melanogaster/e79"
 
 # ---------------------------------#
 # Setting up the vars for database #

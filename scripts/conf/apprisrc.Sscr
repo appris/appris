@@ -12,17 +12,17 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="sus_scrofa/e77"
+export APPRIS_WS_NAME="sus_scrofa/e81"
 
-export APPRIS_WS_ANNOT="sus_scrofa/ens77.v7.9Feb2015"
+export APPRIS_WS_DATE="sus_scrofa/ens81.v9.17Jul2015"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
 
 export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
-
-export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
-
-export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_ANNOT}"
-
-export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_ANNOT}"
 
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
@@ -40,13 +40,13 @@ export APPRIS_CHR_LIST="1,2,3,4,5"
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-#export APPRIS_E_VERSION=79
+#export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.81.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.cdna.all.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.pep.all.fa"
 
 #export APPRIS_GENE_LIST=""
 
@@ -58,7 +58,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/sus_scrofa/e77"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/sus_scrofa/e80"
 
 # ---------------------------------#
 # Setting up the vars for database #

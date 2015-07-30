@@ -12,17 +12,17 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="danio_rerio/drerio_e80"
+export APPRIS_WS_NAME="danio_rerio/e81"
 
-export APPRIS_WS_ANNOT="danio_rerio/ens80.v8.16Apr2015"
+export APPRIS_WS_DATE="danio_rerio/ens81.v9.17Jul2015"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
 
 export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
-
-export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
-
-export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_ANNOT}"
-
-export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_ANNOT}"
 
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
@@ -42,9 +42,9 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-#export APPRIS_E_VERSION=80
+#export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Danio_rerio.GRCz10.80.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Danio_rerio.GRCz10.81.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Danio_rerio.GRCz10.cdna.all.fa"
 
@@ -60,7 +60,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Danio_rerio.GRCz10.pep.a
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/danio_rerio/drerio_e77"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/danio_rerio/drerio_e80"
 
 # ---------------------------------#
 # Setting up the vars for database #
