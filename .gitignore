@@ -1,5 +1,20 @@
-# Except this file
+# Ignore these files
+CHANGE.log
 TODO.txt
 .project
 .includepath
+.viminfo
+.idea/
+.bash_logout
+.bashrc
+.cache/
+.profile
+.ssh/
+code/db/*
 
+# Excepts
+!code/db/.gitignore
+!code/db/BLOSUM62
+!code/db/README.txt
+!code/db/another_fire_mess_web
+!code/db/discardEmptySeqsPDB.pl

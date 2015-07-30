@@ -31,7 +31,12 @@ export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
 export APPRIS_SPECIES="Drosophila melanogaster"
 
 #export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
-export APPRIS_CHR_LIST="dmel_mitochondrion_genome,2L,2R,3L,3R,4,X,Y"
+export APPRIS_CHR_LIST="2L,2R,3L,3R,4,X,Y,dmel_mitochondrion_genome"
+#export APPRIS_CHR_LIST="2L,2R"
+#export APPRIS_CHR_LIST="3L,3R"
+#export APPRIS_CHR_LIST="4"
+#export APPRIS_CHR_LIST="X,Y,dmel_mitochondrion_genome"
+
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
