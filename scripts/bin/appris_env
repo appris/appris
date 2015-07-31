@@ -4,7 +4,7 @@
 # Main bash script that loads environmental variable
 
 DIRNAME=`dirname $0`
-APPRIS_REL_ENV=( 'TST' 'Hsap' 'Mmus' 'Rnor' 'Drer' 'Sscr' 'Lpar' )
+APPRIS_REL_ENV=( 'TST' 'Hsap' 'Mmus' 'Rnor' 'Drer' 'Sscr' 'Dmel' 'Cele' 'Ptro' 'Lpar' )
 
 load_appris_specie_env() {
 	local e
