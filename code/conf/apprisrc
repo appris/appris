@@ -10,7 +10,8 @@
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
-export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_CODE_DIR}/cached"
+#export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_CODE_DIR}/cached"
+export APPRIS_PROGRAMS_TMP_DIR="/home/jmrodriguez/projects/APPRIS/appriscache"
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_CODE_DIR}/db"
 
