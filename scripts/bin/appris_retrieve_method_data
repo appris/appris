@@ -181,12 +181,17 @@ METHOD_SCRIPT_2="retrieve_method_data"
 SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
 
 if [ "${OUTPUT_DIR}" != "" ]; then
-	OUTPUT_DIR = "${APPRIS_DATA_DIR}"
+	APPRIS_ANNOT_DIR="${OUTPUT_DIR}"
+	APPRIS_DATA_DIR="${OUTPUT_DIR}"
 fi
-OUTPUT_PRINCIPAL="${OUTPUT_DIR}/appris_data.principal.txt"
-OUTPUT_PREFIX="${OUTPUT_DIR}/appris_data"
-OUTPUT_SCORES="${OUTPUT_DIR}/appris_data.appris_score.txt"
-OUTPUT_PRIN_SCORES="${OUTPUT_DIR}/appris_data.prin_scores.txt"
+OUTPUT_PRINCIPAL="${APPRIS_DATA_DIR}/appris_data.principal.txt"
+OUTPUT_SCORES="${APPRIS_DATA_DIR}/appris_data.appris_score.txt"
+OUTPUT_PRIN_SCORES="${APPRIS_DATA_DIR}/appris_data.prin_scores.txt"
+
+# Prepare workspace
+OUTPUT_WORKSPACE="${APPRIS_DATA_DIR}/${FORMAT}"
+prepare_workspace "${OUTPUT_WORKSPACE}"
+OUTPUT_PREFIX="${OUTPUT_WORKSPACE}/appris_method"
 
 # -----------------------------------------------------------------------------
 # Run method
@@ -291,8 +296,8 @@ else
 		CHR="${CHROMOSOME[${i}]}"
 		POSITION="${CHR}"
 		CHR_OUTPUT_PREFIX="${OUTPUT_PREFIX}.${POSITION}.*"
-		echo "rm ${CHR_OUTPUT_PREFIX}"
-		rm ${CHR_OUTPUT_PREFIX}
+		#echo "rm ${CHR_OUTPUT_PREFIX}"
+		#rm ${CHR_OUTPUT_PREFIX}
 	done
 	echo "================="
 	
