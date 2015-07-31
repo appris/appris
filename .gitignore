@@ -4,12 +4,15 @@ TODO.txt
 .project
 .includepath
 .viminfo
-.idea/
+.gitconfig
 .bash_logout
 .bashrc
-.cache/
 .profile
+.cache/
+.idea/
 .ssh/
+
+# Another files
 code/db/*
 
 # Excepts

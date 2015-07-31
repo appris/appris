@@ -14,11 +14,13 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/gencode19"
 
-export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/homo_sapiens/gen19.v7.9Feb2015"
+export APPRIS_WS_DATE="homo_sapiens/gen19.v9.17Jul2015"
 
-export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/homo_sapiens/gen19.v7.9Feb2015"
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
-export APPRIS_FEATURES_DIR="/local/jmrodriguez/apprisws/features"
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
 
 export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
 
@@ -46,6 +48,10 @@ export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.annotation.gt
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_transcripts.fa"
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_translations.fa"
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_FEATURES_DIR}/hg19.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_FEATURES_DIR}/bedAs"
 
 #export APPRIS_GENE_LIST=""
 
