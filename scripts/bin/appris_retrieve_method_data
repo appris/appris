@@ -189,10 +189,6 @@ METHOD_SCRIPT_2="retrieve_method_data"
 # prepare vars
 SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
 
-OUTPUT_PRINCIPAL="${APPRIS_DATA_DIR}/appris_data.principal.txt"
-OUTPUT_SCORES="${APPRIS_DATA_DIR}/appris_data.appris_score.txt"
-OUTPUT_PRIN_SCORES="${APPRIS_DATA_DIR}/appris_data.prin_scores.txt"
-
 OUTPUT_WORKSPACE="${APPRIS_DATA_DIR}/${FORMAT}"
 prepare_workspace "${OUTPUT_WORKSPACE}"
 OUTPUT_PREFIX="${OUTPUT_WORKSPACE}/appris_method"
@@ -227,14 +223,6 @@ if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
 		--output=${OUTPUT_PREFIX} \
 		--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
 		${LOG_PARAMETERS}
-	echo "================="
-	
-	# extract principal scores
-	echo "================="
-	for PRINC_TRANSC_ID in `cut -f 3 ${OUTPUT_PRINCIPAL}`; do
-		echo "grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}"
-		grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}
-	done	
 	echo "================="
 	
 # for the whole genome chromsome by chromosome
@@ -305,14 +293,6 @@ else
 	done
 	echo "================="
 	
-	# extract principal scores
-	echo "================="
-	for PRINC_TRANSC_ID in `cut -f 3 ${OUTPUT_PRINCIPAL}`; do
-		echo "grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}"
-		grep $PRINC_TRANSC_ID ${OUTPUT_SCORES} >> ${OUTPUT_PRIN_SCORES}
-	done	
-	echo "================="
-
 fi
 
 # -----------------------------------------------------------------------------
@@ -326,7 +306,7 @@ for ((j=0;j<$INDEX;j++)); do
 	
 	if [ "${FORMAT}" == "bed" ]; then
 		# Sort the the tracks
-		echo "sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2"
+		echo "sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2 && mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}"
 		sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2
 		mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}
 		
