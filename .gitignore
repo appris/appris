@@ -1,6 +1,4 @@
-# Ignore these files
-CHANGE.log
-TODO.txt
+# Ignore these files/directories
 .project
 .includepath
 .viminfo
@@ -11,9 +9,11 @@ TODO.txt
 .cache/
 .idea/
 .ssh/
-
-# Another files
+CHANGE.log
+TODO.txt
 code/db/*
+server/logs/
+server/node_modules/
 
 # Excepts
 !code/db/.gitignore
