@@ -52,6 +52,7 @@ USAGE="
 \t\t Rnor  - Rattus norvegicus -\n
 \t\t Drer  - Danio rerio -\n
 \t\t Sscr  - Sus scrofa -\n
+\t\t Ptro  - Pan troglodytes -\n
 \t\t Dmel  - Drosophila melanogaster -\n
 \t\t Cele  - Caenorhabditis elegans -\n
 \t\t Lpar  - Lynx pardinus -\n
@@ -86,7 +87,7 @@ do
 	case "$1" in
 		-c | -conf )
 			case "$2" in
-				Hsap | Mmus | Rnor | Drer | Sscr | Dmel | Cele | Lpar )
+				Hsap | Mmus | Rnor | Drer | Sscr | Ptro | Dmel | Cele | Lpar )
 					SPECIES=$2
 					;;
 				* )
