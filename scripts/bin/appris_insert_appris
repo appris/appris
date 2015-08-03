@@ -88,9 +88,13 @@ do
 					SPECIES=$2
 					;;
 				* )
-					echo Unknown method name: "$2" 
-					echo -e $USAGE
-					exit 1
+					if [ ! -e $2 ]; then
+						echo Unknown config file: "$2" 
+						echo -e $USAGE
+						exit 1
+					else
+						CONF_FILE=$2
+					fi
 					;;
 			esac
 			shift
@@ -137,15 +141,22 @@ do
 	shift
 done
 
-if [ "${SPECIES}" == "" ]; then
-	echo You must specify at least one SPECIES!
+if [[ "${SPECIES}" == "" && "${CONF_FILE}" == "" ]]; then
+	echo You must specify at least one SPECIES! or config file!
 	echo -e $USAGE
 	exit 1
 fi
 
 # -----------------------------------------------------------------------------
-# Prepare Environment from given SPECIES
-load_appris_specie_env "${SPECIES}"
+# Prepare Environment
+if [ "${SPECIES}" != "" ]; then
+	# from given SPECIES
+	load_species_env "${SPECIES}"
+else
+	# from config file
+	echo "source ${CONF_FILE}"
+	source ${CONF_FILE}	
+fi
 
 # -----------------------------------------------------------------------------
 # Get method script name
