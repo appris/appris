@@ -178,20 +178,21 @@ METHOD_SCRIPT_2="retrieve_method_data"
 
 # -----------------------------------------------------------------------------
 # Var declarations
+# prepare vars
 SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
-
 if [ "${OUTPUT_DIR}" != "" ]; then
 	APPRIS_ANNOT_DIR="${OUTPUT_DIR}"
 	APPRIS_DATA_DIR="${OUTPUT_DIR}"
 fi
+prepare_workspace "${APPRIS_DATA_DIR}"
+OUTPUT_WORKSPACE="${APPRIS_DATA_DIR}/${FORMAT}"
+prepare_workspace "${OUTPUT_WORKSPACE}"
+OUTPUT_PREFIX="${OUTPUT_WORKSPACE}/appris_method"
+
 OUTPUT_PRINCIPAL="${APPRIS_DATA_DIR}/appris_data.principal.txt"
 OUTPUT_SCORES="${APPRIS_DATA_DIR}/appris_data.appris_score.txt"
 OUTPUT_PRIN_SCORES="${APPRIS_DATA_DIR}/appris_data.prin_scores.txt"
 
-# Prepare workspace
-OUTPUT_WORKSPACE="${APPRIS_DATA_DIR}/${FORMAT}"
-prepare_workspace "${OUTPUT_WORKSPACE}"
-OUTPUT_PREFIX="${OUTPUT_WORKSPACE}/appris_method"
 
 # -----------------------------------------------------------------------------
 # Run method

@@ -129,12 +129,6 @@ if [ "${SPECIES}" == "" ]; then
 	exit 1
 fi  
 
-if [ "${OUTPUT_DIR}" == "" ]; then
-	echo You must specify at least version name!
-	echo -e $USAGE
-	exit 1
-fi  
-
 # -----------------------------------------------------------------------------
 # Prepare Environment from given SPECIES
 load_appris_specie_env "${SPECIES}"
@@ -148,15 +142,20 @@ METHOD_SCRIPT_2="retrieve_main_data_fromfile"
 # -----------------------------------------------------------------------------
 # Var declarations
 SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
-ANNOT_RST_MAIN_FILE="${OUTPUT_DIR}/appris_data.appris.txt"
-ANNOT_RST_LABEL_FILE="${OUTPUT_DIR}/appris_data.appris_label.txt"
-ANNOT_RST_TRANSL_FILE="${OUTPUT_DIR}/appris_data.transl.fa"
-ANNOT_RST_ANNOT_FILE="${OUTPUT_DIR}/appris_data.annot.gtf"
+if [ "${OUTPUT_DIR}" != "" ]; then
+	APPRIS_DATA_DIR="${OUTPUT_DIR}"
+fi
+prepare_workspace "${APPRIS_DATA_DIR}"
 
-OUTPUT_STATS_CCDS_RESULTFILE="${OUTPUT_DIR}/appris_stats.ccds.txt"
-OUTPUT_STATS_CCDS_G_RESULTFILE="${OUTPUT_DIR}/appris_stats.ccds_g.txt"
-OUTPUT_DATA_PRINCIPAL_RESULTFILE="${OUTPUT_DIR}/appris_data.principal.txt"
-OUTPUT_DATA_PRINCIPAL_ENS_RESULTFILE="${OUTPUT_DIR}/appris_data.principal.forENSEMBL.txt"
+ANNOT_RST_MAIN_FILE="${APPRIS_DATA_DIR}/appris_data.appris.txt"
+ANNOT_RST_LABEL_FILE="${APPRIS_DATA_DIR}/appris_data.appris_label.txt"
+ANNOT_RST_TRANSL_FILE="${APPRIS_DATA_DIR}/appris_data.transl.fa"
+ANNOT_RST_ANNOT_FILE="${APPRIS_DATA_DIR}/appris_data.annot.gtf"
+
+OUTPUT_STATS_CCDS_RESULTFILE="${APPRIS_DATA_DIR}/appris_stats.ccds.txt"
+OUTPUT_STATS_CCDS_G_RESULTFILE="${APPRIS_DATA_DIR}/appris_stats.ccds_g.txt"
+OUTPUT_DATA_PRINCIPAL_RESULTFILE="${APPRIS_DATA_DIR}/appris_data.principal.txt"
+OUTPUT_DATA_PRINCIPAL_ENS_RESULTFILE="${APPRIS_DATA_DIR}/appris_data.principal.forENSEMBL.txt"
 
 # -----------------------------------------------------------------------------
 # local parameters
