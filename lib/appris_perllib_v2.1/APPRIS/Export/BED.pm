@@ -1024,6 +1024,72 @@ sub _aux_get_matador3d_annotations {
 
 =cut
 
+# PRINT the alignments together from Pfam 
+#sub get_spade_annotations {
+#	my ($transcript_id, $feature, $typebed, $ref_output, $source) = @_;
+#
+#	# Get annotations
+# 	if ( $feature->analysis ) {
+# 		my ($analysis) = $feature->analysis;
+# 		if ( $analysis->spade ) { 			
+#	 		my ($method) = $analysis->spade;
+#	 		# get residue annotations
+#			if ( defined $method->regions ) {
+#								
+#				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
+#				my ($res_list) = $method->regions;
+#				my ($num_res) = scalar(@{$res_list});
+#				my ($res_domains);
+#				my ($res_damaged_domains);
+#				foreach my $res (@{$res_list}) {
+#					if ( $res->type_domain eq 'domain' ) {
+#						#push(@{$res_domains}, $res);
+#					}
+#					elsif ( $res->type_domain eq 'domain_possibly_damaged' ) {
+#						push(@{$res_domains}, $res);
+#					}
+#					elsif ( $res->type_domain eq 'domain_damaged' ) {
+#						push(@{$res_damaged_domains}, $res);
+#					}
+#					elsif ( $res->type_domain eq 'domain_wrong' ) {
+#						push(@{$res_damaged_domains}, $res);
+#					}
+#				}
+#				if ( $source eq 'domain' ) {
+#					_aux_get_spade_annotations('domain',
+#												$transcript_id,
+#												$feature,
+#												$res_domains,
+#												$typebed,
+#												$ref_output);
+#				}
+#				elsif ( $source eq 'damaged_domain' ) {
+#					_aux_get_spade_annotations('damaged_domain',
+#												$transcript_id,
+#												$feature,
+#												$res_damaged_domains,
+#												$typebed,
+#												$ref_output);
+#				}
+#				else {
+#					_aux_get_spade_annotations('domain',
+#												$transcript_id,
+#												$feature,
+#												$res_domains,
+#												$typebed,
+#												$ref_output);
+#					_aux_get_spade_annotations('damaged_domain',
+#												$transcript_id,
+#												$feature,
+#												$res_damaged_domains,
+#												$typebed,
+#												$ref_output);
+#				}
+#			}
+# 		}
+# 	}
+#}
+# PRINT the alignments from Pfam separetly
 sub get_spade_annotations {
 	my ($transcript_id, $feature, $typebed, $ref_output, $source) = @_;
 
@@ -1038,9 +1104,9 @@ sub get_spade_annotations {
 				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
 				my ($res_list) = $method->regions;
 				my ($num_res) = scalar(@{$res_list});
-				my ($res_domains);
-				my ($res_damaged_domains);
 				foreach my $res (@{$res_list}) {
+					my ($res_domains);
+					my ($res_damaged_domains);
 					if ( $res->type_domain eq 'domain' ) {
 						push(@{$res_domains}, $res);
 					}
@@ -1053,36 +1119,36 @@ sub get_spade_annotations {
 					elsif ( $res->type_domain eq 'domain_wrong' ) {
 						push(@{$res_damaged_domains}, $res);
 					}
-				}
-				if ( $source eq 'domain' ) {
-					_aux_get_spade_annotations('domain',
-												$transcript_id,
-												$feature,
-												$res_domains,
-												$typebed,
-												$ref_output);
-				}
-				elsif ( $source eq 'damaged_domain' ) {
-					_aux_get_spade_annotations('damaged_domain',
-												$transcript_id,
-												$feature,
-												$res_damaged_domains,
-												$typebed,
-												$ref_output);
-				}
-				else {
-					_aux_get_spade_annotations('domain',
-												$transcript_id,
-												$feature,
-												$res_domains,
-												$typebed,
-												$ref_output);
-					_aux_get_spade_annotations('damaged_domain',
-												$transcript_id,
-												$feature,
-												$res_damaged_domains,
-												$typebed,
-												$ref_output);
+					if ( $source eq 'domain' ) {
+						_aux_get_spade_annotations('domain',
+													$transcript_id,
+													$feature,
+													$res_domains,
+													$typebed,
+													$ref_output);
+					}
+					elsif ( $source eq 'damaged_domain' ) {
+						_aux_get_spade_annotations('damaged_domain',
+													$transcript_id,
+													$feature,
+													$res_damaged_domains,
+													$typebed,
+													$ref_output);
+					}
+					else {
+						_aux_get_spade_annotations('domain',
+													$transcript_id,
+													$feature,
+													$res_domains,
+													$typebed,
+													$ref_output);
+						_aux_get_spade_annotations('damaged_domain',
+													$transcript_id,
+													$feature,
+													$res_damaged_domains,
+													$typebed,
+													$ref_output);
+					}
 				}
 			}
  		}
@@ -1143,7 +1209,6 @@ sub _aux_get_spade_annotations {
 			my ($translation) = $feature->translate;
 			my ($cds_list) = $translation->cds;
 			my ($num_cds) = scalar(@{$cds_list});						
-		
 			foreach my $res (@{$res_list}) {
 				my ($contained_cds) = $translation->get_overlapping_cds($res->start, $res->end);
 				my (@sorted_contained_cds) = @{$contained_cds};
