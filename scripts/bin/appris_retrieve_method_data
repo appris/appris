@@ -285,11 +285,12 @@ else
 		echo "================="
 	
 		# concatenate outputs
-		echo "================="	
-		INDEX2=${#METHODS[@]}	
-		for ((j=0;j<$INDEX2;j++)); do
-		
-			M=${METHODS[${j}]}
+		echo "================="
+		#INDEX2=${#METHODS[@]}	
+		#for ((j=0;j<$INDEX2;j++)); do		
+			#M=${METHODS[${j}]}
+		METHODS_ARR=$( echo ${METHODS} | tr "," " ")
+		for M in ${METHODS_ARR};do	
 			CHR_OUTPUT_METHOD="${CHR_OUTPUT_PREFIX}.${M}.${FORMAT}"
 			OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
 			
@@ -318,10 +319,12 @@ fi
 # -----------------------------------------------------------------------------
 # Prepare output depending on the type of FORMAT
 echo "================="	
-INDEX=${#METHODS[@]}	
-for ((j=0;j<$INDEX;j++)); do
-
-	M=${METHODS[${j}]}
+#INDEX=${#METHODS[@]}
+#for ((j=0;j<$INDEX;j++)); do
+#	M=${METHODS[${j}]}
+METHODS_ARR=$( echo ${METHODS} | tr "," " ")
+for M in ${METHODS_ARR};do	
+	
 	OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
 	
 	if [ "${FORMAT}" == "bed" ]; then
