@@ -25,7 +25,6 @@ use vars qw(
 	$CONFIG_INI_APPRIS_DB_FILE
 	$LOGLEVEL
 	$LOGAPPEND
-	$APPRIS_METHODS
 );
 
 $LOCAL_PWD					= $FindBin::Bin;
@@ -33,9 +32,6 @@ $CONFIG_INI_ENSEMBL_DB_FILE	= $FindBin::Bin.'/conf/ensembldb.ini';
 $CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.DEV.ini';
 $LOGLEVEL					= 'INFO';
 $LOGAPPEND					= '';
-foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
-	$APPRIS_METHODS->{$method} = 1;
-}
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
@@ -93,11 +89,6 @@ else {
 }
 
 # Optional arguments
-
-# get method's pipeline
-#unless ( defined $methods ) {
-#	$methods = join( ',',keys(%{$APPRIS_METHODS}) );
-#}
 
 # get vars of ensembl db
 unless ( defined $ensembldb_conf_file ) {

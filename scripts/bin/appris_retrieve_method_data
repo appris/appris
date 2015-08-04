@@ -23,6 +23,8 @@ FILENAME=`basename $0`
 FILENAME="${FILENAME%.*}"
 DIRNAME=`dirname $0`
 
+METHODS=""
+FORMAT=""
 OUTPUT_DIR=""
 LOG_LEVEL=""
 
@@ -57,6 +59,11 @@ USAGE="
 \t\t Lpar  - Lynx pardinus -\n
 \n
 \t\t Source file for species\n
+\n
+\t -m [-method]\n
+\t\t Methods which will execute:\n
+\t\t firestar,matador3d,spade,corsair,thump,crash,proteo,appris\n
+\t\t firestar,matador3d,spade-domain,spade-damaged_domain,corsair,thump,crash,proteo,appris\n
 \n
 \t -f [-format]\n
 \t\t gtf\n
@@ -103,6 +110,10 @@ do
 			esac
 			shift
 			;;		
+		-m | -methods )
+			METHODS=$2
+			shift
+			;;
 		-f | -format )
 			case "$2" in
 				gtf | gff3 | bed | json )      
@@ -161,6 +172,12 @@ if [ "${OUTPUT_DIR}" != "" ]; then
 	APPRIS_DATA_DIR="${OUTPUT_DIR}"
 fi
 
+if [ "${METHODS}" == "" ]; then
+	echo You must specify the methods!
+	echo -e $USAGE
+	exit 1
+fi
+
 if [ "${FORMAT}" == "" ]; then
 	echo You must specify at least one format!
 	echo -e $USAGE
@@ -196,7 +213,6 @@ OUTPUT_PREFIX="${OUTPUT_WORKSPACE}/appris_method"
 # -----------------------------------------------------------------------------
 # Run method
 SCRIPT_2="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT_2}.pl"
-METHODS=('appris' 'firestar' 'matador3d' 'spade' 'corsair' 'crash' 'thump' 'inertia' 'proteo')
 
 # from a given list of genes
 if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
@@ -212,6 +228,7 @@ if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
 	echo "================="
 	echo "perl ${SCRIPT_2}"
 	echo " --species="${APPRIS_SPECIES}""
+	echo " --methods=${METHODS}"
 	echo " --format=${FORMAT}"
 	echo " --output=${OUTPUT_PREFIX}"
 	echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
@@ -219,6 +236,7 @@ if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
 
 	perl ${SCRIPT_2} \
 		--species="${APPRIS_SPECIES}" \
+		--methods=${METHODS} \
 		--format=${FORMAT} \
 		--output=${OUTPUT_PREFIX} \
 		--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
@@ -250,6 +268,7 @@ else
 		echo "perl ${SCRIPT_2}"
 		echo " --species="${APPRIS_SPECIES}""
 		echo " --chr=${CHR}"
+		echo " --methods=${METHODS}"
 		echo " --format=${FORMAT}"
 		echo " --output=${CHR_OUTPUT_PREFIX}"
 		echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
@@ -258,6 +277,7 @@ else
 		perl ${SCRIPT_2} \
 			--species="${APPRIS_SPECIES}" \
 			--chr=${CHR} \
+			--methods=${METHODS} \
 			--format=${FORMAT} \
 			--output=${CHR_OUTPUT_PREFIX} \
 			--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \

@@ -23,13 +23,11 @@ use vars qw(
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 $CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.DEV.ini';
-# TEMPORAL SOLUTION!!!!
-$ENV{APPRIS_METHODS}="firestar,matador3d,spade-domain,spade-damaged_domain,corsair,thump,crash,proteo,appris";
-# TEMPORAL SOLUTION!!!!
 
 # Input parameters
 my ($species) = undef;
 my ($chr) = undef;
+my ($methods) = undef;
 my ($format) = undef;
 my ($output_file) = undef;
 my ($apprisdb_conf_file) = undef;
@@ -40,6 +38,7 @@ my ($loglevel) = undef;
 &GetOptions(
 	'species=s'			=> \$species,
 	'chr=s'				=> \$chr,
+	'methods=s'			=> \$methods,
 	'format=s'			=> \$format,
 	'output=s'			=> \$output_file,
 	'apprisdb-conf=s'	=> \$apprisdb_conf_file,
@@ -133,7 +132,7 @@ sub get_data_by_chr($$)
 	my ($chromosome) = $registry->fetch_by_region($chr, undef, undef, 'all');
 	#$logger->debug(Dumper($chromosome)."\n");
 
-	foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
+	foreach my $method ( split(',',$methods) ) {
 		$logger->debug("#method $method -------\n");
 		$output_report->{$method} = get_data_by_method($chromosome,$method);
 	}
@@ -197,6 +196,8 @@ retrieve_method_data
 
 	--chr  <Genomic region>
 	
+	--methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
+
 	--apprisdb-conf <Config file of APPRIS database>
 				
 =head2 Optional arguments (log arguments):
@@ -216,6 +217,8 @@ retrieve_method_data
 
 		--chr=chr21
 		
+		--methods=firestar,matador3d,spade,corsair,thump,crash,appris
+
 		--format=gtf
 		
 		--output=../features/data/appris.results.rel7.v1.chr21
