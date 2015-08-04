@@ -29,7 +29,7 @@ use vars qw(
 
 $LOCAL_PWD					= $FindBin::Bin;
 $CONFIG_INI_ENSEMBL_DB_FILE	= $FindBin::Bin.'/conf/ensembldb.ini';
-$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.DEV.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.ini';
 $LOGLEVEL					= 'INFO';
 $LOGAPPEND					= '';
 

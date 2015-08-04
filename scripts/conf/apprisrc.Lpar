@@ -65,7 +65,7 @@ export APPRIS_NUM_PARALLEL_PROC=1
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
 
 # --------------------------------#
 # Setting up the vars for cluster #

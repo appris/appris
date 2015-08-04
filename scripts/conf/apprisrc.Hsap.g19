@@ -69,7 +69,7 @@ export UCSC_BED_AS_FILE="${APPRIS_WORKSPACE}/features/ucsc/bedAs"
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.g19"
 
 # --------------------------------#
 # Setting up the vars for cluster #

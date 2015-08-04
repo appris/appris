@@ -1,0 +1,10 @@
+; This is a configuration file used by perl files
+
+[HOMO_SAPIENS_DB]
+  specie_name=Human  
+  specie=homo_sapiens
+  host=jabba.cnio.es
+  db=appris_homo_sapiens_gencode_19
+  user=wensembl
+  pass=wensembl
+  port=

@@ -41,7 +41,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.DEV.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.ini';
 foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
 	$APPRIS_METHODS->{$method} = 1;
 }

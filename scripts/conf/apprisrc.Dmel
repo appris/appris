@@ -64,7 +64,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.DEV.ini"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
 
 # --------------------------------#
 # Setting up the vars for cluster #
