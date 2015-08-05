@@ -8,11 +8,13 @@
 .viminfo
 .gitconfig
 .mysql_history
+.Xauthority
 .cache/
 .idea/
 .ssh/
 .forever/
 .npm/
+
 CHANGE.log
 TODO.txt
 code/db/*
