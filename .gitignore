@@ -12,6 +12,7 @@
 CHANGE.log
 TODO.txt
 code/db/*
+ws/download/data/*
 server/logs/
 server/node_modules/
 
