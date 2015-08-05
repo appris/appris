@@ -6,7 +6,7 @@
 # Setting up vars of APPRIS program #
 # ----------------------------------#
 
-export APPRIS_HOME="/Users/jmrodriguez/projects/APPRIS/appris-trunk"
+export APPRIS_HOME="/home/appris-dev"
 
 export APPRIS_WSERVER_HOME="${APPRIS_HOME}/ws"
 
