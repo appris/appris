@@ -1,4 +1,6 @@
 {
+    "version": "2.4.9",
+    "date": "2015-08-05",
     "headers": [
         {
             "id":       "specie",
@@ -67,8 +69,8 @@
             "specie":                   "Human",
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh38",
-            "dataset":                  "gencode22/ensembl80",
-            "release":                  "ens80.v8.16Apr2015",
+            "dataset":                  "gencode22/ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -108,7 +110,7 @@
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh37",
             "dataset":                  "gencode19/ensembl74",
-            "release":                  "gen19.v7.9Feb2015",
+            "release":                  "gen19.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -147,8 +149,8 @@
             "specie":                   "Mouse",
             "scientific":               "mus_musculus",
             "assembly":                 "GRCm38",
-            "dataset":                  "gencodeM3/ensembl77",
-            "release":                  "ens78.v7.9Feb2015",
+            "dataset":                  "gencodeM6/ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -183,8 +185,8 @@
             "specie":                   "Rat",
             "scientific":               "rattus_norvegicus",
             "assembly":                 "Rnor_6.0",
-            "dataset":                  "ensembl80",
-            "release":                  "ens80.v8.16Apr2015",
+            "dataset":                  "ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -255,8 +257,8 @@
             "specie":                   "Zebrafish",
             "scientific":               "danio_rerio",
             "assembly":                 "GRCz10",
-            "dataset":                  "ensembl80",
-            "release":                  "ens80.v8.16Apr2015",
+            "dataset":                  "ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -327,8 +329,8 @@
             "specie":                   "Pig",
             "scientific":               "sus_scrofa",
             "assembly":                 "Sscrofa10.2",
-            "dataset":                  "ensembl77",
-            "release":                  "ens77.v7.9Feb2015",
+            "dataset":                  "ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms":       {
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
