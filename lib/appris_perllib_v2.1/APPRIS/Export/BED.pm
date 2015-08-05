@@ -1266,7 +1266,9 @@ sub _aux_get_spade_annotations {
 				}
 				if ( defined $typebed and ( ($typebed eq 'bedDetail') or ($typebed =~ /bed12\_/)) ) {
 					if ( $res->hmm_name ) {
-						$data->{'note'} = $res->hmm_name;
+						#$data->{'note'} = $res->hmm_name;
+						$data->{'name'} = $res->hmm_name;
+						$data->{'note'} = $transcript_id;
 					}
 				}				
 			}
