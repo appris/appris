@@ -1,18 +1,21 @@
 # Ignore these files/directories
+.bash_logout
+.bashrc
+.bash_history
+.profile
 .project
 .includepath
 .viminfo
 .gitconfig
-.bash_logout
-.bashrc
-.profile
+.mysql_history
 .cache/
 .idea/
 .ssh/
+.forever/
+.npm/
 CHANGE.log
 TODO.txt
 code/db/*
-ws/download/data/*
 server/logs/
 server/node_modules/
 
