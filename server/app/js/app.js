@@ -31,15 +31,25 @@ var apprisApp = angular.module('apprisApp', [
 ]);
 
 apprisApp.config(['$provide', function ($provide) {
-    $provide.value("consBaseUrlWS", 'http://apprisws.bioinfo.cnio.es');
-    $provide.value("consUrlRunnerRunWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/run');
-    $provide.value("consUrlRunnerStatusWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/status');
-    $provide.value("consUrlRunnerResultTypesWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/resulttypes');
-    $provide.value("consUrlRunnerResultWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/result');
-    $provide.value("consUrlSeekerWS", 'http://apprisws.bioinfo.cnio.es/rest/seeker');
-    $provide.value("consUrlExporterWS", 'http://apprisws.bioinfo.cnio.es/rest/exporter');
-    $provide.value("consUrlSequencerWS", 'http://apprisws.bioinfo.cnio.es/rest/sequencer');
-    $provide.value("consUrlViewerWS", 'http://apprisws.bioinfo.cnio.es/rest/viewer');
+//    $provide.value("consBaseUrlWS", 'http://apprisws.bioinfo.cnio.es');
+//    $provide.value("consUrlRunnerRunWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/run');
+//    $provide.value("consUrlRunnerStatusWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/status');
+//    $provide.value("consUrlRunnerResultTypesWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/resulttypes');
+//    $provide.value("consUrlRunnerResultWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/result');
+//    $provide.value("consUrlSeekerWS", 'http://apprisws.bioinfo.cnio.es/rest/seeker');
+//    $provide.value("consUrlExporterWS", 'http://apprisws.bioinfo.cnio.es/rest/exporter');
+//    $provide.value("consUrlSequencerWS", 'http://apprisws.bioinfo.cnio.es/rest/sequencer');
+//    $provide.value("consUrlViewerWS", 'http://apprisws.bioinfo.cnio.es/rest/viewer');
+
+    $provide.value("consBaseUrlWS", 'http://appris.cnio.es/~appris-dev/ws');
+    $provide.value("consUrlRunnerRunWS", 'http://appris.cnio.es/~appris-dev/ws/rest/runner/run');
+    $provide.value("consUrlRunnerStatusWS", 'http://appris.cnio.es/~appris-dev/ws/rest/runner/status');
+    $provide.value("consUrlRunnerResultTypesWS", 'http://appris.cnio.es/~appris-dev/ws/rest/runner/resulttypes');
+    $provide.value("consUrlRunnerResultWS", 'http://appris.cnio.es/~appris-dev/ws/rest/runner/result');
+    $provide.value("consUrlSeekerWS", 'http://appris.cnio.es/~appris-dev/ws/rest/seeker');
+    $provide.value("consUrlExporterWS", 'http://appris.cnio.es/~appris-dev/ws/rest/exporter');
+    $provide.value("consUrlSequencerWS", 'http://appris.cnio.es/~appris-dev/ws/rest/sequencer');
+    $provide.value("consUrlViewerWS", 'http://appris.cnio.es/~appris-dev/ws/rest/viewer');
 
 //    $provide.value("consBaseUrlWS", 'http://local.es/ws');
 //    $provide.value("consUrlRunnerRunWS", 'http://local.es/ws/rest/runner/run');
@@ -161,6 +171,9 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
             when('/about', {
                 controller: 'AboutController',
                 templateUrl: 'partials/about.html'
+            }).
+            when('/changelogs', {
+                templateUrl: 'partials/changelogs.html'
             }).
             when('/', {
                 controller: 'ApprisController',
