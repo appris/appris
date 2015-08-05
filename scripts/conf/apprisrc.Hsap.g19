@@ -55,9 +55,9 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_translati
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_WORKSPACE}/features/ucsc/hg19.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg19.chrom.sizes"
 
-export UCSC_BED_AS_FILE="${APPRIS_WORKSPACE}/features/ucsc/bedAs"
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 
 # -----------------------------------#
 # Setting up the vars for cached dir #

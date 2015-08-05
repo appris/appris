@@ -1,0 +1,17 @@
+table hg19APPRISappris
+"Principal Isoforms selected by APPRIS"
+(
+  string 		chrom;		"Reference sequence chromosome"
+  uint    		chromStart;	"Start position of feature on chromosome"
+  uint    		chromEnd;	"End position of feature on chromosome"
+  string  		name;		"Ensembl transcript ID"
+  uint    		score;		"Score from 0-1000"
+  char[1]		strand;		"+ or - for strand"
+  uint   		thickStart;	"Coding region start"
+  uint			thickEnd;	"Coding region end"
+  uint			reserved;        "RGB value (use R,G,B string in input file)"
+  int			blockCount;     "Number of blocks"
+  int[blockCount]	blockSizes;     "Comma separated list of block sizes"
+  int[blockCount]	chromStarts;    "Start positions relative to chromStart"
+  string		prediction;	"APPRIS prediction: PRINCIPAL,ALTERNATIVE"
+)
