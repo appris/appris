@@ -1,5 +1,5 @@
-table hg19APPRISappris
-"Principal Isoforms selected by APPRIS"
+table hg19APPRISspade
+"APPRIS - Presence of functional protein residues"
 (
   string 			chrom;			"Reference sequence chromosome"
   uint    			chromStart;		"Start position of feature on chromosome"
@@ -13,5 +13,5 @@ table hg19APPRISappris
   int				blockCount;     "Number of blocks"
   int[blockCount]	blockSizes;     "Comma separated list of block sizes"
   int[blockCount]	chromStarts;    "Start positions relative to chromStart"
-  string			prediction;		"APPRIS prediction: PRINCIPAL,ALTERNATIVE"
+  string			prediction;     "Functional residues"
 )
