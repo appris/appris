@@ -1,6 +1,7 @@
 /**
  * Created by jmrodriguez on 8/6/15.
  */
+var express = require('express');
 var maintenance = require('maintenance');
 var app = express();
 
