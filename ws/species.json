@@ -121,7 +121,7 @@
             "id":       "panTro4",
             "dataset":  81
         }],
-        "popular":      1,
+        "popular":      0,
         "order":        6
     },
     "bos_taurus": {
@@ -231,17 +231,5 @@
         }],
         "popular":      0,
         "order":        15
-    },
-    "drosophila_melanogaster": {
-        "scientific":   "Drosophila melanogaster",
-        "common":       "Fruitfly",
-        "category":     "invertebrates",
-        "assemblies":   [{
-            "name":     "BDGP6|dm6",
-            "id":       "dm6",
-            "dataset":  81
-        }],
-        "popular":      1,
-        "order":        16
     }
 }
