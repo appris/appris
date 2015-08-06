@@ -1,7 +1,7 @@
 [PATHS]
 home=/home/appris-dev/code/src/firestar/source
 lib=/home/appris-dev/code/src/firestar/source/lib
-faatmp=APPRIS__CACHE__WORKSPACE
+faatmp=/home/appris-dev/code/src/firestar/source/tmp/faatmp
 chads=/home/appris-dev/code/db
 [MYSQL]
 dbHost=localhost

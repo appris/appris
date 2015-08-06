@@ -1,8 +1,8 @@
 [PATHS]
-home=/home/appris-dev/code/src/firestar/source
-lib=/home/appris-dev/code/src/firestar/source/lib
+home=/home/appris/code/src/firestar/source
+lib=/home/appris/code/src/firestar/source/lib
 faatmp=APPRIS__CACHE__WORKSPACE
-chads=/home/appris-dev/code/db
+chads=/home/appris/code/db
 [MYSQL]
 dbHost=localhost
 dbName=FireDB
@@ -13,11 +13,11 @@ release=22Aug2013
 nrdb=sprot_clean_trembl_clean_70
 hhbdb=hhblits_
 hhprof=nr20_12Aug11
-blast_path=/home/appris-dev/code/db
-hhdb_path=/home/appris-dev/code/db
+blast_path=/home/appris/code/db
+hhdb_path=/home/appris/code/db
 [PROGRAMS]
-square=/home/appris-dev/code/src/firestar/source/Square/another_fire_mess_web
-square_test=/home/appris-dev/code/src/firestar/source/Square/another_fire_mess_test
+square=/home/appris/code/src/firestar/source/Square/another_fire_mess_web
+square_test=/home/appris/code/src/firestar/source/Square/another_fire_mess_test
 bstbin=/opt/Bio/blast/blast-2.2.18/bin
 [EXT_LINKS]
 PubChem=http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=
