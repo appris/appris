@@ -6,8 +6,8 @@
         "assemblies":   [{
             "name":     "GRCh38|hg38",
             "id":       "hg38",
-            "gencode":  22,
-            "dataset":  80
+            "gencode":  23,
+            "dataset":  81
         },{
             "name":     "GRCh37|hg19",
             "id":       "hg19",
@@ -17,7 +17,7 @@
         "archives":   [{
             "name":     "GRCh38|hg38",
             "id":       "hg38",
-            "datasets": [79,77,76,75]
+            "datasets": [81,80,79,77,76,75]
         },{
             "name":     "GRCh37|hg19",
             "id":       "hg19",
@@ -34,12 +34,12 @@
             "name":     "GRCm38|mm10",
             "id":       "mm10",
             "gencode":  "M5",
-            "dataset":  80
+            "dataset":  81
         }],
         "archives":   [{
             "name":     "GRCm38|mm10",
             "id":       "mm10",
-            "datasets": [78,77,74]
+            "datasets": [81,80,78,77,74]
         }],
         "popular":      1,
         "order":        2
@@ -51,13 +51,17 @@
         "assemblies":   [{
             "name":     "GRCz10|danRer10",
             "id":       "danRer10",
-            "dataset":  80
+            "dataset":  81
         },{
             "name":     "Zv9|danRer7",
             "id":       "danRer7",
             "dataset":  77
         }],
         "archives":   [{
+            "name":     "GRCz10|danRer10",
+            "id":       "danRer10",
+            "datasets": [81,80]
+        },{
             "name":     "Zv9|danRer7",
             "id":       "danRer7",
             "datasets": [77]
@@ -72,17 +76,22 @@
         "assemblies":   [{
             "name":     "Rnor_6.0|rn6",
             "id":       "rn6",
-            "dataset":  80
+            "dataset":  81
         },{
             "name":     "Rnor_5.0|rn5",
             "id":       "rn5",
             "dataset":  77
         }],
         "archives":   [{
+            "name":     "Rnor_6.0|rn6",
+            "id":       "rn6",
+            "datasets": [81,80]
+        },
+        {
             "name":     "Rnor_5.0|rn5",
             "id":       "rn5",
             "datasets": [77]
-        }],         
+        }],
         "popular":      1,
         "order":        4
     },
@@ -93,10 +102,27 @@
         "assemblies":   [{
             "name":     "Sscrofa10.2|susScr3",
             "id":       "susScr3",
-            "dataset":  77
+            "dataset":  81
+        }],
+        "archives":   [{
+            "name":     "Sscrofa10.2|susScr3",
+            "id":       "susScr3",
+            "datasets": [81,77]
         }],
         "popular":      1,
         "order":        5
+    },
+    "pan_troglodytes": {
+        "scientific":   "Pan troglodytes",
+        "common":       "Chimpanzee",
+        "category":     "primates",
+        "assemblies":   [{
+            "name":     "CHIMP2.1.4|panTro4",
+            "id":       "panTro4",
+            "dataset":  81
+        }],
+        "popular":      1,
+        "order":        6
     },
     "bos_taurus": {
         "scientific":   "Bos taurus",
@@ -108,7 +134,7 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        6
+        "order":        7
     },
     "canis_familiaris": {
         "scientific":   "Canis familiaris",
@@ -120,7 +146,7 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        7
+        "order":        8
     },
     "felis_catus": {
         "scientific":   "Felis catus",
@@ -132,7 +158,7 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        8
+        "order":        9
     },
     "monodelphis_domestica": {
         "scientific":   "Monodelphis domestica",
@@ -144,7 +170,7 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        9
+        "order":        10
     },
     "gallus_gallus": {
         "scientific":   "Gallus gallus",
@@ -156,7 +182,7 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        10
+        "order":        11
     },
     "taeniopygia_guttata": {
         "scientific":   "Taeniopygia guttata",
@@ -168,7 +194,7 @@
             "dataset":  79
         }],
         "popular":      0,
-        "order":        11
+        "order":        12
     },
     "anolis_carolinensis": {
         "scientific":   "Anolis carolinensis",
@@ -180,7 +206,7 @@
             "dataset":  79
         }],
         "popular":      0,
-        "order":        12
+        "order":        13
     },
     "xenopus_tropicalis": {
         "scientific":   "Xenopus tropicalis",
@@ -192,7 +218,7 @@
             "dataset":  79
         }],
         "popular":      0,
-        "order":        13
+        "order":        14
     },
     "takifugu_rubripes": {
         "scientific":   "Takifugu rubripes",
@@ -204,6 +230,18 @@
             "dataset":  77
         }],
         "popular":      0,
-        "order":        14
+        "order":        15
+    },
+    "drosophila_melanogaster": {
+        "scientific":   "Drosophila melanogaster",
+        "common":       "Fruitfly",
+        "category":     "invertebrates",
+        "assemblies":   [{
+            "name":     "BDGP6|dm6",
+            "id":       "dm6",
+            "dataset":  81
+        }],
+        "popular":      1,
+        "order":        16
     }
 }
