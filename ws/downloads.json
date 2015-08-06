@@ -72,11 +72,11 @@
             "dataset":                  "gencode23/ensembl81",
             "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
@@ -130,11 +130,11 @@
             "dataset":                  "gencode19/ensembl74",
             "release":                  "gen19.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
@@ -188,11 +188,11 @@
             "dataset":                  "gencodeM6/ensembl81",
             "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
@@ -224,11 +224,11 @@
             "dataset":                  "ensembl81",
             "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
@@ -296,11 +296,11 @@
             "dataset":                  "ensembl81",
             "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
@@ -368,11 +368,11 @@
             "dataset":                  "ensembl81",
             "release":                  "ens81.v9.17Jul2015",
             "principal_isoforms": [{
-                "file":     "appris_method.principal.txt",
+                "file":     "appris_data.principal.txt",
                 "format":   "TXT"
             }],
             "appris_scores": [{
-                "file":     "appris_method.appris.txt",
+                "file":     "appris_data.appris.txt",
                 "format":   "TXT"
             }],
             "functional_residues": [{
