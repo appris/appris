@@ -1,0 +1,32 @@
+[PATHS]
+home=/home/appris-dev/code/src/firestar/source
+lib=/home/appris-dev/code/src/firestar/source/lib
+faatmp=APPRIS__CACHE__WORKSPACE
+chads=/home/appris-dev/code/db
+[MYSQL]
+dbHost=localhost
+dbName=FireDB
+user=firedb
+pass=
+[DATABASES]
+release=22Aug2013
+nrdb=sprot_clean_trembl_clean_70
+hhbdb=hhblits_
+hhprof=nr20_12Aug11
+blast_path=/home/appris-dev/code/db
+hhdb_path=/home/appris-dev/code/db
+[PROGRAMS]
+square=/home/appris-dev/code/src/firestar/source/Square/another_fire_mess_web
+square_test=/home/appris-dev/code/src/firestar/source/Square/another_fire_mess_test
+bstbin=/opt/Bio/blast/blast-2.2.18/bin
+[EXT_LINKS]
+PubChem=http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=
+KEGG COMPOUND=http://www.genome.jp/dbget-bin/www_bget?cpd:
+KEGG DRUG=http://www.kegg.jp/dbget-bin/www_bget?dr:
+ChEMBL=https://www.ebi.ac.uk/chembldb/compound/inspect/
+ChEBI=http://www.ebi.ac.uk/chebi/advancedSearchFT.do?searchString=
+DrugBank=http://www.drugbank.ca/drugs/
+MetaCyc=http://metacyc.org/META/NEW-IMAGE?type=NIL&object=
+PDB_page=http://www.pdb.org/pdb/ligand/ligandsummary.do?hetId=
+PDB_image=http://www.pdb.org/pdb/images/
+DB_fetch=http://www.ebi.ac.uk/Tools/dbfetch/dbfetch?db=UniProtKB&id=
