@@ -23,14 +23,14 @@ Gene Dataset:
         <tr>
             <th data-ng-repeat="head in headers">{{head.label}}</th>
         </tr>
-        <tr dir-paginate="datafile in datafiles | filter: {specie:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
+        <tr dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
             <td data-ng-repeat="head in headers">
-                <!--<a data-ng-if="datafile.scientific && datafile.dataset && datafile.release && datafile[head.id].file && datafile[head.id].format" ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.scientific | capitalize}}.{{datafile.assembly}}.{{datafile[head.id].file}}">{{datafile[head.id]-->
-                    <!--.format}}</a>-->
-                <a data-ng-if="datafile.scientific && datafile.dataset && datafile.release && datafile[head.id].file && datafile[head.id].format"
-                   ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.release}}/{{datafile[head.id].file}}">{{datafile[head.id]
-                    .format}}</a>
-                <span data-ng-if="datafile[head.id] && !(datafile[head.id].format && datafile[head.id].file && datafile.scientific)">{{datafile[head.id]}}</span>
+                <span data-ng-if="!isArray(datafile[head.id])">{{datafile[head.id]}}</span>
+                <span data-ng-repeat="datameth in datafile[head.id] track by $index" data-ng-if="isArray(datafile[head.id])">
+                    <a
+                        ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.release}}/{{datameth.format|lowercase}}/{{datameth.file}}">
+                    {{datameth.format}}</a>
+                </span>
             </td>
         </tr>
         </tbody>
