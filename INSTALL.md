@@ -10,8 +10,8 @@ Setting up environment vars of "appris":
 
 	1. Add into your bash profile:
 		export APPRIS_HOME="APPRIS HOME"
-		source ${APPRIS_HOME}/conf/apprisrc
-		source ${APPRIS_HOME}/conf/apprisrc.WS
+		. ${APPRIS_HOME}/conf/apprisrc
+		. ${APPRIS_HOME}/conf/apprisrc.WS
 
 Setting up databases for "appris":
 
