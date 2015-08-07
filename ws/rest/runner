@@ -1,8 +1,7 @@
 #!/bin/sh
 
 # Env vars of APPRIS web server
-#source ${PWD}/../../conf/apprisrc
-#source ${PWD}/../../conf/apprisrc.WS
+. ${PWD}/../../.bashrc
 . ${PWD}/../../conf/apprisrc
 . ${PWD}/../../conf/apprisrc.WS
 
