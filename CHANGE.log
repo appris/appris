@@ -1,14 +1,23 @@
-####################################################
-# DESCRIPTION OF APPRIS RELEASES: WS1.WS2.C1.C2.D  #
-# WS1.WS2	-> Release of web server			   #
-# C1.C2		-> Release of code					   #
-# D			-> Release of data files			   #
-####################################################
+#####################################
+# APPRIS RELEASES:					
+#									
+# A-RELEASE: Annotation release		
+#		{DATE}.v{ANNOT_VERSION} 	
+#									
+# C-RELEASE: Code release			
+# 		{WS}.{C}					
+#	WS -> Web server release		
+# 	C  -> Code release 				
+#									
+# I-DATE: Date when input data files have obtained
+#									
+#####################################
+
 
 ############################
 # DATE: 		           #
 # RELEASE:  	4.2.2.4.10 #
-# ANNOT_DATE: 	18Jun2015  #
+# IDATE: 		18Jun2015  #
 ############################
 
 * HIGHLIGHTS:
@@ -32,14 +41,20 @@
 
 		
 * APPRIS-DATA, v10
-
+	
+	NEW GENE DATASET:
 	- RefSeq!!! <- TODO!!!!
+	
+	NEW SPECIES:
+	- WormBase
+		> Ensembl81 (WBcel235), 		ens81.v9.17Jul2015 <- TODO!!!!
+	
 
-###########################
-# DATE: 		          #
-# RELEASE:  	4.3.2.4.9 #
-# ANNOT_DATE: 	17Jul2015 #
-###########################
+#############################
+# A-RELEASE: 	2015_08.v9  #
+# C-RELEASE: 	4.3.2.4 	#
+# I-DATE: 		17Jul2015	#
+#############################
 
 * HIGHLIGHTS:
 	- Hand-over for e81: Human, and Mouse.
@@ -51,7 +66,12 @@
 	- Improve/fixing the annotations within sequence Browser
 	- Change of 'viewer' web service that prints the UCSC image to 'sequencer'
 	- Include the highlight of CDS regions within Sequence Browser
-
+	- Row panel with the following frames: GitHub, Google Grupo news-email, and Twitter.
+	- Add the new species into frontpage.
+	- Include version label.
+	- Include 'Changelogs' section.
+	- Maintain templates 'app_mnt'
+	
 * APPRIS-CODE, v2.4
 	- MATADOR3D
 		- The score of total gaps was not working. There were not cases with -1,-0.5 score. E.g. PAX6 gene
@@ -64,35 +84,37 @@
 	- CORSAIR
 		- Include new RefSeq database for "Invertebrates".
 	- Discard the Ensembl version only in the cases where the identifier starts with 'ENS'.
+	- In the download directory, we have classified data files into directories based on format type.
+	- APPRIS data file for method have changed their prefix name from 'appris_data.{method_name}' to 'appris_method.{method_name}'
+	- Print the alignments of Pfam separately in BED format
+	- 'retrieve_method_data', Methods as input parameter 
 
 * APPRIS-DATA, v9
 	- Human
-		> Ensembl81/Gencode23 (GRCh38),	ens81.v9.17Jul2015 <- TODO!!!!
-		> Ensembl76/Gencode20 (GRCh38),	ens76.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
-		> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
+		> Ensembl81/Gencode23 (GRCh38),	ens81.v9.17Jul2015
+		> Ensembl76/Gencode20 (GRCh38),	ens76.v9.17Jul2015 <- FREEZE!!
+		> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015 <- FREEZE!!
 	- Mouse
-		> Ensembl81/GencodeM6 (GRCm38),	ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81/GencodeM6 (GRCm38),	ens81.v9.17Jul2015
 		> Ensembl74/GencodeM2 (GRCm38),	ens74.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
 	- Zebra-fish
-		> Ensembl81 (GRCz10), 			ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81 (GRCz10), 			ens81.v9.17Jul2015
 	- Rat
-		> Ensembl81 (Rn6),    			ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81 (Rn6),    			ens81.v9.17Jul2015
 	- Pig
-		> Ensembl81 (Sscrofa10.2),		ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81 (Sscrofa10.2),		ens81.v9.17Jul2015
 
 	NEW SPECIES:
 	- Chimp
-		> Ensembl81 (CHIMP2.1.4), 		ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81 (CHIMP2.1.4), 		ens81.v9.17Jul2015
 	- Fruitfly
-		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015 <- TODO!!!! 
-	- WormBase
-		> Ensembl81 (WBcel235), 		ens81.v9.17Jul2015 <- TODO!!!!
+		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015		
 		
-		
-#######################
-# DATE: 	16Apr2015 #
-# RELEASE:  4.2.2.3.8 #
-#######################
+#############################
+# A-RELEASE: 	2015_05.v8  #
+# C-RELEASE: 	4.2.2.3 	#
+# I-DATE: 		16Apr2015	#
+#############################
 
 * HIGHLIGHTS:
 	- Hand-over for e80: Mouse, Zebra-fish and Rat.
@@ -121,10 +143,11 @@
 	- Pig
 		> Ensembl80 (Sscrofa10.2),		ens80.v8.16Apr2015 <- TODO: ENSEMBL DOESN'T GIVE ME THE DATA!!!!
 		
-#######################
-# DATE: 	9Feb2015  #
-# RELEASE:  4.1.2.2.7 #
-#######################
+#############################
+# A-RELEASE: 	2015_03.v7  #
+# C-RELEASE: 	4.1.2.2 	#
+# I-DATE: 		9Feb2015	#
+#############################
 
 * HIGHLIGHTS:
 	- Fixing a bug in the CORSAIR filter.
@@ -152,10 +175,11 @@
 	- Pig
 		> Ensembl77 (Sscrofa10.2), ens77.v7.9Feb2015
 		
-#######################
-# DATE: 	27Jan2014 #
-# RELEASE:  4.0.2.1.1 #
-#######################
+#############################
+# A-RELEASE: 	2014_02.v1  #
+# C-RELEASE: 	4.0.2.1 	#
+# I-DATE: 		27Jan2014	#
+#############################
 
 * HIGHLIGHTS:
 	- NEW APPRIS SERVER

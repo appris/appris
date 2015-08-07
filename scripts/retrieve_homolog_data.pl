@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -23,7 +23,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.ALL.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 
 # Input parameters
 my ($methods) = undef;
@@ -97,25 +97,7 @@ sub main()
 		# get the genes for every specie and save them by gene name
 		$logger->info("-- -- get_princ_for_genename: $princ_data_file\n");
 		get_princ_for_genename_datafile($princ_data_file, $specie, $princ_gname);
-		$logger->debug(Dumper($princ_gname)."\n");
-				
-#		# APPRIS registry
-#		$logger->info("-- -- get appris registry for: $specie\n");		
-#		my ($specie_db) = uc($specie.'_db');
-#		my ($registry) = APPRIS::Registry->new();		
-#		$registry->load_registry_from_db(
-#								-dbhost	=> $CFG->val($specie_db, 'host'),
-#								-dbname	=> $CFG->val($specie_db, 'db'),
-#								-dbuser	=> $CFG->val($specie_db, 'user'),
-#								-dbpass	=> $CFG->val($specie_db, 'pass'),
-#								-dbport	=> $CFG->val($specie_db, 'port'),
-#		);
-#		$logger->debug(Dumper($registry)."\n");
-#		
-#		# get the genes for every specie and save them by gene name
-#		$logger->info("-- -- get_princ_for_genename\n");
-#		get_princ_for_genename($registry, $specie, $princ_gname);
-#		$logger->debug(Dumper($princ_gname)."\n");
+		$logger->debug(Dumper($princ_gname)."\n");				
 	}
 
 	# get appris methods for each principal (sorting by gene name)	
@@ -135,11 +117,11 @@ sub main()
 				my ($specie_db) = uc($specie.'_db');
 				my ($registry) = APPRIS::Registry->new();		
 				$registry->load_registry_from_db(
-										-dbhost	=> $CFG->val($specie_db, 'host'),
+										-dbhost	=> $CFG->val('APPRIS_DATABASES', 'host'),
+										-dbuser	=> $CFG->val('APPRIS_DATABASES', 'user'),
+										-dbpass	=> $CFG->val('APPRIS_DATABASES', 'pass'),
+										-dbport	=> $CFG->val('APPRIS_DATABASES', 'port'),
 										-dbname	=> $CFG->val($specie_db, 'db'),
-										-dbuser	=> $CFG->val($specie_db, 'user'),
-										-dbpass	=> $CFG->val($specie_db, 'pass'),
-										-dbport	=> $CFG->val($specie_db, 'port'),
 				);
 				$logger->debug(Dumper($registry)."\n");				
 				while ( my ($gene_id, $g_rep) = each(%{$g_report}) ) {

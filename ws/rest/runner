@@ -1,8 +1,10 @@
 #!/bin/sh
 
 # Env vars of APPRIS web server
-#source ${PWD}/../../scripts/conf/apprisrc.WS
-. ${PWD}/../../scripts/conf/apprisrc.WS
+#source ${PWD}/../../conf/apprisrc
+#source ${PWD}/../../conf/apprisrc.WS
+. ${PWD}/../../conf/apprisrc
+. ${PWD}/../../conf/apprisrc.WS
 
 # Then, go!
 exec perl "${0}.pl" "$@"

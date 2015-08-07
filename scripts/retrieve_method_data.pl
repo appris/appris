@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -22,7 +22,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 
 # Input parameters
 my ($species) = undef;
@@ -96,11 +96,11 @@ sub main()
 	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
 	my ($specie_db) = uc($spe.'_db');
 	my ($param) = {
-			'-dbhost'       => $cfg->val($specie_db, 'host'),
+			'-dbhost'       => $cfg->val('APPRIS_DATABASES', 'host'),
+			'-dbuser'       => $cfg->val('APPRIS_DATABASES', 'user'),
+			'-dbpass'       => $cfg->val('APPRIS_DATABASES', 'pass'),
+			'-dbport'       => $cfg->val('APPRIS_DATABASES', 'port'),
 			'-dbname'       => $cfg->val($specie_db, 'db'),
-			'-dbuser'       => $cfg->val($specie_db, 'user'),
-			'-dbpass'       => $cfg->val($specie_db, 'pass'),
-			'-dbport'       => $cfg->val($specie_db, 'port'),
 	};
 	$logger->debug(Dumper($param)."\n");
 	my ($registry) = APPRIS::Registry->new();

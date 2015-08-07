@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -6,7 +6,6 @@ use threads;
 
 use Getopt::Long;
 use FindBin;
-use Config::IniFiles;
 use Data::Dumper;
 
 use lib "$FindBin::Bin/lib";
@@ -27,7 +26,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_ENSEMBL_DB_FILE	= $LOCAL_PWD.'/conf/ensembldb.ini';
+$CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/ensembldb.ini';
 $LOGLEVEL					= 'INFO';
 
 # Input parameters

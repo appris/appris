@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -22,7 +22,7 @@ use vars qw(
 	$OLD_CFG
 );
 
-$CONFIG_INI_APPRIS_DIFF_FILE	= $FindBin::Bin.'/conf/apprisdiff.ini';
+$CONFIG_INI_APPRIS_DIFF_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdiff.ini';
 
 # Input parameters
 my ($data_file) = undef;

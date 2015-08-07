@@ -1,0 +1,41 @@
+<div data-ng-controller="ChangelogsController">
+<h2>ChangeLogs</h2>
+<p>A changelog is a log or record of all the changes made to APPRIS project, such as a website or pipeline, usually including such records as bug fixes, new features, etc.</p>
+<div class="row">
+    <div class="col-xs-4">
+        <label for="search">Search:</label>
+        <input id="search" data-ng-model="q" class="form-control" placeholder="Filter text">
+    </div>
+</div>
+
+<div class="panel-default">
+    <div class="panel-body">
+        <ul>
+            <li dir-paginate="changelog in changelogs | filter:q | itemsPerPage: pageSize" current-page="currentPage">{{changelog.release}} / {{changelog.date}}:<br><span data-ng-repeat="highlight in changelog.highlights">{{highlight}}.<br></span>
+                <a data-toggle="modal" data-target="#myModal">Read more »</a>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">{{changelog.release}} / {{changelog.date}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p data-ng-repeat="cont in changelog.content">{{cont}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+<div ng-controller="pagDownloadsController">
+    <div class="text-center">
+        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>
+    </div>
+</div>
+</div>

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Main bash script that loads environmental variable
+
+DIRNAME=`dirname $0`
+APPRIS_REL_ENV=( 'TST' 'Hsap' 'Mmus' 'Rnor' 'Drer' 'Sscr' 'Ptro' 'Dmel' 'Cele' 'Lpar' )
+
+load_appris_specie_env() {
+	local e
+	for ((i=0; i < "${#APPRIS_REL_ENV[@]}"; i++)); do
+		if [[ "$1" =~ "${APPRIS_REL_ENV[$i]}".* ]]
+		then		
+			case "${APPRIS_REL_ENV[$i]}" in
+				TST* )
+					echo "source ${DIRNAME}/../test/conf/apprisrc.$1"
+					source ${DIRNAME}/../test/conf/apprisrc.$1
+					;;
+				* )
+					echo "source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1"
+					source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1
+					;;				
+			esac				
+		fi
+	done
+}
+
+load_species_env() {
+	local e
+	case "$1" in
+		TST* )
+			echo "source ${DIRNAME}/../../test/conf/apprisrc.$1"
+			source ${DIRNAME}/../../test/conf/apprisrc.$1
+			;;
+		* )
+			echo "source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1"
+			source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1
+			;;				
+	esac				
+}
+
+prepare_workspace() {
+	mkdir -p $1
+}

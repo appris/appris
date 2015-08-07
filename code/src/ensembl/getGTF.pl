@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -20,8 +20,8 @@ use vars qw(
 );
 
 $LOCAL_PWD				= $FindBin::Bin;
-$ENSEMBL_CONFIG_FILE	= $LOCAL_PWD.'/../../conf/ensembldb.ini';
-
+#$ENSEMBL_CONFIG_FILE	= $LOCAL_PWD.'/../../conf/ensembldb.ini';
+$ENSEMBL_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/ensembl.ini';
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;

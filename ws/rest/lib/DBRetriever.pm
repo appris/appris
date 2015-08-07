@@ -297,11 +297,11 @@ sub load_registry {
 		# load registry
 		$registry = APPRIS::Registry->new();		
 		$registry->load_registry_from_db(
-								-dbhost	=> $cfg->val($specie_db, 'host'),
+								-dbhost	=> $cfg->val('APPRIS_DATABASES', 'host'),
+								-dbuser	=> $cfg->val('APPRIS_DATABASES', 'user'),
+								-dbpass	=> $cfg->val('APPRIS_DATABASES', 'pass'),
+								-dbport	=> $cfg->val('APPRIS_DATABASES', 'port'),
 								-dbname	=> $cfg->val($specie_db, 'db'),
-								-dbuser	=> $cfg->val($specie_db, 'user'),
-								-dbpass	=> $cfg->val($specie_db, 'pass'),
-								-dbport	=> $cfg->val($specie_db, 'port'),
 		);		
 	}
 	

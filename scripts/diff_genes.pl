@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -19,11 +19,10 @@ use APPRIS::Utils::Logger;
 ###################
 use vars qw(
 	$CONFIG_INI_APPRIS_DIFF_FILE
-	$CFG
 	$OLD_LIST_GENES
 );
 
-$CONFIG_INI_APPRIS_DIFF_FILE	= $FindBin::Bin.'/conf/apprisdiff.ini';
+$CONFIG_INI_APPRIS_DIFF_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdiff.ini';
 
 # Input parameters
 my ($old_data_file) = undef;
@@ -59,7 +58,6 @@ unless ( defined $old_data_file and defined $new_data_file and defined $new_scor
 unless ( defined $apprisdiff_conf_file ) {
 	$apprisdiff_conf_file = $CONFIG_INI_APPRIS_DIFF_FILE;
 }
-$CFG = new Config::IniFiles( -file =>  $apprisdiff_conf_file );
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -6,7 +6,6 @@ use threads;
 
 use Getopt::Long;
 use FindBin;
-use Config::IniFiles;
 use File::Temp;
 use Data::Dumper;
 
@@ -33,7 +32,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_ENSEMBL_DB_FILE	= $LOCAL_PWD.'/conf/ensembldb.ini';
+$CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/ensembldb.ini';
 $LOGGER_CONF				= '';
 $ENSEMBL_CHR_GENE_LIST		= undef;
 $GENETYPE_PROTEIN_CODING	= {

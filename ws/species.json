@@ -121,7 +121,7 @@
             "id":       "panTro4",
             "dataset":  81
         }],
-        "popular":      0,
+        "popular":      1,
         "order":        6
     },
     "bos_taurus": {
@@ -231,5 +231,29 @@
         }],
         "popular":      0,
         "order":        15
+    },
+    "drosophila_melanogaster": {
+        "scientific":   "Drosophila melanogaster",
+        "common":       "Fruitfly",
+        "category":     "invertebrates",
+        "assemblies":   [{
+            "name":     "BDGP6|dm6",
+            "id":       "dm6",
+            "dataset":  81
+        }],
+        "popular":      1,
+        "order":        16
+    },
+    "caenorhabditis_elegans": {
+        "scientific":   "Caenorhabditis elegans",
+        "common":       "C.elegans",
+        "category":     "invertebrates",
+        "assemblies":   [{
+            "name":     "WBcel235",
+            "id":       "WBcel235",
+            "dataset":  81
+        }],
+        "popular":      1,
+        "order":        17
     }
 }

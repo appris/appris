@@ -1,11 +1,10 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
 use Bio::SeqIO;
 use Getopt::Long;
 use FindBin;
-use Config::IniFiles;
 use Data::Dumper;
 
 use lib "$FindBin::Bin/lib";

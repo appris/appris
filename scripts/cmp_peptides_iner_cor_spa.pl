@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -23,7 +23,7 @@ use vars qw(
 	$NUM_SPECIES_MAF_ALIGN_GENCODE12
 );
 
-$CONFIG_INI_APPRIS_DB_FILE	= $FindBin::Bin.'/conf/apprisdb.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 $WRONG_GENES_FOR_INERTIA = getStringFromFile('/Users/jmrodriguez/projects/APPRIS/workspaces/gencode12/exon_cmp_inertia_corsair_proteo/wrong_genes_for_inertia.txt');
 $CDS_GENCODE12 = getStringFromFile('/Users/jmrodriguez/projects/APPRIS/workspaces/gencode12/features/num_cds.rel12.txt');
 $READTHROUGH_GENES_GENCODE12 = getStringFromFile('/Users/jmrodriguez/projects/APPRIS/workspaces/gencode12/exon_cmp_inertia_corsair_proteo/AllG12_RT.txt');

@@ -8,20 +8,16 @@ Add APPRIS subversion code, http://sourceforge.net/projects/appris
 	
 Setting up environment vars of "appris":
 
-	1. Add APPRIS_HOME env variable into your bash profile:
+	1. Add into your bash profile:
 		export APPRIS_HOME="APPRIS HOME"
-		
-	2. Add into "apprisrc" into your bash profile:
-		source ${APPRIS_HOME}/code/conf/apprisrc
-
-	3. Add into "apprisrc" into your bash profile:
-		export PATH=${APPRIS_HOME}/scripts/bin:${APPRIS_HOME}/database/bin:${PATH}
+		source ${APPRIS_HOME}/conf/apprisrc
+		source ${APPRIS_HOME}/conf/apprisrc.WS
 
 Setting up databases for "appris":
 
 	1. Add databases into "code/db". For more information: Read "appris/code/db/README.txt"
 
-Setting up environment vars for "firestar" ("appris/code/src/firestar/CONFIG_fire_var.ini"):
+Setting up environment vars for "firestar" ("conf/code/fire_var.ini"):
 
 	1. Change the env vars:
 		[PATHS]
@@ -42,12 +38,12 @@ Setting up environment vars for "firestar" ("appris/code/src/firestar/CONFIG_fir
 					
 Setting up variables of Ensembl database:
 
-	1. Modify variables of config file that sets up Ensembl database, "code/conf/ensembldb.ini":
+	1. Modify variables of config file that sets up Ensembl database, "conf/code/ensembldb.ini":
 		ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
 	
 Setting up environment vars of "appris" for each specie you will execute:
 	
-	1. Modify APPRIS_HOME enviroment variable that is saved in the configuration file "scripts/conf/apprisrc.*":
+	1. Modify APPRIS_HOME enviroment variable that is saved in the configuration file "conf/apprisrc.*":
 		APPRIS_HOME -> directory of appris
 		APPRIS_WORKSPACE -> workspace of current project
 		

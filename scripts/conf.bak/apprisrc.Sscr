@@ -1,0 +1,76 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WS_NAME="sus_scrofa/e81"
+
+export APPRIS_WS_DATE="sus_scrofa/ens81.v9.17Jul2015"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
+
+export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIES="Sus scrofa"
+
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,X,Y,MT"
+#export APPRIS_CHR_LIST="1,2,3,4,5"
+#export APPRIS_CHR_LIST="6,7,8,9,10"
+#export APPRIS_CHR_LIST="11,12,13,14,15"
+#export APPRIS_CHR_LIST="16,17,18,X,Y,MT"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=81
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.81.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.cdna.all.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.pep.all.fa"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+
+# -----------------------------------#
+# Setting up the vars for cached dir #
+# -----------------------------------#
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/sus_scrofa/e80"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+#export APPRIS_NUM_PARALLEL_PROC=4
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+

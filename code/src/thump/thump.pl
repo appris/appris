@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 # $Id: THUMPvX.pl (formerly known as TMHv13.pl)
 # Developed by: Paolo Maietta -pmaietta@cnio.es-
 # Created: 	20-May-2009

@@ -298,7 +298,7 @@ apprisControllers.controller('DownloadsController', ['consBaseUrlWS', '$scope', 
 
 apprisControllers.controller('NavTopController', ['consBaseUrlWS', '$scope', 'Downloads',
     function(consBaseUrlWS, $scope, Downloads) {
-        $scope.linkWebServices = consBaseUrlWS;
+        $scope.linkWebServices = consBaseUrlWS + '/apidoc';
         Downloads.get().$promise.then( function(data) {
             if (angular.isDefined(data.version) ) {
                 $scope.version = data.version;

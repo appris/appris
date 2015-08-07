@@ -9,12 +9,8 @@ var apprisDirectives = angular.module('apprisDirectives', []);
 
 apprisDirectives.directive('navbarTopTpl', function() {
     return {
-        restrict: 'AEC',
+        restrict: 'E',
         replace: true,
-        scope: {
-            navbars: '='
-        },
-        controller: 'NavTopController',
         templateUrl: 'templates/navbarTop.tpl.html'
     };
 });

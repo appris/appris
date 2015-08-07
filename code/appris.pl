@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 # _________________________________________________________________
 # $Id$
 # $Revision$
@@ -33,7 +33,7 @@ use vars qw(
 
 $LOCAL_PWD				= $FindBin::Bin;
 $SRC_DIR				= $LOCAL_PWD.'/src/';
-$DEFAULT_CONFIG_FILE	= $LOCAL_PWD.'/conf/pipeline.ini';
+$DEFAULT_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/pipeline.ini';
 $DEFAULT_CFG			= new Config::IniFiles( -file => $DEFAULT_CONFIG_FILE );
 $CFG					= undef;
 $METHOD_STRUCT			= [ split( ',', $DEFAULT_CFG->val('APPRIS_PIPELINE', 'structure') ) ];
@@ -618,7 +618,6 @@ sub create_ini($$)
 	$config_cont = _subs_template($config_cont, 'APPRIS__PIPELINE__METHODS', $methods);
 	$config_cont = _subs_template($config_cont, 'APPRIS__SPECIES', $species);
 	
-	#my ($config_file) = $ENV{APPRIS_PROGRAMS_TMP_DIR}.'/'.$wspace.'/pipeline.ini';
 	my ($config_file) = $wspace.'/pipeline.ini';
 	my ($a) = printStringIntoFile($config_cont, $config_file);
 	$logger->error("-- printing config annot") unless ( defined $a );

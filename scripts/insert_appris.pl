@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -28,8 +28,8 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin;
-$CONFIG_INI_ENSEMBL_DB_FILE	= $FindBin::Bin.'/conf/ensembldb.ini';
-$CONFIG_INI_APPRIS_DB_FILE	= $LOCAL_PWD.'/conf/apprisdb.ini';
+$CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/ensembldb.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 $LOGLEVEL					= 'INFO';
 $LOGAPPEND					= '';
 
@@ -285,7 +285,7 @@ sub insert_appris($$$)
 
 	# run
 	eval {
-		my ($cmd) =	" perl $ENV{APPRIS_SCRIPTS_DIR}/iappris.pl ".
+		my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/iappris.pl ".
 					" $parameters ".
 					" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
 		$logger->info("\n** script: $cmd\n");

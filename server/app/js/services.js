@@ -9,6 +9,11 @@ apprisServices.factory('Examples', ['$resource', function($resource){
     return $resource('ws/examples.json');
 }]);
 
+/* CONFIG file of Changelogs */
+apprisServices.factory('Changelogs', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
+    return $resource(consBaseUrlWS+'/changelogs.json');
+}]);
+
 /* CONFIG file of DOWNLOAD files */
 apprisServices.factory('Downloads', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
     return $resource(consBaseUrlWS+'/downloads.json', {

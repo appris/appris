@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -23,7 +23,8 @@ use vars qw(
 $SEQ_ID						= 'SEQ';
 $SOURCE						= 'Ensembl';
 $FEATURE					= 'Protein';
-$CONFIG_INI_ENSEMBL_DB_FILE	= $FindBin::Bin.'/../conf/ensembldb.ini';
+#$CONFIG_INI_ENSEMBL_DB_FILE	= $FindBin::Bin.'/../conf/ensembldb.ini';
+$CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/ensembl.ini';
 
 
 # Input parameters

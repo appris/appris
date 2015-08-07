@@ -32,15 +32,15 @@ var apprisApp = angular.module('apprisApp', [
 
 apprisApp.config(['$provide', function ($provide) {
     // GOLD server - production
-    $provide.value("consBaseUrlWS", 'http://apprisws.bioinfo.cnio.es');
-    $provide.value("consUrlRunnerRunWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/run');
-    $provide.value("consUrlRunnerStatusWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/status');
-    $provide.value("consUrlRunnerResultTypesWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/resulttypes');
-    $provide.value("consUrlRunnerResultWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/result');
-    $provide.value("consUrlSeekerWS", 'http://apprisws.bioinfo.cnio.es/rest/seeker');
-    $provide.value("consUrlExporterWS", 'http://apprisws.bioinfo.cnio.es/rest/exporter');
-    $provide.value("consUrlSequencerWS", 'http://apprisws.bioinfo.cnio.es/rest/sequencer');
-    $provide.value("consUrlViewerWS", 'http://apprisws.bioinfo.cnio.es/rest/viewer');
+//    $provide.value("consBaseUrlWS", 'http://apprisws.bioinfo.cnio.es');
+//    $provide.value("consUrlRunnerRunWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/run');
+//    $provide.value("consUrlRunnerStatusWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/status');
+//    $provide.value("consUrlRunnerResultTypesWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/resulttypes');
+//    $provide.value("consUrlRunnerResultWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/result');
+//    $provide.value("consUrlSeekerWS", 'http://apprisws.bioinfo.cnio.es/rest/seeker');
+//    $provide.value("consUrlExporterWS", 'http://apprisws.bioinfo.cnio.es/rest/exporter');
+//    $provide.value("consUrlSequencerWS", 'http://apprisws.bioinfo.cnio.es/rest/sequencer');
+//    $provide.value("consUrlViewerWS", 'http://apprisws.bioinfo.cnio.es/rest/viewer');
 
     // BETA server - development
 //    $provide.value("consBaseUrlWS", 'http://dev.appris.cnio.es');
@@ -54,15 +54,15 @@ apprisApp.config(['$provide', function ($provide) {
 //    $provide.value("consUrlViewerWS", 'http://dev.appris.cnio.es/rest/viewer');
 
     // ALPHA server - development in local
-//    $provide.value("consBaseUrlWS", 'http://local.es/ws');
-//    $provide.value("consUrlRunnerRunWS", 'http://local.es/ws/rest/runner/run');
-//    $provide.value("consUrlRunnerStatusWS", 'http://local.es/ws/rest/runner/status');
-//    $provide.value("consUrlRunnerResultTypesWS", 'http://local.es/ws/rest/runner/resulttypes');
-//    $provide.value("consUrlRunnerResultWS", 'http://local.es/ws/rest/runner/result');
-//    $provide.value("consUrlSeekerWS", 'http://local.es/ws/rest/seeker');
-//    $provide.value("consUrlExporterWS", 'http://local.es/ws/rest/exporter');
-//    $provide.value("consUrlSequencerWS", 'http://local.es/ws/rest/sequencer');
-//    $provide.value("consUrlViewerWS", 'http://local.es/ws/rest/viewer');
+    $provide.value("consBaseUrlWS", 'http://local.es/ws');
+    $provide.value("consUrlRunnerRunWS", 'http://local.es/ws/rest/runner/run');
+    $provide.value("consUrlRunnerStatusWS", 'http://local.es/ws/rest/runner/status');
+    $provide.value("consUrlRunnerResultTypesWS", 'http://local.es/ws/rest/runner/resulttypes');
+    $provide.value("consUrlRunnerResultWS", 'http://local.es/ws/rest/runner/result');
+    $provide.value("consUrlSeekerWS", 'http://local.es/ws/rest/seeker');
+    $provide.value("consUrlExporterWS", 'http://local.es/ws/rest/exporter');
+    $provide.value("consUrlSequencerWS", 'http://local.es/ws/rest/sequencer');
+    $provide.value("consUrlViewerWS", 'http://local.es/ws/rest/viewer');
 
     $provide.value("consUrlEnsembl", 'http://www.ensembl.org');
     $provide.value("consUrlFirestarligand", 'http://firedb.bioinfo.cnio.es/Php/ligand/index.html?id=');

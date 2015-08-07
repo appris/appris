@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use Getopt::Long;
@@ -59,7 +59,8 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 # Get conf vars
 my ($cfg) = new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
-$DEFALULT_FIRESTAR_CONFIG_FILE = $LOCAL_PWD.'/firestar.ini';
+#$DEFALULT_FIRESTAR_CONFIG_FILE = $LOCAL_PWD.'/firestar.ini';
+$DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
 $WSPACE_BASE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('FIRESTAR_VARS', 'name').'/';
 $WSPACE_CACHE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
 $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');

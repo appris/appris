@@ -1,4 +1,4 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
 use warnings;
@@ -28,8 +28,8 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_ENSEMBL_DB_FILE	= $LOCAL_PWD.'/conf/ensembldb.ini';
-$CONFIG_INI_EMAIL_FILE		= $LOCAL_PWD.'/conf/email.ini';
+$CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/ensembldb.ini';
+$CONFIG_INI_EMAIL_FILE		= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/email.ini';
 $LOGLEVEL					= 'INFO';
 $LOGAPPEND					= '';
 
