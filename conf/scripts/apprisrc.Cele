@@ -28,7 +28,7 @@ export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Caenorhabditis_elegans"
+export APPRIS_SPECIES="Caenorhabditis elegans"
 
 #export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
 export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
