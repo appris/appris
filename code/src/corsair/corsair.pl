@@ -38,6 +38,7 @@ use vars qw(
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
+	$DEFALULT_CORSAIR_SPECIES_FILE
 	$SPECIES
 );
 		
@@ -89,7 +90,8 @@ $PROG_CUTOFF		= $cfg->val( 'CORSAIR_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
-$SPECIES = JSON->new()->decode( getStringFromFile($LOCAL_PWD.'/species.json') );
+$DEFALULT_CORSAIR_SPECIES_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/species.json';
+$SPECIES = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_SPECIES_FILE) );
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
