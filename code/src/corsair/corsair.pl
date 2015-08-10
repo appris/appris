@@ -90,7 +90,7 @@ $PROG_CUTOFF		= $cfg->val( 'CORSAIR_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
-$DEFALULT_CORSAIR_SPECIES_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/species.json';
+$DEFALULT_CORSAIR_SPECIES_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_species.json';
 $SPECIES = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_SPECIES_FILE) );
 
 # Get log filehandle and print heading and parameters to logfile
