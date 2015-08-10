@@ -41,7 +41,7 @@
         "animal": "vertebrates",
         "scores": {
             "Pan troglodytes":			0.5,
-            "Homo sapiens":				1
+            "Homo sapiens":				1,
             "Mus musculus":				1.1,
             "Rattus norvegicus":		1.1,
             "Sus scrofa":				1.2,
