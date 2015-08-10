@@ -394,6 +394,42 @@
                 "file":     "appris_method.thump.gtf.gz",
                 "format":   "GTF"
             }]
+        },
+        {
+            "default":                  "1",
+            "species":                   "Chimpanzee",
+            "scientific":               "pan_troglodytes",
+            "assembly":                 "CHIMP2.1.4",
+            "dataset":                  "ensembl81",
+            "release":                  "ens81.v9.17Jul2015",
+            "principal_isoforms": [{
+                "file":     "appris_data.principal.txt",
+                "format":   "TXT"
+            }],
+            "appris_scores": [{
+                "file":     "appris_data.appris.txt",
+                "format":   "TXT"
+            }],
+            "functional_residues": [{
+                "file":     "appris_method.firestar.gtf.gz",
+                "format":   "GTF"
+            }],
+            "tertiary_structure": [{
+                "file":     "appris_method.matador3d.gtf.gz",
+                "format":   "GTF"
+            }],
+            "vertebrates_conservation": [{
+                "file":     "appris_method.corsair.gtf.gz",
+                "format":   "GTF"
+            }],
+            "whole_domains": [{
+                "file":     "appris_method.spade.gtf.gz",
+                "format":   "GTF"
+            }],
+            "transmembrane_helices": [{
+                "file":     "appris_method.thump.gtf.gz",
+                "format":   "GTF"
+            }]
         }
     ]
 }
