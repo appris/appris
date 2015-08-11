@@ -32,6 +32,11 @@ export APPRIS_SPECIES="Caenorhabditis elegans"
 
 #export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
 export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
+#export APPRIS_CHR_LIST="I"
+#export APPRIS_CHR_LIST="II"
+#export APPRIS_CHR_LIST="III"
+#export APPRIS_CHR_LIST="IV"
+#export APPRIS_CHR_LIST="V,X,MtDNA"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
