@@ -795,46 +795,16 @@ sub run_appris($$$)
 		}
 	}
 	
-	# create workspace for cluster depending on gene_id, webserver jobid or input data (by default is gene_id)	
+	# create workspace for cluster depending on gene_id, webserver jobid or input data (by default is gene_id)
+	# create command line and FORK
 	my ($c_id) = $id; if ( defined $wserver and $type_of_input =~ /sequence/ ) { $c_id = $wserver }	
 	my ($c_wspace) = $workspace.'/'.$id;	
 	my ($c_logpath) = $c_wspace;
 	my ($c_logfile) = $c_id.'.log';
-	
-#	# run a job
-#	my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/appris.pl ".
-#				" $parameters ".
-#				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";			
-#	$logger->info("\n** script: $cmd\n");
-#	eval {
-#		my (@outcmd) = `$cmd`;
-#		#system($cmd);
-#	};
-#	throw("running appris") if($@);	
-#	if ( defined $wserver ) {
-#		my ($pid) = $$;
-#		create_wsrunnerctr('localhost', $pid, $c_id, $c_wspace, $cmd);
-#	}
-	
-	# submit job
 	my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/appris.pl ".
 				" $parameters ".
-				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";	    
-	$logger->info("\n** script: $cmd\n");
-	my ($pid) = fork();
-	if ( !defined $pid ) {
-	    die "Cannot fork: $!";
-	}
-	elsif ( $pid == 0 ) {
-	    # client process
-	    close STDOUT; close STDERR; # so parent can go on
-		eval {
-			#my (@outcmd) = `$cmd`;
-			system($cmd);
-		};
-		exit 1 if($@);
-	    exit 0;
-	}
+				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
+	my ($pid) = fork();	
 	if ( defined $wserver ) {
 		my ($wsrunnerctr) = {
 			'file'		=> $workspace.'/wsrunner.ctr',
@@ -848,15 +818,31 @@ sub run_appris($$$)
 		};
 		create_wsrunnerctr($wsrunnerctr);
 	}
-
-	# add job into child var
-	push(@{$PROC_CHILDS}, $pid);
-	$NUM_PROC_CHILDS++;
 		
+	# submit job
+	if ( !defined $pid ) {
+	    die "Cannot fork: $!";
+	}
+	if ( $pid ) {
+		$NUM_PROC_CHILDS++;
+	}	
+	elsif ( $pid == 0 ) {
+	    # client process
+		$logger->info("\n** script($$): $cmd\n");
+	    close STDOUT; close STDERR; # so parent can go on
+		eval {
+			#my (@outcmd) = `$cmd`;
+			system($cmd);
+		};
+		exit 1 if($@);
+	    exit 0;
+	}
+	
 	# wait until at least one process finish
 	while ( $NUM_PROC_CHILDS >= $NUM_MAX_PROC ) {
-		waitpid ( shift(@{$PROC_CHILDS}), 0 );
+		my $pid = wait();
 		$NUM_PROC_CHILDS--;
+		$logger->info("\n** script($pid) exits\n\n");
 	}
 				
 } # end run_appris
