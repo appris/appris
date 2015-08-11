@@ -36,6 +36,14 @@ export APPRIS_PROGRAMS_OPT_DIR="${APPRIS_CODE_DIR}/opt"
 
 export APPRIS_METHODS="firestar,matador3d,spade,corsair,thump,crash,proteo,appris"
 
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+export APPRIS_NUM_PARALLEL_PROC=1
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+
 # ----------------------------------------------------#
 # Setting up vars of external programs used by APPRIS #
 # ----------------------------------------------------#
