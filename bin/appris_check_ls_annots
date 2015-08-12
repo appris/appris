@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+VER=0.1b
+VERDATE="1-Apr-2013"
+
+FILENAME=`basename $0`
+FILENAME="${FILENAME%.*}"
+DIRNAME=`dirname $0`
+
+METHODS=""
+
+# -----------------------------------------------------------------------------
+# Load external functions
+source ${DIRNAME}/appris_env
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_ensembl_report\n
+\n
+ Description:\n
+\t Retrieve statistics from gencode report\n
+\n
+ Required arguments:\n
+\t -c [-conf]\n
+\t\t Hsap  - Homo sapiens -\n
+\t\t Mmus  - Mus musculus -\n
+\t\t Rnor  - Rattus norvegicus -\n
+\t\t Drer  - Danio rerio -\n
+\t\t Sscr  - Sus scrofa -\n
+\t\t Ptro  - Pan troglodytes -\n
+\t\t Dmel  - Drosophila melanogaster -\n
+\t\t Cele  - Caenorhabditis elegans -\n
+\t\t Lpar  - Lynx pardinus -\n
+\n
+ Optional arguments:\n
+\t -m [-method] - By default: all of them\n
+\t\t Methods which will extract the result files\n
+\t\t firestar,matador3d,spade,corsair,thump,crash,proteo,appris\n
+\n
+\t -i, -in\n
+\t\t Input path\n
+\n
+\t -v [version]\n
+\t -h [help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			case "$2" in
+				Hsap | Mmus | Rnor | Drer | Sscr | Ptro | Dmel | Cele | Lpar )
+					SPECIES=$2
+					;;
+				* )
+					echo Unknown method name: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;	
+		-m | -methods )
+			METHODS=$2
+			shift
+			;;
+		-i | -in )
+        	INPUT_DIR=$2
+        	shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		-v | -version )
+			echo "$VER", "$VERDATE"
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${SPECIES}" == "" ]; then
+	echo You must specify at least one SPECIES!
+	echo -e $USAGE
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Prepare Environment from given SPECIES
+load_appris_specie_env "${SPECIES}"
+
+# -----------------------------------------------------------------------------
+# Var declarations
+if [ "${METHODS}" == "" ]; then
+	METHODS="${APPRIS_METHODS}"
+fi
+METHODS_ARR=$( echo ${METHODS} | tr "," " ")
+METHOD_PARAMETERS="\("
+for M in ${METHODS_ARR};do
+	METHOD_PARAMETERS+=" -name '*.${M}' -o "
+done
+METHOD_PARAMETERS=$(echo "${METHOD_PARAMETERS}" | sed 's/\-o\s*$//g' )	
+METHOD_PARAMETERS+="\)"
+if [ "${INPUT_DIR}" == "" ]; then
+	INPUT_DIR="${APPRIS_ANNOT_DIR}"
+fi
+
+
+# -----------------------------------------------------------------------------
+# Retrieves list of genes with annotations (group by chr)
+LIST=()
+CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+INDEX=${#CHROMOSOME[@]}
+for ((i=0;i<$INDEX;i++)); do
+
+	# local vars
+	CHR="${CHROMOSOME[${i}]}"
+	POSITION="${CHR}"
+	CHR_INPUT_DIR="${INPUT_DIR}/${POSITION}"
+	
+	CMD="find ${CHR_INPUT_DIR}/* ${METHOD_PARAMETERS} -type f -exec basename {} \; | sort -u "
+	echo "eval ${CMD}"
+	LIST+=( $(eval ${CMD}) )
+done
+S_LIST=$(echo "${LIST[@]}" | tr ' ' '\n' | sort -u )
+echo "${S_LIST[@]}"

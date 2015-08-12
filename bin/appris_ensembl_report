@@ -162,10 +162,8 @@ CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 INDEX=${#CHROMOSOME[@]}
 for ((i=0;i<$INDEX;i++)); do
 	POSITION="${CHROMOSOME[${i}]}"
-	#N_GENES=$(awk -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" ){print $10} }' ${GENCODE_ANNOTATION_FILE} | uniq | sed 's/[\"|\;]//g' | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | sed -e 's/^.*gene\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l )
-	#N_TRANSC=$(awk -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" ){print $12} }' ${GENCODE_ANNOTATION_FILE} | uniq | sed 's/[\"|\;]//g' | fgrep -f - ${GENCODE_TRANSCRIPT_FILE}  | sed -e 's/^.*transcript\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l)
-	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" && match($9,/gene_id\s*([^ ]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | sed -e 's/^.*gene\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l )
-	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSCRIPT_FILE}  | sed -e 's/^.*transcript\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l)
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" && match($9,/gene_id\s*([^ ]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | sed -e 's/^.*gene\:\([^ ]*\).*$/\1/' | uniq | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSCRIPT_FILE}  | sed -e 's/^.*transcript\:\([^ ]*\).*$/\1/' | uniq | wc -l)
 	echo "${POSITION},${N_GENES},${N_TRANSC}"
 done
 echo ""
@@ -177,10 +175,8 @@ CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 INDEX=${#CHROMOSOME[@]}
 for ((i=0;i<$INDEX;i++)); do
 	POSITION="${CHROMOSOME[${i}]}"
-	#N_GENES=$(awk -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" ){print $10} }' ${GENCODE_ANNOTATION_FILE} | uniq | sed 's/[\"|\;]//g' | fgrep -f - ${GENCODE_TRANSLATION_FILE} | sed -e 's/^.*gene\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l )
-	#N_TRANSC=$(awk -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" ){print $12} }' ${GENCODE_ANNOTATION_FILE} | uniq | sed 's/[\"|\;]//g' | fgrep -f - ${GENCODE_TRANSLATION_FILE}  | sed -e 's/^.*transcript\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l)
-	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" && match($9,/gene_id\s*([^ ]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE} | sed -e 's/^.*gene\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l )
-	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE}  | sed -e 's/^.*transcript\:\([a-zA-Z0-9]*\).*/\1/' | uniq | wc -l)	
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" && match($9,/gene_id\s*([^ ]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE} | sed -e 's/^.*gene\:\([^ ]*\).*$/\1/' | uniq | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE}  | sed -e 's/^.*transcript\:\([^ ]*\).*$/\1/' | uniq | wc -l)	
 	echo "${POSITION},${N_GENES},${N_TRANSC}"
 done
 echo ""
@@ -188,17 +184,17 @@ echo ""
 
 # -----------------------------------------------------------------------------
 # Count gene types
-echo "---------------------------"
-echo "Count gene types:"
-echo ""
-echo "TYPE,NUM"
-eval TYPE=( $(awk '{ if($3=="gene"){print $14}}' ${GENCODE_ANNOTATION_FILE} | sed -e 's/[\"|\;]//g' | sort | uniq) )
-INDEX=${#TYPE[@]}
-for ((i=0;i<$INDEX;i++)); do
-	N=$(awk '{ if($3=="gene" && $13=="gene_biotype"){print $14}}' ${GENCODE_ANNOTATION_FILE} | grep -c "\"${TYPE[${i}]}\"")
-	echo "${TYPE[${i}]},$N"
-done
-echo ""
+#echo "---------------------------"
+#echo "Count gene types:"
+#echo ""
+#echo "TYPE,NUM"
+#eval TYPE=( $(awk '{ if($3=="gene"){print $14}}' ${GENCODE_ANNOTATION_FILE} | sed -e 's/[\"|\;]//g' | sort | uniq) )
+#INDEX=${#TYPE[@]}
+#for ((i=0;i<$INDEX;i++)); do
+#	N=$(awk '{ if($3=="gene" && $13=="gene_biotype"){print $14}}' ${GENCODE_ANNOTATION_FILE} | grep -c "\"${TYPE[${i}]}\"")
+#	echo "${TYPE[${i}]},$N"
+#done
+#echo ""
 
 
 # -----------------------------------------------------------------------------
