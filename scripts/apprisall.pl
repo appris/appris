@@ -28,7 +28,7 @@ my ($loglevel) = undef;
 
 &GetOptions(
 	'steps|p=s'			=> \$steps,
-	'conf-sp|cs=s'		=> \$conf_species,	
+	'conf|c=s'			=> \$conf_species,	
 	'methods|m=s'		=> \$methods,
 	'email|e=s'			=> \$email,
 	'loglevel|l=s'		=> \$loglevel,
@@ -119,10 +119,9 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		my ($params_create_db) = param_create_db();
 		eval {
 			my ($cmd) = "appris_db_create $params_create_db";
-info("$cmd");
 			system ($cmd);
 		};
-		throw("creating database") if($@);
+		throw("ERROR: creating database") if($@);
 		
 #		info("inserting APPRIS data into db...");
 #		my ($ins_params) = param_insert_db();
@@ -265,18 +264,7 @@ Executes all APPRIS 'steps
 	* 3 - Inserts the annotations into database -\n
 	* 4 - Retrieves the data files of methods -\n
 		
-  -c, --conf {string|file} <Species abbreviation | Config file for species>  
-	* Hsap  - Homo sapiens -\n
-	* Mmus  - Mus musculus -\n
-	* Rnor  - Rattus norvegicus -\n
-	* Drer  - Danio rerio -\n
-	* Sscr  - Sus scrofa -\n
-	* Ptro  - Pan troglodytes -\n
-	* Dmel  - Drosophila melanogaster -\n
-	* Cele  - Caenorhabditis elegans -\n
-	* Lpar  - Lynx pardinus -\n  
- Or 
-	<Config file name>
+  -c, --conf {file} <Config file for species>  
 
 =head2 Optional arguments:
 		
