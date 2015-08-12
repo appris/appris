@@ -97,6 +97,16 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($cmd) = "appris_retrieve_main_data $params_data_main";
 			system ($cmd);
+			if ($? == -1) {
+			    print "failed to execute: $!\n";
+			}
+			elsif ($? & 127) {
+			    printf "child died with signal %d, %s coredump\n",
+			    ($? & 127),  ($? & 128) ? 'with' : 'without';
+			}
+			else {
+			    printf "child exited with value %d\n", $? >> 8;
+			}			
 		};
 		throw("retrieving the main data") if($@);
 		
