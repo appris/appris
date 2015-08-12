@@ -7,7 +7,7 @@ use Getopt::Long;
 use Config::IniFiles;
 use FindBin;
 use Data::Dumper;
-use APPRIS::Utils::File qw( getTotalStringFromFile );
+use APPRIS::Utils::File qw( getStringFromFile );
 
 ###################
 # Global variable #
