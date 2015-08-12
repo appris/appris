@@ -97,6 +97,8 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		throw("retrieving the main data") if($@);
 		
 # TODO: Compare numbers with older release: No. Principal Isoforms, CCDS comparison, etc.
+# Eg.
+# 		cut -f 2 appris_data.principal.txt | sort -u | wc -l
 
 # TODO: Check if something is bad.
 # If is ERROR => Stop
