@@ -125,7 +125,8 @@ sub main()
 	# create database
 	$logger->info("-- creating database\n");
 	my ($createdb) = appris::create_database($apprisdb_conf_file, $species);
-	throw("creating database") unless ( defined $createdb );
+print STDERR "DB: $createdb\n";
+	$logger->error("creating database") unless ( defined $createdb );
 exit 0;
 			
 	
@@ -266,7 +267,7 @@ sub insert_pipeline($$;$)
 	# run pipe
 	$logger->info("\t-- run pipe\n");
 	my ($inserttime) = insert_appris($gene_id, $workspace, $params);
-	throw("inserting results") unless ( defined $inserttime );
+	$logger->error("inserting results") unless ( defined $inserttime );
 
 	return $runtime;
 	
@@ -298,7 +299,7 @@ sub insert_appris($$$)
 		$logger->info("\n** script: $cmd\n");
 		my (@cmd_out) = `$cmd`;
 	};
-	throw("running appris") if($@);
+	$logger->error("running appris") if($@);
 
 } # end insert_appris
 
