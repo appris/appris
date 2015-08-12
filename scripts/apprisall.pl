@@ -22,7 +22,6 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 # Input parameters
 my ($steps) = undef;
 my ($conf_species) = undef;
-my ($conf_db) = undef;
 my ($methods) = undef;
 my ($email) = undef;
 my ($loglevel) = undef;
@@ -30,7 +29,6 @@ my ($loglevel) = undef;
 &GetOptions(
 	'steps|p=s'			=> \$steps,
 	'conf-sp|cs=s'		=> \$conf_species,	
-	'conf-db|cd=s'		=> \$conf_db,
 	'methods|m=s'		=> \$methods,
 	'email|e=s'			=> \$email,
 	'loglevel|l=s'		=> \$loglevel,
@@ -49,11 +47,8 @@ unless ( defined $methods ) {
 }
 
 # get species name from config file
-my ($species);
-if ( getStringFromFile($conf_species) =~ /APPRIS_SPECIES="([^\"]*)"/) {
-	$species = $1;
-}
-
+my ($species) = `. $conf_species; echo \$APPRIS_SPECIES`;
+my ($conf_db) = `. $conf_species; echo \$APPRIS_SCRIPTS_DB_INI`;
 
 #################
 # Method bodies #
