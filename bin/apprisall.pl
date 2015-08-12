@@ -58,7 +58,9 @@ sub param_data_main();
 sub main()
 {
 	# Step 1: execute APPRIS
-	if ( $steps =~ /1/ ) {
+	if ( $steps =~ /1/ )
+	{
+#		info("executing APPRIS pipeline...");
 #		my ($params_appris) = params_appris();
 #		eval {
 #			my ($cmd) = "appris $params_appris";
@@ -66,12 +68,11 @@ sub main()
 #			system ($cmd);
 #		};
 #		throw("executing APPRIS pipeline") if($@);
-		my ($params_check) = param_check_files();
+
 		info("checking APPRIS results...");
+		my ($params_check) = param_check_files();
 		eval {
 			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params_check ";
-			verbose("** script: $cmd\n");
-			#system ($cmd);
 			my (@output) = `$cmd`;
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
@@ -79,11 +80,12 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	}
 	
 	# Step 2: retrieve the main data and stats comparison
-	if ( $steps =~ /12/ ) {
+	if ( $steps =~ /12/ )
+	{
+		info("retrieving APPRIS main data...");
 		my ($params_data_main) = param_data_main();
 		eval {
 			my ($cmd) = "appris_retrieve_main_data $params_data_main";
-			verbose("** script: $cmd\n");
 			system ($cmd);
 		};
 		throw("retrieving the main data") if($@);
@@ -125,7 +127,7 @@ sub params_appris()
 	
 	if ( defined $email ) 	{ $params .= " -e $email " }
 	
-	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
@@ -139,7 +141,7 @@ sub param_check_files()
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
 	
-	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
@@ -150,7 +152,7 @@ sub param_data_main()
 	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 		
-	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
