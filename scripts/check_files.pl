@@ -112,10 +112,10 @@ sub main()
 	}
 	print STDOUT $output;
 
-#$logger->info("DATA_GENES:\n".Dumper(@data_genes));
-#$logger->info("DATA_TRANS:\n".Dumper(@data_transc));
-#$logger->info("ANNOT_LIST:\n".Dumper(@annot_list));
-#$logger->info("ANNOT_APPRIS:\n".Dumper($annot_appris));
+$logger->debug("DATA_GENES:\n".Dumper(@data_genes));
+#$logger->debug("DATA_TRANS:\n".Dumper(@data_transc));
+#$logger->debug("ANNOT_LIST:\n".Dumper(@annot_list));
+#$logger->debug("ANNOT_APPRIS:\n".Dumper($annot_appris));
 
 	$logger->finish_log();
 	
