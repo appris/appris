@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use threads;
 
-use Getopt::Long;
+use Getopt::Long qw(:config no_auto_abbrev);
 use FindBin;
 use Data::Dumper;
 
@@ -27,24 +27,26 @@ $CONFIG_INI_ENSEMBL_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/ensembldb.ini';
 $LOGLEVEL					= 'INFO';
 
 # Input parameters
-my ($species) = undef;
-my ($conf_file) = undef;
+my ($conf_species) = undef;
+my ($methods) = undef;
+my ($outfile) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
 my ($logappend) = undef;
 my ($loglevel) = undef;
 
 &GetOptions(
-	'species|s=s'		=> \$species,	
-	'conf|c=s'			=> \$conf_file,	
-	'loglevel=s'		=> \$loglevel,
+	'conf|c=s'			=> \$conf_species,	
+	'methods|m=s'		=> \$methods,
+	'outfile|o=s'		=> \$outfile,
+	'loglevel|l=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
 	'logpath=s'			=> \$logpath,
 	'logappend'			=> \$logappend,
 );
 
 # Required arguments
-if ( !defined $species && !defined $conf_file ) {
+unless ( defined $conf_species and defined $methods ) {
 	print `perldoc $0`;
 	exit 1;
 }
@@ -69,32 +71,53 @@ sub main()
 	# get the list of input genes with translation
 	my (@data_genes);
 	eval {
-		my ($cmd) = "appris_check_ls_report -c $species -g";
+		my ($cmd) = "appris_check_ls_report -c $conf_species -g";
 		$logger->info("\n** script: $cmd\n");
 		@data_genes = `$cmd`; map { s/\s+$// } @data_genes;
 	};
-	$logger->error("deleting log files of appris") if($@);
+	$logger->error("checking data genes") if($@);
 	
 	# get the list of input transcripts with translation
 	my (@data_transc);
 	eval {
-		my ($cmd) = "appris_check_ls_report -c $species -t";
+		my ($cmd) = "appris_check_ls_report -c $conf_species -t";
 		$logger->info("\n** script: $cmd\n");
 		@data_transc = `$cmd`; map { s/\s+$// } @data_transc;
 	};
-	$logger->error("deleting log files of appris") if($@);	
+	$logger->error("checking data transcripts") if($@);	
 
 	# get the list of annotation files
-	my (@annot_appris);
+	my (@annot_list);
+	my ($annot_appris);
 	eval {
-		my ($cmd) = "appris_check_ls_annots -c $species";
+		my ($cmd) = "appris_check_ls_annots -c $conf_species ";
 		$logger->info("\n** script: $cmd\n");
-		@data_transc = `$cmd`; map { s/\s+$// } @data_transc;
+		@annot_list = `$cmd`; map { s/\s+$// } @annot_list;
 	};
-	$logger->error("deleting log files of appris") if($@);	
+	$logger->error("deleting annot files") if($@);
+	my ($methods_patt) = $methods; ($methods_patt =~ s/\,/\|/g);
+	print STDERR "PAT: $methods_patt\n";
+	foreach my $annot_file (@annot_list) {
+		if ( $annot_file =~ /^(.*)\.($methods_patt)$/ ) {
+			my ($gene_id) = $1;
+			my ($method) = $2;
+			#push(@{$annot_appris->{$method}}, $gene_id);
+			$annot_appris->{$method}->{$gene_id} = 1;
+		}
+	}	
+	
+	# compare the data gen set with the list of genes with annotatios
+	my ($output) = '';
+	foreach my $method ( split(',', $methods) ) {
+		my (@diffs) = grep(!defined($annot_appris->{$method}->{$_}), @data_genes);		
+		map( $output .= "[TRACELOG]\t". uc($method) . "\t" . $_ . "\n" , @diffs);		
+	} 
+	print STDOUT $output;
 
-#$logger->info("DATA_GENES:\n".Dumper(@data_genes));
+$logger->info("DATA_GENES:\n".Dumper(@data_genes));
 #$logger->info("DATA_TRANS:\n".Dumper(@data_transc));
+#$logger->info("ANNOT_LIST:\n".Dumper(@annot_list));
+$logger->info("ANNOT_APPRIS:\n".Dumper($annot_appris));
 
 	$logger->finish_log();
 	
@@ -135,6 +158,8 @@ check_files
  Or
  
   -c, --conf {file} <Config file name>
+  
+  -m, --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris')>  
 
 =head2 Optional arguments (log arguments):
 	

@@ -4,28 +4,55 @@
 # Main bash script that loads environmental variable
 
 DIRNAME=`dirname $0`
-APPRIS_REL_ENV=( 'TST' 'Hsap' 'Mmus' 'Rnor' 'Drer' 'Sscr' 'Ptro' 'Dmel' 'Cele' 'Lpar' )
+#APPRIS_REL_ENV=( 'TST' 'Hsap' 'Mmus' 'Rnor' 'Drer' 'Sscr' 'Ptro' 'Dmel' 'Cele' 'Lpar' )
+APPRIS_REL_ENV=" TST Hsap Mmus Rnor Drer Sscr Ptro Dmel Cele Lpar "
 
 load_appris_specie_env() {
-	local e
-	for ((i=0; i < "${#APPRIS_REL_ENV[@]}"; i++)); do
-		if [[ "$1" =~ "${APPRIS_REL_ENV[$i]}".* ]]
-		then		
-			case "${APPRIS_REL_ENV[$i]}" in
-				TST* )
-					CMD_SOURCE="source ${DIRNAME}/../test/conf/apprisrc.$1"
-					if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
-					${CMD_SOURCE} 
-					;;
-				* )
-					CMD_SOURCE="source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1"
-					if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
-					${CMD_SOURCE} 
-					;;				
-			esac				
-		fi
-	done
+	if [[ "${APPRIS_REL_ENV}" =~ " $1 " ]]; then
+		case "$1" in
+			TST* )
+				CMD_SOURCE="source ${DIRNAME}/../test/conf/apprisrc.$1"
+				if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
+				${CMD_SOURCE} 
+				;;
+			* )
+				CMD_SOURCE="source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1"
+				if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
+				${CMD_SOURCE} 
+				;;				
+		esac
+	else
+		if [[ -e "${1}" ]]; then
+			CMD_SOURCE="source ${1}"
+			if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
+			${CMD_SOURCE}
+		else
+			echo "ERROR: source config file bash"
+			exit 1;
+		fi			
+	fi
 }
+
+#load_appris_specie_env() {
+#	local e
+#	for ((i=0; i < "${#APPRIS_REL_ENV[@]}"; i++)); do
+#		if [[ "$1" =~ "${APPRIS_REL_ENV[$i]}".* ]]
+#		then		
+#			case "${APPRIS_REL_ENV[$i]}" in
+#				TST* )
+#					CMD_SOURCE="source ${DIRNAME}/../test/conf/apprisrc.$1"
+#					if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
+#					${CMD_SOURCE} 
+#					;;
+#				* )
+#					CMD_SOURCE="source ${APPRIS_SCRIPTS_CONF_DIR}/apprisrc.$1"
+#					if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
+#					${CMD_SOURCE} 
+#					;;				
+#			esac				
+#		fi
+#	done
+#}
 
 load_species_env() {
 	local e

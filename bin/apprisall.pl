@@ -19,8 +19,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 
 # Input parameters
 my ($steps) = undef;
-my ($species) = undef;
-my ($conf_file) = undef;
+my ($conf_species) = undef;
 my ($methods) = undef;
 my ($outpath) = undef;
 my ($email) = undef;
@@ -28,8 +27,7 @@ my ($loglevel) = undef;
 
 &GetOptions(
 	'steps|p=s'			=> \$steps,
-	'species|s=s'		=> \$species,	
-	'conf|c=s'			=> \$conf_file,	
+	'conf|c=s'			=> \$conf_species,	
 	'methods|m=s'		=> \$methods,
 	'outpath|o=s'		=> \$outpath,
 	'email|e=s'			=> \$email,
@@ -37,94 +35,92 @@ my ($loglevel) = undef;
 );
 
 # Check required parameters
-if ( !(defined $steps) && ( !defined $species || !defined $conf_file ) ) {
+unless ( defined $steps and defined $conf_species ) {
 	print `perldoc $0`;
 	print "\nBad option combination of input data\n\n";
 	exit 1;
 }
 
-&check_params();
+# Get method's pipeline
+unless ( defined $methods ) {
+	$methods = $ENV{APPRIS_METHODS};
+}
 
 #################
 # Method bodies #
 #################
-sub create_appris_params();
+sub params_appris();
 sub create_data_params();
+sub param_check_files();
+sub param_data_main();
 
 # Main subroutine
 sub main()
 {
-	# check input parameters
-	check_params();
-	
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ ) {
-		my ($app_params) = create_appris_params();
+#		my ($params_appris) = params_appris();
+#		eval {
+#			my ($cmd) = "appris $params_appris";
+#			info("** script: $cmd\n");
+#			system ($cmd);
+#		};
+#		throw("executing APPRIS pipeline") if($@);
+		my ($params_check) = param_check_files();
 		eval {
-			my ($cmd) = "appris $app_params";
+			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params_check ";
 			info("** script: $cmd\n");
-			system ($cmd);
+			#system ($cmd);
+			my (@output) = `$cmd`;
+print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
-		throw("deleting log files of appris") if($@);		
+		throw("checking APPRIS results") if($@);
 	}
 	
 	# Step 2: retrieve the main data and stats comparison
 	if ( $steps =~ /12/ ) {
-		my ($dat_params) = create_data_params();
+		my ($params_data_main) = param_data_main();
 		eval {
-			my ($cmd) = "appris_retrieve_main_data $dat_params";
+			my ($cmd) = "appris_retrieve_main_data $params_data_main";
 			info("** script: $cmd\n");
 			system ($cmd);
 		};
-		throw("deleting log files of appris") if($@);
-		my ($stats_params) = create_stats_params();
-		eval {
-			my ($cmd) = "appris_cmp_stats_ccds $stats_params";
-			info("** script: $cmd\n");
-			system ($cmd);
-		};
-		throw("deleting log files of appris") if($@);
-		
+		throw("retrieving the main data") if($@);
 	}
 	
-	# Step 3: insert annotations into APPRIS database
-	if ( $steps =~ /123/ ) {
-		my ($ins_params) = create_insert_params();
-		eval {
-			my ($cmd) = "appris_insert_appris $ins_params";
-			info("** script: $cmd\n");
-			system ($cmd);
-		};
-		throw("deleting log files of appris") if($@);
-	}
-
-	# Step 4: retrieve method data
-	my ($dat2_params) = create_data_params();
-	if ( $steps =~ /1234/ ) {	
-		$dat2_params .= " -f gtf ";
-		eval {
-			my ($cmd) = "appris_retrieve_method_data $dat2_params";
-			info("** script: $cmd\n");
-			system ($cmd);
-		};
-		throw("deleting log files of appris") if($@);
-	}
+#	# Step 3: insert annotations into APPRIS database
+#	if ( $steps =~ /123/ ) {
+#		my ($ins_params) = create_insert_params();
+#		eval {
+#			my ($cmd) = "appris_insert_appris $ins_params";
+#			info("** script: $cmd\n");
+#			system ($cmd);
+#		};
+#		throw("deleting log files of appris") if($@);
+#	}
+#
+#	# Step 4: retrieve method data
+#	my ($dat2_params) = create_data_params();
+#	if ( $steps =~ /1234/ ) {	
+#		$dat2_params .= " -f gtf ";
+#		eval {
+#			my ($cmd) = "appris_retrieve_method_data $dat2_params";
+#			info("** script: $cmd\n");
+#			system ($cmd);
+#		};
+#		throw("deleting log files of appris") if($@);
+#	}
 
 }
-sub check_params()
-{
-	
-	
-}
-sub create_appris_params()
+sub params_appris()
 {
 	my ($params) = '';
 	
-	if ( defined $species ) { $params .= " -c $species " }
-	elsif ( defined $conf_file ) { $params .= " -c $conf_file " }
+	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 	
 	if ( defined $methods ) { $params .= " -m $methods " }
+	else { throw("configuration is not provided") }
 	
 	if ( defined $email ) 	{ $params .= " -e $email " }
 	
@@ -132,31 +128,31 @@ sub create_appris_params()
 	
 	return $params;	
 }
-sub create_data_params()
+sub param_check_files()
 {
 	my ($params) = '';
 	
-	if ( defined $species ) { $params .= " -c $species " }
-	elsif ( defined $conf_file ) { $params .= " -c $conf_file " }
+	if ( defined $conf_species ) { $params .= " -c $conf_species " }
+	else { throw("configuration is not provided") }
+	
+	if ( defined $methods ) { $params .= " -m $methods " }
+	else { throw("configuration is not provided") }
+	
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	
+	return $params;	
+}
+sub param_data_main()
+{
+	my ($params) = '';
+	
+	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 		
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
-sub create_insert_params()
-{
-	my ($params) = '';
-	
-	if ( defined $species ) { $params .= " -c $species " }
-	elsif ( defined $conf_file ) { $params .= " -c $conf_file " }
-	else { throw("configuration is not provided") }
-	
-	if ( defined $loglevel ) { $params .= " -l $loglevel " }
-	
-	return $params;	
-}
-
 
 
 main();
@@ -190,6 +186,7 @@ Executes all APPRIS 'steps
 	* Rnor  - Rattus norvegicus -\n
 	* Drer  - Danio rerio -\n
 	* Sscr  - Sus scrofa -\n
+	* Ptro  - Pan troglodytes -\n
 	* Dmel  - Drosophila melanogaster -\n
 	* Cele  - Caenorhabditis elegans -\n
 	* Lpar  - Lynx pardinus -\n  
