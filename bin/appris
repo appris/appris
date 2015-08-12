@@ -41,7 +41,7 @@ USAGE="
  APPRIS's binary package.\n
 \n
  Name:\n
-\t apprisall\n
+\t appris\n
 \n
  Description:\n
 \t global script that runs APPRIS for GENCODE and ENSEMBL.\n
@@ -151,7 +151,7 @@ load_appris_specie_env "${CONF_SPECIES}" "verbose"
 
 # -----------------------------------------------------------------------------
 # Get method script name
-METHOD_SCRIPT="apprisall"
+METHOD_SCRIPT="run_appris"
 
 # -----------------------------------------------------------------------------
 # Required var declarations

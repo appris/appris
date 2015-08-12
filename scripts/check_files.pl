@@ -112,6 +112,10 @@ sub main()
 	}
 	print STDOUT $output;
 
+#TODO: Comprueba que la lista de genes es igual.
+# Si esta bien => No imprimes nada.
+# Sino es ERROR => Imprime la lista de genes que es diferente por STDOUT
+
 #$logger->debug("DATA_GENES:\n".Dumper(@data_genes));
 #$logger->debug("DATA_TRANS:\n".Dumper(@data_transc));
 #$logger->debug("ANNOT_LIST:\n".Dumper(@annot_list));

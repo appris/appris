@@ -392,7 +392,7 @@ perl insert_appris.pl
 	
 	--logpath={ABSOLUTE_PATH}/logs/
 			
-	--logfile=apprisall.log
+	--logfile=insert_appris.log
 	
 	--loglevel=INFO
 	

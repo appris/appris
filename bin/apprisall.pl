@@ -77,9 +77,9 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
 		throw("checking results") if($@);
 		
-# TODO: Comprueba si hay salida (lista de genes).
-# Si hay salida es ERROR!! => Paramos
-# Sino => Continuamos
+# TODO: Check if script retrives output (list of wrong genes).
+# If is ERROR => Stop
+# Otherwise => Keep going
 
 # TODO: Send email with final decision of this step
 
@@ -121,11 +121,16 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 # If is ERROR => Stop
 # Otherwise => Keep going
 
+# TODO: Make a backup
+
 # TODO: Send email with final decision of this step
 
 	}
 
-#	# Step 4: retrieve data files for methods in GTF
+
+# TODO: Step 4 can be done in parallel
+
+#	# Step 4: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
 #	my ($dat2_params) = create_data_params();
 #	if ( $steps =~ /4/ ) {	
 #		$dat2_params .= " -f gtf ";
@@ -144,24 +149,9 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 #
 #	}
 
-#	# Step 5: retrieve data files for methods in BED/TrackHUB
-#	my ($dat2_params) = create_data_params();
-#	if ( $steps =~ /5/ ) {	
-#		$dat2_params .= " -f bed ";
-#		eval {
-#			my ($cmd) = "appris_retrieve_method_data $dat2_params";
-#			info("** script: $cmd\n");
-#			system ($cmd);
-#		};
-#		throw("deleting log files of appris") if($@);
-#
-# TODO: Check if something is bad.
-# If is ERROR => Stop
-# Otherwise => Keep going
-#
-# TODO: Send email with final decision of this step
-#
-#	}
+
+# TODO: Step 5 Upload all data files to the server
+
 
 }
 sub params_run_pipe()
@@ -246,8 +236,7 @@ Executes all APPRIS 'steps
 	* 3 - Inserts the annotations into database -\n
 	* 4 - Retrieves the data files of methods -\n
 		
-  -c, --conf {string|file} <Species abbreviation | Config file for species>
-  
+  -c, --conf {string|file} <Species abbreviation | Config file for species>  
 	* Hsap  - Homo sapiens -\n
 	* Mmus  - Mus musculus -\n
 	* Rnor  - Rattus norvegicus -\n
@@ -257,9 +246,7 @@ Executes all APPRIS 'steps
 	* Dmel  - Drosophila melanogaster -\n
 	* Cele  - Caenorhabditis elegans -\n
 	* Lpar  - Lynx pardinus -\n  
-  
- Or
- 
+ Or 
 	<Config file name>
 
 =head2 Optional arguments:

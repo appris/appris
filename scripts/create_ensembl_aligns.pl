@@ -424,7 +424,7 @@ retrieve list of genes from ENSEMBL
 
 =head1 SYNOPSIS
 
-apprisall
+create_ensembl_aligns
 
 =head2 Arguments:
 

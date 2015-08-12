@@ -922,7 +922,7 @@ __END__
 
 =head1 NAME
 
-apprisall
+run_appris
 
 =head1 DESCRIPTION
 
@@ -930,7 +930,7 @@ global script that runs APPRIS for GENCODE and ENSEMBL
 
 =head1 SYNOPSIS
 
-apprisall
+run_appris
 
 =head2 Required arguments (inputs):
 
@@ -1028,7 +1028,7 @@ apprisall
 
 =head2 1. Main execution:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1044,7 +1044,7 @@ apprisall
 	
 	--logpath={ABSOLUTE_PATH}/logs/
 			
-	--logfile=apprisall.log
+	--logfile=run_appris.log
 	
 	--loglevel=INFO
 	
@@ -1053,7 +1053,7 @@ apprisall
 
 =head2 2. With given position:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1069,7 +1069,7 @@ apprisall
 	
 	--logpath={ABSOLUTE_PATH}/logs/
 			
-	--logfile=apprisall.log
+	--logfile=run_appris.log
 	
 	--loglevel=INFO
 	
@@ -1078,7 +1078,7 @@ apprisall
 
 =head2 3. With given gene list:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1094,7 +1094,7 @@ apprisall
 	
 	--logpath={ABSOLUTE_PATH}/logs/
 			
-	--logfile=apprisall.log
+	--logfile=run_appris.log
 	
 	--loglevel=INFO
 	
@@ -1105,7 +1105,7 @@ apprisall
 
 =head2 1. With ensembl gene identifier:
 
-apprisall
+run_appris
 
 	--species='Mus musculus'
 	
@@ -1121,7 +1121,7 @@ apprisall
 	
 =head2 2. With external gene name:
 
-apprisall
+run_appris
 
 	--species='Mus musculus'
 	
@@ -1138,7 +1138,7 @@ apprisall
 
 =head2 1. Main execution:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1159,7 +1159,7 @@ apprisall
 
 =head2 1. With a protein sequence as input:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1180,7 +1180,7 @@ apprisall
 
 =head2 1. With a ensembl version:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	
@@ -1203,7 +1203,7 @@ apprisall
 
 =head2 1. Using cached directory:
 
-apprisall
+run_appris
 
 	--species='Homo sapiens'
 	

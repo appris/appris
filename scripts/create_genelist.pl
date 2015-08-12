@@ -214,7 +214,7 @@ create some list of genes depending on length of protein sequences
 
 =head1 SYNOPSIS
 
-apprisall
+create_genelist
 
 =head2 Input arguments:
 

@@ -174,7 +174,7 @@ sub run_appris {
 			elsif ( $pid == 0 ) {
 				close STDOUT; close STDERR; # so parent can go on
 			    # client process
-				my ($cmd) =	"perl $ENV{APPRIS_SCRIPTS_DIR}/apprisall.pl ".
+				my ($cmd) =	"perl $ENV{APPRIS_SCRIPTS_DIR}/run_appris.pl ".
 							" --wserver=$jobid ".
 							" $parameters ".
 							" --cluster-conf=$ENV{APPRIS_SCRIPTS_CLUSTER_INI_WSERVER} ".
@@ -191,7 +191,7 @@ sub run_appris {
 			elsif ( $pid == 0 ) {
 				close STDOUT; close STDERR; # so parent can go on
 			    # client process
-				my ($cmd) =	"perl $ENV{APPRIS_SCRIPTS_DIR}/apprisall.pl ".
+				my ($cmd) =	"perl $ENV{APPRIS_SCRIPTS_DIR}/run_appris.pl ".
 							" --wserver=$jobid ".
 							" $parameters ".
 							" --loglevel=$loglevel --logfile=$logfile --logappend ";
