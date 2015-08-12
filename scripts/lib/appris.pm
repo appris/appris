@@ -457,8 +457,7 @@ sub create_database($$)
 	};
 	
 	eval {
-		my ($cmd) =	"appris_db_create -d ".$param->{'-dbname'}." -h ".$param->{'-dbhost'}." -u ".$param->{'-dbuser'}." -p".$param->{'-dbpass'};
-info("CMD: $cmd");
+		my ($cmd) =	"appris_db_create -d ".$param->{'-dbname'}." -h ".$param->{'-dbhost'}." -u ".$param->{'-dbuser'}." -p ".$param->{'-dbpass'};
 		system($cmd);
 	};
 	throw("creating database") if($@);
