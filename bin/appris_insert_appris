@@ -23,9 +23,10 @@ FILENAME=`basename $0`
 FILENAME="${FILENAME%.*}"
 DIRNAME=`dirname $0`
 
+CONF_SPECIES=""
+METHODS=""
 GENE_LIST=""
 INPUT_DIR=""
-METHODS=""
 LOG_LEVEL=""
 
 # -----------------------------------------------------------------------------
@@ -86,22 +87,13 @@ while expr "//$1" : //- >/dev/null
 do
 	case "$1" in
 		-c | -conf )
-			case "$2" in
-				Hsap | Mmus | Rnor | Drer | Sscr | Ptro | Dmel | Cele | Lpar )
-					SPECIES=$2
-					;;
-				* )
-					if [ ! -e $2 ]; then
-						echo Unknown config file: "$2" 
-						echo -e $USAGE
-						exit 1
-					else
-						CONF_FILE=$2
-					fi
-					;;
-			esac
+			CONF_SPECIES=$2
 			shift
-			;;	
+			;;
+		-m | -methods )
+			METHODS=$2
+			shift
+			;;
 		-g | -genes )
 			GENE_LIST=$2
 			shift
@@ -109,10 +101,6 @@ do
 		-i | -in )
         	INPUT_DIR=$2
         	shift
-			;;
-		-m | -methods )
-			METHODS=$2
-			shift
 			;;
 		-l | -loglevel )
 			case "$2" in
@@ -144,22 +132,15 @@ do
 	shift
 done
 
-if [[ "${SPECIES}" == "" && "${CONF_FILE}" == "" ]]; then
-	echo You must specify at least one SPECIES! or config file!
+if [ "${CONF_SPECIES}" == "" ]; then
+	echo You must specify at least one config file for SPECIES!
 	echo -e $USAGE
 	exit 1
 fi
 
 # -----------------------------------------------------------------------------
-# Prepare Environment
-if [ "${SPECIES}" != "" ]; then
-	# from given SPECIES
-	load_species_env "${SPECIES}"
-else
-	# from config file
-	echo "source ${CONF_FILE}"
-	source ${CONF_FILE}	
-fi
+# Prepare Environment from config file for SPECIES
+load_appris_specie_env "${CONF_SPECIES}" "verbose"
 
 # -----------------------------------------------------------------------------
 # Get method script name
