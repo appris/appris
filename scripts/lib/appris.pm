@@ -419,52 +419,6 @@ sub create_indata($;$;$)
 	
 } # end create_ensembl_data
 
-=head2 create_database
-
-  Arg[1]      : (optional) String $text - notification text to present to user
-  Example     : # run a code snipped conditionally
-                if ($support->user_proceed("Run the next code snipped?")) {
-                    # run some code
-                }
-
-                # exit if requested by user
-                exit unless ($support->user_proceed("Want to continue?"));
-  Description : If running interactively, the user is asked if he wants to
-                perform a script action. If he doesn't, this section is skipped
-                and the script proceeds with the code. When running
-                non-interactively, the section is run by default.
-  Return type : TRUE to proceed, FALSE to skip.
-  Exceptions  : none
-  Caller      : general
-
-=cut
-
-sub create_database($$)
-{
-	my ($conf_file, $species) = @_;
-	my ($feed);
-	
-	# insert entity from given specie
-	my ($cfg) = new Config::IniFiles( -file => $conf_file );
-	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
-	my ($param) = {
-			'-dbhost'       => $cfg->val('APPRIS_DATABASES', 'host'),
-			'-dbuser'       => $cfg->val('APPRIS_DATABASES', 'user'),
-			'-dbpass'       => $cfg->val('APPRIS_DATABASES', 'pass'),
-			'-dbport'       => $cfg->val('APPRIS_DATABASES', 'port'),
-			'-dbname'       => $cfg->val($specie_db, 'db'),
-	};
-	
-	eval {
-		my ($cmd) =	"appris_db_create -d ".$param->{'-dbname'}." -h ".$param->{'-dbhost'}." -u ".$param->{'-dbuser'}." -p ".$param->{'-dbpass'};
-		system($cmd);
-	};
-	throw("creating database") if($@);
-	
-	return $feed;
-}
-
 =head2 send_email
 
   Arg[1]      : (optional) String $text - notification text to present to user

@@ -4,9 +4,10 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use Config::IniFiles;
 use FindBin;
 use Data::Dumper;
-use APPRIS::Utils::Exception qw( info verbose throw );
+use APPRIS::Utils::File qw( getTotalStringFromFile );
 
 ###################
 # Global variable #
@@ -20,18 +21,24 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 # Input parameters
 my ($steps) = undef;
 my ($conf_species) = undef;
+my ($conf_db) = undef;
 my ($methods) = undef;
-my ($outpath) = undef;
 my ($email) = undef;
 my ($loglevel) = undef;
+my ($logfile) = undef;
+my ($logpath) = undef;
+my ($logappend) = undef;
 
 &GetOptions(
 	'steps|p=s'			=> \$steps,
-	'conf|c=s'			=> \$conf_species,	
+	'conf-sp|cs=s'		=> \$conf_species,	
+	'conf-db|cd=s'		=> \$conf_db,
 	'methods|m=s'		=> \$methods,
-	'outpath|o=s'		=> \$outpath,
 	'email|e=s'			=> \$email,
-	'loglevel|l=s'		=> \$loglevel
+	'loglevel|l=s'		=> \$loglevel,
+	'logfile=s'			=> \$logfile,
+	'logpath=s'			=> \$logpath,
+	'logappend'			=> \$logappend,
 );
 
 # Check required parameters
@@ -45,6 +52,13 @@ unless ( defined $steps and defined $conf_species ) {
 unless ( defined $methods ) {
 	$methods = $ENV{APPRIS_METHODS};
 }
+
+# get species name from config file
+my ($species);
+if ( getStringFromFile($conf_species) =~ /APPRIS_SPECIES="([^\"]*)"/) {
+	$species = $1;
+}
+
 
 #################
 # Method bodies #
@@ -60,7 +74,7 @@ sub main()
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
 	{		
-		info("executing APPRIS pipeline...");
+		info("executing pipeline...");
 		my ($params_run_pipe) = params_run_pipe();
 		eval {
 			my ($cmd) = "appris $params_run_pipe";
@@ -68,7 +82,7 @@ sub main()
 		};
 		throw("executing pipeline") if($@);
 
-		info("checking APPRIS results...");
+		info("checking results...");
 		my ($params_check) = param_check_files();
 		eval {
 			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params_check ";
@@ -88,7 +102,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	# Step 2: retrieve the main data and stats comparison
 	if ( $steps =~ /2/ )
 	{
-		info("retrieving APPRIS main data...");
+		info("retrieving main data...");
 		my ($params_data_main) = param_retrieve_data();
 		eval {
 			my ($cmd) = "appris_retrieve_main_data $params_data_main";
@@ -109,13 +123,23 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	
 	# Step 3: insert annotations into APPRIS database
 	if ( $steps =~ /3/ ) {
-		info("inserting APPRIS data into db...");
-		my ($ins_params) = param_insert_db();
+		
+		# create database
+		info("creating database...");
+		my ($params_create_db) = param_create_db();
 		eval {
-			my ($cmd) = "appris_insert_appris $ins_params";
+			my ($cmd) = "appris_db_create $params_create_db";
 			system ($cmd);
 		};
-		throw("inserting data") if($@);
+		throw("creating database") if($@);
+		
+#		info("inserting APPRIS data into db...");
+#		my ($ins_params) = param_insert_db();
+#		eval {
+#			my ($cmd) = "appris_insert_appris $ins_params";
+#			system ($cmd);
+#		};
+#		throw("inserting data") if($@);
 		
 # TODO: Check if data has been inserted correctly (compare with the no. of gene dataset using g_annotation.sql file)
 # If is ERROR => Stop
@@ -194,6 +218,20 @@ sub param_retrieve_data()
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
+}
+sub param_create_db()
+{
+	my ($params) = '';
+	
+	my ($cfg) = new Config::IniFiles( -file => $conf_db );
+	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
+	my ($specie_db) = uc($spe.'_db');
+	$params .= " -d ".$cfg->val($specie_db, 'db');
+	$params .= " -h ".$cfg->val('APPRIS_DATABASES', 'host');
+	$params .= " -u ".$cfg->val('APPRIS_DATABASES', 'user');
+	$params .= " -p ".$cfg->val('APPRIS_DATABASES', 'pass');
+
+	return $params;		
 }
 sub param_insert_db()
 {

@@ -122,14 +122,6 @@ sub insert_appris($$$);
 # Main subroutine
 sub main()
 {
-	# create database
-	$logger->info("-- creating database\n");
-	my ($createdb) = appris::create_database($apprisdb_conf_file, $species);
-print STDERR "DB: $createdb\n";
-	$logger->error("KK creating database") unless ( defined $createdb );
-exit 0;
-			
-	
 	# run appris pipeline for each gene depending on input
 	$logger->info("-- from given input...");
 	if ( $type_of_input =~ /gencode/ ) {
