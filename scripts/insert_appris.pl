@@ -126,7 +126,7 @@ sub main()
 	$logger->info("-- creating database\n");
 	my ($createdb) = appris::create_database($apprisdb_conf_file, $species);
 print STDERR "DB: $createdb\n";
-	$logger->error("creating database") unless ( defined $createdb );
+	$logger->error("KK creating database") unless ( defined $createdb );
 exit 0;
 			
 	
