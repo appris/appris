@@ -59,7 +59,7 @@ sub main()
 {
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
-	{
+	{		
 		info("executing APPRIS pipeline...");
 		my ($params_run_pipe) = params_run_pipe();
 		eval {
@@ -76,6 +76,13 @@ sub main()
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
 		throw("checking results") if($@);
+		
+# TODO: Comprueba si hay salida (lista de genes).
+# Si hay salida es ERROR!! => Paramos
+# Sino => Continuamos
+
+# TODO: Send email with final decision of this step
+
 	}
 	
 	# Step 2: retrieve the main data and stats comparison
@@ -88,6 +95,14 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 			system ($cmd);
 		};
 		throw("retrieving the main data") if($@);
+		
+# TODO: Compare numbers with older release: No. Principal Isoforms, CCDS comparison, etc.
+
+# TODO: Check if something is bad.
+# If is ERROR => Stop
+# Otherwise => Keep going
+
+# TODO: Send email with final decision of this step
 	}
 	
 	# Step 3: insert annotations into APPRIS database
@@ -99,6 +114,13 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 			system ($cmd);
 		};
 		throw("inserting data") if($@);
+		
+# TODO: Check if data has been inserted correctly (compare with the no. of gene dataset using g_annotation.sql file)
+# If is ERROR => Stop
+# Otherwise => Keep going
+
+# TODO: Send email with final decision of this step
+
 	}
 
 #	# Step 4: retrieve data files for methods in GTF
@@ -111,6 +133,13 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 #			system ($cmd);
 #		};
 #		throw("deleting log files of appris") if($@);
+#
+# TODO: Check if something is bad.
+# If is ERROR => Stop
+# Otherwise => Keep going
+#
+# TODO: Send email with final decision of this step
+#
 #	}
 
 #	# Step 5: retrieve data files for methods in BED/TrackHUB
@@ -123,6 +152,13 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 #			system ($cmd);
 #		};
 #		throw("deleting log files of appris") if($@);
+#
+# TODO: Check if something is bad.
+# If is ERROR => Stop
+# Otherwise => Keep going
+#
+# TODO: Send email with final decision of this step
+#
 #	}
 
 }
