@@ -8,6 +8,7 @@ use Config::IniFiles;
 use FindBin;
 use Data::Dumper;
 use APPRIS::Utils::File qw( getStringFromFile );
+use APPRIS::Utils::Exception qw( info throw );
 
 ###################
 # Global variable #
@@ -25,9 +26,6 @@ my ($conf_db) = undef;
 my ($methods) = undef;
 my ($email) = undef;
 my ($loglevel) = undef;
-my ($logfile) = undef;
-my ($logpath) = undef;
-my ($logappend) = undef;
 
 &GetOptions(
 	'steps|p=s'			=> \$steps,
@@ -36,9 +34,6 @@ my ($logappend) = undef;
 	'methods|m=s'		=> \$methods,
 	'email|e=s'			=> \$email,
 	'loglevel|l=s'		=> \$loglevel,
-	'logfile=s'			=> \$logfile,
-	'logpath=s'			=> \$logpath,
-	'logappend'			=> \$logappend,
 );
 
 # Check required parameters
