@@ -6,7 +6,7 @@ use warnings;
 use Getopt::Long;
 use FindBin;
 use Data::Dumper;
-use APPRIS::Utils::Exception qw( info throw );
+use APPRIS::Utils::Exception qw( info verbose throw );
 
 ###################
 # Global variable #
@@ -67,9 +67,10 @@ sub main()
 #		};
 #		throw("executing APPRIS pipeline") if($@);
 		my ($params_check) = param_check_files();
+		info("checking APPRIS results...");
 		eval {
 			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params_check ";
-			info("** script: $cmd\n");
+			verbose("** script: $cmd\n");
 			#system ($cmd);
 			my (@output) = `$cmd`;
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
@@ -82,7 +83,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		my ($params_data_main) = param_data_main();
 		eval {
 			my ($cmd) = "appris_retrieve_main_data $params_data_main";
-			info("** script: $cmd\n");
+			verbose("** script: $cmd\n");
 			system ($cmd);
 		};
 		throw("retrieving the main data") if($@);
