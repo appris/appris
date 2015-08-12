@@ -125,7 +125,7 @@ sub params_appris()
 	
 	if ( defined $email ) 	{ $params .= " -e $email " }
 	
-	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
@@ -139,7 +139,7 @@ sub param_check_files()
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
 	
-	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
@@ -150,7 +150,7 @@ sub param_data_main()
 	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 		
-	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	#if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
