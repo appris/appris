@@ -80,7 +80,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	}
 	
 	# Step 2: retrieve the main data and stats comparison
-	if ( $steps =~ /12/ )
+	if ( $steps =~ /2/ )
 	{
 		info("retrieving APPRIS main data...");
 		my ($params_data_main) = param_data_main();
@@ -92,7 +92,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	}
 	
 #	# Step 3: insert annotations into APPRIS database
-#	if ( $steps =~ /123/ ) {
+#	if ( $steps =~ /3/ ) {
 #		my ($ins_params) = create_insert_params();
 #		eval {
 #			my ($cmd) = "appris_insert_appris $ins_params";
@@ -104,7 +104,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 #
 #	# Step 4: retrieve method data
 #	my ($dat2_params) = create_data_params();
-#	if ( $steps =~ /1234/ ) {	
+#	if ( $steps =~ /4/ ) {	
 #		$dat2_params .= " -f gtf ";
 #		eval {
 #			my ($cmd) = "appris_retrieve_method_data $dat2_params";
