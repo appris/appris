@@ -180,7 +180,8 @@ Executes all APPRIS 'steps
 	* 3 - Inserts the annotations into database -\n
 	* 4 - Retrieves the data files of methods -\n
 		
-  -s, --species {string} <Name of species>
+  -c, --conf {string|file} <Species abbreviation | Config file for species>
+  
 	* Hsap  - Homo sapiens -\n
 	* Mmus  - Mus musculus -\n
 	* Rnor  - Rattus norvegicus -\n
@@ -193,7 +194,7 @@ Executes all APPRIS 'steps
   
  Or
  
-  -c, --conf {file} <Config file name>
+	<Config file name>
 
 =head2 Optional arguments:
 		

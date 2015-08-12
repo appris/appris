@@ -96,12 +96,10 @@ sub main()
 	};
 	$logger->error("deleting annot files") if($@);
 	my ($methods_patt) = $methods; ($methods_patt =~ s/\,/\|/g);
-	print STDERR "PAT: $methods_patt\n";
 	foreach my $annot_file (@annot_list) {
 		if ( $annot_file =~ /^(.*)\.($methods_patt)$/ ) {
 			my ($gene_id) = $1;
 			my ($method) = $2;
-			#push(@{$annot_appris->{$method}}, $gene_id);
 			$annot_appris->{$method}->{$gene_id} = 1;
 		}
 	}	
@@ -111,13 +109,13 @@ sub main()
 	foreach my $method ( split(',', $methods) ) {
 		my (@diffs) = grep(!defined($annot_appris->{$method}->{$_}), @data_genes);		
 		map( $output .= "[TRACELOG]\t". uc($method) . "\t" . $_ . "\n" , @diffs);		
-	} 
+	}
 	print STDOUT $output;
 
-$logger->info("DATA_GENES:\n".Dumper(@data_genes));
+#$logger->info("DATA_GENES:\n".Dumper(@data_genes));
 #$logger->info("DATA_TRANS:\n".Dumper(@data_transc));
 #$logger->info("ANNOT_LIST:\n".Dumper(@annot_list));
-$logger->info("ANNOT_APPRIS:\n".Dumper($annot_appris));
+#$logger->info("ANNOT_APPRIS:\n".Dumper($annot_appris));
 
 	$logger->finish_log();
 	
