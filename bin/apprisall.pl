@@ -49,10 +49,10 @@ unless ( defined $methods ) {
 #################
 # Method bodies #
 #################
-sub params_appris();
-sub create_data_params();
+sub params_run_pipe();
 sub param_check_files();
-sub param_data_main();
+sub param_retrieve_data();
+sub param_insert_db();
 
 # Main subroutine
 sub main()
@@ -60,14 +60,13 @@ sub main()
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
 	{
-#		info("executing APPRIS pipeline...");
-#		my ($params_appris) = params_appris();
-#		eval {
-#			my ($cmd) = "appris $params_appris";
-#			info("** script: $cmd\n");
-#			system ($cmd);
-#		};
-#		throw("executing APPRIS pipeline") if($@);
+		info("executing APPRIS pipeline...");
+		my ($params_run_pipe) = params_run_pipe();
+		eval {
+			my ($cmd) = "appris $params_run_pipe";
+			system ($cmd);
+		};
+		throw("executing pipeline") if($@);
 
 		info("checking APPRIS results...");
 		my ($params_check) = param_check_files();
@@ -76,14 +75,14 @@ sub main()
 			my (@output) = `$cmd`;
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
-		throw("checking APPRIS results") if($@);
+		throw("checking results") if($@);
 	}
 	
 	# Step 2: retrieve the main data and stats comparison
 	if ( $steps =~ /2/ )
 	{
 		info("retrieving APPRIS main data...");
-		my ($params_data_main) = param_data_main();
+		my ($params_data_main) = param_retrieve_data();
 		eval {
 			my ($cmd) = "appris_retrieve_main_data $params_data_main";
 			system ($cmd);
@@ -91,18 +90,18 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		throw("retrieving the main data") if($@);
 	}
 	
-#	# Step 3: insert annotations into APPRIS database
-#	if ( $steps =~ /3/ ) {
-#		my ($ins_params) = create_insert_params();
-#		eval {
-#			my ($cmd) = "appris_insert_appris $ins_params";
-#			info("** script: $cmd\n");
-#			system ($cmd);
-#		};
-#		throw("deleting log files of appris") if($@);
-#	}
-#
-#	# Step 4: retrieve method data
+	# Step 3: insert annotations into APPRIS database
+	if ( $steps =~ /3/ ) {
+		info("inserting APPRIS data into db...");
+		my ($ins_params) = param_insert_db();
+		eval {
+			my ($cmd) = "appris_insert_appris $ins_params";
+			system ($cmd);
+		};
+		throw("inserting data") if($@);
+	}
+
+#	# Step 4: retrieve data files for methods in GTF
 #	my ($dat2_params) = create_data_params();
 #	if ( $steps =~ /4/ ) {	
 #		$dat2_params .= " -f gtf ";
@@ -114,8 +113,20 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 #		throw("deleting log files of appris") if($@);
 #	}
 
+#	# Step 5: retrieve data files for methods in BED/TrackHUB
+#	my ($dat2_params) = create_data_params();
+#	if ( $steps =~ /5/ ) {	
+#		$dat2_params .= " -f bed ";
+#		eval {
+#			my ($cmd) = "appris_retrieve_method_data $dat2_params";
+#			info("** script: $cmd\n");
+#			system ($cmd);
+#		};
+#		throw("deleting log files of appris") if($@);
+#	}
+
 }
-sub params_appris()
+sub params_run_pipe()
 {
 	my ($params) = '';
 	
@@ -145,13 +156,27 @@ sub param_check_files()
 	
 	return $params;	
 }
-sub param_data_main()
+sub param_retrieve_data()
 {
 	my ($params) = '';
 	
 	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 		
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	
+	return $params;	
+}
+sub param_insert_db()
+{
+	my ($params) = '';
+	
+	if ( defined $conf_species ) { $params .= " -c $conf_species " }
+	else { throw("configuration is not provided") }
+	
+	if ( defined $methods ) { $params .= " -m $methods " }
+	else { throw("configuration is not provided") }
+	
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
