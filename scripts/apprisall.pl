@@ -124,6 +124,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		my ($params_create_db) = param_create_db();
 		eval {
 			my ($cmd) = "appris_db_create $params_create_db";
+info("$cmd");
 			system ($cmd);
 		};
 		throw("creating database") if($@);
