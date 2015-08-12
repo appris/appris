@@ -119,27 +119,16 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($cmd) = "appris_db_create $params_create_db";
 			system ($cmd);
-			system ($cmd);
-			if ($? == -1) {
-			    print "failed to execute: $!\n";
-			}
-			elsif ($? & 127) {
-			    printf "child died with signal %d, %s coredump\n",
-			    ($? & 127),  ($? & 128) ? 'with' : 'without';
-			}
-			else {
-			    printf "child exited with value %d\n", $? >> 8;
-			}			
 		};
 		throw("ERROR: creating database") if($@);
 		
-#		info("inserting APPRIS data into db...");
-#		my ($ins_params) = param_insert_db();
-#		eval {
-#			my ($cmd) = "appris_insert_appris $ins_params";
-#			system ($cmd);
-#		};
-#		throw("inserting data") if($@);
+		info("inserting APPRIS data into db...");
+		my ($ins_params) = param_insert_db();
+		eval {
+			my ($cmd) = "appris_insert_appris $ins_params";
+			system ($cmd);
+		};
+		throw("inserting data") if($@);
 		
 # TODO: Check if data has been inserted correctly (compare with the no. of gene dataset using g_annotation.sql file)
 # If is ERROR => Stop
