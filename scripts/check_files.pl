@@ -72,16 +72,16 @@ sub main()
 	my (@data_genes);
 	eval {
 		my ($cmd) = "appris_check_ls_report -c $conf_species -g";
-		$logger->info("\n** script: $cmd\n");
+		$logger->debug("\n** script: $cmd\n");
 		@data_genes = `$cmd`; map { s/\s+$// } @data_genes;
 	};
 	$logger->error("checking data genes") if($@);
 	
 	# get the list of input transcripts with translation
 	my (@data_transc);
-	eval {
+	eval {		
 		my ($cmd) = "appris_check_ls_report -c $conf_species -t";
-		$logger->info("\n** script: $cmd\n");
+		$logger->debug("\n** script: $cmd\n");
 		@data_transc = `$cmd`; map { s/\s+$// } @data_transc;
 	};
 	$logger->error("checking data transcripts") if($@);	
@@ -91,7 +91,7 @@ sub main()
 	my ($annot_appris);
 	eval {
 		my ($cmd) = "appris_check_ls_annots -c $conf_species ";
-		$logger->info("\n** script: $cmd\n");
+		$logger->debug("\n** script: $cmd\n");
 		@annot_list = `$cmd`; map { s/\s+$// } @annot_list;
 	};
 	$logger->error("deleting annot files") if($@);
