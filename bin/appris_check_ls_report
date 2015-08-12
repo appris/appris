@@ -122,8 +122,10 @@ for ((i=0;i<$INDEX;i++)); do
 	POSITION="${CHROMOSOME[${i}]}"
 	if [ "${G_FLAG}" == 1 ]; then
 		LIST+=( $(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="gene" && match($9,/gene_id\s*([^ ]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE} | sed -e 's/^.*gene\:\([^ ]*\).*$/\1/' | uniq) )
-	else if [ "${T_FLAG}" == 1 ]; then
-		LIST+=( $(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE}  | sed -e 's/^.*transcript\:\([^ ]*\).*$/\1/' | uniq) )
+	else
+		if [ "${T_FLAG}" == 1 ]; then
+			LIST+=( $(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="transcript" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | sed 's/[\"|\;]//g' | uniq | fgrep -f - ${GENCODE_TRANSLATION_FILE}  | sed -e 's/^.*transcript\:\([^ ]*\).*$/\1/' | uniq) )
+		fi
 	fi
 done
 
