@@ -3,14 +3,13 @@
 # -----------------------------------------------------------------------------
 # Main bash script that loads environmental variable
 
-DIRNAME=`dirname $0`
 APPRIS_REL_ENV=" TST Hsap Mmus Rnor Drer Sscr Ptro Dmel Cele Lpar "
 
 load_appris_specie_env() {
 	if [[ "${APPRIS_REL_ENV}" =~ " $1 " ]]; then
 		case "$1" in
 			TST* )
-				CMD_SOURCE="source ${DIRNAME}/../test/conf/apprisrc.$1"
+				CMD_SOURCE="source ${APPRIS_TEST_DIR}/conf/apprisrc.$1"
 				if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
 				${CMD_SOURCE} 
 				;;
@@ -36,7 +35,7 @@ load_species_env() {
 	local e
 	case "$1" in
 		TST* )
-			CMD_SOURCE="source ${DIRNAME}/../../test/conf/apprisrc.$1"
+			CMD_SOURCE="source ${APPRIS_TEST_DIR}/conf/apprisrc.$1"
 			if [ "$2" == "verbose" ]; then echo "${CMD_SOURCE}"; fi
 			${CMD_SOURCE} 
 			;;

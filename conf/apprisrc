@@ -14,6 +14,8 @@ export APPRIS_BIN_DIR="${APPRIS_HOME}/bin"
 
 export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
 
+export APPRIS_TEST_DIR="${APPRIS_HOME}/test"
+
 export APPRIS_CODE_CONF_DIR="${APPRIS_CONF_DIR}/code"
 
 export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_CONF_DIR}/scripts"
