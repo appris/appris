@@ -137,19 +137,17 @@ fi
 
 # -----------------------------------------------------------------------------
 # Retrieves list of genes with annotations (group by chr)
-LIST=()
 CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 INDEX=${#CHROMOSOME[@]}
 for ((i=0;i<$INDEX;i++)); do
-
-	# local vars
 	CHR="${CHROMOSOME[${i}]}"
 	POSITION="${CHR}"
 	CHR_INPUT_DIR="${INPUT_DIR}/${POSITION}"
 	
 	CMD="find ${CHR_INPUT_DIR}/* ${METHOD_PARAMETERS} -type f -exec basename {} \; | sort -u "
 	echo "eval ${CMD}"
-	LIST+=( $(eval ${CMD}) )
+	LIST=( $(eval ${CMD}) )
+	
+	S_LIST=$(echo "${LIST[@]}" | tr ' ' '\n' | sort -u )
+	echo "${S_LIST[@]}"
 done
-S_LIST=$(echo "${LIST[@]}" | tr ' ' '\n' | sort -u )
-echo "${S_LIST[@]}"
