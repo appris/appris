@@ -9,7 +9,6 @@ use FindBin;
 use Data::Dumper;
 use APPRIS::Utils::File qw( getStringFromFile );
 use APPRIS::Utils::Exception qw( info throw );
-use 5.010;
 
 ###################
 # Global variable #
@@ -48,8 +47,12 @@ unless ( defined $methods ) {
 }
 
 # get species name from config file
-my ($species) = `. $conf_species; echo \$APPRIS_SPECIES`;
-my ($conf_db) = `. $conf_species; echo \$APPRIS_SCRIPTS_DB_INI`;
+my ($APPRIS_SPECIES) = `. $conf_species; echo \$APPRIS_SPECIES`; $APPRIS_SPECIES =~ s/\s*$//g;
+my ($APPRIS_SCRIPTS_DB_INI) = `. $conf_species; echo \$APPRIS_SCRIPTS_DB_INI`; $APPRIS_SCRIPTS_DB_INI =~ s/\s*$//g;
+my ($APPRIS_DATA_DIR) = `. $conf_species; echo \$APPRIS_DATA_DIR`; $APPRIS_DATA_DIR =~ s/\s*//g;
+my ($APPRIS_WSERVER_DOWNLOAD_DATA_DIR) = $ENV{APPRIS_WSERVER_DOWNLOAD_DATA_DIR}; $APPRIS_WSERVER_DOWNLOAD_DATA_DIR =~ s/\s*//g;
+my ($APPRIS_WS_DATE) = `. $conf_species; echo \$APPRIS_WS_DATE`; $APPRIS_WS_DATE =~ s/\s*//g;
+
 
 #################
 # Method bodies #
@@ -57,7 +60,9 @@ my ($conf_db) = `. $conf_species; echo \$APPRIS_SCRIPTS_DB_INI`;
 sub params_run_pipe();
 sub param_check_files();
 sub param_retrieve_data();
-sub param_insert_db();
+sub param_db_create();
+sub param_db_insert();
+sub param_db_backup();
 sub param_retrieve_method();
 
 # Main subroutine
@@ -66,18 +71,18 @@ sub main()
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
 	{		
-#		info("executing pipeline...");
-#		my ($params_run_pipe) = params_run_pipe();
-#		eval {
-#			my ($cmd) = "appris $params_run_pipe";
-#			system ($cmd);
-#		};
-#		throw("executing pipeline") if($@);
+		info("executing pipeline...");
+		eval {
+			my ($params) = params_run_pipe();
+			my ($cmd) = "appris $params";
+			system ($cmd);
+		};
+		throw("executing pipeline") if($@);
 
 		info("checking results...");
-		my ($params_check) = param_check_files();
 		eval {
-			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params_check ";
+			my ($params) = param_check_files();
+			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params ";
 			my (@output) = `$cmd`;
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
@@ -95,9 +100,9 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	if ( $steps =~ /2/ )
 	{
 		info("retrieving main data...");
-		my ($params_data_main) = param_retrieve_data();
 		eval {
-			my ($cmd) = "appris_retrieve_main_data $params_data_main";
+			my ($params) = param_retrieve_data();
+			my ($cmd) = "appris_retrieve_main_data $params";
 		};
 		throw("retrieving the main data") if($@);
 		
@@ -113,21 +118,21 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	}
 	
 	# Step 3: insert annotations into APPRIS database
-	if ( $steps =~ /3/ ) {
-		
+	if ( $steps =~ /3/ )
+	{
 		# create database
 		info("creating database...");
-		my ($params_create_db) = param_create_db();
 		eval {
-			my ($cmd) = "appris_db_create $params_create_db";
+			my ($params) = param_db_create();
+			my ($cmd) = "appris_db_create $params";
 			system ($cmd);
 		};
-		throw("ERROR: creating database") if($@);
+		throw("creating database") if($@);
 		
-		info("inserting APPRIS data into db...");
-		my ($params_insert) = param_insert_db();
+		info("inserting data into db...");
 		eval {
-			my ($cmd) = "appris_insert_appris $params_insert";
+			my ($params) = param_db_insert();
+			my ($cmd) = "appris_insert_appris $params";
 			system ($cmd);
 		};
 		throw("inserting data") if($@);
@@ -136,23 +141,25 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 # If is ERROR => Stop
 # Otherwise => Keep going
 
-# TODO: Make a backup
-
+		info("creating db backup...");
+		eval {
+			my ($params) = param_db_backup();
+			my ($cmd) = "appris_db_backup $params";
+			system ($cmd);
+		};
+		throw("creating db backup") if($@);
+		
 # TODO: Send email with final decision of this step
 
 	}
 
 
-# TODO: Step 4 can be done in parallel
-
 	# Step 4: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
-	if ( $steps =~ /4/ ) {
-		
-		say "Process ID: $$";		
+	if ( $steps =~ /4/ )
+	{
 		my ($forks) = 0;
 		foreach my $format ("gtf", "bed") {
-			my ($params_data_met) = param_retrieve_method();
-			my ($params_data_met2) = $params_data_met . " -f $format ";			
+			my ($params) = param_retrieve_method() . " -f $format ";			
 			my ($pid) = fork();
 			if (not defined $pid) {
 				warn "Could not fork in $format";
@@ -160,13 +167,11 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 			}
 			if ($pid) {
 				$forks++;
-say "Parent PID ($$): $forks"; 
 			} else {
 			    #close STDOUT; close STDERR; # so parent can go on
 				eval {
-					my ($cmd) = "appris_retrieve_method_data $params_data_met2";
-					#system ($cmd);
-say "Child PID ($$): $cmd"; 
+					my ($cmd) = "appris_retrieve_method_data $params";
+					system ($cmd);
 				};
 				exit 1 if($@);
 			    exit 0;
@@ -174,9 +179,8 @@ say "Child PID ($$): $cmd";
 		}
 		for (1 .. $forks) {
 			my ($pid) = wait();
-say "Parent saw $pid exiting";
 		}
-say "Parent ($$) ending";
+		
 
 # TODO: Check if something is bad.
 # If is ERROR => Stop
@@ -186,11 +190,26 @@ say "Parent ($$) ending";
 
 	}
 
-
-# TODO: Step 5 Upload all data files to the server
-
-
+## TODO: Step 5 Upload all data files to the server
+#
+#	# Step 5: Upload data files to the server
+#	if ( $steps =~ /5/ )
+#	{		
+#
+## TODO: Check if something is bad.
+## If is ERROR => Stop
+## Otherwise => Keep going
+##
+## TODO: Send email with final decision of this step
+#
+#	}
+	
+	
 }
+
+####################
+# SubMethod bodies #
+####################
 sub params_run_pipe()
 {
 	my ($params) = '';
@@ -232,12 +251,12 @@ sub param_retrieve_data()
 	
 	return $params;	
 }
-sub param_create_db()
+sub param_db_create()
 {
 	my ($params) = '';
 	
-	my ($cfg) = new Config::IniFiles( -file => $conf_db );
-	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
+	my ($cfg) = new Config::IniFiles( -file => $APPRIS_SCRIPTS_DB_INI );
+	my ($spe) = $APPRIS_SPECIES; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
 	my ($specie_db) = uc($spe.'_db');
 	$params .= " -d ".$cfg->val($specie_db, 'db');
 	$params .= " -h ".$cfg->val('APPRIS_DATABASES', 'host');
@@ -246,7 +265,7 @@ sub param_create_db()
 
 	return $params;		
 }
-sub param_insert_db()
+sub param_db_insert()
 {
 	my ($params) = '';
 	
@@ -259,6 +278,21 @@ sub param_insert_db()
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
+}
+sub param_db_backup()
+{
+	my ($params) = '';
+	
+	my ($cfg) = new Config::IniFiles( -file => $APPRIS_SCRIPTS_DB_INI );
+	my ($spe) = $APPRIS_SPECIES; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
+	my ($specie_db) = uc($spe.'_db');
+	$params .= " -d ".$cfg->val($specie_db, 'db');
+	$params .= " -h ".$cfg->val('APPRIS_DATABASES', 'host');
+	$params .= " -u ".$cfg->val('APPRIS_DATABASES', 'user');
+	$params .= " -p ".$cfg->val('APPRIS_DATABASES', 'pass');
+	$params .= " -o ".$APPRIS_DATA_DIR.'/appris_db.dump.gz';
+
+	return $params;		
 }
 sub param_retrieve_method()
 {
@@ -325,7 +359,7 @@ Executes all APPRIS 'steps
 
 =head1 EXAMPLE
 
-	apprisall -p 1234 -s Hsap -m 'firestar,matador3d,spade,corsair,thump,crash,appris,proteo' -e 'jmrodriguez@cnio.es' -f gtf
+	apprisall -p 1234 -c conf/scripts/apprisrc.Hsap -m 'firestar,matador3d,spade,corsair,thump,crash,appris,proteo' -e 'jmrodriguez@cnio.es' -f gtf
 
 =head1 AUTHOR
 
