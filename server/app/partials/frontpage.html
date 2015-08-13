@@ -32,25 +32,25 @@
             </div>
         </div>
     </div>
-    <p class="lead text-center">APPRIS Database currently houses annotations for <a
-            href="#/species">invertebrate genomes »</a></p>
-    <div class="row row-centered">
-        <div class="col-md-1"></div>
-        <div class="col-md-8"
-             data-ng-repeat="specie in species | showPopularGenomes | filter:{category:'invertebrates'} | orderObjectBy:'order' ">
-            <!--<a class="media-left" data-ng-href="/#/species">-->
-            <a class="media-left">
-                <img class="img-thumbnail" data-ng-src="img/{{specie.common | lowercase}}_logo.jpg" style="width: 65px" />
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading">{{specie.common}}</h4>
-                <ul class="list-unstyled">
-                    <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong>
-                        {{assembly.name}} (Ensembl{{assembly.dataset}})</em></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <!--<p class="lead text-center">APPRIS Database currently houses annotations for <a-->
+            <!--href="#/species">invertebrate genomes »</a></p>-->
+    <!--<div class="row row-centered">-->
+        <!--<div class="col-md-1"></div>-->
+        <!--<div class="col-md-8"-->
+             <!--data-ng-repeat="specie in species | showPopularGenomes | filter:{category:'invertebrates'} | orderObjectBy:'order' ">-->
+            <!--&lt;!&ndash;<a class="media-left" data-ng-href="/#/species">&ndash;&gt;-->
+            <!--<a class="media-left">-->
+                <!--<img class="img-thumbnail" data-ng-src="img/{{specie.common | lowercase}}_logo.jpg" style="width: 65px" />-->
+            <!--</a>-->
+            <!--<div class="media-body">-->
+                <!--<h4 class="media-heading">{{specie.common}}</h4>-->
+                <!--<ul class="list-unstyled">-->
+                    <!--<li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong>-->
+                        <!--{{assembly.name}} (Ensembl{{assembly.dataset}})</em></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
 <div class="row clearfix">
     <div class="col-md-4 column">
