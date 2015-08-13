@@ -58,6 +58,7 @@ sub params_run_pipe();
 sub param_check_files();
 sub param_retrieve_data();
 sub param_insert_db();
+sub param_retrieve_method();
 
 # Main subroutine
 sub main()
@@ -150,7 +151,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		say "Process ID: $$";		
 		my ($forks) = 0;
 		foreach my $format ("gtf", "bed") {
-			my ($params_data_met) = create_data_params();
+			my ($params_data_met) = param_retrieve_method();
 			my ($params_data_met2) = $params_data_met . " -f gtf ";			
 			my ($pid) = fork();
 			if (not defined $pid) {
@@ -252,6 +253,20 @@ sub param_insert_db()
 	if ( defined $conf_species ) { $params .= " -c $conf_species " }
 	else { throw("configuration is not provided") }
 	
+	if ( defined $methods ) { $params .= " -m $methods " }
+	else { throw("configuration is not provided") }
+	
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+	
+	return $params;	
+}
+sub param_retrieve_method()
+{
+	my ($params) = '';
+		
+	if ( defined $conf_species ) { $params .= " -c $conf_species " }
+	else { throw("configuration is not provided") }
+		
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
 	
