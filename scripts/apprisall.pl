@@ -152,7 +152,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		my ($forks) = 0;
 		foreach my $format ("gtf", "bed") {
 			my ($params_data_met) = param_retrieve_method();
-			my ($params_data_met2) = $params_data_met . " -f gtf ";			
+			my ($params_data_met2) = $params_data_met . " -f $format ";			
 			my ($pid) = fork();
 			if (not defined $pid) {
 				warn "Could not fork in $format";
@@ -162,7 +162,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 				$forks++;
 say "Parent PID ($$): $forks"; 
 			} else {
-			    close STDOUT; close STDERR; # so parent can go on
+			    #close STDOUT; close STDERR; # so parent can go on
 				eval {
 					my ($cmd) = "appris_retrieve_method_data $params_data_met2";
 					#system ($cmd);
