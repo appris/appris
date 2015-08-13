@@ -9,6 +9,7 @@ use FindBin;
 use Data::Dumper;
 use APPRIS::Utils::File qw( getStringFromFile );
 use APPRIS::Utils::Exception qw( info throw );
+use 5.010;
 
 ###################
 # Global variable #
@@ -64,13 +65,13 @@ sub main()
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
 	{		
-		info("executing pipeline...");
-		my ($params_run_pipe) = params_run_pipe();
-		eval {
-			my ($cmd) = "appris $params_run_pipe";
-			system ($cmd);
-		};
-		throw("executing pipeline") if($@);
+#		info("executing pipeline...");
+#		my ($params_run_pipe) = params_run_pipe();
+#		eval {
+#			my ($cmd) = "appris $params_run_pipe";
+#			system ($cmd);
+#		};
+#		throw("executing pipeline") if($@);
 
 		info("checking results...");
 		my ($params_check) = param_check_files();
@@ -123,9 +124,9 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		throw("ERROR: creating database") if($@);
 		
 		info("inserting APPRIS data into db...");
-		my ($ins_params) = param_insert_db();
+		my ($params_insert) = param_insert_db();
 		eval {
-			my ($cmd) = "appris_insert_appris $ins_params";
+			my ($cmd) = "appris_insert_appris $params_insert";
 			system ($cmd);
 		};
 		throw("inserting data") if($@);
@@ -143,24 +144,46 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 
 # TODO: Step 4 can be done in parallel
 
-#	# Step 4: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
-#	my ($dat2_params) = create_data_params();
-#	if ( $steps =~ /4/ ) {	
-#		$dat2_params .= " -f gtf ";
-#		eval {
-#			my ($cmd) = "appris_retrieve_method_data $dat2_params";
-#			info("** script: $cmd\n");
-#			system ($cmd);
-#		};
-#		throw("deleting log files of appris") if($@);
-#
+	# Step 4: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
+	if ( $steps =~ /4/ ) {
+		
+		say "Process ID: $$";		
+		my ($forks) = 0;
+		foreach my $format ("gtf", "bed") {
+			my ($params_data_met) = create_data_params();
+			my ($params_data_met2) = $params_data_met . " -f gtf ";			
+			my ($pid) = fork();
+			if (not defined $pid) {
+				warn "Could not fork in $format";
+				next;
+			}
+			if ($pid) {
+				$forks++;
+say "Parent PID ($$): $forks"; 
+			} else {
+			    close STDOUT; close STDERR; # so parent can go on
+				eval {
+					my ($cmd) = "appris_retrieve_method_data $params_data_met2";
+					#system ($cmd);
+say "Child PID ($$): $cmd"; 
+				};
+				exit 1 if($@);
+			    exit 0;
+			}
+		}
+		for (1 .. $forks) {
+			my ($pid) = wait();
+say "Parent saw $pid exiting";
+		}
+say "Parent ($$) ending";
+
 # TODO: Check if something is bad.
 # If is ERROR => Stop
 # Otherwise => Keep going
 #
 # TODO: Send email with final decision of this step
-#
-#	}
+
+	}
 
 
 # TODO: Step 5 Upload all data files to the server
