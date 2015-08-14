@@ -810,8 +810,12 @@ sub fetch_entity_by_xref_entry {
 			lc($xref_entry) =~ /^ccds{6,7}/ or 
 			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){11,13}/ or
 			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){11,13}/ or
-			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){11,13}/ 
-		) {			
+			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){11,13}/ or
+			lc($xref_entry) =~ /^fbgn(\d){7}/ or
+			lc($xref_entry) =~ /^fbtr(\d){7}/ or
+			lc($xref_entry) =~ /^fbpp(\d){7}/ or
+			lc($xref_entry) =~ /^wbgene(\d){8}/
+		) {
 			# Check from the main 'entity' table
 			$aux_query_entity_list = $self->dbadaptor->query_entity(identifier => $xref_entry);
 			$query_entity_list = $aux_query_entity_list;
@@ -877,7 +881,7 @@ sub fetch_entity_by_xref_entry {
 		}
 	};
 	warning('Argument must be a correct entry') if ($@);		
-		
+	
 	unless ( defined $query_entity_list and (scalar(@{$query_entity_list}) > 0) ) {
 		warning('Argument must be a correct entry');
 	}

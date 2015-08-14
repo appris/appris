@@ -459,13 +459,16 @@ sub get_feat_by_stable_id {
 
 	if ( lc($id) =~ /^ens(\w\w\w)?g(\d){11,13}/ or
 		 lc($id) =~ /^ens(\w\w\w)?gr(\d){10,13}/ or
-		 lc($id) =~ /^ensgr(\d){10,13}/
+		 lc($id) =~ /^ensgr(\d){10,13}/ or
+		 lc($id) =~ /^fbgn(\d){7}/ or
+		 lc($id) =~ /^wbgene(\d){8}/		 
 	) {
 		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
 	}
 	elsif (  lc($id) =~ /^ens(\w\w\w)?t(\d){11,13}/ or
 			 lc($id) =~ /^ens(\w\w\w)?tr(\d){10,13}/ or
-			 lc($id) =~ /^enstr(\d){10,13}/	
+			 lc($id) =~ /^enstr(\d){10,13}/ or
+			 lc($id) =~ /^fbtr(\d){7}/
 	) {
 		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
 	}
