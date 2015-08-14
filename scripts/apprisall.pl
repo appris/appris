@@ -23,6 +23,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 my ($steps) = undef;
 my ($conf_species) = undef;
 my ($methods) = undef;
+my ($formats) = undef;
 my ($email) = undef;
 my ($loglevel) = undef;
 
@@ -30,6 +31,7 @@ my ($loglevel) = undef;
 	'steps|p=s'			=> \$steps,
 	'conf|c=s'			=> \$conf_species,	
 	'methods|m=s'		=> \$methods,
+	'formats|f=s'		=> \$formats,
 	'email|e=s'			=> \$email,
 	'loglevel|l=s'		=> \$loglevel,
 );
@@ -158,7 +160,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 	if ( $steps =~ /4/ )
 	{
 		my ($forks) = 0;
-		foreach my $format ("gtf", "bed") {
+		foreach my $format ( split(',', $formats) ) {
 			my ($params) = param_retrieve_method() . " -f $format ";			
 			my ($pid) = fork();
 			if (not defined $pid) {
@@ -348,7 +350,7 @@ Executes all APPRIS 'steps
 	* cr - Prediction of signal peptide and sub-cellular location, CRASH
 	* p  - Proteomic evidence, PROTEO
   
-  -f, --format {vector} <Output format: 'gtf', 'bed', or 'json' (default: JSON)>
+  -f, --format {vector} <Output format: 'gtf,bed', or 'json' (default: JSON)>
   
   -e, --email {email} <E-mail address>
 
