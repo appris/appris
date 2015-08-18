@@ -3168,9 +3168,8 @@ sub _get_id_version($)
 	my ($i_id) = @_;
 	my ($id, $version) = (undef,undef);
 	
-	if ( $i_id =~ /^([^\.]*)\.(\d*)$/ ) {
-		($id, $version) = ($1, $2); # gencode7-gencode12 version
-		#($id, $version) = ($i_id, $2); # gencode15 version
+	if ( $i_id =~ /^ENS([^\.]*)\.(\d*)$/ ) {
+		($id, $version) = ($1, $2);
 	}
 	else {
 		$id = $i_id;
