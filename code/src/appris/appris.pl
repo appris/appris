@@ -731,7 +731,7 @@ sub filter_by_class_codons($$\$\$)
 			my ($appris_nscore) = $$ref_nscores->{$transcript_id}->{$method};
 			my ($frozen_score, $frozen_nscore) = ($appris_score, $appris_nscore);
 			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
-				($frozen_score, $frozen_nscore) = (0,0);
+				($frozen_score, $frozen_nscore) = (-1,-1);
 			}
 			if ( $transcript->translate->codons ) {
 				my ($aux_codons) = '';
@@ -741,7 +741,7 @@ sub filter_by_class_codons($$\$\$)
 					}
 				}
 				unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
-					($frozen_score, $frozen_nscore) = (0,0);
+					($frozen_score, $frozen_nscore) = (-1,-1);
 				}
 			}
 			push(@{$s_scores->{$frozen_score}}, $transcript_id);
@@ -816,29 +816,29 @@ sub get_annotations($$$)
 	
 } # End get_annotations
 
-sub is_discarted_by_nmd_codons($)
-{
-	my ($transcript) = @_;
-	my ($discarded) = 0;
-	
-	if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
-		$discarded = 1;
-	}
-	if ( $transcript->translate->codons ) {
-		my ($aux_codons) = '';
-		foreach my $codon (@{$transcript->translate->codons}) {
-			if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-				$aux_codons .= $codon->type.',';							
-			}
-		}
-		unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
-			$discarded = 1;
-		}
-	}
-
-	return $discarded;
-	
-} # end is_discarted_by_nmd_codons
+#sub is_discarted_by_nmd_codons($)
+#{
+#	my ($transcript) = @_;
+#	my ($discarded) = 0;
+#	
+#	if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
+#		$discarded = 1;
+#	}
+#	if ( $transcript->translate->codons ) {
+#		my ($aux_codons) = '';
+#		foreach my $codon (@{$transcript->translate->codons}) {
+#			if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
+#				$aux_codons .= $codon->type.',';							
+#			}
+#		}
+#		unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
+#			$discarded = 1;
+#		}
+#	}
+#
+#	return $discarded;
+#	
+#} # end is_discarted_by_nmd_codons
 
 sub is_unique($$)
 {
@@ -932,10 +932,11 @@ sub step_appris($$)
 				$transc_rep->{'tsl'} = 1;
 			}
 			# save the APPRIS decision
-			# say if the number total of transcripts is one			
-			#my ($unique_transc) = ( scalar(keys(%{$appris_scores})) == 1 and scalar(@{$appris_scores->{$sorted_ap_scores[0]}}) == 1 ) ? 1 : 0;
+			# discarding the transcripts are not protein cofing (NMD) and condon does not found: app_score is -1
+			# But we accept the last terms when the transcript is unique 
+			my ($unique_transc) = ( scalar(keys(%{$appris_scores})) == 1 and scalar(@{$appris_scores->{$sorted_ap_scores[0]}}) == 1 ) ? 1 : 0;
 			#if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) and ( is_discarted_by_nmd_codons($transcript) == 0 or $unique_transc == 1 ) ) {
-			if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) ) {
+			if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
 				$transc_rep->{'principal'} = 1;
 				$princ_list->{$transc_id} = 1;
 			}
