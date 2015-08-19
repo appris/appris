@@ -1,8 +1,1 @@
-track ProteomicEvidenceCNIO
-bigDataUrl proteo.bb
-shortLabel Peptide evidences CNIO
-longLabel Peptides detected from a re-analysis of multiple experiments and databases
-html PROTEO
-type bigBed 12
-color 153,102,0
-visibility full
+../trackDb.txt
