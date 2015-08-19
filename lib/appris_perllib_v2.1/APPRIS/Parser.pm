@@ -3168,7 +3168,7 @@ sub _get_id_version($)
 	my ($i_id) = @_;
 	my ($id, $version) = (undef,undef);
 	
-	if ( $i_id =~ /^ENS([^\.]*)\.(\d*)$/ ) {
+	if ( $i_id =~ /^(ENS[^\.]*)\.(\d*)$/ ) {
 		($id, $version) = ($1, $2);
 	}
 	else {
