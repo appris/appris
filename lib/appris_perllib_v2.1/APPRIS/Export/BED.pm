@@ -587,8 +587,6 @@ sub get_block_from_exon {
 		$residue_size = abs($pos_start - $pos_end) +1;
 	}		
 	
-
-	#if ( defined $residue_start and defined $residue_end and defined $residue_size ) {
 	if ( defined $residue_start and defined $residue_size ) {
 		$init = $residue_start;
 		$length = $residue_size;
@@ -787,9 +785,9 @@ sub get_firestar_annotations {
 										if ( $cds_phase eq '0') {
 											$thick_start = $thick_start;	
 										}
-										elsif ( $cds_phase eq '2') {
-											$thick_start = $thick_start +1;
-										}
+										#elsif ( $cds_phase eq '2') {
+										#	$thick_start = $thick_start +1;
+										#}
 									}
 									else {
 										$pos_start = $res->start;
