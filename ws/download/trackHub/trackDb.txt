@@ -1,5 +1,5 @@
 track PrinIsoformsAPPRIS
-bigDataUrl appris_data.appris.bed.bb
+bigDataUrl appris_method.appris.bed.bb
 shortLabel Principal Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
@@ -41,7 +41,7 @@ noInherit on
 	visibility full
 
 track FunctionalResiduesAPPRIS
-bigDataUrl appris_data.firestar.bed.bb
+bigDataUrl appris_method.firestar.bed.bb
 shortLabel Functional Residues
 longLabel APPRIS - Functional Residues
 html ../docs/FIRESTAR
