@@ -105,6 +105,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($params) = param_retrieve_data();
 			my ($cmd) = "appris_retrieve_main_data $params";
+			system ($cmd);
 		};
 		throw("retrieving the main data") if($@);
 		
