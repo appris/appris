@@ -84,7 +84,7 @@ $GFF3_CONSTANTS = {
 	'corsair'=>{
 		'source'=>'CORSAIR',
 		'type'=>'vertebrate_conservation',
-		'annot'=>['vert_conservation', 'doubtful_vert_conservation', 'no_vert_conservation']
+		'annot'=>['conservation', 'doubtful_conservation', 'no_conservation']
 	},	
 	'inertia'=>{
 		'source'=>'INERTIA',

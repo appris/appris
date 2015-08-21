@@ -213,10 +213,10 @@ These GTF files are text/plain files with tabular format whose columns are the f
 		- Frame: for these annotations it is always '.'
 		- Attributes end in a semicolon. Note: pdb id.
 
-	== CORSAIR, Conservation Score (vertebrates)
+	== CORSAIR, Conservation Score
 		- Chromosome
 		- Method name: 'CORSAIR'
-		- Type of annotation: 'no_vert_conservation', 'doubtful_vert_conservation', and 'vertebrate_conservation'
+		- Type of annotation: 'no_conservation', 'doubtful_conservation', and 'conservation'
 		- Start position of transcript
 		- End position of transcript
 		- Score: that is approximately the number of vertebrate species that can be aligned without introducing gaps
