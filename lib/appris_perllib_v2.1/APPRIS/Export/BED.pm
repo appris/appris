@@ -186,7 +186,7 @@ sub get_annotations {
     if ( $position =~ /^([^\:]*):([^\-]*)-([^\$]*)$/ ) {
 		($chromosome, $start, $end) = ($1,$2,$3);
 		$pos = $chromosome;
-		if ( ($pos =~ /^[0-9]*$/) or ($pos eq 'X') or ($pos eq 'Y') or ($pos eq 'M') or ($pos eq 'MT') ) {
+		if ( !($pos =~ /^chr/) ) {
 			$pos = 'chr'.$pos;
 		}
 		else {
@@ -449,8 +449,8 @@ sub print_data {
 
     # Convert position value for BED format
     my ($pos) = $data->{'chr'};
-	if ( ($pos =~ /^[0-9]*$/) or ($pos eq 'X') or ($pos eq 'Y') or ($pos eq 'M') or ($pos eq 'MT') ) {
-		$pos = 'chr'.$pos;
+    if ( !($pos =~ /^chr/) ) {
+    	$pos = 'chr'.$pos;
 	}
 	else {
 		$pos =~ s/\.([0-9]*)/\-$1/g;
@@ -762,17 +762,17 @@ sub get_firestar_annotations {
 							my ($cds_out) = $sorted_contained_cds[$i];
 							my ($cds_strand) = $cds_out->strand;
 							my ($cds_phase) = $cds_out->phase;							
-							if ( scalar(@sorted_contained_cds) == 1 ) { # Within one CDS
+							if ( scalar(@sorted_contained_cds) == 1 ) { # Residue fulldown in one CDS
 								my ($pos_start) = $res->start;
 								my ($pos_end) = $res->end;
 								my ($pos_strand) = $res->strand;
-								my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $data->{'thick_start'}, $data->{'thick_end'});
+								my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $thick_start, $thick_end);
 								push(@{$data->{'block_starts'}}, $init);
 								push(@{$data->{'block_sizes'}}, $length);
 								$data->{'blocks'}++;	
 								last;
 							}												
-							else { # Within several CDS
+							else { # Residue fulldown in multiple CDS
 								my ($pos_start) = $cds_out->start;
 								my ($pos_end) = $cds_out->end;
 								my ($thick_start) = $data->{'thick_start'};
