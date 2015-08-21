@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="mus_musculus/e81_gM6"
 
-export APPRIS_WS_DATE="mus_musculus/ens81.v9.17Jul2015"
+export APPRIS_WS_DATE="mus_musculus/ens81.v10.21Aug2015"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
