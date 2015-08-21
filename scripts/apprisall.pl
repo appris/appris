@@ -52,8 +52,8 @@ unless ( defined $methods ) {
 my ($APPRIS_SPECIES) = `. $conf_species; echo \$APPRIS_SPECIES`; $APPRIS_SPECIES =~ s/\s*$//g;
 my ($APPRIS_SCRIPTS_DB_INI) = `. $conf_species; echo \$APPRIS_SCRIPTS_DB_INI`; $APPRIS_SCRIPTS_DB_INI =~ s/\s*$//g;
 my ($APPRIS_DATA_DIR) = `. $conf_species; echo \$APPRIS_DATA_DIR`; $APPRIS_DATA_DIR =~ s/\s*//g;
-my ($APPRIS_WSERVER_DOWNLOAD_DATA_DIR) = $ENV{APPRIS_WSERVER_DOWNLOAD_DATA_DIR}; $APPRIS_WSERVER_DOWNLOAD_DATA_DIR =~ s/\s*//g;
-my ($APPRIS_WS_DATE) = `. $conf_species; echo \$APPRIS_WS_DATE`; $APPRIS_WS_DATE =~ s/\s*//g;
+#my ($APPRIS_WSERVER_DOWNLOAD_DATA_DIR) = $ENV{APPRIS_WSERVER_DOWNLOAD_DATA_DIR}; $APPRIS_WSERVER_DOWNLOAD_DATA_DIR =~ s/\s*//g;
+#my ($APPRIS_WS_DATE) = `. $conf_species; echo \$APPRIS_WS_DATE`; $APPRIS_WS_DATE =~ s/\s*//g;
 
 
 #################
