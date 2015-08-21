@@ -1026,6 +1026,7 @@ sub step_ccds_eldest($$)
 
 	# print princ isoforms with eldests CCDS
 	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
+		# the first elem is the eldests (a <=> b - ascending)
 		my (@sort_transc) = sort { $a->{'ccds'} <=> $b->{'ccds'} } @{$princ_isof};
 		my ($eldest_ccds) = $sort_transc[0]->{'ccds'};
 		foreach my $princ ( @{$princ_isof} ) {
@@ -1058,9 +1059,10 @@ sub step_ccds_longest($$)
 		}
 	}	
 
-	# print princ isoforms with eldests CCDS
-	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
-		my (@sort_transc) = sort { $a->{'length'} <=> $b->{'length'} } @{$princ_isof};
+	# print princ isoforms with longest CCDS
+	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {		
+		# the first elem is the longest (b <=> a - descending)
+		my (@sort_transc) = sort { $b->{'length'} <=> $a->{'length'} } @{$princ_isof};
 		my ($longest_ccds) = $sort_transc[0]->{'length'};
 		foreach my $princ ( @{$princ_isof} ) {
 			my ($transc_id) = $princ->{'id'};
@@ -1092,9 +1094,10 @@ sub step_longest($$)
 		}
 	}	
 
-	# print princ isoforms with eldests CCDS
+	# print princ isoforms with longest seq
 	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
-		my (@sort_transc) = sort { $a->{'length'} <=> $b->{'length'} } @{$princ_isof};
+		# the first elem is the longest (b <=> a - descending)
+		my (@sort_transc) = sort { $b->{'length'} <=> $a->{'length'} } @{$princ_isof};
 		my ($longest_ccds) = $sort_transc[0]->{'length'};
 		foreach my $princ ( @{$princ_isof} ) {
 			my ($transc_id) = $princ->{'id'};
