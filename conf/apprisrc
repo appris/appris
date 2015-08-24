@@ -14,7 +14,17 @@ export APPRIS_BIN_DIR="${APPRIS_HOME}/bin"
 
 export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
 
+export APPRIS_FEATURES_DIR="${APPRIS_HOME}/features"
+
+export APPRIS_ANNOT_DIR="${APPRIS_HOME}/annotations"
+
+export APPRIS_DATA_DIR="${APPRIS_HOME}/data"
+
 export APPRIS_TEST_DIR="${APPRIS_HOME}/test"
+
+export APPRIS_LOG_DIR="${APPRIS_HOME}/logs"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}"
 
 export APPRIS_CODE_CONF_DIR="${APPRIS_CONF_DIR}/code"
 
