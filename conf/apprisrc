@@ -10,6 +10,9 @@ export APPRIS_CONF_DIR="${APPRIS_HOME}/conf"
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
+#export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_HOME}/cache"
+export APPRIS_PROGRAMS_TMP_DIR="/home/jmrodriguez/projects/APPRIS/appriscache"
+
 export APPRIS_BIN_DIR="${APPRIS_HOME}/bin"
 
 export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
@@ -37,8 +40,6 @@ export APPRIS_WSERVER_CONF_DIR="${APPRIS_CONF_DIR}/ws"
 # -------------------------------------#
 # Setting up vars of APPRIS's programs #
 # -------------------------------------#
-
-export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_CODE_DIR}/cached"
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_CODE_DIR}/db"
 
