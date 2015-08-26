@@ -1,5 +1,5 @@
 {
-    "version": "2015_08.v9",
+    "version": "2015_08.v10",
     "headers": [
         {
             "id":       "species",
@@ -69,7 +69,7 @@
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh38",
             "dataset":                  "gencode23/ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -127,7 +127,7 @@
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh37",
             "dataset":                  "gencode19/ensembl74",
-            "release":                  "gen19.v9.17Jul2015",
+            "release":                  "gen19.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -185,7 +185,7 @@
             "scientific":               "mus_musculus",
             "assembly":                 "GRCm38",
             "dataset":                  "gencodeM6/ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -221,7 +221,7 @@
             "scientific":               "rattus_norvegicus",
             "assembly":                 "Rnor_6.0",
             "dataset":                  "ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -293,7 +293,7 @@
             "scientific":               "danio_rerio",
             "assembly":                 "GRCz10",
             "dataset":                  "ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -365,7 +365,7 @@
             "scientific":               "sus_scrofa",
             "assembly":                 "Sscrofa10.2",
             "dataset":                  "ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -401,7 +401,7 @@
             "scientific":               "pan_troglodytes",
             "assembly":                 "CHIMP2.1.4",
             "dataset":                  "ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -437,7 +437,7 @@
             "scientific":               "drosophila_melanogaster",
             "assembly":                 "BDGP6",
             "dataset":                  "ensembl81",
-            "release":                  "ens81.v9.17Jul2015",
+            "release":                  "ens81.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
