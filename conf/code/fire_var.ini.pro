@@ -2,7 +2,7 @@
 home=/home/appris/code/src/firestar/source
 lib=/home/appris/code/src/firestar/source/lib
 faatmp=/home/appris/code/src/firestar/source/tmp/faatmp
-chads=/home/appris/code/db
+chads=/home/appris/db
 [MYSQL]
 dbHost=localhost
 dbName=FireDB
@@ -13,8 +13,8 @@ release=22Aug2013
 nrdb=sprot_clean_trembl_clean_70
 hhbdb=hhblits_
 hhprof=nr20_12Aug11
-blast_path=/home/appris/code/db
-hhdb_path=/home/appris/code/db
+blast_path=/home/appris/db
+hhdb_path=/home/appris/db
 [PROGRAMS]
 square=/home/appris/code/src/firestar/source/Square/another_fire_mess_web
 square_test=/home/appris/code/src/firestar/source/Square/another_fire_mess_test
