@@ -310,13 +310,12 @@ for M in ${METHODS_ARR};do
 		
 		# Convert to BigBed
 		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb"
-		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb		
+		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb	
+	fi
 	
-	else
-		# compress outputs
-		echo "gzip -9 ${OUTPUT_METHOD}"
-		gzip -9 ${OUTPUT_METHOD}	
-	fi	
+	# compress outputs for both formats
+	echo "gzip -9 ${OUTPUT_METHOD}"
+	gzip -9 ${OUTPUT_METHOD}	
 done
 echo "================="
 	
