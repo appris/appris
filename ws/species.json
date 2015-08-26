@@ -29,7 +29,7 @@
         "assemblies":   [{
             "name":     "GRCm38|mm10",
             "id":       "mm10",
-            "gencode":  "M5",
+            "gencode":  "M7",
             "dataset":  82
         }],
         "archives":   [{
