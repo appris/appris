@@ -6,7 +6,7 @@ use Getopt::Long;
 use FindBin;
 use Data::Dumper;
 
-use APPRIS::Registry;
+use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 
@@ -19,12 +19,10 @@ use appris qw( create_indata );
 ###################
 use vars qw(
 	$LOCAL_PWD
-	$CONFIG_INI_APPRIS_DB_FILE
 	$GENCODE_TSL_FILE
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 $GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens76.v7.9Feb2015/gencode.tsl.e78.txt';
 
 # Input parameters
@@ -35,7 +33,7 @@ my ($input_main_file) = undef;
 my ($input_label_file) = undef;
 my ($input_seq_file) = undef;
 my ($input_data_file) = undef;
-my ($output_file) = undef;
+my ($outpath) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
 my ($logappend) = undef;
@@ -45,7 +43,7 @@ my ($loglevel) = undef;
 	'transc=s'			=> \$transcripts_file,
 	'transl=s'			=> \$translations_file,
 	'input-label=s'		=> \$input_label_file,
-	'output=s'			=> \$output_file,
+	'outpath=s'			=> \$outpath,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
 	'logpath=s'			=> \$logpath,
@@ -53,7 +51,7 @@ my ($loglevel) = undef;
 );
 
 # Required arguments
-unless ( defined $data_file and defined $transcripts_file and defined $translations_file and defined $input_label_file and defined $output_file )
+unless ( defined $data_file and defined $transcripts_file and defined $translations_file and defined $input_label_file and defined $outpath )
 {
 	print `perldoc $0`;
 	exit 1;
@@ -99,12 +97,52 @@ sub main()
 	
 	# Get data by region
 	$logger->info("-- get exon data -------\n");
+	my ($outfile) = $outpath.'/appris_data.exons.gff';
 	my ($output_content) = get_exon_data($data_report, $label_report);	
 	if ($output_content ne '') {
-		my ($printing_file_log) = printStringIntoFile($output_content, $output_file);
+		my ($printing_file_log) = printStringIntoFile($output_content, $outfile);
 		$logger->error("printing") unless(defined $printing_file_log);		
 	}
-
+	
+	# get prin transc
+	$logger->info("-- get principal exons -------\n");
+	my ($outfile_prin) = $outpath.'/appris_data.exons.prin.gff';
+	eval {
+		my ($cmd) = "grep 'appris_annot \"PRINCIPAL' $outfile > $outfile_prin";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting principal exons") if($@);
+	
+	# get alternative transc
+	$logger->info("-- get alternative exons -------\n");
+	my ($outfile_alt) = $outpath.'/appris_data.exons.alt.gff';
+	eval {
+		my ($cmd) = "grep 'appris_annot \"ALTERNATIVE' $outfile > $outfile_alt";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting alternative exons") if($@);
+	
+	# get alternative exons that do not overlap with principal exons
+	$logger->info("-- get alternative exons that do not overlap -------\n");
+	my ($outfile_altNoOver) = $outpath.'/appris_data.exons.altNoOver.gff';
+	eval {
+		my ($cmd) = "intersectBed -a $outfile_alt -b $outfile_prin  -v > $outfile_altNoOver";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting alt exons that do not overlap") if($@);
+	
+	# Add start/stop codons for alt exons
+	$logger->info("-- add start/stop codons for alt exons -------\n");
+	my ($outcont_altNoOverCod) = add_codons($data_report, $outfile_altNoOver);
+	my ($outfile_altNoOverCod) = $outpath.'/appris_data.exons.altNoOverCod.gff';
+	if ($outfile_altNoOverCod ne '') {
+		my ($printing_file_log) = printStringIntoFile($outcont_altNoOverCod, $outfile_altNoOverCod);
+		$logger->error("printing") unless(defined $printing_file_log);		
+	}
+	
 	$logger->finish_log();
 	
 	exit 0;	
@@ -352,6 +390,108 @@ sub extract_gencode_tsl($) {
 	}
 	return $report;
 }
+#
+#sub _add_codon($$) {
+#	my ($gendata,$i_transc_id) = @_;
+#	my ($output) = '';
+#	
+#	foreach my $gene (@{$gendata}) {
+#		my ($gene_id) = $gene->stable_id;
+#		my ($chr) = $gene->chromosome;		
+#		if ( exists $gene->{'_index_transcripts'}->{$i_transc_id} ) {
+#			my ($index) = $gene->{'_index_transcripts'}->{$i_transc_id};
+#			my ($transcript) = $gene->transcripts->[$index];
+#			if ( $transcript->translate and $transcript->translate->codons ) {
+#				my ($translation) = $transcript->translate;
+#				foreach my $codon (@{$translation->codons}) {
+#					my ($type) = $codon->type.'_codon';
+#	 				$output .=
+#	 						$chr."\t".
+#	 						'APPRIS'."\t".
+#	 						$type."\t".
+#							$codon->start."\t".
+#							$codon->end."\t".
+#							'.'."\t".
+#							$codon->strand."\t".
+#							$codon->phase."\t".
+#							'gene_id "'.$gene_id.'"'."; ".
+#							'transc_id"'.$i_transc_id.'"'."\n";
+#				}
+#			}
+#			last;
+#		}
+#	}
+#	return $output;
+#}
+
+sub get_codon_data($)
+{
+	my ($dataset) = @_;
+	my ($report);	
+	foreach my $gene (@{$dataset}) {
+		foreach my $transcript (@{$gene->transcripts}) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ($transcript->translate and $transcript->translate->codons) {
+				my ($translate) = $transcript->translate;
+				$report->{$transcript_id} = $translate->codons;
+			}
+		}
+	}
+	return $report;
+}
+
+sub add_codons($$) {
+	my ($gendata,$file) = @_;
+	my ($output) = '';
+	my ($trans_codons_list);
+
+	my ($codondata) = get_codon_data($gendata);
+	
+	local(*FILE);
+	open(FILE,$file) or return undef;
+	my(@string)=<FILE>;
+	close(FILE);
+	
+	for (my $i = 0; $i <= scalar(@string); $i++) {
+		my ($line) = $string[$i];
+		my ($fields) = APPRIS::Parser::_parse_dataline($line);
+		if ( defined $fields and defined $fields->{'attrs'} ) {
+			if ( exists $fields->{'chr'} and defined $fields->{'chr'} and
+				 exists $fields->{'attrs'}->{'gene_id'} and defined $fields->{'attrs'}->{'gene_id'} and
+				 exists $fields->{'attrs'}->{'transc_list'} and defined $fields->{'attrs'}->{'transc_list'}
+			) {
+				my ($chr) = $fields->{'chr'};
+				my ($gene_id) = $fields->{'attrs'}->{'gene_id'};
+				# add codons if it is not exist yet
+				foreach my $transc_id ( split(',', $fields->{'attrs'}->{'transc_list'}) ) {
+					unless ( $trans_codons_list->{$transc_id} ) {
+						if ( exists $codondata->{$transc_id} and defined $codondata->{$transc_id} ) {
+							my ($codons) = $codondata->{$transc_id};
+							foreach my $codon (@{$codons}) {
+								my ($type) = $codon->type.'_codon';
+				 				$output .=
+				 						$chr."\t".
+				 						'APPRIS'."\t".
+				 						$type."\t".
+										$codon->start."\t".
+										$codon->end."\t".
+										'.'."\t".
+										$codon->strand."\t".
+										$codon->phase."\t".
+										'gene_id "'.$gene_id.'"'."; ".
+										'transc_id"'.$transc_id.'"'."\n";
+							}
+							
+						}
+						$trans_codons_list->{$transc_id} = 1;
+					}
+				}
+			}
+			$output .= $line;
+		}
+	}
+	return $output;
+}
 
 main();
 
@@ -386,7 +526,7 @@ retrieve_exon_data
 	
 	--input-label <Result file of APPRIS's labels>
 	
-	--output <Output file that has the main isoforms>	
+	--outpath <Output path to save files>	
 	
 =head2 Optional arguments:
 
@@ -417,7 +557,7 @@ perl retrieve_exon_data_fromfile.pl
 	
 	--input-label=data/appris_data.appris_label.txt
 
-	--output=../data/retrieve_exon_data.chr21.txt
+	--outpath=../data/
 	
 
 =head1 AUTHOR
