@@ -116,7 +116,7 @@ fi
 
 # Get file of database schema
 DIRNAME=`dirname $0`
-DATABASE_SCHEMA_FILE="${APPRIS_HOME}/database/apprisdb.sql"
+DATABASE_SCHEMA_FILE="${APPRIS_HOME}/db/annots/apprisdb.sql"
 
 
 # -----------------------------------------------------------------------------
