@@ -8,4 +8,4 @@
 [HOMO_SAPIENS_DB]
   specie_name=Human  
   specie=homo_sapiens
-  db=appris_homo_sapiens_gencode_19v10
+  db=appris_homo_sapiens_g19v10
