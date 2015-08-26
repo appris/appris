@@ -191,7 +191,8 @@ sub idx
 		# extract transc/cds_coords
 		my (@out);
 		eval {
-			my ($cmd) = 'grep '.$id.' '.$data.' | awk -F "\t" \'{if( $3=="CDS" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){ if( match(TRANS[1],/^\"ENS/) ) { gsub(/\.[0-9]*/,"",TRANS[1]) } print TRANS[1]">"$1":"$4"-"$5}}\' | sed -r \'s/chr|\"|\;//g\' | sort -t- -nk1 | tr \'\n\' \';\' ';
+			#my ($cmd) = 'grep '.$id.' '.$data.' | awk -F "\t" \'{if( $3=="CDS" && match($9,/transcript_id\s*([^ ]*)/, TRANS) ){ if( match(TRANS[1],/^\"ENS/) ) { gsub(/\.[0-9]*/,"",TRANS[1]) } print TRANS[1]">"$1":"$4"-"$5}}\' | sed -r \'s/chr|\"|\;//g\' | sort -t- -nk1 | tr \'\n\' \';\' ';
+			my ($cmd) = 'grep '.$id.' '.$data.' | awk -F "\t" \'{if( $3=="CDS" && ( match($9,/transcript_id\s*([^ ]*)/, TRANS) || match($9,/Genbank:([^,]*)/, TRANS) ) ){ if( match(TRANS[1],/^\"ENS/) ) { gsub(/\.[0-9]*/,"",TRANS[1]) } print TRANS[1]">"$1":"$4"-"$5}}\' | sed -r \'s/chr|\"|\;//g\' | sort -t- -nk1 | tr \'\n\' \';\' ';
 			@out = `$cmd`;
 		};
 		throw("getting coords: ".$!) if($@);
