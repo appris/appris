@@ -17,13 +17,19 @@
 
 CHANGE.log
 TODO.txt
-code/db/*
 server/logs/
 server/node_modules/
 
-# Excepts
-!code/db/.gitignore
-!code/db/BLOSUM62
-!code/db/README.txt
-!code/db/another_fire_mess_web
-!code/db/discardEmptySeqsPDB.pl
+# 'data' dir
+!data/.gitignore
+
+# 'features' dir
+!features/.gitignore
+
+# 'db' dir
+db/*
+!db/.gitignore
+!db/BLOSUM62
+!db/README.txt
+!db/another_fire_mess_web
+!db/discardEmptySeqsPDB.pl
