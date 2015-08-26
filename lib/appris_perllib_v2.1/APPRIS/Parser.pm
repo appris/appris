@@ -108,6 +108,7 @@ use vars qw(@ISA @EXPORT);
 
 sub parse_infiles($;$;$);
 sub _parse_indata($);
+sub _parse_dataline($);
 sub _parse_inseq_transc($);
 sub _parse_inseq_transl($);
 sub parse_gencode($;$;$);
@@ -172,9 +173,16 @@ sub parse_infiles($;$;$)
 	my ($index) = 0;	
 		
 	# Parse data/sequences
-	$data_cont = _parse_indata($data_file);
-	$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
-	$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
+	if ( _is_refseq($data_file) ) {
+		$data_cont = _parse_indata_refseq($data_file);
+		$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
+		$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
+	}
+	else {
+		$data_cont = _parse_indata($data_file);
+		$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
+		$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
+	}
 	
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
@@ -3178,6 +3186,96 @@ sub _get_id_version($)
 		
 } # End _get_id_version
 
+# Is RefSeq gene data
+sub _is_refseq($)
+{
+	my ($file) = @_;
+	my ($is_refseq) = 0;	
+	
+
+	open (IN_FILE, $file) or throw('Can not open file');
+	while ( my $line = <IN_FILE> )
+	{
+		if ( $line =~ /^#/ ) {
+			if ( $line =~ /processor NCBI annotwriter/ ) { $is_refseq = 1 }
+		}
+		else {
+			my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
+			if ( ($source eq 'RefSeq') and ($type eq 'region') ) { $is_refseq = 1 }
+			else { last; }
+		}
+	}
+	close(IN_FILE);
+	
+	return $is_refseq;
+	
+} # End _is_refseq
+
+sub _parse_dataline($)
+{
+	my ($line) = @_;
+	my ($fields);
+	
+	if ( defined $line and ($line ne '') ) {
+		#ignore header
+		next if ( $line =~ /^#/ );
+		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
+		next unless(defined $chr and 
+					defined $source and
+					defined $type and
+					defined $start and
+					defined $end and
+					defined $score and
+					defined $strand and
+					defined $phase and 
+					defined $attributes);
+		if (defined $chr and $chr=~/chr(\w*)/) { $chr = $1 if(defined $1) }		
+		
+		#store ids and additional information in second hash
+		my ($attribs);
+		my (@add_attributes) = split(";", $attributes);				
+		for ( my $i=0; $i<scalar @add_attributes; $i++ )
+		{
+			my ($c_type);
+			my ($c_value);
+			if ( $add_attributes[$i] =~ /^(.+)\s(.+)$/ ) {
+				$c_type  = $1;
+				$c_value = $2;			
+			}
+			elsif ( $add_attributes[$i] =~ /^(.+)=(.+)$/ ) {
+				$c_type  = $1;
+				$c_value = $2;
+			}
+			if(	defined $c_type and !($c_type=~/^\s*$/) and
+				defined $c_value and !($c_value=~/^\s*$/))
+			{
+				$c_type =~ s/^\s//;
+				$c_value =~ s/"//g;
+				if(!exists($attribs->{$c_type}))
+				{
+					$attribs->{$c_type} = $c_value;
+				}
+			}
+		}
+		
+		#store nine columns in hash
+		$fields = {
+				chr        => $chr,
+				source     => $source,
+				type       => $type,
+				start      => $start,
+				end        => $end,
+				score      => $score,
+				strand     => $strand,
+				phase      => $phase,
+				attrs      => $attribs,
+		};
+	}
+			
+	return $fields;
+	
+} # End _parse_dataline
+
 # Parse GFT file
 sub _parse_indata($)
 {
@@ -3189,8 +3287,7 @@ sub _parse_indata($)
 	while ( my $line = <IN_FILE> )
 	{
 		#ignore header
-		next if ( $line =~ /^##/ );
-
+		next if ( $line =~ /^#/ );
 		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
 		next unless(defined $chr and 
 					defined $source and
@@ -3424,6 +3521,216 @@ sub _parse_indata($)
 	
 } # End _parse_indata
 
+# Parse GFF3 file from RefSeq
+sub _parse_indata_refseq($)
+{
+	my ($file) = @_;
+	my ($data);	
+	my ($cache_transcId);
+	return $data unless (-e $file and (-s $file > 0) );
+	
+	#my ($molecule) = ',transcript,primary_transcript,mRNA,ncRNA,rRNA,tRNA,V_gene_segment,cDNA_match,C_gene_segment,D_gene_segment,D_loop,J_gene_segment,long_terminal_repeat,match,';
+	
+	my $_extract_dbXref = sub {
+		my ($data,$patt) = @_;
+		my ($match);
+		if ( $data =~ /$patt\:([^\,]*)/ ) {
+			$match = $1;
+		}
+		return $match;
+	};
+	
+	open (IN_FILE, $file) or throw('Can not open file');
+	while ( my $line = <IN_FILE> )
+	{
+		my ($fields) = _parse_dataline($line);
+		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attribs) = (
+			$fields->{'chr'},
+			$fields->{'source'},
+			$fields->{'type'},
+			$fields->{'start'},
+			$fields->{'end'},
+			$fields->{'score'},
+			$fields->{'strand'},
+			$fields->{'phase'},
+			$fields->{'attrs'}
+		);
+
+		# Only BestRefSeq features
+		next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) );
+		
+		# Always we have Gene Id
+		if(	exists $attribs->{'ID'} and defined $attribs->{'ID'} )
+		{			
+			my ($ID) = $attribs->{'ID'};
+			my ($Parent);
+			if ( exists $attribs->{'Parent'} and defined $attribs->{'Parent'} ) {
+				($Parent) = $attribs->{'Parent'};				
+			}
+			my ($gene_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'GeneID');
+			my ($accesion_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'Genbank');
+			my ($ccds_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'CCDS');
+
+			if (defined $gene_id and ($type eq 'gene') ) # Gene Information
+			{
+				$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
+				$data->{$gene_id}->{'start'} = $start if(defined $start);
+				$data->{$gene_id}->{'end'} = $end if(defined $end);
+				$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
+				
+				if (defined $source)
+				{
+					$data->{$gene_id}->{'source'} = $source; 					
+				}
+				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
+				{
+					$data->{$gene_id}->{'external_id'} = $attribs->{'Name'};	
+				}
+				if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) {
+					$data->{$gene_id}->{'level'} = '1';
+				}
+				elsif ( $source eq 'Gnomon' ) {
+					$data->{$gene_id}->{'level'} = '3';
+				}
+			}
+#			elsif (defined $gene_id and defined $transcript_id and ($type eq 'mRNA') ) # Transcript Information
+#			{				
+#				my ($transcript);
+#				$transcript->{'chr'} = $chr if(defined $chr);
+#				$transcript->{'start'} = $start if(defined $start);
+#				$transcript->{'end'} = $end if(defined $end);
+#				$transcript->{'strand'} = $strand if(defined $strand);					
+#
+#				if (defined $source)
+#				{
+#					$transcript->{'source'} = $source;
+#				}
+#				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
+#				{
+#					$transcript->{'external_id'} = $attribs->{'Name'};	
+#				}
+#				if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) {
+#					$transcript->{'level'} = '1';
+#				}
+#				elsif ( $source eq 'Gnomon' ) {
+#					$transcript->{'level'} = '3';
+#				}
+#				# cache transc Ids
+#				$cache_transcId->{$ID} = $transcript_id;
+#								
+#				# HARD-CORE attrs!!
+#				if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
+#					$transcript->{'status'} = 'KNOWN';
+#				}
+#				else {
+#					$transcript->{'status'} = 'UNKNOWN';
+#				}
+#				$transcript->{'biotype'} = 'protein_coding';
+#				
+#				# NOTE: We have decided the all mRNA from RefSeq have start/stop codons
+#				for my $type ('start','stop') {
+#					my ($codon);
+#					$codon->{'type'}='start';
+#					#$codon->{'start'} = $start if(defined $start);
+#					#$codon->{'end'} = $end if(defined $end);
+#					#$codon->{'strand'} = $strand if(defined $strand);
+#					#$codon->{'phase'} = $phase if(defined $phase);
+#					push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);					
+#				}				
+#				
+#				$data->{$gene_id}->{'transcripts'}->{$transcript_id} = $transcript if(defined $transcript);
+#			}
+			elsif (defined $gene_id and defined $accesion_id and ($type eq 'exon') ) # Exon Information
+			{
+				my ($exon);
+				$exon->{'start'} = $start if(defined $start);
+				$exon->{'end'} = $end if(defined $end);
+				$exon->{'strand'} = $strand if(defined $strand);
+				
+				$exon->{'exon_id'} = $ID;			
+								
+				push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'exons'}},$exon);
+			}			
+			elsif (defined $gene_id and defined $accesion_id and ($type eq 'CDS') ) # CDS Information
+			{
+				my ($cds);
+				$cds->{'start'} = $start if(defined $start);
+				$cds->{'end'} = $end if(defined $end);
+				$cds->{'strand'} = $strand if(defined $strand);
+				$cds->{'phase'} = $phase if(defined $phase);
+								
+				$cds->{'cds_id'} = $ID;
+				
+				if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) {
+					my ($transc_id) = $cache_transcId->{$Parent};
+					$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
+					$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
+					
+					push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);				
+				}				
+			}
+			elsif (defined $gene_id and defined $accesion_id ) # Any type of molecule: mRNA, transcript, ncRNA, etc.
+			{				
+				my ($transcript);
+				$transcript->{'chr'} = $chr if(defined $chr);
+				$transcript->{'start'} = $start if(defined $start);
+				$transcript->{'end'} = $end if(defined $end);
+				$transcript->{'strand'} = $strand if(defined $strand);					
+
+				if (defined $source)
+				{
+					$transcript->{'source'} = $source;
+				}
+				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
+				{
+					$transcript->{'external_id'} = $attribs->{'Name'};	
+				}
+				if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) {
+					$transcript->{'level'} = '1';
+				}
+				elsif ( $source eq 'Gnomon' ) {
+					$transcript->{'level'} = '3';
+				}
+				# cache transc Ids
+				$cache_transcId->{$ID} = $accesion_id;
+								
+				# HARD-CORE attrs!!
+				#if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
+				if ( $accesion_id =~ /^NM\_/ ) {
+					$transcript->{'status'} = 'KNOWN';
+				}
+				else {
+					$transcript->{'status'} = 'UNKNOWN';
+				}
+				$transcript->{'biotype'} = $type;					
+				
+				# NOTE: We have decided the all mRNA from RefSeq have start/stop codons
+				for my $type ('start','stop') {
+					my ($codon);
+					$codon->{'type'}='start';
+					#$codon->{'start'} = $start if(defined $start);
+					#$codon->{'end'} = $end if(defined $end);
+					#$codon->{'strand'} = $strand if(defined $strand);
+					#$codon->{'phase'} = $phase if(defined $phase);
+					push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'codons'}},$codon) if(defined $codon);					
+				}				
+				
+				$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);				
+			}
+					
+			$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
+		}
+		else
+		{
+			throw('Wrong entity');
+		}
+	}
+	close(IN_FILE);
+	
+	return $data;
+	
+} # End _parse_indata_refseq
+
 sub _parse_inseq_transc($)
 {
 	my ($file) = @_;
@@ -3440,6 +3747,10 @@ sub _parse_inseq_transc($)
 			if ( $seq->id =~ /^[sp|tr]\|([^|]*)\|([^|]*)/ ) { # UniProt sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
+				$sequence_id = $id1;
+			}
+			elsif ( $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
+				my ($id1) = $1;
 				$sequence_id = $id1;
 			}
 			elsif ( $seq->id =~ /^([^|]*)\|([^|]*)/ ) { # GENCODE sequences
@@ -3513,6 +3824,10 @@ sub _parse_inseq_transl($)
 				my ($id2) = $2;
 				$sequence_id = $id1;
 			}
+			elsif ( $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
+				my ($id1) = $1;
+				$sequence_id = $id1;
+			}
 			elsif ( $seq->id =~ /^([^|]*)\|([^|]*)/ ) { # GENCODE sequences
 				my ($id1) = $1;
 				my ($id2) = $2;
@@ -3557,358 +3872,6 @@ sub _parse_inseq_transl($)
 	return $data;
 	
 } # End _parse_inseq_transl
-
-#sub _parse_rawseqs_transl($)
-#{
-#	my ($inseqs) = @_;
-#	my ($data);
-#	
-#	if ( defined $inseqs ) {
-#		my ($stringfh) = IO::String->new($inseqs);
-#		#open($stringfh, "<", \$string) or die "Could not open string for reading: $!";
-#
-#		my ($in) = Bio::SeqIO-> new(
-#								-fh     => $stringfh,
-#								-format => 'Fasta'
-#		);
-#while( my $seq = $in->next_seq ) {
-#    # process each seq
-#    print STDERR $seq->id . ' > ' . $seq->desc . ' >'.$seq->seq()."\n";
-#}		
-# 		while ( my $seq = $in->next_seq() )
-#		{
-#			my ($sequence_id);
-#			if ( $seq->id =~ /([^|]*)\|([^|]*)/ ) {
-#				my ($id1) = $1;
-#				my ($id2) = $2;
-#				$sequence_id = $id1;
-#				if ( $id2 =~ /^ENS[a-zA-Z]*T/ ) { # From GENCODE20, the second id is Ensembl Transcript id
-#					$sequence_id = $id2;
-#				}
-#			}
-#			elsif ( $seq->desc =~ /transcript:([^\s]+)\s*/ ) {
-#				$sequence_id = $1;
-#			}
-#			
-#			if ( defined $sequence_id ) {
-#				$sequence_id =~ s/\s*//;
-#				$sequence_id =~ s/\.\d*$//; # delete suffix
-#				if(exists $data->{$sequence_id}) {
-#					throw("Duplicated sequence: $sequence_id");
-#				}
-#				else {
-#					my ($sequence) = $seq->seq; # control short sequences
-#					my ($seq_len) = length($sequence);
-#					if ( $seq_len > 2 ) {
-#						$data->{$sequence_id} = $seq->seq;						
-#					}
-#					else {
-#						warning("Short sequence: $sequence_id");
-#					}
-#				}				
-#			}
-#		}
-#	}
-#	
-#} # End _parse_rawseqs_transl
-
-# Parse GFT file of gencode
-sub _parse_gencode_data($)
-{
-	my ($file) = @_;
-	my ($data);	
-	return $data unless (-e $file and (-s $file > 0) );
-	
-	open (GENCONDE_FILE, $file) or throw('Can not open file');
-	while ( my $line = <GENCONDE_FILE> )
-	{
-		#ignore header
-		next if ( $line =~ /^##/ );
-
-		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-		next unless(defined $chr and 
-					defined $source and
-					defined $type and
-					defined $start and
-					defined $end and
-					defined $score and
-					defined $strand and
-					defined $phase and 
-					defined $attributes);
-
-		#store nine columns in hash
-		my ($fields) = {
-				chr        => $chr,
-				source     => $source,
-				type       => $type,
-				start      => $start,
-				end        => $end,
-				score      => $score,
-				strand     => $strand,
-				phase      => $phase,
-				attributes => $attributes,
-		};
-		if(defined $chr and $chr=~/chr(\w*)/)
-		{
-			$chr = $1 if(defined $1);
-		}
-		
-		#store ids and additional information in second hash
-		my ($attribs);
-		my (@add_attributes) = split(";", $attributes);				
-		for ( my $i=0; $i<scalar @add_attributes; $i++ )
-		{
-			$add_attributes[$i] =~ /^(.+)\s(.+)$/;
-			my ($c_type) = $1;
-			my ($c_value) = $2;
-			if(	defined $c_type and !($c_type=~/^\s*$/) and
-				defined $c_value and !($c_value=~/^\s*$/))
-			{
-				$c_type =~ s/^\s//;
-				$c_value =~ s/"//g;
-				if(!exists($attribs->{$c_type}))
-				{
-					$attribs->{$c_type} = $c_value;
-				}
-			}
-		}
-		
-		# Always we have Gene Id
-		if(	exists $attribs->{'gene_id'} and defined $attribs->{'gene_id'} )
-		{
-			my ($gene_id, $gene_version) = _get_id_version($attribs->{'gene_id'});
-			my ($transcript_id, $trans_version) = (undef, undef);
-			if ( exists $attribs->{'transcript_id'} and defined $attribs->{'transcript_id'} ) {
-				($transcript_id, $trans_version) = _get_id_version($attribs->{'transcript_id'});				
-			}
-
-			if (defined $gene_id and ($type eq 'gene') ) # Gene Information
-			{
-				$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
-				$data->{$gene_id}->{'start'} = $start if(defined $start);
-				$data->{$gene_id}->{'end'} = $end if(defined $end);
-				$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
-
-				if (defined $source)
-				{
-					$data->{$gene_id}->{'source'} = $source; 					
-				}
-				if(exists $attribs->{'gene_status'} and defined $attribs->{'gene_status'})
-				{
-					$data->{$gene_id}->{'status'} = $attribs->{'gene_status'};	
-				}			
-				if(exists $attribs->{'gene_type'} and defined $attribs->{'gene_type'})
-				{
-					$data->{$gene_id}->{'biotype'} = $attribs->{'gene_type'};	
-				}
-				if(exists $attribs->{'gene_name'} and defined $attribs->{'gene_name'})
-				{
-					$data->{$gene_id}->{'external_id'} = $attribs->{'gene_name'};	
-				}
-				if(exists $attribs->{'havana_gene'} and defined $attribs->{'havana_gene'})
-				{
-					$data->{$gene_id}->{'havana_gene'} = $attribs->{'havana_gene'};	
-				}
-				if(exists $attribs->{'level'} and defined $attribs->{'level'})
-				{
-					$data->{$gene_id}->{'level'} = $attribs->{'level'};	
-				}
-				if (defined $gene_version)
-				{
-					$data->{$gene_id}->{'version'} = $gene_version;
-				}
-			}
-			elsif (defined $gene_id and defined $transcript_id and ($type eq 'transcript') ) # Transcript Information
-			{
-				my ($transcript);
-				$transcript->{'chr'} = $chr if(defined $chr);
-				$transcript->{'start'} = $start if(defined $start);
-				$transcript->{'end'} = $end if(defined $end);
-				$transcript->{'strand'} = $strand if(defined $strand);					
-
-				if (defined $source)
-				{
-					$transcript->{'source'} = $source;
-				}
-				if(exists $attribs->{'transcript_status'} and defined $attribs->{'transcript_status'})
-				{
-					$transcript->{'status'} = $attribs->{'transcript_status'};	
-				}			
-				if(exists $attribs->{'transcript_type'} and defined $attribs->{'transcript_type'})
-				{
-					$transcript->{'biotype'} = $attribs->{'transcript_type'};	
-				}
-				if(exists $attribs->{'transcript_name'} and defined $attribs->{'transcript_name'})
-				{
-					$transcript->{'external_id'} = $attribs->{'transcript_name'};	
-				}
-				if(exists $attribs->{'havana_transcript'} and defined $attribs->{'havana_transcript'})
-				{
-					$transcript->{'havana_transcript'} = $attribs->{'havana_transcript'};	
-				}
-				if(exists $attribs->{'protein_id'} and defined $attribs->{'protein_id'})
-				{
-					$transcript->{'protein_id'} = $attribs->{'protein_id'};	
-				}
-				if(exists $attribs->{'level'} and defined $attribs->{'level'})
-				{
-					$transcript->{'level'} = $attribs->{'level'};	
-				}
-				if (defined $trans_version)
-				{
-					$transcript->{'version'} = $trans_version;
-				}
-				if(exists $attribs->{'ccdsid'} and defined $attribs->{'ccdsid'})
-				{
-					$transcript->{'ccdsid'} = $attribs->{'ccdsid'};	
-				}
-				elsif(exists $attribs->{'ccds_id'} and defined $attribs->{'ccds_id'})
-				{
-					$transcript->{'ccdsid'} = $attribs->{'ccds_id'};	
-				}
-					
-				$data->{$gene_id}->{'transcripts'}->{$transcript_id} = $transcript if(defined $transcript);
-			}
-			elsif (defined $gene_id and defined $transcript_id and ($type eq 'exon') ) # Exon Information
-			{
-				my ($exon);
-				$exon->{'start'} = $start if(defined $start);
-				$exon->{'end'} = $end if(defined $end);
-				$exon->{'strand'} = $strand if(defined $strand);
-				
-				if(exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'})
-				{
-					$exon->{'exon_id'} = $attribs->{'exon_id'};	
-				}				
-						
-				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'exons'}},$exon);
-			}			
-			elsif (defined $gene_id and defined $transcript_id and ($type eq 'CDS') ) # CDS Information
-			{
-				my ($cds);
-				$cds->{'start'} = $start if(defined $start);
-				$cds->{'end'} = $end if(defined $end);
-				$cds->{'strand'} = $strand if(defined $strand);
-				$cds->{'phase'} = $phase if(defined $phase);
-				
-				if(exists $attribs->{'cds_id'} and defined $attribs->{'cds_id'})
-				{
-					$cds->{'cds_id'} = $attribs->{'cds_id'};	
-				}
-				
-				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'cds'}},$cds);
-			}
-			elsif (defined $gene_id and defined $transcript_id and ($type eq 'start_codon') ) # Codon Information
-			{
-				my ($codon);
-				$codon->{'type'}='start';
-				$codon->{'start'} = $start if(defined $start);
-				$codon->{'end'} = $end if(defined $end);
-				$codon->{'strand'} = $strand if(defined $strand);
-				$codon->{'phase'} = $phase if(defined $phase);
-				
-				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);
-			}
-			elsif (defined $gene_id and defined $transcript_id and ($type eq 'stop_codon') ) # Codon Information
-			{
-				my ($codon);
-				$codon->{'type'}='stop';
-				$codon->{'start'} = $start if(defined $start);
-				$codon->{'end'} = $end if(defined $end);
-				$codon->{'strand'} = $strand if(defined $strand);
-				$codon->{'phase'} = $phase if(defined $phase);
-				
-				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);
-			}
-			$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
-		}
-		else
-		{
-			throw('Wrong entity');
-		}
-	}
-	close(GENCONDE_FILE);
-	
-	return $data;
-	
-} # End _parse_gencode_data
-
-sub _parse_gencode_seq_transc($)
-{
-	my ($file) = @_;
-	my ($data);
-
-	if (-e $file and (-s $file > 0) ) {
-		my ($in) = Bio::SeqIO->new(
-							-file => $file,
-							-format => 'Fasta'
-		);
-		while ( my $seq = $in->next_seq() )
-		{
-			if ( $seq->id=~/([^|]*)/ )
-			{
-				my ($sequence_id) = $1;
-				if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
-				if(exists $data->{$sequence_id}) {
-					throw("Duplicated sequence: $sequence_id");
-				}
-				else {
-					my ($sequence) = $seq->seq; # control short sequences
-					my ($seq_len) = length($sequence);
-					if ( $seq_len > 2 ) {
-						$data->{$sequence_id} = $seq->seq;						
-					}
-					else {
-						warning("Short sequence: $sequence_id");
-					}
-				}
-			}
-		}		
-	}
-	return $data;
-	
-} # End _parse_gencode_seq_transc
-
-sub _parse_gencode_seq_transl($)
-{
-	my ($file) = @_;
-	my ($data);
-
-	if (-e $file and (-s $file > 0) ) {
-		my ($in) = Bio::SeqIO->new(
-							-file => $file,
-							-format => 'Fasta'
-		);
-		while ( my $seq = $in->next_seq() )
-		{
-			if ( $seq->id=~/([^|]*)\|([^|]*)/ )
-			{
-				my ($id1) = $1;
-				my ($id2) = $2;
-				my ($sequence_id) = $id1;
-				if ( $id2 =~ /^ENS[a-zA-Z]*T/ ) { # From GENCODE20, the second id is Ensembl Transcript id
-					$sequence_id = $id2;
-				}
-				if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// } # delete suffix in Ensembl ids				
-				if(exists $data->{$sequence_id}) {
-					throw("Duplicated sequence: $sequence_id");
-				}
-				else {
-					my ($sequence) = $seq->seq; # control short sequences
-					my ($seq_len) = length($sequence);
-					if ( $seq_len > 2 ) {
-						$data->{$sequence_id} = $seq->seq;						
-					}
-					else {
-						warning("Short sequence: $sequence_id");
-					}
-				}
-			}
-		}		
-	}
-	return $data;
-	
-} # End _parse_gencode_seq_transl
 
 sub _parse_seq_data($)
 {
@@ -4091,15 +4054,19 @@ sub _fetch_transl_objects($$;$)
 	my ($cds);
 	my ($codons);	
 
-	# Get translate sequence
-	if ( defined $transl_seq and
-		 exists $transl_seq->{$transcript_id} and defined $transl_seq->{$transcript_id} ) {
-			$sequence = $transl_seq->{$transcript_id};
-	}
-
 	# Get protein id
 	if ( exists $transcript_features->{'protein_id'} and defined $transcript_features->{'protein_id'} ) {
 			$protein_id = $transcript_features->{'protein_id'};
+	}
+
+	# Get translate sequence
+	if ( defined $transl_seq ) {
+		 if ( exists $transl_seq->{$transcript_id} and defined $transl_seq->{$transcript_id} ) {
+			$sequence = $transl_seq->{$transcript_id};
+		}
+		elsif ( defined $protein_id and exists $transl_seq->{$protein_id} and defined $transl_seq->{$protein_id} ) {
+			$sequence = $transl_seq->{$protein_id};
+		}
 	}
 		
 	# Get cds

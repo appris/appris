@@ -86,15 +86,15 @@ my ($loglevel) = undef;
 # Required arguments for the different modes of inputs: (the order of conditions is IMPORTANT). Gencode is priority!!
 # GENCODE mode
 if ( defined $data_file and defined $transcripts_file and defined $translations_file and defined $species and defined $outpath ) {
-	$type_of_input = 'gencode';
+	$type_of_input = 'datafile';
 	$outpath .= '/';
 }
 elsif ( defined $gene_list_file and defined $data_file and defined $transcripts_file and defined $translations_file and defined $species and defined $outpath ) {
-	$type_of_input = 'gencode-list';
+	$type_of_input = 'datafile-list';
 	$outpath .= '/';
 }
 elsif ( defined $position and defined $data_file and defined $transcripts_file and defined $translations_file and defined $species and defined $outpath ) {
-	$type_of_input = 'gencode-position';
+	$type_of_input = 'datafile-position';
 	$outpath .= '/';
 }
 # SEQUENCE mode
@@ -161,7 +161,7 @@ $LOGAPPEND	= "--logappend" if ( defined $logappend );
 #################
 # Method bodies #
 #################
-sub run_gencode($$);
+sub run_datafile($$);
 sub run_sequence($);
 sub run_ensembl($);
 sub run_pipeline($$;$;$);
@@ -176,12 +176,12 @@ sub main()
 {
 	# run appris pipeline for each gene depending on input
 	$logger->info("-- from given input...");
-	if ( $type_of_input =~ /gencode/ ) {
+	if ( $type_of_input =~ /datafile/ ) {
 		$logger->info(" $type_of_input type\n");
 		
 		# create gene list
 		$logger->info("-- create gene list\n");
-		my ($gene_list, $gencode_data) = appris::create_gene_list(
+		my ($gene_list, $gene_data) = appris::create_gene_list(
 															-type		=> $type_of_input,
 															-gdata		=> $data_file,
 															-gtransc	=> $transcripts_file,
@@ -190,8 +190,8 @@ sub main()
 															-pos		=> $position,
 		);
 		
-		$logger->info("-- run gencode data files\n");
-		my ($runtimes) = run_gencode($gencode_data, $gene_list);
+		$logger->info("-- run data files\n");
+		my ($runtimes) = run_datafile($gene_data, $gene_list);
 						
 	}
 	elsif ( $type_of_input =~ /ensembl/ ) {
@@ -239,7 +239,7 @@ sub main()
 	exit 0;	
 }
 
-sub run_gencode($$)
+sub run_datafile($$)
 {
 	my ($data, $gene_list) = @_;
 	my ($runtimes) = undef;
@@ -262,7 +262,7 @@ sub run_gencode($$)
 		}
 	}
 	return $runtimes;
-} # end run_gencode
+} # end run_datafile
 
 sub run_ensembl($)
 {
@@ -299,13 +299,13 @@ sub run_pipeline($$;$;$)
 	my ($params) = {
 		'species'		=> "'$species'"
 	};
-	# gencode mode
-	if ( $type_of_input =~ /gencode/ ) {
+	# datafile mode
+	if ( $type_of_input =~ /datafile/ ) {
 		$logger->info("from $type_of_input\n");
 
 		$logger->info("\t-- prepare workspace\n");
 		my ($g_workspace) = $workspace;
-		if ( $type_of_input eq 'gencode-position' ) {
+		if ( $type_of_input eq 'datafile-position' ) {
 			my ($chr) = $gene->chromosome;
 			$g_workspace .= $chr.'/'.$gene_id;
 		}
@@ -435,7 +435,7 @@ sub prepare_appris_params($$)
 		$params->{'transl'} = $in_files->{'transl'};
 	}
 	else {
-		$logger->info("\t-- create gencode input\n");
+		$logger->info("\t-- create datafile input\n");
 		my ($create) = create_appris_input($gene, $in_files);
 		if ( defined $create ) {
 			if ( exists $in_files->{'data'} and -e ($in_files->{'data'}) ) {
@@ -470,12 +470,10 @@ sub create_appris_input($$)
 	my ($transc_cont) = '';
 	my ($transl_cont) = '';
 	my ($cdsseq_cont) = '';
-	my ($gencode_file);
+	my ($datafile_file);
 	
 	# get gene annots
-	#my ($cmd) = "grep 'gene_id \"$gene_id\"' $data_file";
-	#my ($cmd) = "grep 'gene_id \"$gene_id\.[0-9]*\"' $data_file";
-	my ($cmd) = "grep -E 'gene_id \"$gene_id\[\.\\d+]{0,1}' $data_file";
+	my ($cmd) = "grep -E 'gene_id \"$gene_id\[\.\\d+]{0,1}|GeneID:$gene_id' $data_file";
 	my (@global_data_cont);
 	eval { @global_data_cont = `$cmd`; };
 	throw("getting gene annots\n") if($@);
@@ -831,8 +829,7 @@ sub run_appris($$$)
 		$logger->info("\n** script($$): $cmd\n");
 	    close STDOUT; close STDERR; # so parent can go on
 		eval {
-			#my (@outcmd) = `$cmd`;
-			system($cmd);
+			#system($cmd);
 		};
 		exit 1 if($@);
 	    exit 0;
@@ -934,7 +931,7 @@ run_appris
 
 =head2 Required arguments (inputs):
 
-=head3 GENCODE choice: executes appris from gencode data (http://www.gencodegenes.org/data.html)
+=head3 DATAFILE choice: executes appris from datafile data (http://www.gencodegenes.org/data.html)
 	
 =head4 Required arguments:
 

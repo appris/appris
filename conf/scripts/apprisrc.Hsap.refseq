@@ -1,0 +1,76 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WS_NAME="homo_sapiens/rs107"
+
+export APPRIS_WS_DATE="homo_sapiens/rs107.v10.21Aug2015"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
+
+export APPRIS_WORKSPACE_LOG_DIR="/local/jmrodriguez/apprisws/logs"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIES="Homo sapiens"
+
+export APPRIS_CHR_LIST="NC_000001.11,NC_000002.12,NC_000003.12,NC_000004.12,NC_000005.10,NC_000006.12,NC_000007.14,NC_000008.11,NC_000009.12,NC_000010.11,NC_000011.10,NC_000012.12,NC_000013.11,NC_000014.9,NC_000015.10,NC_000016.10,NC_000017.11,NC_000018.10,NC_000019.10,NC_000020.11,NC_000021.9,NC_000022.11,NC_000023.11,NC_000024.10,NC_012920.1"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+#export APPRIS_E_VERSION=81
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/ref_GRCh38.p2_top_level.gff3"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/rna.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/protein.fa"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg38.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+# -----------------------------------#
+# Setting up the vars for cached dir #
+# -----------------------------------#
+
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/rs107"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.refseq"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+export APPRIS_NUM_PARALLEL_PROC=4
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+

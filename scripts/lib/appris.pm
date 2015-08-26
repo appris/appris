@@ -79,7 +79,7 @@ sub create_gene_list
 	@_ );
 	my ($report, $data) = (undef, undef);
 	
-	if ( $itype =~ /gencode/ and defined $gdata )
+	if ( $itype =~ /datafile/ and defined $gdata )
 	{
 		my ($data_fh);
 		if ( defined $list ) {
