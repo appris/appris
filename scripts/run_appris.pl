@@ -829,7 +829,7 @@ sub run_appris($$$)
 		$logger->info("\n** script($$): $cmd\n");
 	    close STDOUT; close STDERR; # so parent can go on
 		eval {
-			#system($cmd);
+			system($cmd);
 		};
 		exit 1 if($@);
 	    exit 0;
