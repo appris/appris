@@ -7,7 +7,7 @@ var module = angular.module('appris.browser.seq', []);
 
 /* CONTROLLERS */
 
-module.controller('BrowserSeqController', ['consUrlExporterWS', 'consUrlRunnerResultWS', 'consUrlFirestarligand', 'consUrlPDBstructure', 'consUrlPfamfamily', '$scope', '$filter', '$popover', 'Sequencer', function(consUrlExporterWS, consUrlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily, $scope, $filter, $popover, Sequencer) {
+module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligand', 'consUrlPDBstructure', 'consUrlPfamfamily', '$scope', '$filter', '$popover', 'Sequencer', function(serverHostWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily, $scope, $filter, $popover, Sequencer) {
     // Obtain query from parent controller
     $scope.query      = angular.isDefined($scope.$parent.query)   ? $scope.$parent.query : null;
 
@@ -64,7 +64,9 @@ module.controller('BrowserSeqController', ['consUrlExporterWS', 'consUrlRunnerRe
                     autoClose: true,
                     trigger:   'manual'
                 };
-                asAServiceOptions.content = createAnnotReferences($scope.query, data, consUrlExporterWS, consUrlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
+                var urlExporterWS = serverHostWS+'/rest/exporter';
+                var urlRunnerResultWS = serverHostWS+'/rest/runner/result';
+                    asAServiceOptions.content = createAnnotReferences($scope.query, data, consUrlExporterWS, consUrlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
                 var myPopover = $popover(e, asAServiceOptions);
                 myPopover.$promise.then(myPopover.toggle);
             }, function(error) {

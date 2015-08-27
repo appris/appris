@@ -4,62 +4,37 @@
 
 var apprisServices = angular.module('apprisServices', ['ngResource']);
 
+/* CONFIG file of Changelogs */
+apprisServices.factory('Changelogs', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/changelogs.json');
+}]);
+
+/* CONFIG file of DOWNLOAD files */
+apprisServices.factory('Downloads', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/downloads.json');
+}]);
+
+/* CONFIG file of used SPECIES */
+apprisServices.factory('Species', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/species.json');
+}]);
+
+/* CONFIG file of used METHODS */
+apprisServices.factory('Methods', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/methods.json');
+}]);
+
 /* Example query for Run Server */
 apprisServices.factory('Examples', ['$resource', function($resource){
     return $resource('ws/examples.json');
 }]);
 
-/* CONFIG file of Changelogs */
-apprisServices.factory('Changelogs', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
-    return $resource(consBaseUrlWS+'/changelogs.json');
-}]);
-
-/* CONFIG file of DOWNLOAD files */
-apprisServices.factory('Downloads', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
-    return $resource(consBaseUrlWS+'/downloads.json', {
-        query: {
-            method:'GET',
-            //cache: false,
-            isArray: false,
-            params: { format:'json' }
-        }
-    });
-}]);
-
-/* CONFIG file of used SPECIES */
-apprisServices.factory('Species', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
-    return $resource(consBaseUrlWS+'/species.json', {
-        query: {
-            method:'GET',
-            //cache: false,
-            isArray: false,
-            params: { format:'json' }
-        }
-    });
-}]);
-
-/* CONFIG file of used METHODS */
-apprisServices.factory('Methods', ['$resource', 'consBaseUrlWS', function($resource, consBaseUrlWS){
-    return $resource(consBaseUrlWS+'/methods.json', {
-        query: {
-            method:'GET',
-            //cache: false,
-            isArray: false,
-            params: { format:'json' }
-        }
-    });
-}]);
 
 /* RUNNER services */
-apprisServices.factory('Runner', ['$q', '$resource', 'consUrlRunnerRunWS', function ($q, $resource, consUrlRunnerRunWS) {
-//    return $resource(consUrlRunnerRunWS, { species: '@species', methods: '@methods' }, {
-//        save: {
-//            method:'POST'
-//        }
-//    });
+apprisServices.factory('Runner', ['$q', '$resource', 'serverHostWS', function ($q, $resource, serverHostWS) {
 
 // TODO!!! PROBLEMS WHEN THE REQUEST-URI IS TOO LONG!!
-    var runnerResource = $resource(consUrlRunnerRunWS);
+    var runnerResource = $resource(serverHostWS+'/rest/runner/run');
     return {
         /* method: create */
         create: function (data) {
@@ -74,23 +49,12 @@ apprisServices.factory('Runner', ['$q', '$resource', 'consUrlRunnerRunWS', funct
     }
 }]);
 
-apprisServices.factory('Status', ['$resource', 'consUrlRunnerStatusWS', function($resource, consUrlRunnerStatusWS){
-    return $resource(consUrlRunnerStatusWS+'/:jobid', { jobid:'@jobid' });
+apprisServices.factory('Status', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/rest/runner/status/:jobid', { jobid:'@jobid' });
 }]);
 
-//apprisServices.factory('ResultTypes', ['$resource', 'consUrlRunnerResultTypesWS', function($resource, consUrlRunnerResultTypesWS){
-//    return $resource(consUrlRunnerResultTypesWS+'/:jobid', { jobid:'@jobid' }, {
-//        /* method: query */
-//        query: {
-//            method:'GET',
-//            cache: false,
-//            isArray: true,
-//            params: { format:'json' }
-//        }
-//    });
-//}]);
-
-apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'consUrlRunnerResultTypesWS', function($http, $q, $filter, consUrlRunnerResultTypesWS){
+apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS', function($http, $q, $filter, serverHostWS){
+    var urlRunnerResultTypesWS = serverHostWS+'/rest/runner/resulttypes';
     return({
         query: getResultTypes
     });
@@ -112,10 +76,10 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'consUrlRunnerR
     function getURL( iparams ) {
         var url = null;
         if ( angular.isDefined(iparams.jobid) && iparams.jobid !== null ) {
-            url = consUrlRunnerResultTypesWS+'/'+iparams.jobid;
+            url = urlRunnerResultTypesWS+'/'+iparams.jobid;
         }
         else {
-            url = consUrlRunnerResultTypesWS;
+            url = urlRunnerResultTypesWS;
         }
         return url;
     }
@@ -193,64 +157,9 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'consUrlRunnerR
 
 }]);
 
-//apprisServices.factory('Result', ['$resource', 'consUrlRunnerResultWS', function($resource, consUrlRunnerResultWS){
-//    return $resource(consUrlRunnerResultWS+'/:jobid', { jobid:'@jobid', format: '@format'}, {
-//        getJSON: {
-//            method:'GET',
-//            isArray: true,
-//            params: { format:'json' }
-//        },
-//        getGTF: {
-//            method:'GET',
-//            isArray: false,
-//            params: { format:'gtf' }
-//        },
-//        getTXT: {
-//            method:'GET',
-//            isArray: false,
-//            params: { format:'tsv' },
-//            transformResponse: transformTsvData
-//        }
-//        /* method: query */
-////        query: {
-////            method:'GET',
-////            isArray: true,
-////            params: { format:'json' }
-////        }
-//    });
-//}]);
-
-/* EXPORTER services */
-//apprisServices.factory('Export', ['$resource', 'consUrlExporterWS', function($resource, consUrlExporterWS){
-//    return $resource(consUrlExporterWS+'/:tid/:species/:id', { tid:'@tid', species:'@species', id:'@id', ens: '@ens', format: '@format', methods: '@methods' }, {
-//        getJSON: {
-//            method:'GET',
-//            isArray: true,
-//            params: { format:'json' }
-//        },
-//        getGTF: {
-//            method:'GET',
-//            isArray: false,
-//            params: { format:'gtf' }
-//        },
-//        getTXT: {
-//            method:'GET',
-//            isArray: false,
-//            params: { format:'tsv' },
-//            transformResponse: transformTsvData
-//        }
-//        /* method: query */
-////        query: {
-////            method:'GET',
-////            isArray: true,
-////            params: { format:'json' }
-////        }
-//    });
-//}]);
-
-
 /* RUNNER/EXPORTER services */
-apprisServices.factory('Retriever', ['$http', '$q', 'consUrlRunnerResultWS', 'consUrlExporterWS', function($http, $q, consUrlRunnerResultWS, consUrlExporterWS){
+apprisServices.factory('Retriever', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
+
     return({
         getJSON: getJSON,
         getGTF: getTXT,
@@ -289,10 +198,10 @@ apprisServices.factory('Retriever', ['$http', '$q', 'consUrlRunnerResultWS', 'co
     function getURL( iparams ) {
         var url = null;
         if ( angular.isDefined(iparams.jobid) ) {
-            url = consUrlRunnerResultWS+'/'+iparams.jobid;
+            url = serverHostWS+'/rest/runner/result/'+iparams.jobid;
         }
         else {
-            url = consUrlExporterWS+'/'+iparams.tid+'/'+iparams.species+'/'+iparams.id;
+            url = serverHostWS+'/rest/exporter/'+iparams.tid+'/'+iparams.species+'/'+iparams.id;
         }
         return url;
     }
@@ -353,8 +262,8 @@ apprisServices.factory('Retriever', ['$http', '$q', 'consUrlRunnerResultWS', 'co
 }]);
 
 /* SEEKER services */
-apprisServices.factory('Seeker', ['$resource', 'consUrlSeekerWS', function($resource, consUrlSeekerWS){
-    return $resource(consUrlSeekerWS+'/:id', { id:'@id', methods:'@methods', format: '@format'}, {
+apprisServices.factory('Seeker', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/rest/seeker/:id', { id:'@id', methods:'@methods', format: '@format'}, {
         /* method: query */
         query: {
             method:'GET',
@@ -366,7 +275,7 @@ apprisServices.factory('Seeker', ['$resource', 'consUrlSeekerWS', function($reso
 }]);
 
 /* SEQUENCER services */
-apprisServices.factory('Sequencer', ['$http', '$q', 'consUrlSequencerWS', function($http, $q, consUrlSequencerWS){
+apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
     return({
         get: getSequencer
     });
@@ -389,7 +298,7 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'consUrlSequencerWS', functi
         var request = $http({
             method: "get",
             cache: false,
-            url: consUrlSequencerWS+'/'+urlParams,
+            url: serverHostWS+'/rest/sequencer/'+urlParams,
             params: qParams
         });
 //        return request.then(handleSuccess) ;
@@ -428,7 +337,7 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'consUrlSequencerWS', functi
 }]);
 
 /* VIEWER services */
-apprisServices.factory('Viewer', ['$http', '$q', 'consUrlViewerWS', function($http, $q, consUrlViewerWS){
+apprisServices.factory('Viewer', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
     return({
         get: getSequencer
     });
@@ -453,10 +362,10 @@ apprisServices.factory('Viewer', ['$http', '$q', 'consUrlViewerWS', function($ht
     function getURL( iparams ) {
         var urlParams = '';
         if ( angular.isDefined(iparams.jobid) ) {
-            urlParams = consUrlViewerWS+'/'+iparams.jobid;
+            urlParams = serverHostWS+'/rest/viewer/'+iparams.jobid;
         }
         else {
-            urlParams = consUrlViewerWS+'/'+iparams.tid+'/'+iparams.species+'/'+iparams.id;
+            urlParams = serverHostWS+'/rest/viewer/'+iparams.tid+'/'+iparams.species+'/'+iparams.id;
         }
         return urlParams;
     }

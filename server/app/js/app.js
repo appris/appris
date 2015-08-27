@@ -31,45 +31,33 @@ var apprisApp = angular.module('apprisApp', [
 ]);
 
 apprisApp.config(['$provide', function ($provide) {
-    // GOLD server - production
-    $provide.value("consBaseUrlWS", 'http://apprisws.bioinfo.cnio.es');
-    $provide.value("consUrlRunnerRunWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/run');
-    $provide.value("consUrlRunnerStatusWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/status');
-    $provide.value("consUrlRunnerResultTypesWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/resulttypes');
-    $provide.value("consUrlRunnerResultWS", 'http://apprisws.bioinfo.cnio.es/rest/runner/result');
-    $provide.value("consUrlSeekerWS", 'http://apprisws.bioinfo.cnio.es/rest/seeker');
-    $provide.value("consUrlExporterWS", 'http://apprisws.bioinfo.cnio.es/rest/exporter');
-    $provide.value("consUrlSequencerWS", 'http://apprisws.bioinfo.cnio.es/rest/sequencer');
-    $provide.value("consUrlViewerWS", 'http://apprisws.bioinfo.cnio.es/rest/viewer');
-
-    // BETA server - development
-//    $provide.value("consBaseUrlWS", 'http://dev.appris.cnio.es');
-//    $provide.value("consUrlRunnerRunWS", 'http://dev.appris.cnio.es/rest/runner/run');
-//    $provide.value("consUrlRunnerStatusWS", 'http://dev.appris.cnio.es/rest/runner/status');
-//    $provide.value("consUrlRunnerResultTypesWS", 'http://dev.appris.cnio.es/rest/runner/resulttypes');
-//    $provide.value("consUrlRunnerResultWS", 'http://dev.appris.cnio.es/rest/runner/result');
-//    $provide.value("consUrlSeekerWS", 'http://dev.appris.cnio.es/rest/seeker');
-//    $provide.value("consUrlExporterWS", 'http://dev.appris.cnio.es/rest/exporter');
-//    $provide.value("consUrlSequencerWS", 'http://dev.appris.cnio.es/rest/sequencer');
-//    $provide.value("consUrlViewerWS", 'http://dev.appris.cnio.es/rest/viewer');
-
+    // SERVER INFO
+//    // GOLD server - production
+//    $provide.value("serverName", '{APPRIS}');
+//    $provide.value("serverVersion", '2015_08.v10');
+//    $provide.value("serverType", 'gold');
+//    $provide.value("serverHost", 'http://appris.bioinfo.cnio.es');
+//    $provide.value("serverHostWS", 'http://apprisws.bioinfo.cnio.es');
+//    // BETA server - development
+//    $provide.value("serverName", '{APPRISdev}');
+//    $provide.value("serverVersion", '2015_08.v10');
+//    $provide.value("serverType", 'beta');
+//    $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
+//    $provide.value("serverHostWS", 'http://dev.appris.cnio.es');
     // ALPHA server - development in local
-//    $provide.value("consBaseUrlWS", 'http://local.es/ws');
-//    $provide.value("consUrlRunnerRunWS", 'http://local.es/ws/rest/runner/run');
-//    $provide.value("consUrlRunnerStatusWS", 'http://local.es/ws/rest/runner/status');
-//    $provide.value("consUrlRunnerResultTypesWS", 'http://local.es/ws/rest/runner/resulttypes');
-//    $provide.value("consUrlRunnerResultWS", 'http://local.es/ws/rest/runner/result');
-//    $provide.value("consUrlSeekerWS", 'http://local.es/ws/rest/seeker');
-//    $provide.value("consUrlExporterWS", 'http://local.es/ws/rest/exporter');
-//    $provide.value("consUrlSequencerWS", 'http://local.es/ws/rest/sequencer');
-//    $provide.value("consUrlViewerWS", 'http://local.es/ws/rest/viewer');
+    $provide.value("serverName", '{APPRISloc}');
+    $provide.value("serverVersion", '2015_08.v10');
+    $provide.value("serverType", 'alpha');
+    $provide.value("serverHost", 'http://local.es:3000');
+    $provide.value("serverHostWS", 'http://local.es/ws');
 
+    // CONSTANTS
     $provide.value("consUrlEnsembl", 'http://www.ensembl.org');
     $provide.value("consUrlFirestarligand", 'http://firedb.bioinfo.cnio.es/Php/ligand/index.html?id=');
     $provide.value("consUrlPDBligand", 'http://www.rcsb.org/pdb/ligand/ligandsummary.do?hetId=');
     $provide.value("consUrlPDBstructure", 'http://www.rcsb.org/pdb/explore/explore.do?structureId=');
     $provide.value("consUrlPfamfamily", 'http://pfam.xfam.org/family/');
-
+    // constant paths
     $provide.value("consPageDatabase", '/database');
     $provide.value("consPageServer", '/server');
     $provide.value("consPathServerStatus", '/server/status/');
@@ -126,7 +114,7 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
 
         $routeProvider.
             when('/species', {
-                controller: 'SpeciesController',
+//                controller: 'SpeciesController',
                 templateUrl: 'partials/species.html'
             }).
             when('/server', {
@@ -179,7 +167,7 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
                 templateUrl: 'partials/changelogs.html'
             }).
             when('/', {
-                controller: 'ApprisController',
+//                controller: 'ApprisController',
                 templateUrl: 'partials/frontpage.html'
             }).
             when('/query_not_match', {

@@ -6,7 +6,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">{APPRIS} <small style="font-size: 60%">{{version}}</small></a>
+        <a class="navbar-brand" href="#">{{serverConf.name}}
+            <small style="font-size: 60%">{{serverConf.version}}</small></a>
     </div>
 
     <div class="collapse navbar-collapse" id="appris-navbar-top">
@@ -18,7 +19,7 @@
                 <a href="#/downloads">Downloads</a>
             </li>
             <li>
-                <a data-ng-href="{{linkWebServices}}">WebServices</a>
+                <a data-ng-href="{{serverConf.hostWS}}/apidoc">WebServices</a>
             </li>
             <li>
                 <a href="#/help/intro">Help & Docs</a>

@@ -4,63 +4,22 @@
 
 var apprisControllers = angular.module('apprisControllers', []);
 
-/* APPRIS (init) Controllers */
-apprisControllers.controller('ApprisController', ['$rootScope', 'Species', 'Methods',
-    function($rootScope, Species, Methods) {
-//        $timeout(function() { alert.expired = true; }, 2000);
-
-        // load list of species
-        if ( angular.isUndefined($rootScope.species) ) {
-            $rootScope.species = null;
-            Species.get().$promise.then( function(data) {
-                $rootScope.species = data;
-            });
-        }
-
-        // load list of methods
-        if ( angular.isUndefined($rootScope.methods) || (angular.isArray($rootScope.methods) && $rootScope.methods.length == 0 ) ) {
-            $rootScope.methods = null;
-            Methods.get().$promise.then( function(data) {
-                $rootScope.methods = data;
-            });
-        }
-    }
-]);
-
-/* The ROOT CONTROLLER */
-apprisControllers.controller('RootController', ['$rootScope', 'Species', 'Methods',
-    function($rootScope, Species, Methods) {
-        // loading screen
-        //$rootScope.isLoadingScreen = false;
-
-        // load list of species
-        Species.get().$promise.then( function(data) {
-            $rootScope.species = data;
-        });
-
-        // load list of methods
-        Methods.get().$promise.then( function(data) {
-            $rootScope.methods = data;
-        });
-    }
-]);
-
-/* SPECIES Controllers */
-apprisControllers.controller('SpeciesController', ['$rootScope', 'Species',
-    function($rootScope, Species) {
-        // load list of species
-        if ( angular.isUndefined($rootScope.species) ) {
-            $rootScope.species = null;
-            Species.get().$promise.then( function(data) {
-                $rootScope.species = data;
-            });
-        }
-    }
-]);
+apprisControllers.run(function($rootScope, serverName, serverVersion, serverType, serverHost, serverHostWS, Species, Methods) {
+    $rootScope.serverConf = {
+        "name":    serverName,
+        "version": serverVersion,
+        "type":    serverType,
+        "host":    serverHost,
+        "hostWS":  serverHostWS
+    };
+    $rootScope.species = Species.get();
+    $rootScope.methods = Methods.get();
+    $rootScope.isLoadingScreen = false;
+})
 
 /* The Gene Info Controllers */
-apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootScope', '$scope', '$routeParams', '$filter', 'Species', 'Seeker',
-    function(consUrlEnsembl, $rootScope, $scope, $routeParams, $filter, Species, Seeker) {
+apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootScope', '$scope', '$routeParams', '$filter', 'Seeker',
+    function(consUrlEnsembl, $rootScope, $scope, $routeParams, $filter, Seeker) {
 
         // init vars
         var rawResults = null;
@@ -176,20 +135,20 @@ apprisControllers.controller('SeekerController', ['consPathSeeker', '$scope', '$
     }
 ]);
 
-apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Species', 'Seeker',
-    function(consQueryNotMatch, $rootScope, $scope, $routeParams, $location, $filter, Species, Seeker) {
+apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Seeker',
+    function(consQueryNotMatch, $rootScope, $scope, $routeParams, $location, $filter, Seeker) {
 
         // init vars
         $rootScope.isLoadingScreen = true;
         var id = $routeParams.id;
 
-        // load specie list
-        if ( angular.isUndefined($rootScope.species) ) {
-            $rootScope.species = null;
-            Species.get().$promise.then( function(data) {
-                $rootScope.species = data;
-            });
-        }
+//        // load specie list
+//        if ( angular.isUndefined($rootScope.species) ) {
+//            $rootScope.species = null;
+//            Species.get().$promise.then( function(data) {
+//                $rootScope.species = data;
+//            });
+//        }
 
         // load results
 
@@ -255,8 +214,8 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
 
 
 /* The REST of Controllers */
-apprisControllers.controller('DownloadsController', ['consBaseUrlWS', '$scope', 'Downloads',
-    function(consBaseUrlWS, $scope, Downloads) {
+apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Downloads',
+    function($rootScope, $scope, Downloads) {
         // init pagination
         $scope.currentPage = 1;
         $scope.pageSize = 4;
@@ -264,8 +223,8 @@ apprisControllers.controller('DownloadsController', ['consBaseUrlWS', '$scope', 
         $scope.isArray = angular.isArray;
 
         // load all data files
-        $scope.urlREADME = consBaseUrlWS + '/download/README.txt';
-        $scope.baseUrlDownload = consBaseUrlWS + '/download/data';
+        $scope.urlREADME = $rootScope.serverConf.hostWS + '/download/README.txt';
+        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/download/data';
         $scope.headers = [];
         $scope.datafiles = [];
         $scope.species = [];
@@ -296,16 +255,7 @@ apprisControllers.controller('DownloadsController', ['consBaseUrlWS', '$scope', 
     }
 ]);
 
-apprisControllers.controller('NavTopController', ['consBaseUrlWS', '$scope', 'Downloads',
-    function(consBaseUrlWS, $scope, Downloads) {
-        $scope.linkWebServices = consBaseUrlWS + '/apidoc';
-        Downloads.get().$promise.then( function(data) {
-            if (angular.isDefined(data.version) ) {
-                $scope.version = data.version;
-            }
-        });
-    }
-]);
+apprisControllers.controller('NavTopController', ['$rootScope', function($rootScope) { } ]);
 
 apprisControllers.controller('AboutController', ['$scope',
     function($scope) {
@@ -344,19 +294,11 @@ apprisControllers.controller('AlertController', ['$rootScope',
     }
 ]);
 
-apprisControllers.controller('HelpController', ['$rootScope', '$scope', '$location', '$routeParams', 'Species',
-    function($rootScope, $scope, $location, $routeParams, Species) {
+apprisControllers.controller('HelpController', ['$rootScope', '$scope', '$location', '$routeParams',
+    function($rootScope, $scope, $location, $routeParams) {
         $scope.help = $routeParams.help;
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
-
-        // load list of species
-        if ( angular.isUndefined($rootScope.species) ) {
-            $rootScope.species = null;
-            Species.get().$promise.then( function(data) {
-                $rootScope.species = data;
-            });
-        }
     }
 ]);
