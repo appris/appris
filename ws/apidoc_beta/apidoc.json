@@ -1,0 +1,27 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://dev.appris.cnio.es/apidoc",
+    "apis": [
+        {
+            "path": "/runner",
+            "description": "Asynchronous services that execute the APPRIS analysis"
+        },
+        {
+            "path": "/exporter",
+            "description": "Services that retrieve data from APPRIS Database"
+        },
+        {
+            "path": "/sequencer",
+            "description": "Services that retrieve features mapped onto sequences"
+        },
+        {
+            "path": "/seeker",
+            "description": "Services that retrieve genes info"
+        }
+],
+"info": {
+    "title": "APPRIS WebServices for annotating alternative splice isoforms in vertebrate genomes",
+    "description": "<p>The <b>APPRIS WebServices</b> make use of standard HTTP method calls (often termed RESTful services), and the HTTP request methods GET and POST can be used to send and receive queries and data. APPRIS Database and APPRIS WebServer can be accessed through these RESTful web services.</p>   <p>In this API Interface, the APPRIS Web Services are described and you can interact with them. <span style='font-size: 20px; font-style:italic; font-weight: bold'>Try it Out!!</span></p>   <p>The general syntax of URLs is as follows:<pre>http://apprisws.bioinfo.cnio.es/{service_name}/{query_id}?{optional_parameters}</pre></p><p>The 'service_name' field indicates the type of services we are going to call: 'runner' ('run', 'status', 'result', and 'resulttypes'), 'exporter', 'seeker', and 'sequencer' (see below). The 'query_id' is the query that requests the services. The 'optional_parameters' are the specific parameters for a determined RESTful service.</p>   <p>RESTful calls can be accessed by provided Programming scripts or from the current website using <a href='http://swagger.io/'>Swagger</a>JavaScript client.</p>    <h1>Programming clients</h1>Requirements: LWP, JSON, Getopt::Long</p><h3>A client script for <span style='font-style:italic; font-weight: bold'>runner services</span> is provided in Perl, <a href='../clients/appris_runner.pl'>appris_runner.pl</a></h3><p><span style='font-style:italic'>Usage: $scriptName [options...] [seqFile]<br/>Returns: Output files<br/>Examples:</span><pre style='font-size: 11px'>> perl appris_runner.pl -s human -g ENSG00000099904 -a hg19 -o ENSG00000099904.out -m firestar,spade -f gtf<br/>> perl appris_runner.pl -s human -i <a href='../clients/seq1.fa'>seq1.fa</a> -o seq1.out -m firestar,spade -f json</pre><p>Use this if you want to retrieve the results at a later time.<br/><span style='font-style:italic'>Usage: $scriptName --async [options...] [seqFile]<br/>Returns: jobid<br/>Examples:</span><pre style='font-size: 11px'>> perl appris_runner.pl --async -s pig -g tp73 -a susScr3 -o tp73.pig.out -m spade,corsair -f gtf<br/></pre></p><p>The results are stored for up to 1 week.<br/><h3>A client script for <span style='font-style:italic; font-weight: bold'>exporter services</span> is provided in Perl, <a href='../clients/appris_exporter.pl'>appris_exporter.pl</a></h3><p>This is a script that makes queries to the APPRIS Database using the RESTful services</p><p>For details of how to use these clients, download the client and run the program without any arguments.</p>    <h1>Swagger Javascript client</h1>",
+    "version": "0.1.0"
+}}

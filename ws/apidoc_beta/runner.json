@@ -1,0 +1,458 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://dev.appris.cnio.es/rest",
+    "resourcePath": "/runner",
+    "produces": ["application/json", "text/plain", "text/x-gtf", "text/x-bed"],
+    "apis": [
+        {
+            "path": "/runner/run",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Submit a job from Id - Async job",
+                    "notes": "Asynchronous services<br/>Submit a job from Ensemb Id or Gene Name.<h3>Local Clients</h3>Sample clients are provided for Perl programming languages, <a href='../clients/rest/appris_runner.pl'>appris_runner.pl</a>.<p/><p>Use this if you want to retrieve the results at a later time. The results are stored for up to 1 week.<br/><span style='font-style:italic'>Usage: $scriptName --async [options...] [seqFile]<br/>Returns: jobid<br/>Examples:</span><pre>> perl appris_runner.pl --async -s mouse -g ENSMUSG00000032366 -a GRCm38 -o ENSMUSG00000032366.out -m firestar,spade</pre></p><p>For details of how to use these clients, download the client and run the program without any arguments.</p>",
+                    "type": "",
+                    "nickname": "postJobFromId",
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "body",
+                            "name": "body",
+                            "required": true,
+                            "type": "RunId2",
+                            "description": "Example using Ensembl identifier",
+                            "allowMultiple": false
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "RunOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Submit a job from Sequence - Async job",
+                    "notes": "Asynchronous services<br/>Submit a job from Protein sequences as FASTA format.<h3>Local Clients</h3>Sample clients are provided for Perl programming languages, <a href='../clients/rest/appris_runner.pl'>appris_runner.pl</a>.<p/><p>Use this if you want to retrieve the results at a later time. The results are stored for up to 1 week.<br/><span style='font-style:italic'>Usage: $scriptName --async [options...] [seqFile]<br/>Returns: jobid<br/>Examples:</span><pre>> perl appris_runner.pl -s human -i <a href='../clients/rest/seq1.fa'>seq1.fa</a> -o seq1.out -m firestar,spade</pre></p><p>For details of how to use these clients, download the client and run the program without any arguments.</p>",
+                    "type": "",
+                    "nickname": "postJobFromSeq",
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "body",
+                            "name": "body",
+                            "required": true,
+                            "type": "RunSeq",
+                            "description": "Example using protein sequences as FASTA format",
+                            "allowMultiple": false
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "RunOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/runner/status/{jobId}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get the status of a submitted job",
+
+                    "notes": "Get the status of a submitted job.<h3>Local Clients</h3>Sample clients are provided for Perl programming languages, <a href='../clients/rest/appris_runner.pl'>appris_runner.pl</a>.<p/><p><span style='font-style:italic'>To check status:</span><pre> > perl appris_runner.pl --status --jobid {jobid}</pre><p>For details of how to use these clients, download the client and run the program without any arguments.</p>",
+                    "type": "",
+                    "nickname": "getJobStatus",
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "jobId",
+                            "required": true,
+                            "type": "string",
+                            "description": "Job identifier, e.g 0a2b8cc7b21c82417de5877926075a23",
+                            "allowMultiple": false
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "StatusOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/runner/resulttypes/{jobId}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get the result types of a submitted job",
+
+                    "notes": "Get available result types for a finished job.<h3>Local Clients</h3>Sample clients are provided for Perl programming languages, <a href='../clients/rest/appris_runner.pl'>appris_runner.pl</a>.<p/><p><span style='font-style:italic'>Getting result types for a job:</span><pre> > perl appris_runner.pl --resultTypes --jobid {jobid}</pre><p>For details of how to use these clients, download the client and run the program without any arguments.</p>",
+                    "type": "",
+                    "nickname": "getJobResultTypes",
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "jobId",
+                            "required": true,
+                            "type": "string",
+                            "description": "Job identifier, e.g 0a2b8cc7b21c82417de5877926075a23",
+                            "allowMultiple": false
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "ResultTypesOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/runner/result/{jobId}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get the result of a finished job",
+                    "notes": "Get the results for a finished job.<h3>Local Clients</h3>Sample clients are provided for Perl programming languages, <a href='../clients/rest/appris_runner.pl'>appris_runner.pl</a>.<p/><p><span style='font-style:italic'>To get results:</span><pre> > perl appris_runner.pl --polljob --jobid {jobid}<br/> > perl appris_runner.pl --polljob --jobid {jobid} --methods spade,corsair --format gtf</pre><p>For details of how to use these clients, download the client and run the program without any arguments.</p>",
+                    "type": "",
+                    "nickname": "getJobResult",
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "jobId",
+                            "required": true,
+                            "type": "string",
+                            "description": "Job identifier, e.g 0a2b8cc7b21c82417de5877926075a23",
+                            "allowMultiple": false
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "methods",
+                            "description": "Retrieved methods<br/>For more information: <a href='http://appris.bioinfo.cnio.es/#/help/intro' target='_blank'>APPRIS System</a>",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"],
+                            "defaultValue": "firestar,spade",
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "format",
+                            "description": "Format result:<br/>json: completed result of every method in json format<br/>gtf: genomic data of every method in gtf format<br/>bed: genomic data of every method in bed format",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["json","gtf","bed"],
+                            "collectionFormat": "csv"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "ResultOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "RunId1": {
+            "id": "RunId1",
+            "required": ["species", "id", "e_version"],
+            "properties": {
+                "species": {
+                    "type": "string",
+                    "description": "Species name, e.g. Homo sapiens",
+                    "defaultValue": "Homo sapiens"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Ensembl gene/transcript identifier, e.g. ENSG00000099999",
+                    "defaultValue": "ENSG00000099999"
+                },
+                "e_version": {
+                    "type": "integer",
+                    "description": "Ensembl version, e.g. 74",
+                    "minimum": 67,
+                    "maximum": 74,
+                    "defaultValue": 74
+                },
+                "methods": {
+                    "type": "string",
+                    "description": "Executed methods:<br/> appris,firestar,matador3d,spade,corsair,crash,thump",
+                    "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"]
+                },
+                "format": {
+                    "type": "string",
+                    "description": "Format output",
+                    "enum": ["json","gtf","bed","tsv","raw"]
+                }
+            }
+        },
+        "RunId2": {
+            "id": "RunId2",
+            "description": "Executed methods<br/>For more information: <a href='http://appris.bioinfo.cnio.es/#/help/intro' target='_blank'>APPRIS System</a>",
+            "required": ["species", "id", "e_version"],
+            "properties": {
+                "species": {
+                    "type": "string",
+                    "description": "Species name, e.g. 'Homo sapiens', 'human', or 'Mus musculus', 'mouse'",
+                    "defaultValue": "Mus musculus"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Ensembl gene identifier, e.g. ENSG00000140416, or ENSMUSG00000032366",
+                    "defaultValue": "ENSMUSG00000032366"
+                },
+                "e_version": {
+                    "type": "integer",
+                    "description": "Ensembl version from release 67 until the last one, e.g. 77",
+                    "minimum": 67,
+                    "maximum": 77,
+                    "defaultValue": 77
+                },
+                "methods": {
+                    "type": "string",
+                    "description": "Executed methods separated by commas",
+                    "allowMultiple": true,
+                    "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"],
+                    "collectionFormat": "csv"
+                }
+            }
+        },
+        "RunSeq": {
+            "id": "RunSeq",
+            "required": ["species", "sequences"],
+            "properties": {
+                "species": {
+                    "type": "string",
+                    "description": "Species name, e.g. Homo sapiens",
+                    "defaultValue": "Homo sapiens"
+                },
+                "sequences": {
+                    "type": "string",
+                    "description": "Fasta protein sequences",
+                    "defaultValue": ">ENST00000403707|ENSG00000099899|TRMT2A-005|625\nMSENLDNEGPKPMESCGQESSSALSCPTVSVPPAAPAALEEVEKEGAGAATGPGPQPGLYSYIRDDLFTS\nEIFKLELQNVPRHASFSDVRRFLGRFGLQPHKTKLFGQPPCAFVTFRSAAERDKALRVLHGALWKGRPLS\nVRLARPKADPMARRRRQEGESEPPVTRVADVVTPLWTVPYAEQLERKQLECEQVLQKLAKEIGSTNRALL\nPWLLEQRHKHNKACCPLEGVRPSPQQTEYRNKCEFLVGVGVDGEDNTVGCRLGKYKGGTCAVAAPFDTVH\nIPEATKQVVKAFQEFIRSTPYSAYDPETYTGHWKQLTVRTSRRHQAMAIAYFHPQKLSPEELAELKTSLA\nQHFTAGPGRASGVTCLYFVEEGQRKTPSQEGLPLEHVAGDRCIHEDLLGLTFRISPHAFFQVNTPAAEVL\nYTVIQDWAQLDAGSMVLDVCCGTGTIGLALARKVKRVIGVELCPEAVEDARVNAQDNELSNVEFHCGRAE\nDLVPTLVSRLASQHLVAILDPPRAGLHSKVILAIRRAKNLRRLLYVSCNPRAAMGNFVDLCRAPSNRVKG\nIPFRPVKAVAVDLFPQTPHCEMLILFERVEHPNGTGVLGPHSPPAQPTPGPPDNTLQETGTFPSS\n>ENST00000404751|ENSG00000099899|TRMT2A-002|562\nMSENLDNEGPKPMESCGQESSSALSCPTVSVPPAAPAALEEVEKEGAGAATGPGPQPGLYSYIRDDLFTS\nEIFKLELQNVPRHASFSDVRRFLGRFGLQPHKTKLFGQPPCAFVTFRSAAERDKALRVLHGALWKGRPLS\nVRLARPKADPMARRRRQEGESEPPVTRVADVVTPLWTVPYAEQLERKQLECEQVLQKLAKEIGSTNRALL\nPWLLEQRHKHNKACCPLEGVRPSPQQTEYRNKCEFLVGVGVDGEDNTVGCRLGKYKGGTCAVAAPFDTVH\nIPEATKQVVKAFQEFIRSTPYSAYDPETYTGHWKQLTVRTSRRHQAMAIAYFHPQKLSPEELAELKTSLA\nQHFTAGPGRASGVTCLYFVEEGQRKTPSQEGLPLEHVAGDRCIHEDLLGLTFRISPHAFFQVNTPAAEVL\nYTVIQDWAQLDAGSMVLDVCCGTGTIGLALARKVKRVIGVELCPEAVEDARVNAQDNELSNVEFHCGRAE\nDLVPTLVSRLASQHLVAILDPPRAGLHSKVILAIRRAKNLRRLLYVSCNPRAAMGNFVDAPLFPPQPLQS\nPI"
+                }
+            }
+        },
+        "RunOut": {
+            "id": "RunOut",
+            "required": ["jobid"],
+            "properties": {
+                "jobid": {
+                    "type": "string",
+                    "description": "Job identifier",
+                    "defaultValue": "0a2b8cc7b21c82417de5877926075a23"
+                }
+            }
+        },
+        "StatusOut": {
+            "id": "StatusOut",
+            "required": ["status", "log"],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "Status of job",
+                    "enum": ["PENDING","RUNNING","FINISHED","ERROR","FAILURE","NOT_FOUND"]
+                },
+                "log": {
+                    "type": "string",
+                    "description": "Trace log of job"
+                }
+            }
+        },
+        "MimeType": {
+            "id": "MimeType",
+            "required": ["fileSuffix", "mediaType"],
+            "properties": {
+                "fileSuffix": {
+                    "type": "string",
+                    "description": "Suffix of output file"
+                },
+                "mediaType": {
+                    "type": "string",
+                    "description": "MIME type",
+                    "enum": ["text/plain","application/json","text/x-gtf","text/x-bed"]
+                }
+            }
+        },
+        "ResultTypesOut": {
+            "id": "ResultTypesOut",
+            "required": ["id", "description", "types"],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Method name"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of method"
+                },
+                "types": {
+                    "type": "array",
+                    "description": "List of MIME types",
+                    "items": {
+                        "$ref": "MimeType"
+                    }
+                }
+            }
+        },
+        "ResultOut": {
+            "id": "ResultOut",
+            "required": ["seqname","source","type","start","end","score","strand","frame","gene_id","transcript_id"],
+            "properties": {
+                "seqname": {
+                    "type": "string",
+                    "description": "name of the chromosome or scaffold; chromosome names can be given with or without the 'chr' prefix",
+                    "example": "22"
+                },
+                "source": {
+                    "type": "string",
+                    "description": "name of the program that generated this feature, or the data source (database or project name)",
+                    "enum": ["APPRIS", "FIRESTAR", "MATADOR3D", "CORSAIR", "SPADE", "THUMP", "CRASH"],
+                    "example": "APPRIS"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "feature type name, e.g. principal_isoform",
+                    "enum": ["principal_isoform", "functional_residue", "homologous_structure", "vertebrate_conservation", "functional_domain", "transmembrane_signal", "signal_peptide", "mitochondrial_signal", "proteomic_evidence"],
+                    "example": "functional_residue"
+                },
+                "start": {
+                    "type": "integer",
+                    "description": "Start position of the feature, with sequence numbering starting at 1"
+                },
+                "end": {
+                    "type": "integer",
+                    "description": "End position of the feature, with sequence numbering starting at 1"
+                },
+                "score": {
+                    "type": "integer",
+                    "description": "A floating point value"
+                },
+                "strand": {
+                    "type": "string",
+                    "description": "defined as + (forward) or - (reverse)",
+                    "example": "+"
+                },
+                "frame": {
+                    "type": "string",
+                    "description": "genomic phase (for CDS features)",
+                    "enum": ["0", "1", "2", "."],
+                    "example": "."
+                },
+                "gene_id": {
+                    "type": "string",
+                    "description": "Ensembl gene id",
+                    "example": "ENSG00000099899"
+                },
+                "transcript_id": {
+                    "type": "string",
+                    "description": "Ensembl transcript id",
+                    "example": "ENST00000487668"
+                },
+                "transcript_name": {
+                    "type": "string",
+                    "description": "HUGO transcript name",
+                    "example": "TRMT2A-017"
+                },
+                "biotype": {
+                    "type": "string",
+                    "description": "Transcript biotypes",
+                    "example": "protein_coding"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "status of transcript",
+                    "enum": ["KNOWN", "NOVEL", "PUTATIVE"],
+                    "example": "KNOWN"
+                },
+                "note": {
+                    "type": "string",
+                    "description": "Free text",
+                    "example": "pdb_id:4F7G_B,identity:64.71"
+                }
+            }
+        }
+    }
+}

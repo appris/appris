@@ -1,0 +1,337 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://dev.appris.cnio.es/rest",
+    "resourcePath": "/exporter",
+    "produces": ["application/json", "text/plain", "text/x-gtf", "text/x-bed"],
+    "apis": [
+        {
+            "path": "/exporter/id/{species}/{queryId}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Finds APPRIS data by a Ensembl identifier",
+                    "notes": "Finds APPRIS data from a given Ensembl gene/transcript identifier.",
+                    "nickname": "getAPPRISById",
+                    "type": "",
+                    "produces": ["application/json", "text/x-gtf", "text/x-bed"],
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "species",
+                            "description": "Species name, e.g. mus_musculus,danio_rerio",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "defaultValue": "homo_sapiens"
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "queryId",
+                            "description": "Ensembl gene/transcript identifier, e.g. ENSRNOG00000018184,ENSDARG00000002830",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "defaultValue": "ENSG00000099899,ENSG00000099904"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "methods",
+                            "description": "Retrieved methods<br/>For more information: <a href='http://appris.bioinfo.cnio.es/#/help/intro' target='_blank'>APPRIS System</a>",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"],
+                            "defaultValue": "firestar,spade",
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "format",
+                            "description": "Format result:<br/>json: completed result of every method in json format<br/>gtf: genomic data of every method in gtf format<br/>bed: genomic data of every method in bed format",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["json","gtf","bed"],
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ens",
+                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "required": false,
+                            "type": "integer",
+                            "allowMultiple": false,
+                            "enum": [74,77]
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "ResultOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/exporter/name/{species}/{queryName}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Finds APPRIS data by a HUGO name",
+                    "notes": "Finds APPRIS data from a given HUGO gene name identifier.",
+                    "nickname": "getAPPRISByName",
+                    "type": "",
+                    "produces": ["application/json", "text/x-gtf", "text/x-bed"],
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "species",
+                            "description": "Species name, e.g. mus_musculus,danio_rerio",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "defaultValue": "homo_sapiens"
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "queryName",
+                            "description": "HUGO gene/transcript name, e.g. ",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "defaultValue": "TPM1,TRMT2A"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "methods",
+                            "description": "Retrieved methods:<br/> appris,firestar,matador3d,spade,corsair,crash,thump",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"],
+                            "defaultValue": "firestar,spade",
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "format",
+                            "description": "Format result:<br/>json: completed result of every method in json format<br/>gtf: genomic data of every method in gtf format<br/>bed: genomic data of every method in bed format",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["json","gtf","bed"],
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ens",
+                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "required": false,
+                            "type": "integer",
+                            "allowMultiple": false,
+                            "enum": [74,77]
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "ResultOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/exporter/position/{species}/{queryPos}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Finds APPRIS data by genome position",
+                    "notes": "Finds APPRIS data from a given genome position.",
+                    "nickname": "getAPPRISByPos",
+                    "type": "",
+                    "produces": ["application/json", "text/x-gtf", "text/x-bed"],
+                    "authorizations": {},
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "species",
+                            "description": "Species name, e.g. mus_musculus,danio_rerio",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "defaultValue": "homo_sapiens"
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "queryPos",
+                            "description": "Genomic region (chr:start-end), e.g. chr22:30773835-30821305 or 22:30773835-30821305",
+                            "required": true,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "defaultValue": "chr22:30773835-30821305,chr15:63042632-63071915"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "methods",
+                            "description": "Retrieved methods:<br/> appris,firestar,matador3d,spade,corsair,crash,thump",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["appris","firestar","matador3d","spade","corsair","crash","thump"],
+                            "defaultValue": "firestar,spade",
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "format",
+                            "description": "Format result:<br/>json: completed result of every method in json format<br/>gtf: genomic data of every method in gtf format<br/>bed: genomic data of every method in bed format",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": true,
+                            "enum": ["json","gtf","bed"],
+                            "collectionFormat": "csv"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ens",
+                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "required": false,
+                            "type": "integer",
+                            "allowMultiple": false,
+                            "enum": [74,77]
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "Successful operation",
+                            "responseModel": "ResultOut"
+                        },
+                        {
+                            "code": 400,
+                            "message": "Bad Request: The request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Not Found: The server has not found anything matching the Request-URI"
+                        },
+                        {
+                            "code": 405,
+                            "message": "Method Not Allowed: The parameter XXX is not allowed. The parameter must be: YYY"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "ResultOut": {
+            "id": "ResultOut",
+            "required": ["seqname","source","type","start","end","score","strand","frame","gene_id","transcript_id"],
+            "properties": {
+                "seqname": {
+                    "type": "string",
+                    "description": "name of the chromosome or scaffold; chromosome names can be given with or without the 'chr' prefix",
+                    "example": "22"
+                },
+                "source": {
+                    "type": "string",
+                    "description": "name of the program that generated this feature, or the data source (database or project name)",
+                    "enum": ["APPRIS", "FIRESTAR", "MATADOR3D", "CORSAIR", "SPADE", "THUMP", "CRASH"],
+                    "example": "APPRIS"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "feature type name, e.g. principal_isoform",
+                    "enum": ["principal_isoform", "functional_residue", "homologous_structure", "vertebrate_conservation", "functional_domain", "transmembrane_signal", "signal_peptide", "mitochondrial_signal", "proteomic_evidence"],
+                    "example": "APPRIS"
+                },
+                "start": {
+                    "type": "integer",
+                    "description": "Start position of the feature, with sequence numbering starting at 1"
+                },
+                "end": {
+                    "type": "integer",
+                    "description": "End position of the feature, with sequence numbering starting at 1"
+                },
+                "score": {
+                    "type": "integer",
+                    "description": "A floating point value"
+                },
+                "strand": {
+                    "type": "string",
+                    "description": "defined as + (forward) or - (reverse)",
+                    "example": "+"
+                },
+                "frame": {
+                    "type": "string",
+                    "description": "genomic phase (for CDS features)",
+                    "enum": ["0", "1", "2", "."],
+                    "example": "."
+                },
+                "gene_id": {
+                    "type": "string",
+                    "description": "Ensembl gene id",
+                    "example": "ENSG00000099899"
+                },
+                "transcript_id": {
+                    "type": "string",
+                    "description": "Ensembl transcript id",
+                    "example": "ENST00000487668"
+                },
+                "transcript_name": {
+                    "type": "string",
+                    "description": "HUGO transcript name",
+                    "example": "TRMT2A-017"
+                },
+                "biotype": {
+                    "type": "string",
+                    "description": "Transcript biotypes",
+                    "example": "protein_coding"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "status of transcript",
+                    "enum": ["KNOWN", "NOVEL", "PUTATIVE"],
+                    "example": "KNOWN"
+                },
+                "note": {
+                    "type": "string",
+                    "description": "Free text",
+                    "example": "pdb_id:4F7G_B,identity:64.71"
+                }
+            }
+        }
+    }
+}
