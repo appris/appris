@@ -43,7 +43,7 @@ apprisApp.config(['$provide', function ($provide) {
 //    $provide.value("serverVersion", '2015_08.v10');
 //    $provide.value("serverType", 'beta');
 //    $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
-//    $provide.value("serverHostWS", 'http://dev.appris.cnio.es');
+//    $provide.value("serverHostWS", 'http://apprisws.bioinfo.cnio.es');
     // ALPHA server - development in local
     $provide.value("serverName", '{APPRISloc}');
     $provide.value("serverVersion", '2015_08.v10');
