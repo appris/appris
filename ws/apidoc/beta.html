@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>{APPRISdev} - RESTful Services</title>
+    <meta name="description" content="{APPRIS} - RESTful Services">
+    <meta name="author" content="Jose Rodriguez">
+    <link rel="icon" type="image/ico" href="images/favicon-dev.ico"/>
+
+    <link href='css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+
+    <link href='css/bootstrap.min.css' rel='stylesheet' type='text/css'/>
+    <link href='http://appris-dev.bioinfo.cnio.es/css/appris-dev.css' rel='stylesheet' type='text/css'>
+
+    <script src='lib/shred.bundle.js' type='text/javascript'></script>
+    <script src='lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+    <script src='lib/jquery.slideto.min.js' type='text/javascript'></script>
+    <script src='lib/jquery.wiggle.min.js' type='text/javascript'></script>
+    <script src='lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+    <script src='lib/handlebars-1.0.0.js' type='text/javascript'></script>
+    <script src='lib/underscore-min.js' type='text/javascript'></script>
+    <script src='lib/backbone-min.js' type='text/javascript'></script>
+    <script src='lib/swagger.js' type='text/javascript'></script>
+    <script src='lib/swagger-client.js' type='text/javascript'></script>
+    <script src='lib/swagger-ui.js' type='text/javascript'></script>
+    <script src='lib/highlight.7.3.pack.js' type='text/javascript'></script>
+
+    <!-- enabling this will enable oauth2 implicit scope support -->
+    <script src='lib/swagger-oauth.js' type='text/javascript'></script>
+    <script type="text/javascript">
+        $(function () {
+            var url = window.location.search.match(/url=([^&]+)/);
+            if (url && url.length > 1) {
+                url = url[1];
+            } else {
+                url = "http://dev.appris.cnio.es/apidoc/dev/apidoc.json";
+            }
+            window.swaggerUi = new SwaggerUi({
+                url: url,
+                dom_id: "swagger-ui-container",
+                supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+                onComplete: function(swaggerApi, swaggerUi){
+                    log("Loaded SwaggerUI");
+                    if(typeof initOAuth == "function") {
+                        /*
+                         initOAuth({
+                         clientId: "your-client-id",
+                         realm: "your-realms",
+                         appName: "your-app-name"
+                         });
+                         */
+                    }
+                    $('pre code').each(function(i, e) {
+                        hljs.highlightBlock(e)
+                    });
+                },
+                onFailure: function(data) {
+                    log("Unable to Load SwaggerUI");
+                },
+                docExpansion: "none",
+                sorter : "alpha"
+            });
+
+            function addApiKeyAuthorization() {
+                var key = $('#input_apiKey')[0].value;
+                log("key: " + key);
+                if(key && key.trim() != "") {
+                    log("added key " + key);
+                    window.authorizations.add("api_key", new ApiKeyAuthorization("api_key", key, "query"));
+                }
+            }
+
+            $('#input_apiKey').change(function() {
+                addApiKeyAuthorization();
+            });
+
+            // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
+            /*
+             var apiKey = "myApiKeyXXXX123456789";
+             $('#input_apiKey').val(apiKey);
+             addApiKeyAuthorization();
+             */
+
+            window.swaggerUi.load();
+        });
+    </script>
+</head>
+
+<body class="swagger-section">
+<div class="row clearfix">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-appris" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://appris-dev.bioinfo.cnio.es">{APPRISdev}</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="http://appris-dev.bioinfo.cnio.es/#/tools">Tools</a>
+                </li>
+                <li>
+                    <a href="http://appris-dev.bioinfo.cnio.es/#/downloads">Downloads</a>
+                </li>
+                <li>
+                    <a href="/">WebServices</a>
+                </li>
+                <li>
+                    <a href="http://appris-dev.bioinfo.cnio.es/#/help/intro">Help & Docs</a>
+                </li>
+                <li>
+                    <a href="http://appris-dev.bioinfo.cnio.es/#/about">About us</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <div id="message-bar" class="swagger-ui-wrap">&nbsp;</div>
+        <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+    </div>
+</div>
+
+</body>
+</html>
