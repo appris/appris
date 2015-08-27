@@ -17,15 +17,15 @@ var app = express();
  * All Environments
  */
 app.set('port', process.env.PORT || 3001);
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
-app.use(express.session());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, path.normalize('../app'))));
+app.use( express.favicon(path.join(__dirname, path.normalize('../app/img/favicon-dev.ico'))) );
+app.use( express.logger('dev') );
+app.use( express.json() );
+app.use( express.urlencoded() );
+app.use( express.methodOverride() );
+app.use( express.cookieParser('your secret here') );
+app.use( express.session() );
+app.use( app.router);
+app.use( express.static(path.join(__dirname, path.normalize('../app'))) );
 
 /**
  * CORS Support in my Node.js web app written with Express
