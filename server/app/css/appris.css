@@ -50,6 +50,10 @@ hr { margin-top: 11px; margin-bottom: 11px }
     margin: 0 auto;
 }
 
+/* Swagger substitutions */
+.swagger-section { padding-top: 70px; padding-bottom: 70px; }
+
+
 /* APPRIS Server */
 
 .runner-input { padding-top: 30px; }
