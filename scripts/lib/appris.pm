@@ -31,7 +31,7 @@ use Config::IniFiles;
 use MIME::Lite;
 
 use APPRIS::Parser qw( parse_gencode parse_infiles );
-use APPRIS::Utils::File qw( getTotalStringFromFile );
+use APPRIS::Utils::File qw( getTotalStringFromFile printStringIntoFile );
 use APPRIS::Utils::Argument qw( rearrange );
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
@@ -44,6 +44,7 @@ use vars qw(@ISA @EXPORT);
 	create_gene_list
 	get_gene_list
 	retrieve_gene_list
+	create_appris_input
 	create_ensembl_input
 	reduce_input
 	create_gencode_data
@@ -202,6 +203,225 @@ sub retrieve_gene_list($;$)
 	}
 	return $list;
 } # end retrieve_gene_list
+
+=head2 create_appris_input
+
+  Arg[1]      : (optional) String $text - notification text to present to user
+  Example     : # run a code snipped conditionally
+                if ($support->user_proceed("Run the next code snipped?")) {
+                    # run some code
+                }
+
+                # exit if requested by user
+                exit unless ($support->user_proceed("Want to continue?"));
+  Description : If running interactively, the user is asked if he wants to
+                perform a script action. If he doesn't, this section is skipped
+                and the script proceeds with the code. When running
+                non-interactively, the section is run by default.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub create_appris_input($$)
+{
+	my ($gene,$in_files) = @_;
+	my ($create) = undef;
+	my ($data_cont) = '';
+	my ($pdata_cont) = '';
+	my ($transc_cont) = '';
+	my ($transl_cont) = '';
+	my ($cdsseq_cont) = '';
+	
+	# gene vars
+	my ($chr) = $gene->chromosome;
+	my ($gene_id) = $gene->stable_id;
+	my ($g_start) = $gene->start;
+	my ($g_end) = $gene->end;
+	my ($g_strand) = $gene->strand;
+	my ($g_phase) = '.';
+	my ($gene_name) = $gene->external_name ? $gene->external_name : $gene_id;
+	
+	# get gene annots
+	$data_cont .=	$chr."\t".
+					'GENCODE'."\t".
+					'gene'."\t".
+					$g_start."\t".
+					$g_end."\t".
+					'.'."\t".
+					$g_strand."\t".
+					$g_phase."\t".
+					"gene_id \"$gene_id\"; gene_name \"$gene_name\";\n";
+
+	# scan transcript/translation/cds seq/cds info
+	if ( $gene->transcripts ) {
+		foreach my $transcript (@{$gene->transcripts}) {		
+			my ($transcript_id) = $transcript->stable_id;
+			my ($transcript_eid) = $transcript_id;
+			#if ( $transcript->version ) {
+			#	$transcript_eid = $transcript_id.'.'.$transcript->version;
+			#}
+			my ($t_start) = $transcript->start;
+			my ($t_end) = $transcript->end;
+			my ($t_strand) = $transcript->strand;
+			my ($t_phase) = '.';
+			my ($transcript_name) = $transcript->external_name ? $transcript->external_name : $transcript_id;
+			$data_cont .=	$chr."\t".
+							'GENCODE'."\t".
+							'transcript'."\t".
+							$t_start."\t".
+							$t_end."\t".
+							'.'."\t".
+							$t_strand."\t".
+							$t_phase."\t".
+							"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\";\n";			
+			
+			# get transcript seq/exon
+			if ( $transcript->sequence ) {
+				my ($seq) = $transcript->sequence;
+				my ($len) = length($transcript->sequence);
+				$transc_cont .= ">$transcript_eid|$gene_id|$transcript_name|$len\n";
+				$transc_cont .= $seq."\n";				
+				if ( $transcript->exons ) {
+					foreach my $exon (@{$transcript->exons}) {
+						my ($exon_start) = $exon->start;
+						my ($exon_end) = $exon->end;
+						my ($exon_strand) = $exon->strand;
+						my ($exon_phase) = '.';
+						my ($exon_id) = defined $exon->stable_id ? $exon->stable_id : '-';						
+						$data_cont .=	$chr."\t".
+										'GENCODE'."\t".
+										'exon'."\t".
+										$exon_start."\t".
+										$exon_end."\t".
+										'.'."\t".
+										$exon_strand."\t".
+										$exon_phase."\t".
+										"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; exon_id \"$exon_id\";\n";			
+					}
+				}
+			}
+			# get translation seq/cds/cds_seq/codons
+			if ( $transcript->translate ) {
+				my ($translate) = $transcript->translate;
+				if ( $translate->sequence ) {
+					my ($seq) = $translate->sequence;
+					my ($len) = length($translate->sequence);
+					my ($translate_id) = $transcript_eid;
+					$translate_id = $translate->protein_id if ( defined $translate->protein_id );
+					# mask short sequences
+					#if ( $len <= 2 ) { $seq .= 'X'; }
+					$transl_cont .= ">$transcript_eid|$translate_id|$gene_id|$transcript_name|$len\n";
+					$transl_cont .= $seq."\n";					
+				}
+				if ( $translate->cds and $translate->cds_sequence ) {
+					my ($exons) = $transcript->exons;					
+					for (my $icds = 0; $icds < scalar(@{$translate->cds}); $icds++) {
+						my ($cds) = $translate->cds->[$icds];
+						my ($exon) = $exons->[$icds];
+						my ($exon_id) = $exon->stable_id; $exon_id = '-' unless (defined $exon_id);
+						my ($pro_cds) = $translate->cds_sequence->[$icds];
+	
+						my ($cds_start) = $cds->start;
+						my ($cds_end) = $cds->end;
+						my ($cds_strand) = $cds->strand;
+						my ($cds_phase) = $cds->phase;
+						
+						my ($pro_cds_start) = $pro_cds->start;
+						my ($pro_cds_end) = $pro_cds->end;
+						my ($pro_cds_end_phase) = $pro_cds->end_phase;
+						my ($pro_cds_seq) = $pro_cds->sequence;
+							
+						# delete the residue that is shared by two CDS						
+						#if (defined $pro_cds_end_phase and $pro_cds_end_phase != 0) { $pro_cds_seq =~ s/\w{1}$//; }
+							
+						if (defined $pro_cds_seq and $pro_cds_seq ne '') {
+							my ($len) = length($pro_cds_seq);
+							$cdsseq_cont .= ">$transcript_eid|$gene_id|$transcript_name|$len|$exon_id|$chr|$cds_start|$cds_end|$cds_strand|$cds_phase\n";
+							$cdsseq_cont .= $pro_cds_seq."\n";							
+						}													
+						if (defined $cds_start and defined $cds_end) {					
+							$data_cont .=	$chr."\t".
+											'GENCODE'."\t".
+											'CDS'."\t".
+											$cds_start."\t".
+											$cds_end."\t".
+											'.'."\t".
+											$cds_strand."\t".
+											$cds_phase."\t".
+											"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; cds_id \"$exon_id\";\n";
+						}						
+						if (defined $pro_cds_start and defined $pro_cds_end) {
+							$pdata_cont .=	'SEQ'."\t".
+														'Ensembl'."\t".
+														'Protein'."\t".
+														$pro_cds_start."\t".
+														$pro_cds_end."\t".
+														'.'."\t".
+														'.'."\t".
+														$pro_cds_end_phase."\t".
+														"ID=$exon_id;Parent=$transcript_eid;Gene=$gene_id;Note=cds_coord>$cds_start-$cds_end:$cds_strand\n";					
+						}
+					}
+				}
+				if ( $translate->codons ) {
+					foreach my $codon (@{$translate->codons}) {
+						my ($codon_type) = $codon->type.'_codon';
+						my ($codon_start) = $codon->start;
+						my ($codon_end) = $codon->end;
+						my ($codon_strand) = $codon->strand;
+						my ($codon_phase) = $codon->phase;
+						$data_cont .=	$chr."\t".
+										'GENCODE'."\t".
+										$codon_type."\t".
+										$codon_start."\t".
+										$codon_end."\t".
+										'.'."\t".
+										$codon_strand."\t".
+										$codon_phase."\t".
+										"gene_id \"$gene_id\"; transcript_id \"$transcript_id\";\n";			
+					}
+				}
+			}
+		}
+	}
+
+	# create files
+	if ( $data_cont ne '' ) {
+		my ($output_file) = $in_files->{'data'};		
+		my ($printing_file_log) = printStringIntoFile($data_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	if ( $pdata_cont ne '' ) {
+		my ($output_file) = $in_files->{'pdata'};
+		my ($printing_file_log) = printStringIntoFile($pdata_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	if ( $transc_cont ne '' ) {
+		my ($output_file) = $in_files->{'transc'};
+		my ($printing_file_log) = printStringIntoFile($transc_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	if ( $transl_cont ne '' ) {
+		my ($output_file) = $in_files->{'transl'};
+		my ($printing_file_log) = printStringIntoFile($transl_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	if ( $cdsseq_cont ne '' ) {
+		my ($output_file) = $in_files->{'cdsseq'};
+		my ($printing_file_log) = printStringIntoFile($cdsseq_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	
+	# determine if appris has to run
+	if ( ($data_cont ne '') and ($pdata_cont ne '') and ($transl_cont ne '') and ($cdsseq_cont ne '') ) {
+		$create = 1;
+	}
+	
+	return $create;
+	
+} # end create_appris_input
 
 =head2 create_ensembl_input
 

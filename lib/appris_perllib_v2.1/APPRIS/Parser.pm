@@ -3704,16 +3704,20 @@ sub _parse_indata_refseq($)
 				}
 				$transcript->{'biotype'} = $type;					
 				
-				# NOTE: We have decided the all mRNA from RefSeq have start/stop codons
+				# NOTE: HARD-CORE!!! We have decided the all mRNA from RefSeq have start/stop codons
 				for my $type ('start','stop') {
 					my ($codon);
-					$codon->{'type'}='start';
+					$codon->{'type'}=$type;
 					#$codon->{'start'} = $start if(defined $start);
 					#$codon->{'end'} = $end if(defined $end);
 					#$codon->{'strand'} = $strand if(defined $strand);
 					#$codon->{'phase'} = $phase if(defined $phase);
-					push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'codons'}},$codon) if(defined $codon);					
-				}				
+					$codon->{'start'} = $transcript->{'start'};
+					$codon->{'end'} = $transcript->{'end'};
+					$codon->{'strand'} = $transcript->{'strand'};
+					$codon->{'phase'} = 0;
+					push(@{$transcript->{'codons'}},$codon) if(defined $codon);
+				}
 				
 				$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);				
 			}
