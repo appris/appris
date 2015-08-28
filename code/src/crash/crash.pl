@@ -193,8 +193,10 @@ sub run_sp($$$)
 	# Execute program
 	unless ( -e $sp_output_file and (-s $sp_output_file > 0 ) ) {
 		eval {
-			$logger->debug("$RUN_PROGRAM_1 $sp_input_file 1> $sp_output_file 2> $sp_err_file\n");		
-			system("$RUN_PROGRAM_1 $sp_input_file 1> $sp_output_file 2> $sp_err_file") == 0 or $logger->error("ERROR: running signalp program");
+			#my ($cmd) = "$RUN_PROGRAM_1 $sp_input_file 1> $sp_output_file 2> $sp_err_file";
+			my ($cmd) = "$RUN_PROGRAM_1 $sp_input_file 1> $sp_output_file";
+			$logger->debug("\n** script: $cmd\n");		
+			system($cmd) == 0 or $logger->error("ERROR: running signalp program");
 		};
 		$logger->error("ERROR: running signalp program") if($@);		
 	}
@@ -221,8 +223,10 @@ sub run_tp($$$)
 	# Execute program
 	unless ( -e $tp_output_file and (-s $tp_output_file > 0 ) ) {
 		eval {
-			$logger->debug("$RUN_PROGRAM_2 $tp_input_file 1> $tp_output_file 2> $tp_err_file\n");		
-			system("$RUN_PROGRAM_2 $tp_input_file 1> $tp_output_file 2> $tp_err_file") == 0 or $logger->error("ERROR: running targetp program");
+			#my ($cmd) = "$RUN_PROGRAM_2 $tp_input_file 1> $tp_output_file 2> $tp_err_file";
+			my ($cmd) = "$RUN_PROGRAM_2 $tp_input_file 1> $tp_output_file";
+			$logger->debug("\n** script: $cmd\n");		
+			system($cmd) == 0 or $logger->error("ERROR: running targetp program");
 		};
 		$logger->error("ERROR: running targetp program") if($@);
 	}
