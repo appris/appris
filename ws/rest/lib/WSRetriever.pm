@@ -91,8 +91,10 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-$SPECIES = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json') );
-$METHODS = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
+my ($species_json) = getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json');
+my ($methods_json) = getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json');
+$SPECIES = JSON->new()->decode( $species_json );
+$METHODS = JSON->new()->decode( $methods_json );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 	my ($met_name) = lc($met_report->{'name'});
 	$METHOD_IDS->{$met_name} = $met_id;
@@ -1673,7 +1675,7 @@ sub get_gen_features {
 	if ( ( ($species_id eq 'homo_sapiens') or ($species_id eq 'mus_musculus') ) and ($ens > 74) ) {
 		$browser_params = '%26'.'headbed=yes:wgEncodeGencodeV'.$gencode_db. ',wgEncodeGencodeCompV'.$gencode_db. ',ccdsGene';			
 	}		
-	my ($query) = CGI->new()->server_name() . '/' . $query_id . '?' . $required_params . $optional_params . $browser_params;
+	my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params . $browser_params;
 	
 	# make a request to render tracks of UCSC
 	my ($params) = 'db=' . $ucsc_db;

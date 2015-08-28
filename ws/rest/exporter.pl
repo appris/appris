@@ -42,14 +42,6 @@ sub main()
 {
 	# Get input parameters:
 	my ($cgi) = new CGI;
-	my $SERVER_NAME = CGI->new()->server_name();
-print STDERR "SERVER_NAME: $SERVER_NAME\n";
-#print STDERR "REMOTE_HOST: ".$cgi->remote_host()."\n";
-#print STDERR "REMOTE_ADDR: ".$cgi->remote_addr()."\n";
-#print STDERR "PATH_INFO: ".$cgi->path_info()."\n";
-#print STDERR "SERVER_NAME: ".$cgi->server_name()."\n";
-#print STDERR "VIRTUAL_HOST: ".$cgi->virtual_host()."\n";
-
 	my ($url_path_info) = $cgi->path_info();
 	my (@input_parameters) = split('/',$url_path_info);
 
