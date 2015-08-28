@@ -66,7 +66,7 @@ module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligan
                 };
                 var urlExporterWS = serverHostWS+'/rest/exporter';
                 var urlRunnerResultWS = serverHostWS+'/rest/runner/result';
-                    asAServiceOptions.content = createAnnotReferences($scope.query, data, consUrlExporterWS, consUrlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
+                    asAServiceOptions.content = createAnnotReferences($scope.query, data, urlExporterWS, urlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
                 var myPopover = $popover(e, asAServiceOptions);
                 myPopover.$promise.then(myPopover.toggle);
             }, function(error) {
@@ -463,7 +463,6 @@ function filterMethodsFromRes(methods, mclass) {
             filmethods += method.name + ',';
         }
     });
-console.log(filmethods);
     return filmethods;
 }
 function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFirestar, urlPDB, urlPfam) {
