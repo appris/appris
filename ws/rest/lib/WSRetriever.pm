@@ -76,8 +76,6 @@ my ($METHOD_DESC) = $APPRIS::Utils::Constant::METHOD_DESC;
 
 use vars qw(
 	$STATUS_LOGS
-	$APPRISWS_RESULT_URL
-	$APPRIS_DESC
 	$SPECIES
 	$METHODS
 	$METHOD_IDS
@@ -93,8 +91,6 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-$APPRISWS_RESULT_URL	= $ENV{APPRIS_WSERVER_REST_URL} . '/runner/result';
-$APPRIS_DESC			= getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/README.md');
 $SPECIES = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json') );
 $METHODS = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
@@ -1677,7 +1673,7 @@ sub get_gen_features {
 	if ( ( ($species_id eq 'homo_sapiens') or ($species_id eq 'mus_musculus') ) and ($ens > 74) ) {
 		$browser_params = '%26'.'headbed=yes:wgEncodeGencodeV'.$gencode_db. ',wgEncodeGencodeCompV'.$gencode_db. ',ccdsGene';			
 	}		
-	my ($query) = $ENV{APPRIS_WSERVER_REST_URL} . '/' . $query_id . '?' . $required_params . $optional_params . $browser_params;
+	my ($query) = CGI->new()->server_name() . '/' . $query_id . '?' . $required_params . $optional_params . $browser_params;
 	
 	# make a request to render tracks of UCSC
 	my ($params) = 'db=' . $ucsc_db;
