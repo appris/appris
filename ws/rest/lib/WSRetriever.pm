@@ -91,10 +91,8 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-my ($species_json) = getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json');
-my ($methods_json) = getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json');
-$SPECIES = JSON->new()->decode( $species_json );
-$METHODS = JSON->new()->decode( $methods_json );
+my ($species_json) = JSON->new(); $SPECIES = $species_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json') );
+my ($methods_json) = JSON->new(); $METHODS = $methods_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 	my ($met_name) = lc($met_report->{'name'});
 	$METHOD_IDS->{$met_name} = $met_id;
