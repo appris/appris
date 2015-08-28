@@ -183,8 +183,8 @@
             "species":                   "Mouse",
             "scientific":               "mus_musculus",
             "assembly":                 "GRCm38",
-            "dataset":                  "gencodeM6/ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "gencodeM7/ensembl82",
+            "release":                  "ens82.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
