@@ -254,7 +254,6 @@ sub run_phobius($$)
 		eval {
 			my ($cmd) = "perl $BIN_DIR/phobvX.pl --input=$input --output=$output $LOGGER_CONF";
 			$logger->debug("\n** script: $cmd\n");
-			#system ($cmd);
 			my (@out) = `$cmd`;
 		};
 		$logger->error("run_phobius") if($@);
@@ -284,7 +283,6 @@ sub run_memsat($$)
 								" --tmp-dir=$WS_TMP ".
 								" $LOGGER_CONF ";
 			$logger->debug("\n** script: $cmd\n");
-			#system ($cmd);
 			my (@out) = `$cmd`;
 		};
 		$logger->error("run_memsat") if($@);
@@ -303,7 +301,6 @@ sub run_kalign($$)
 		eval {
 			my ($cmd) = "kalign -i $input -o $out_align -f clu -c input -d wu ";
 			$logger->debug("\n** script: $cmd\n");
-			#system ($cmd);
 			my (@out) = `$cmd`;
 		};
 		$logger->error("run_kalign") if($@);
@@ -369,9 +366,9 @@ sub run_prodiv($$)
 		
 		eval {
 			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP &>> $logfilename";
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
+			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
-			#system ($cmd);
 			my (@out) = `$cmd`;
 		};
 		$logger->error("run_kalign") if($@);
@@ -959,7 +956,6 @@ sub _delete_tmp_dir($)
 	eval {
 		my ($cmd) = "rm -rf $dir/*";
 		$logger->debug("\n** script: $cmd\n");
-		#system ($cmd);
 		my (@out) = `$cmd`;
 	};
 	$logger->error("_delete_tmp_dir") if($@);
