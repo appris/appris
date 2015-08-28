@@ -292,7 +292,7 @@ then
 	TMPDIR=$DESTINATION/$TMPDIRNAME
 else	
 	#TMPDIR=$SIGNALP/tmp/$TMPDIRNAME
-	TMPDIR="${SIGNALP_TMP_DIR}"
+	TMPDIR="${SIGNALP_TMP_DIR}/$TMPDIRNAME"
 fi	
 mkdir $TMPDIR || { echo Cannot create temporary directory; exit 1; }
 
