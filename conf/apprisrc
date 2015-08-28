@@ -6,8 +6,6 @@
 # Setting up structure global variables #
 # --------------------------------------#
 
-export APPRIS_CONF_DIR="${APPRIS_HOME}/conf"
-
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
 export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_HOME}/cache"
@@ -26,17 +24,21 @@ export APPRIS_DATA_DIR="${APPRIS_HOME}/data"
 
 export APPRIS_TEST_DIR="${APPRIS_HOME}/test"
 
-export APPRIS_LOG_DIR="${APPRIS_HOME}/logs"
+export APPRIS_TMP_DIR="${APPRIS_HOME}/tmp"
+
+export APPRIS_LOG_DIR="${APPRIS_TMP_DIR}/logs"
 
 export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}"
 
+export APPRIS_CONF_DIR="${APPRIS_HOME}/conf"
+
 export APPRIS_CODE_CONF_DIR="${APPRIS_CONF_DIR}/code"
+
+export APPRIS_WSERVER_CONF_DIR="${APPRIS_CONF_DIR}/ws"
 
 export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_CONF_DIR}/scripts"
 
 export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_BIN_DIR}"
-
-export APPRIS_WSERVER_CONF_DIR="${APPRIS_CONF_DIR}/ws"
 
 # -------------------------------------#
 # Setting up vars of APPRIS's programs #

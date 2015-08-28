@@ -15,6 +15,7 @@ SYSTEM=`uname -s`			# which platform?
 
 # Full path to the SignalP 3.0 software (MUST BE SET!):
 SIGNALP="${APPRIS_PRG_OPT_SIGNALP_BIN_DIR}"
+SIGNALP_TMP_DIR="${APPRIS_TMP_DIR}"
 
 # Other programs (assumed to be in the path)
 # mandatory
@@ -290,7 +291,8 @@ then
 	# TMPDIR=$WWWROOT/$WWW/$TMPDIRNAME
 	TMPDIR=$DESTINATION/$TMPDIRNAME
 else	
-	TMPDIR=$SIGNALP/tmp/$TMPDIRNAME
+	#TMPDIR=$SIGNALP/tmp/$TMPDIRNAME
+	TMPDIR="${SIGNALP_TMP_DIR}"
 fi	
 mkdir $TMPDIR || { echo Cannot create temporary directory; exit 1; }
 

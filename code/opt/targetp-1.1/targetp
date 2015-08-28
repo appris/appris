@@ -21,9 +21,10 @@ STARTDIR=`pwd`
 ### GENERAL SETTINGS, CUSTOMIZE +++++++++++++++++++++++++++++++++++++++++++++++
 # Substitute your chosen location for TargetP software:
 TARGETP="${APPRIS_PRG_OPT_TARGETP_BIN_DIR}"
+TARGETP_TMP_DIR="${APPRIS_TMP_DIR}"
 
 # determine where to store temporary files
-TMP=/tmp
+TMP="${TARGETP_TMP_DIR}"
 
 # Substitute paste:
 PASTE=paste
