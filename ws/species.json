@@ -230,5 +230,17 @@
         }],
         "popular":      1,
         "order":        16
+    },
+    "caenorhabditis_elegans": {
+        "scientific":   "Caenorhabditis elegans",
+        "common":       "C.elegans",
+        "category":     "invertebrates",
+        "assemblies":   [{
+            "name":     "WBcel235",
+            "id":       "WBcel235",
+            "dataset":  81
+        }],
+        "popular":      1,
+        "order":        17
     }
 }
