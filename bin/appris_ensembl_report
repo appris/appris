@@ -54,6 +54,8 @@ USAGE="
 \t\t Cele  - Caenorhabditis elegans -\n
 \t\t Lpar  - Lynx pardinus -\n
 \n
+\t\t Source file for species\n
+\n
 \t -v [version]\n
 \t -h [help]\n
 \n
