@@ -1684,6 +1684,8 @@ sub get_gen_features {
 	$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db.'_sel=' . '0';
 	$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db.'_sel=' . '0';
 	$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'.label=' . 'accession';
+	$params .= '&' . 'ccdsGene=full';
+	$params .= '&' . 'ensGene=full';
 	$params .= '&' . 'hgt.customText=' . $query;
 	my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
 	my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
