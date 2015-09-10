@@ -35,20 +35,20 @@ apprisApp.config(['$provide', function ($provide) {
 /*
     // GOLD server - production
     $provide.value("serverName", '{APPRIS}');
-    $provide.value("serverVersion", '2015_08.v10');
+    $provide.value("serverVersion", '2015_09.v10');
     $provide.value("serverType", 'gold');
     $provide.value("serverHost", 'http://appris.bioinfo.cnio.es');
     $provide.value("serverHostWS", 'http://apprisws.bioinfo.cnio.es');
     // BETA server - development
     $provide.value("serverName", '{APPRISdev}');
-    $provide.value("serverVersion", '2015_08.v10');
+    $provide.value("serverVersion", '2015_09.v10');
     $provide.value("serverType", 'beta');
     $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
     $provide.value("serverHostWS", 'http://apprisws-dev.bioinfo.cnio.es');
 */
     // ALPHA server - development in local
     $provide.value("serverName", '{APPRISloc}');
-    $provide.value("serverVersion", '2015_08.v10');
+    $provide.value("serverVersion", '2015_09.v10');
     $provide.value("serverType", 'alpha');
     $provide.value("serverHost", 'http://local.es:3000');
     $provide.value("serverHostWS", 'http://local.es/ws');
