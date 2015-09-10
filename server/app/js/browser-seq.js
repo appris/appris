@@ -55,8 +55,9 @@ module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligan
         if ( angular.isDefined($scope.query.methods) && ($scope.query.methods != '') ) {
             var fResidues = Sequencer.get($scope.query);
             fResidues.then(function (data) {
-                var id = '#' + tid + '_' + ridx;
-                var e = angular.element(id);
+                var id = tid + '_' + ridx;
+                id = id.replace('.',"\\.");
+                var e = angular.element( document.getElementById(id) );
                 var asAServiceOptions = {
                     title:     'APPRIS annotations',
                     template:  'templates/popover.tpl.html',
@@ -185,7 +186,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
                                 }
                                 if ( mcls != '' ) {
                                     var ridx = iseq;
-                                    seqline += '<browser-seq-res id="' + tidx + '_' + ridx + '" ridx="' + ridx + '" class="' + mcls + '" data-ng-click="getMethodsFromRes(\'' + tidx + '\', \'' + ridx + '\', \'' + mname + '\' )">' + s + '</browser-seq-res>';
+                                    seqline += '<browser-seq-res id="' + tidx.replace('.',"\\.") + '_' + ridx + '" ridx="' + ridx + '" class="' + mcls + '" data-ng-click="getMethodsFromRes(\'' + tidx.replace('.',"\\.") + '\', \'' + ridx + '\', \'' + mname + '\' )">' + s + '</browser-seq-res>';
                                 }
                                 else {
                                     seqline += s;
@@ -257,7 +258,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
                                     }
                                     if ( mcls != '' ) {
                                         var ridx = iseq;
-                                        seqline += '<browser-seq-res id="' + tidx + '_' + ridx + '" ridx="' + ridx + '" class="' + mcls + '" data-ng-click="getMethodsFromRes(\'' + tidx + '\', \'' + ridx + '\', \'' + mname + '\' )">' + s + '</browser-seq-res>';
+                                        seqline += '<browser-seq-res id="' + tidx.replace('.',"\\.") + '_' + ridx + '" ridx="' + ridx + '" class="' + mcls + '" data-ng-click="getMethodsFromRes(\'' + tidx.replace('.',"\\.") + '\', \'' + ridx + '\', \'' + mname + '\' )">' + s + '</browser-seq-res>';
                                     }
                                     else {
                                         seqline += s;
