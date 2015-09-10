@@ -472,6 +472,9 @@ sub get_feat_by_stable_id {
 	) {
 		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
 	}
+	else {
+		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
+	}
 	
 	return $feat;	
 }
