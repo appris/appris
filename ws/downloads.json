@@ -67,8 +67,8 @@
             "species":                   "Human",
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh38",
-            "dataset":                  "gencode23/ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "gencode23/ensembl82",
+            "release":                  "ens82.v10.21Aug2015",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
