@@ -57,6 +57,8 @@ use vars qw(@ISA @EXPORT);
 	get_cds_init_length
 	get_coords_from_residue
 	get_cds_from_residue
+	is_coding_exon
+	exon_idx_within_cds
 );
 
 =head2 sort_cds
@@ -539,5 +541,57 @@ sub get_cds_from_residue($$)
 	return $protein_cds;
 	
 } # End get_cds_from_residue
+
+=head2 is_coding_exon
+
+  Arg [1]    : APPRIS::Exon
+  Arg [2]    : Listref of APPRIS::CDS $cds_list
+  Example    : use APPRIS::Utils::ProCDS qw(is_coding_exon);
+               is_coding_exon($exon,$cds_list);
+  Description: Flag is exon is coding or not.
+  Returntype : Int or undef
+  Exceptions : none
+
+=cut
+
+sub is_coding_exon($$)
+{
+	my ($exon,$cds_list) = @_;
+	my ($is_inside);
+	my ($first_cds) = $cds_list->[0];
+	my ($last_cds) = $cds_list->[scalar(@{$cds_list})-1];
+	if    ( ($exon->strand eq '-') and ($first_cds->end >= $exon->start) and ($last_cds->start <= $exon->end) ) { $is_inside = 1 }	
+	elsif ( ($exon->strand eq '+') and ($first_cds->start <= $exon->end) and ($last_cds->end >= $exon->start) ) { $is_inside = 1 }
+	return $is_inside;
+	
+} # End is_coding_exon
+
+=head2 exon_idx_within_cds
+
+  Arg [1]    : APPRIS::Exon
+  Arg [2]    : Listref of APPRIS::CDS $cds_list
+  Example    : use APPRIS::Utils::ProCDS qw(exon_idx_within_cds);
+               exon_idx_within_cds($exon,$cds_list);
+  Description: Return position of CDS for an exon.
+  Returntype : Int or undef
+  Exceptions : none
+
+=cut
+
+sub exon_idx_within_cds($$)
+{
+	my ($exon,$cds_list) = @_;
+	my ($idx);
+	if ( defined is_coding_exon($exon,$cds_list) ) {
+		my ($i) = 0;
+		for ( my $i = 0; $i < scalar(@{$cds_list}); $i++ ) {
+			my ($cds) = $cds_list->[$i];
+			if ( ($cds->start >= $exon->start) and ($cds->end <= $exon->end) ) { $idx = $i; last; }	
+		}
+	}
+	return $idx;
+	
+} # End exon_idx_within_cds
+
 
 1;
