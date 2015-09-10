@@ -247,7 +247,7 @@ sub get_annotations {
 			$output =
 				"browser position $position"."\n".
 				#"browser pix 1100"."\n".
-				"browser hide all"."\n".
+				#"browser hide all"."\n".
 	
 				$output;    	
 	    }

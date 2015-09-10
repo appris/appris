@@ -1684,6 +1684,7 @@ sub get_gen_features {
 	$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db.'_sel=' . '0';
 	$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db.'_sel=' . '0';
 	$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'.label=' . 'accession';
+	$params .= '&' . 'hideTracks=1';
 	$params .= '&' . 'ccdsGene=full';
 	$params .= '&' . 'ensGene=full';
 	$params .= '&' . 'hgt.customText=' . $query;
