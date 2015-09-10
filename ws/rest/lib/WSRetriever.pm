@@ -1680,6 +1680,7 @@ sub get_gen_features {
 	$params .= '&' . 'textSize=' . '12';
 	$params .= '&' . 'hgt.labelWidth=' . '20';
 	$params .= '&' . 'pix=' . '1100';
+	$params .= '&' . 'hgt.customText=' . $query;
 	$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'_sel=' . '1';
 	$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db.'_sel=' . '0';
 	$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db.'_sel=' . '0';
@@ -1687,7 +1688,6 @@ sub get_gen_features {
 	$params .= '&' . 'hideTracks=1';
 	$params .= '&' . 'ccdsGene=full';
 	$params .= '&' . 'ensGene=full';
-	$params .= '&' . 'hgt.customText=' . $query;
 	my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
 	my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
 	$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
