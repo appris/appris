@@ -237,7 +237,7 @@
         "category":     "invertebrates",
         "assemblies":   [{
             "name":     "WBcel235|ce10",
-            "id":       "WBcel235",
+            "id":       "ce10",
             "dataset":  81
         }],
         "popular":      1,
