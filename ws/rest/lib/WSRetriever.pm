@@ -1669,11 +1669,6 @@ sub get_gen_features {
 	if ( defined $ids ) {
 		$optional_params .= '%26'.'ids='.$ids;
 	}
-	#my ($browser_params) =  '%26'.'headbed=yes:ensGene,ccdsGene';
-	#if ( ( ($species_id eq 'homo_sapiens') or ($species_id eq 'mus_musculus') ) and ($ens > 74) ) {
-	#	$browser_params = '%26'.'headbed=yes:wgEncodeGencodeV'.$gencode_db. ',wgEncodeGencodeCompV'.$gencode_db. ',ccdsGene';			
-	#}
-	#my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params . $browser_params;
 	my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
 	
 	# make a request to render tracks of UCSC
@@ -1681,15 +1676,11 @@ sub get_gen_features {
 	$params .= '&' . 'textSize=' . '12';
 	$params .= '&' . 'hgt.labelWidth=' . '20';
 	$params .= '&' . 'pix=' . '1100';
-	$params .= '&' . 'hgt.customText=' . $query;
-	#$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'_sel=' . '1';
-	#$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db.'_sel=' . '0';
-	#$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db.'_sel=' . '0';
-	#$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'.label=' . 'accession';
 	#$params .= '&' . 'hideTracks=1';
-	$params .= '&' . 'ccdsGene=full';
-	$params .= '&' . 'ensGene=full';
-	$params .= '&' . 'knownGene=full';
+	$params .= '&' . 'hgt.customText=' . $query;
+	#$params .= '&' . 'ccdsGene=full';
+	#$params .= '&' . 'ensGene=full';
+	#$params .= '&' . 'knownGene=full';
 	$params .= '&' . 'knownGene.label.gencodeId=1';
 	$params .= '&' . 'knownGene.label.gene=0';
 	$params .= '&' . 'knownGene.label.kgId=0';

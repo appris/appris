@@ -246,9 +246,10 @@ sub get_annotations {
 	    if ( !defined $typebed or (defined $typebed and ($typebed !~ /bed12\_/) ) ) {
 			$output =
 				"browser position $position"."\n".
-				#"browser pix 1100"."\n".
 				"browser hide all"."\n".
-	
+				"browser full ccdsGene"."\n".
+				"browser full ensGene"."\n".
+				"browser full knownGene"."\n".
 				$output;    	
 	    }
 	}
