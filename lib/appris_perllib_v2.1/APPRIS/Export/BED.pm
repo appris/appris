@@ -247,9 +247,10 @@ sub get_annotations {
 			$output =
 				"browser position $position"."\n".
 				"browser hide all"."\n".
-				"browser full ccdsGene"."\n".
-				"browser full ensGene"."\n".
 				"browser full knownGene"."\n".
+				"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly
+				"browser full ensGene"."\n".
+				"browser full ccdsGene"."\n".
 				$output;    	
 	    }
 	}
