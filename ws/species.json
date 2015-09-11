@@ -236,7 +236,7 @@
         "common":       "C.elegans",
         "category":     "invertebrates",
         "assemblies":   [{
-            "name":     "WBcel235",
+            "name":     "WBcel235|ce10",
             "id":       "WBcel235",
             "dataset":  81
         }],
