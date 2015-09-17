@@ -5,7 +5,6 @@ longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
 type bigGenePred
 baseColorDefault genomicCodons
-color 180,95,4
 visibility full
 priority 1
 
