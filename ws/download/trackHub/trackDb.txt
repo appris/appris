@@ -4,6 +4,7 @@ shortLabel Principal Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
 type bigBed 12
+baseColorDefault genomicCodons
 color 180,95,4
 visibility full
 priority 1
@@ -14,8 +15,9 @@ visibility dense
 shortLabel Presence of protein domains
 longLabel APPRIS - Presence of whole protein domains and damaged domains
 html ../docs/SPADE
-color 164,189,83
 type bigBed 12
+baseColorDefault genomicCodons
+color 164,189,83
 dragAndDrop subTracks
 noInherit on
 priority 2
@@ -26,6 +28,7 @@ priority 2
 	shortLabel Whole domains
 	longLabel APPRIS - Whole protein domains
 	type bigBed 12
+	baseColorDefault genomicCodons
 	color 164,189,83
 	visibility full
 	priority 1
@@ -36,6 +39,7 @@ priority 2
 	shortLabel Damaged domains
 	longLabel APPRIS - Damaged protein domains
 	type bigBed 12
+	baseColorDefault genomicCodons
 	color 86,191,85
 	visibility full
 	priority 2
