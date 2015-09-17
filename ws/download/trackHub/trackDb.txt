@@ -1,10 +1,9 @@
-track PrinIsoformsAPPRIS
+track PrincipalIsoformsAPPRIS
 bigDataUrl appris_method.appris.bed.bb
 shortLabel Principal Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
-type bigGenePred
-baseColorDefault genomicCodons
+type bigBed 12
 color 180,95,4
 visibility full
 priority 1
@@ -15,8 +14,7 @@ visibility dense
 shortLabel Presence of protein domains
 longLabel APPRIS - presence of whole protein domains and damaged domains
 html ../docs/SPADE
-type bigGenePred
-baseColorDefault genomicCodons
+type bigBed 12
 color 164,189,83
 dragAndDrop subTracks
 noInherit on
@@ -27,8 +25,7 @@ priority 2
 	parent DomainsAPPRIS on
 	shortLabel Whole domains
 	longLabel APPRIS - whole protein domains
-	type bigGenePred
-	baseColorDefault genomicCodons
+	type bigBed 12
 	color 164,189,83
 	visibility full
 	priority 1
@@ -38,8 +35,7 @@ priority 2
 	parent DomainsAPPRIS on
 	shortLabel Damaged domains
 	longLabel APPRIS - damaged protein domains
-	type bigGenePred
-	baseColorDefault genomicCodons
+	type bigBed 12
 	color 86,191,85
 	visibility full
 	priority 2
@@ -47,9 +43,9 @@ priority 2
 track FunctionalResiduesAPPRIS
 bigDataUrl appris_method.firestar.bed.bb
 shortLabel Functional Residues
-longLabel APPRIS - functional Residues
+longLabel APPRIS - functional residues
 html ../docs/FIRESTAR
-type bigGenePred
+type bigBed 12
 color 244,169,39
 visibility full
 priority 3
