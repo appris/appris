@@ -1,6 +1,6 @@
 hub PrincipalIsoformsAPPRIS
 shortLabel Principal Splice Isoforms APPRIS
 longLabel Selects a single CDS variant for each gene as the 'PRINCIPAL' isoform based on the range of protein features. 
-descriptionUrl http://appris.bioinfo.cnio.es/#/help/intro
+descriptionUrl http://appris.bioinfo.cnio.es
 genomesFile genomes.txt
-email  jmrodriguez@cnio.es
+email  appris.cnio@gmail.com
