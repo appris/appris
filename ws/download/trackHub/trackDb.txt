@@ -1,6 +1,6 @@
 track PrincipalIsoformsAPPRIS
 bigDataUrl appris_method.appris.bed.bb
-shortLabel Principal Isoforms
+shortLabel Princ. Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
 type bigBed 12
@@ -23,29 +23,29 @@ priority 2
 	track WholeDomainsAPPRIS
 	bigDataUrl appris_method.spade-domain.bed.bb
 	parent DomainsAPPRIS on
-	shortLabel Whole domains
+	shortLabel Whole Domains
 	longLabel APPRIS - whole protein domains
 	type bigBed 12
 	color 164,189,83
-	visibility full
+	visibility pack
 	priority 1
 
 	track DamagedDomainsAPPRIS
 	bigDataUrl appris_method.spade-damaged_domain.bed.bb
 	parent DomainsAPPRIS on
-	shortLabel Damaged domains
+	shortLabel Damaged Domains
 	longLabel APPRIS - damaged protein domains
 	type bigBed 12
 	color 86,191,85
-	visibility full
+	visibility pack
 	priority 2
 
 track FunctionalResiduesAPPRIS
 bigDataUrl appris_method.firestar.bed.bb
-shortLabel Functional Residues
+shortLabel Func. Residues
 longLabel APPRIS - functional residues
 html ../docs/FIRESTAR
 type bigBed 12
 color 244,169,39
-visibility full
+visibility dense
 priority 3
