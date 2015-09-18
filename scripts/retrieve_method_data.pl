@@ -85,7 +85,7 @@ sub main()
 	# Check inputs
 	if (defined $format and ($format ne '')) {
 		$format = lc($format);
-		unless (($format ne '') and ( ($format eq 'gtf') or ($format eq 'gff3') or ($format eq 'bed') or ($format eq 'json') ) ) {
+		unless (($format ne '') and ( ($format eq 'gtf') or ($format eq 'gff3') or ($format eq 'bed') or ($format eq 'bed12') or ($format eq 'json') ) ) {
 			print `perldoc $0`;
 			exit 1;
 		}
@@ -110,14 +110,10 @@ sub main()
 	$logger->info("-- get annotations from given chromosome: $chr\n");
 	my ($output_report) = get_data_by_chr($registry, $chr);
 	$logger->debug("REPORT\n".Dumper($output_report)."\n");
-
-	# Merge annotations
-	my ($merge_outreport) = merge_data($output_report);
-	$logger->debug("MERGE_REPORT\n".Dumper($output_report)."\n");
 	
 	# Print annotations
-	if ( defined $merge_outreport ) {
-		while ( my ($met,$met_out) = each(%{$merge_outreport}) ) {
+	if ( defined $output_report ) {
+		while ( my ($met,$met_out) = each(%{$output_report}) ) {
 			if ( $met_out ne '' ) {
 				my ($met_file) = $output_file.'.'.$met.'.'.$format;
 				my ($printing_file_log) = printStringIntoFile($met_out,$met_file);
@@ -169,81 +165,6 @@ sub get_data_by_method($$)
     	}
 	}
 	return $output;
-}
-sub merge_data($)
-{
-	my ($inreport) = @_;
-	my ($aux_report,$report);
-	if ( defined $inreport ) {
-		while ( my ($met,$met_rept) = each(%{$inreport}) ) {
-			foreach my $met_line ( split("\n",$met_rept) ) {
-				if ( $met_line ne '' ) {
-					my (@met_cols) = split("\t", $met_line);
-					next if ( scalar(@met_cols) < 13);					
-					my (
-						$chrom,
-						$chromStart,
-						$chromEnd,
-						$name,
-						$score,
-						$strand,
-						$thickStart,
-						$thickEnd,
-						$reserved,
-						$blockCount,
-						$blockSizes,
-						$chromStarts,
-						$transcripts
-					) = @met_cols;
-					my ($idx) = $chrom.":".$chromStart."-".$chromEnd;
-					unless ( $aux_report->{$met}->{$idx} ) {
-						$aux_report->{$met}->{$idx} = {
-								'chrom' 		=> $chrom,
-	  							'chromStart'	=> $chromStart,
-	  							'chromEnd'		=> $chromEnd,
-	  							'name'			=> $name, 
-	  							'score'			=> $score, 
-	  							'strand'		=> $strand,
-	  							'thickStart'	=> $thickStart,
-	  							'thickEnd'		=> $thickEnd,
-	  							'reserved'		=> $reserved,
-	  							'blockCount'	=> $blockCount,
-	  							'blockSizes'	=> $blockSizes,
-	  							'chromStarts'	=> $chromStarts,
-	  							'transcripts'	=> $transcripts
-						}
-					}
-					else {
-						$aux_report->{$met}->{$idx}->{'name'}			.= ';'.$name;
-						$aux_report->{$met}->{$idx}->{'transcripts'}	.= ';'.$transcripts;
-					}
-				}
-			}				
-		}
-	}
-print STDERR "AUX\n".Dumper($aux_report)."\n";
-	if ( defined $aux_report ) {
-		while ( my ($met,$rep) = each(%{$aux_report}) ) {
-			my ($met_out) = '';
-			while ( my ($met_idx,$met_rep) = each(%{$rep}) ) {
-				$met_out .= $met_rep->{'chrom'}."\t".
-							$met_rep->{'chromStart'}."\t".
-							$met_rep->{'chromEnd'}."\t".
-							$met_rep->{'name'}."\t".
-							$met_rep->{'score'}."\t".
-							$met_rep->{'strand'}."\t".
-							$met_rep->{'thickStart'}."\t".
-							$met_rep->{'thickEnd'}."\t".
-							$met_rep->{'reserved'}."\t".
-							$met_rep->{'blockCount'}."\t".
-							$met_rep->{'blockSizes'}."\t".
-							$met_rep->{'chromStarts'}."\t".
-							$met_rep->{'transcripts'}."\n";				
-			}
-			$report->{$met} = $met_out if ( $met_out ne '' );
-		}
-	}
-	return $report;
 }
 
 main();
