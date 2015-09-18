@@ -803,7 +803,7 @@ sub get_matador3d_annotations {
 	# Get annotations
  	if ( $feature->analysis ) {
  		my ($analysis) = $feature->analysis;
- 		if ( $analysis->spade ) { 			
+ 		if ( $analysis->matador3d ) { 			
 	 		my ($method) = $analysis->matador3d;
 	 		# get residue annotations
 			if ( defined $method->alignments ) {
@@ -820,8 +820,7 @@ sub get_matador3d_annotations {
 					elsif ( $res->type eq 'mini-exon' ) {
 						push(@{$res_mini_exon}, $res);
 					}
-				}
-				
+				}				
 				_aux_get_matador3d_annotations('mini-exon',
 											$transcript_id,
 											$feature,
