@@ -34,7 +34,7 @@ to export database values as BED format.
 
 =cut
 
-package APPRIS::Export::BED;
+package APPRIS::Export::BED12;
 
 use strict;
 use warnings;
@@ -231,19 +231,7 @@ sub get_annotations {
     else {
 		throw('Arguments must be define');
     }
-    
-    # print head or not
-    # Print output
-	if ( $output ne '' ) {
-		$output =
-			"browser position $position"."\n".
-			"browser hide all"."\n".
-			"browser full knownGene"."\n".
-			"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly
-			"browser full ensGene"."\n".
-			"browser full ccdsGene"."\n".
-			$output;    	
-	}
+			    
 	return $output;
 }
 
@@ -266,7 +254,7 @@ sub get_gen_annotations {
     if (ref($gene) and $gene->isa("APPRIS::Gene")) {
 		if ( ($source =~ /proteo/) or ($source eq 'all') ) {
 			get_g_proteo_annotations( $gene,
-									 \$track->[8]
+           		  					 \$track->[8]
 			);
 		}
     	
@@ -374,13 +362,12 @@ sub get_trans_annotations {
 	           									\$track->[7]
 					);
 				}
-				# Now, the tracks of PROTEO are printed per peptide (gene)
-				#if ( ($source =~ /proteo/) or ($source eq 'all') ) {
-				#	get_proteo_annotations(	$transcript_id,
-	           	#								$feature,
-	           	#								\$track->[8]
-				#	);
-				#}
+				if ( ($source =~ /proteo/) or ($source eq 'all') ) {
+					get_proteo_annotations(	$transcript_id,
+	           									$feature,
+	           									\$track->[8]
+					);
+				}
 			}
 		}
     }
@@ -504,8 +491,7 @@ sub print_data {
 =cut
 sub print_annotations {
 	my ($report) = @_;
-	my ($output) = '';
-	
+	my ($output) = '';	
 	foreach my $method_report (@{$report}) {
 		if (ref($method_report) eq 'ARRAY') {
 			my ($methods);
@@ -516,7 +502,9 @@ sub print_annotations {
 				else {
 					my ($track_report) = $method_report->[$i];
 					if ($track_report->{'body'} ne '') {
-						$output .= $track_report->{'title'}."\n".$track_report->{'body'};
+						$output .= merge_annotations($track_report->{'body'});
+						#$output .= $track_report->{'body'};
+						#$output .= $track_report->{'title'}."\n".$track_report->{'body'};
 					}					
 				}
 			}
@@ -525,46 +513,87 @@ sub print_annotations {
 	return $output;
 }
 
-=head2 get_block_from_exon
+=head2 merge_annotations
 
-  Arg [1]    : Int - start position
-  Arg [2]    : Int - end position
-  Arg [3]    : Int - start position of exon
-  Arg [4]    : Int - end position of exon
-  Example    : get_block_from_exon($e_start, $e_end, $b_start, $b_end);
+  Arg [1]    : String - annotations by method
+  Example    : merge_annotations($output);
   Description: Get the BED block from exon.
   Returntype : (Int- init, Int- size) or (undef,undef)
   Exceptions : none
 
 =cut
 
-sub get_block_from_exon {
-	my ($pos_start, $pos_end, $exon_strand, $block_start, $block_end) = @_;
-	my ($init,$length);
-		
-	my ($residue_start);
-	my ($residue_size);
-	my ($residue_end);
-	if ($exon_strand eq '-') {
-		$residue_start = abs($pos_end - $block_start);
-		$residue_size = abs($pos_end - $pos_start) +1;		
-	} else {
-		$residue_start = abs($pos_start - $block_start);
-		$residue_size = abs($pos_start - $pos_end) +1;
-	}		
-	
-	if ( defined $residue_start and defined $residue_size ) {
-		$init = $residue_start;
-		$length = $residue_size;
+sub merge_annotations {
+	my ($inannot) = @_;
+	my ($output) = '';
+    my ($report);
+	foreach my $line ( split("\n",$inannot) ) {
+		my (@cols) = split("\t", $line);
+		next if ( scalar(@cols) < 13);					
+		my (
+			$chrom,
+			$chromStart,
+			$chromEnd,
+			$name,
+			$score,
+			$strand,
+			$thickStart,
+			$thickEnd,
+			$reserved,
+			$blockCount,
+			$blockSizes,
+			$chromStarts,
+			$transcripts
+		) = @cols;
+		my ($idx) = $chrom.":".$chromStart."-".$chromEnd;
+		unless ( $report->{$idx} ) {
+			$report->{$idx} = {
+					'chrom' 		=> $chrom,
+					'chromStart'	=> $chromStart,
+					'chromEnd'		=> $chromEnd,
+					'name'			=> $name, 
+					'score'			=> $score, 
+					'strand'		=> $strand,
+					'thickStart'	=> $thickStart,
+					'thickEnd'		=> $thickEnd,
+					'reserved'		=> $reserved,
+					'blockCount'	=> $blockCount,
+					'blockSizes'	=> $blockSizes,
+					'chromStarts'	=> $chromStarts,
+					'transcripts'	=> $transcripts
+			}
+		}
+		else {
+			$report->{$idx}->{'name'}			.= ';'.$name;
+			$report->{$idx}->{'transcripts'}	.= ';'.$transcripts;
+		}
 	}
-	return ($init, $length);
+	if ( defined $report ) {
+		foreach my $idx ( sort(keys(%{$report})) ) {
+			my ($rep) = $report->{$idx};
+			$output .= $rep->{'chrom'}."\t".
+						$rep->{'chromStart'}."\t".
+						$rep->{'chromEnd'}."\t".
+						$rep->{'name'}."\t".
+						$rep->{'score'}."\t".
+						$rep->{'strand'}."\t".
+						$rep->{'thickStart'}."\t".
+						$rep->{'thickEnd'}."\t".
+						$rep->{'reserved'}."\t".
+						$rep->{'blockCount'}."\t".
+						$rep->{'blockSizes'}."\t".
+						$rep->{'chromStarts'}."\t".
+						$rep->{'transcripts'}."\n";
+		}
+	}
+	return $output;
 }
 
 =head2 get_appris_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_appris_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -639,6 +668,9 @@ sub get_appris_annotations {
 						push(@{$data->{'block_starts'}}, $init);
 						push(@{$data->{'block_sizes'}}, $length);
 					}
+					if ( $method->reliability ) {
+						$data->{'note'} = $method->reliability;
+					}						
 					${$ref_output}->[1]->{'body'} .= print_data($data);
 				}
 			}
@@ -649,8 +681,8 @@ sub get_appris_annotations {
 =head2 get_firestar_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_firestar_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -658,139 +690,168 @@ sub get_appris_annotations {
 =cut
 
 sub get_firestar_annotations {
-	my ($transcript_id, $feature, $ref_output) = @_;
+	my ($transcript_id, $feature, $ref_output, $source) = @_;
 
 	# Get annotations
  	if ( $feature->analysis ) {
  		my ($analysis) = $feature->analysis;
- 		if ( $analysis->firestar ) {
+ 		if ( $analysis->firestar ) { 			
 	 		my ($method) = $analysis->firestar;
 	 		# get residue annotations
 			if ( defined $method->residues ) {
-
-				# get initial data
-				my ($res_list) = $method->residues;				
+								
+				# get the residues
+				my ($res_list) = $method->residues;
 				my ($num_res) = scalar(@{$res_list});
-				my ($trans_chr) = $feature->chromosome;
-				my ($trans_start) = $feature->start;
-				my ($trans_end) = $feature->end;
-				my ($trans_strand) = $feature->strand;
-				my ($score) = 0;
-				my ($thick_start) = $feature->start;
-				my ($thick_end) = $feature->end;
-				my ($color) = 0;
-				my ($blocks) = 0;
-				if ( $trans_strand eq '-' ) {
-					$trans_start = $res_list->[$num_res-1]->end;
-					$trans_end = $res_list->[0]->start;
-					$thick_start = $trans_start;
-					$thick_end = $trans_end;
+				foreach my $res (@{$res_list}) {
+					_aux_get_firestar_annotations($transcript_id,
+													$feature,
+													[$res],
+													$ref_output);
 				}
-				else {
-					$trans_start = $res_list->[0]->start; 
-					$trans_end = $res_list->[$num_res-1]->end;
-					$thick_start = $trans_start;
-					$thick_end = $trans_end;
-				}
-				my ($data) = {
-						'chr'			=> $trans_chr,
-						'name'			=> $transcript_id,
-						'start'			=> $trans_start,
-						'end'			=> $trans_end,
-						'strand'		=> $trans_strand,
-						'score'			=> $score,
-						'thick_start'	=> $thick_start,
-						'thick_end'		=> $thick_end,			
-						'color'			=> $color,
-						'blocks'		=> $blocks
-				};
-				# get block annotations
-				if ( $feature->translate and $feature->translate->cds ) {
-					my ($translation) = $feature->translate;
-					my ($cds_list) = $translation->cds;
-					my ($num_cds) = scalar(@{$cds_list});
-					foreach my $res (@{$res_list}) {
-						my ($res_start) = $res->start;
-						my ($res_end) = $res->end;
-						my ($res_strand) = $res->strand;
-						if ($res_strand eq '-') {
-							$res_start = $res->end;
-							$res_end = $res->start;
-						}
-						my ($contained_cds) = $translation->get_overlapping_cds($res_start, $res_end);						
-						my (@sorted_contained_cds) = @{$contained_cds};
-						for (my $i = 0; $i < scalar(@sorted_contained_cds); $i++) {
-							my ($cds_out) = $sorted_contained_cds[$i];
-							my ($cds_strand) = $cds_out->strand;
-							my ($cds_phase) = $cds_out->phase;							
-							if ( scalar(@sorted_contained_cds) == 1 ) { # Residue fulldown in one CDS
-								my ($pos_start) = $res->start;
-								my ($pos_end) = $res->end;
-								my ($pos_strand) = $res->strand;
-								my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $thick_start, $thick_end);
-								push(@{$data->{'block_starts'}}, $init);
-								push(@{$data->{'block_sizes'}}, $length);
-								$data->{'blocks'}++;	
-								last;
-							}												
-							else { # Residue fulldown in multiple CDS
-								my ($pos_start) = $cds_out->start;
-								my ($pos_end) = $cds_out->end;
-								my ($thick_start) = $data->{'thick_start'};
-								my ($thick_end) = $data->{'thick_end'};
-								if ( $i==0 ) {
-									if ($trans_strand eq '-') {
-										$pos_start = $cds_out->start;
-										$pos_end = $res->start;
-										# the residue falls down between two CDS
-										if ( $cds_phase eq '0') {
-											$thick_start = $thick_start;	
-										}
-										#elsif ( $cds_phase eq '2') {
-										#	$thick_start = $thick_start +1;
-										#}
-									}
-									else {
-										$pos_start = $res->start;
-										$pos_end = $cds_out->end;
-									}
-								}
-								elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
-									if ( $trans_strand eq '-' ) {
-										$pos_start = $res->end;
-										$pos_end = $cds_out->end;
-										# the residue falls down between two CDS
-										if ( $cds_phase eq '0') {
-											$thick_start = $thick_start;	
-										}
-										elsif ( $cds_phase eq '2') {
-											$thick_start = $thick_start +1;
-										}
-									}
-									else {
-										$pos_start = $cds_out->start;
-										$pos_end = $res->end;
-									}
-								}
-								my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
-								push(@{$data->{'block_starts'}}, $init);
-								push(@{$data->{'block_sizes'}}, $length);
-								$data->{'blocks'}++;
-							}
-						}
-					}
-				}
-				${$ref_output}->[1]->{'body'} .= print_data($data);
 			}
  		}
  	}
 }
 
+sub _aux_get_firestar_annotations {
+	my ($transcript_id, $feature, $aux_res_list, $ref_output) = @_;
+
+	if ( (ref($aux_res_list) eq 'ARRAY') and (scalar(@{$aux_res_list}) > 0) ) {
+		
+		# sort the list of alignments
+		my ($res_list);
+		if ($feature->strand eq '-') {
+			@{$res_list} = sort { $b->start <=> $a->start } @{$aux_res_list};
+		}
+		else {
+			@{$res_list} = sort { $a->start <=> $b->start } @{$aux_res_list};
+		}
+				
+		# get initial data
+		my ($num_res) = scalar(@{$res_list});		
+		my ($trans_chr) = $feature->chromosome;
+		my ($trans_start) = $feature->start;
+		my ($trans_end) = $feature->end;
+		my ($trans_strand) = $feature->strand;
+		my ($score) = 0;
+		my ($thick_start) = $feature->start;
+		my ($thick_end) = $feature->end;
+		my ($color) = 0;
+		my ($blocks) = 0;
+		if ( $trans_strand eq '-' ) {
+			$trans_start = $res_list->[$num_res-1]->start;
+			$trans_end = $res_list->[0]->end;
+			$thick_start = $trans_start;
+			$thick_end = $trans_end;
+		}
+		else {
+			$trans_start = $res_list->[0]->start; 
+			$trans_end = $res_list->[$num_res-1]->end;
+			$thick_start = $trans_start;
+			$thick_end = $trans_end;
+		}
+		my ($data) = {
+				'chr'			=> $trans_chr,
+				'name'			=> $transcript_id,
+				'start'			=> $trans_start,
+				'end'			=> $trans_end,
+				'strand'		=> $trans_strand,
+				'score'			=> $score,
+				'thick_start'	=> $thick_start,
+				'thick_end'		=> $thick_end,			
+				'color'			=> $color,
+				'blocks'		=> $blocks
+		};
+		# get block annotations
+		if ( $feature->translate and $feature->translate->cds ) {
+			my ($translation) = $feature->translate;
+			my ($cds_list) = $translation->cds;
+			my ($num_cds) = scalar(@{$cds_list});						
+			foreach my $res (@{$res_list}) {
+				my ($contained_cds) = $translation->get_overlapping_cds($res->start, $res->end);
+				my (@sorted_contained_cds) = @{$contained_cds};
+				for (my $i = 0; $i < scalar(@sorted_contained_cds); $i++) {
+						
+					if ( scalar(@sorted_contained_cds) == 1 ) { # Within one CDS
+						my ($pos_start) = $res->start;
+						my ($pos_end) = $res->end;
+						my ($pos_strand) = $res->strand;
+						if ($trans_strand eq '-') {
+							$pos_start = $res->end;
+							$pos_end = $res->start;
+						}
+						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $data->{'thick_start'}, $data->{'thick_end'});
+						push(@{$data->{'block_starts'}}, $init);
+						push(@{$data->{'block_sizes'}}, $length);
+						$data->{'blocks'}++;	
+						last;
+					}								
+					else { # Within several CDS
+						my ($cds_out) = $sorted_contained_cds[$i];
+						my ($pos_start) = $cds_out->start;
+						my ($pos_end) = $cds_out->end;
+						my ($pos_strand) = $cds_out->strand;
+						if ( $trans_strand eq '-' ) {
+							$pos_start = $cds_out->end;
+							$pos_end = $cds_out->start;
+						}
+
+						if ( $i==0 ) {
+							if ($trans_strand eq '-') {
+								$pos_start = $res->end;
+								$pos_end = $cds_out->start;
+							}
+							else {
+								$pos_start = $res->start;
+								$pos_end = $cds_out->end;
+							}
+						}
+						elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
+							if ( $trans_strand eq '-' ) {
+								$pos_start = $cds_out->end;
+								$pos_end = $res->start;
+							}
+							else {
+								$pos_start = $cds_out->start;
+								$pos_end = $res->end;
+							}
+						}
+						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $data->{'thick_start'}, $data->{'thick_end'});
+						push(@{$data->{'block_starts'}}, $init);
+						push(@{$data->{'block_sizes'}}, $length);
+						$data->{'blocks'}++;	
+					}					
+				}
+				if ( $res->ligands ) {
+					my ($lig) = '';
+					my (@ligands) = split(/\|/, $res->ligands);
+					foreach my $ligs (@ligands) {
+						if ( $ligs ne '' ) {
+							if ( $ligs =~ /^([^\[]*)\[/ ) {
+								$lig .= $1.',';
+							}
+							$ligs =~ s/^[^\[]*\[[^\,]*\,//;
+							$ligs =~ s/\,[^\]]*\]$//;
+						}
+					}
+					$lig =~ s/\,$//;
+					if ( $lig ne '' ) {
+						$data->{'name'} = $lig;
+						$data->{'note'} = $transcript_id;
+					}
+				}							
+			}
+		}
+		${$ref_output}->[1]->{'body'} .= print_data($data);
+	}	
+}
+
 =head2 get_matador3d_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_matador3d_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -940,6 +1001,9 @@ sub _aux_get_matador3d_annotations {
 						push(@{$data->{'block_sizes'}}, $length);
 						$data->{'blocks'}++;	
 					}
+					if ( $res->pdb_id ) {
+						$data->{'note'} = $res->pdb_id;
+					}
 				}
 			}
 		}
@@ -952,75 +1016,14 @@ sub _aux_get_matador3d_annotations {
 =head2 get_spade_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_spade_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
 
 =cut
 
-# PRINT the alignments together from Pfam 
-#sub get_spade_annotations {
-#	my ($transcript_id, $feature, $ref_output, $source) = @_;
-#
-#	# Get annotations
-# 	if ( $feature->analysis ) {
-# 		my ($analysis) = $feature->analysis;
-# 		if ( $analysis->spade ) { 			
-#	 		my ($method) = $analysis->spade;
-#	 		# get residue annotations
-#			if ( defined $method->regions ) {
-#								
-#				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
-#				my ($res_list) = $method->regions;
-#				my ($num_res) = scalar(@{$res_list});
-#				my ($res_domains);
-#				my ($res_damaged_domains);
-#				foreach my $res (@{$res_list}) {
-#					if ( $res->type_domain eq 'domain' ) {
-#						#push(@{$res_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_possibly_damaged' ) {
-#						push(@{$res_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_damaged' ) {
-#						push(@{$res_damaged_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_wrong' ) {
-#						push(@{$res_damaged_domains}, $res);
-#					}
-#				}
-#				if ( $source eq 'domain' ) {
-#					_aux_get_spade_annotations('domain',
-#												$transcript_id,
-#												$feature,
-#												$res_domains,
-#												$ref_output);
-#				}
-#				elsif ( $source eq 'damaged_domain' ) {
-#					_aux_get_spade_annotations('damaged_domain',
-#												$transcript_id,
-#												$feature,
-#												$res_damaged_domains,
-#												$ref_output);
-#				}
-#				else {
-#					_aux_get_spade_annotations('domain',
-#												$transcript_id,
-#												$feature,
-#												$res_domains,
-#												$ref_output);
-#					_aux_get_spade_annotations('damaged_domain',
-#												$transcript_id,
-#												$feature,
-#												$res_damaged_domains,
-#												$ref_output);
-#				}
-#			}
-# 		}
-# 	}
-#}
 # PRINT the alignments from Pfam separetly
 sub get_spade_annotations {
 	my ($transcript_id, $feature, $ref_output, $source) = @_;
@@ -1192,6 +1195,10 @@ sub _aux_get_spade_annotations {
 						$data->{'blocks'}++;	
 					}					
 				}
+				if ( $res->hmm_name ) {
+					$data->{'name'} = $res->hmm_name;
+					$data->{'note'} = $transcript_id;
+				}
 			}
 		}
 		if ( $type eq 'domain' ) {
@@ -1206,8 +1213,8 @@ sub _aux_get_spade_annotations {
 =head2 get_corsair_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_corsair_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -1292,8 +1299,8 @@ sub get_corsair_annotations {
 =head2 get_inertia_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_inertia_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -1420,8 +1427,8 @@ sub _aux_get_inertia_annotations {
 =head2 get_crash_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_crash_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -1550,8 +1557,8 @@ sub get_crash_annotations {
 =head2 get_thump_annotations
 
   Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Transcript
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_thump_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -1710,9 +1717,8 @@ sub _aux_get_thump_annotations {
 
 =head2 get_proteo_annotations
 
-  Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
+  Arg [2]    : APPRIS::Gene
+  Arg [3]    : Object - internal BED variable 
   Example    : $annot = get_proteo_annotations($trans_id, $feat, $ref_out);  
   Description: Retrieves specific annotation.
   Returntype : String or undef
@@ -1758,7 +1764,7 @@ sub get_g_proteo_annotations {
 	# Get annotations
 	while ( my ($pep_seq, $pep_rep) = each(%{$res_peptides}) ) {
 		while ( my ($track, $track_rep) = each(%{$pep_rep}) ) {
-			${$ref_output}->[1]->{'body'} .= $track."\n";
+			${$ref_output}->[1]->{'body'} .= $track."\t".$track_rep."\n";
 		}
 	}
 }
@@ -1874,6 +1880,14 @@ sub _aux_get_g_proteo_annotations {
 						$data->{'blocks'}++;	
 					}
 				}
+				if ( $res->num_experiments ) {
+					$data->{'score'} = $res->num_experiments;
+				}				
+				if ( $res->sequence ) {
+					#$data->{'note'} = $res->sequence;
+					$data->{'name'} = $res->sequence;
+					#$data->{'note'} = $transcript_id;
+				}
 			}
 		}
 		if ( $type eq 'peptides' ) {
@@ -1882,6 +1896,41 @@ sub _aux_get_g_proteo_annotations {
 		}
 	}	
 	return $output;
+}
+
+=head2 get_block_from_exon
+
+  Arg [1]    : Int - start position
+  Arg [2]    : Int - end position
+  Arg [3]    : Int - start position of exon
+  Arg [4]    : Int - end position of exon
+  Example    : get_block_from_exon($e_start, $e_end, $b_start, $b_end);
+  Description: Get the BED block from exon.
+  Returntype : (Int- init, Int- size) or (undef,undef)
+  Exceptions : none
+
+=cut
+
+sub get_block_from_exon {
+	my ($pos_start, $pos_end, $exon_strand, $block_start, $block_end) = @_;
+	my ($init,$length);
+		
+	my ($residue_start);
+	my ($residue_size);
+	my ($residue_end);
+	if ($exon_strand eq '-') {
+		$residue_start = abs($pos_end - $block_start);
+		$residue_size = abs($pos_end - $pos_start) +1;		
+	} else {
+		$residue_start = abs($pos_start - $block_start);
+		$residue_size = abs($pos_start - $pos_end) +1;
+	}		
+	
+	if ( defined $residue_start and defined $residue_size ) {
+		$init = $residue_start;
+		$length = $residue_size;
+	}
+	return ($init, $length);
 }
 
 1;

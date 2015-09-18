@@ -109,11 +109,11 @@ sub main()
 	# Get annotations from given chr
 	$logger->info("-- get annotations from given chromosome: $chr\n");
 	my ($output_report) = get_data_by_chr($registry, $chr);
-	$logger->debug(Dumper($output_report)."\n");
+	$logger->debug("REPORT\n".Dumper($output_report)."\n");
 
 	# Merge annotations
 	my ($merge_outreport) = merge_data($output_report);
-	$logger->debug(Dumper($output_report)."\n");
+	$logger->debug("MERGE_REPORT\n".Dumper($output_report)."\n");
 	
 	# Print annotations
 	if ( defined $merge_outreport ) {
@@ -151,22 +151,20 @@ sub get_data_by_method($$)
 
 	foreach my $gene (@{$chromosome}) {
 		my ($gene_id) = $gene->stable_id;
+		my ($exporter) = APPRIS::Exporter->new();
 		if ($gene and $format eq 'bed') {
-			my ($position) = undef;
-			my ($typehead) = 'bed12_1';
-			my ($exporter) = APPRIS::Exporter->new();
-			$output .= $exporter->get_bed_annotations($gene, $method, $position, $typehead);
+			$output .= $exporter->get_bed_annotations($gene, $method, undef);
+		}
+		elsif ($gene and $format eq 'bed12') {
+			$output .= $exporter->get_bed12_annotations($gene, $method, undef);
 		}
 		elsif ($gene and $format eq 'gtf') {
-			my ($exporter) = APPRIS::Exporter->new();
 			$output .= $exporter->get_gtf_annotations($gene, $method);
 	    }
 		elsif ($gene and $format eq 'gff3') {
-			my ($exporter) = APPRIS::Exporter->new();
 			$output .= $exporter->get_gff3_annotations($gene, $method);
 	    }
 		elsif ($gene and $format eq 'json') {
-			my ($exporter) = APPRIS::Exporter->new();
 			$output .= $exporter->get_json_annotations($gene, $method);
     	}
 	}
@@ -177,48 +175,53 @@ sub merge_data($)
 	my ($inreport) = @_;
 	my ($aux_report,$report);
 	if ( defined $inreport ) {
-		while ( my ($met,$met_out) = each(%{$inreport}) ) {			
-			if ( $met_out ne '' ) {
-				my (
-					$chrom,
-					$chromStart,
-					$chromEnd,
-					$name,
-					$score,
-					$strand,
-					$thickStart,
-					$thickEnd,
-					$reserved,
-					$blockCount,
-					$blockSizes,
-					$chromStarts,
-					$transcripts
-				) = split("\t", $aux_report);
-				my ($idx) = $chrom.":".$chromStart."-".$chromEnd;
-				unless ( $aux_report->{$met}->{$idx} ) {
-					$aux_report->{$met}->{$idx} = {
-							'chrom' 		=> $chrom,
-  							'chromStart'	=> $chromStart,
-  							'chromEnd'		=> $chromEnd,
-  							'name'			=> $name, 
-  							'score'			=> $score, 
-  							'strand'		=> $strand,
-  							'thickStart'	=> $thickStart,
-  							'thickEnd'		=> $thickEnd,
-  							'reserved'		=> $reserved,
-  							'blockCount'	=> $blockCount,
-  							'blockSizes'	=> $blockSizes,
-  							'chromStarts'	=> $chromStarts,
-  							'transcripts'	=> $transcripts
+		while ( my ($met,$met_rept) = each(%{$inreport}) ) {
+			foreach my $met_line ( split("\n",$met_rept) ) {
+				if ( $met_line ne '' ) {
+					my (@met_cols) = split("\t", $met_line);
+					next if ( scalar(@met_cols) < 13);					
+					my (
+						$chrom,
+						$chromStart,
+						$chromEnd,
+						$name,
+						$score,
+						$strand,
+						$thickStart,
+						$thickEnd,
+						$reserved,
+						$blockCount,
+						$blockSizes,
+						$chromStarts,
+						$transcripts
+					) = @met_cols;
+					my ($idx) = $chrom.":".$chromStart."-".$chromEnd;
+					unless ( $aux_report->{$met}->{$idx} ) {
+						$aux_report->{$met}->{$idx} = {
+								'chrom' 		=> $chrom,
+	  							'chromStart'	=> $chromStart,
+	  							'chromEnd'		=> $chromEnd,
+	  							'name'			=> $name, 
+	  							'score'			=> $score, 
+	  							'strand'		=> $strand,
+	  							'thickStart'	=> $thickStart,
+	  							'thickEnd'		=> $thickEnd,
+	  							'reserved'		=> $reserved,
+	  							'blockCount'	=> $blockCount,
+	  							'blockSizes'	=> $blockSizes,
+	  							'chromStarts'	=> $chromStarts,
+	  							'transcripts'	=> $transcripts
+						}
 					}
-				}
-				else {
-					$aux_report->{$met}->{$idx}->{'name'}			.= ';'.$name;
-					$aux_report->{$met}->{$idx}->{'transcripts'}	.= ';'.$transcripts;
+					else {
+						$aux_report->{$met}->{$idx}->{'name'}			.= ';'.$name;
+						$aux_report->{$met}->{$idx}->{'transcripts'}	.= ';'.$transcripts;
+					}
 				}
 			}				
 		}
 	}
+print STDERR "AUX\n".Dumper($aux_report)."\n";
 	if ( defined $aux_report ) {
 		while ( my ($met,$rep) = each(%{$aux_report}) ) {
 			my ($met_out) = '';

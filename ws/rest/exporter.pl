@@ -115,7 +115,7 @@ sub main()
 	my ($format) = $cgi->param('format') || undef ;
 	if (defined $format and ($format ne '')) {
 		$format = lc($format);
-		if (($format ne '') and ( ($format eq 'raw') or ($format eq 'tsv') or ($format eq 'gtf') or ($format eq 'json')  or ($format eq 'gff3') or ($format eq 'bed') ) ) {
+		if (($format ne '') and ( ($format eq 'raw') or ($format eq 'tsv') or ($format eq 'gtf') or ($format eq 'json')  or ($format eq 'gff3') or ($format eq 'bed')  or ($format eq 'bed12') ) ) {
 			$FORMAT = $format;	
 		}
 		else {
@@ -127,12 +127,6 @@ sub main()
 	
 	my ($res) = $cgi->param('res') || undef;
 	
-	my ($typebed) = $cgi->param('typebed') || undef;
-	if (defined $typebed and ($typebed ne '')) {
-		$typebed =~ s/\s*//g;
-		$TYPE_BED = $typebed;
-	}
-
 	# Get features from input
 	my ($features);
 	my ($retriever) = new DBRetriever(
@@ -145,7 +139,7 @@ sub main()
 	);
 		
 	# Export features (db) from format	
-	my ($result) = $retriever->export_features($FORMAT, $METHODS, $ids, $res, $TYPE_BED);
+	my ($result) = $retriever->export_features($FORMAT, $METHODS, $ids, $res);
 	
 	# Everything was OK
 	if ( defined $result and ($result ne '') ) {

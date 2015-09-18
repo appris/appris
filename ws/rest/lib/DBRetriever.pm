@@ -547,7 +547,6 @@ sub export_features
 	my ($methods) = shift;
 	my ($ids) = shift if (@_);
 	my ($res) = shift if (@_);
-	my ($typebed) = shift if (@_);
 	my ($result) = '';
 	my ($features) = $self->get_features($methods, $ids); # if methods is not defined => retrieve all features
 	
@@ -557,7 +556,10 @@ sub export_features
 			$result = $exporter->get_tsv_annotations($features, $methods, $res);
 		}
 		elsif ($format eq 'bed') {
-			$result = $exporter->get_bed_annotations($features, $methods, undef, $typebed);
+			$result = $exporter->get_bed_annotations($features, $methods, undef);
+	    }
+		elsif ($format eq 'bed12') {
+			$result = $exporter->get_bed12_annotations($features, $methods, undef);
 	    }
 		elsif ($format eq 'json') {
 			$result = $exporter->get_json_annotations($features, $methods);
