@@ -1725,7 +1725,7 @@ sub _aux_get_thump_annotations {
 
 =cut
 
-sub get_g_proteo_annotations {
+sub get_proteo_annotations {
 	my ($gene, $ref_output) = @_;
 
 	# Get all peptides per gene
@@ -1742,7 +1742,7 @@ sub get_g_proteo_annotations {
 					foreach my $res (@{$method->peptides}) {
 						my ($pep_seq) = $res->sequence;
 						my ($pep_idx) = $res->start.'-'.$res->end.':'.$res->strand;
-						my ($aux_output) = _aux_get_g_proteo_annotations('peptides',
+						my ($aux_output) = _aux_get_proteo_annotations('peptides',
 																		$transcript_id,
 																		$transcript,
 																		[ $res ]);		
@@ -1769,7 +1769,7 @@ sub get_g_proteo_annotations {
 	}
 }
 
-sub _aux_get_g_proteo_annotations {
+sub _aux_get_proteo_annotations {
 	my ($type, $transcript_id, $feature, $aux_res_list) = @_;
 	my ($output) = '';
 
