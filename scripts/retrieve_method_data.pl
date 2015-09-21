@@ -148,11 +148,8 @@ sub get_data_by_method($$)
 	foreach my $gene (@{$chromosome}) {
 		my ($gene_id) = $gene->stable_id;
 		my ($exporter) = APPRIS::Exporter->new();
-		if ($gene and $format eq 'bed') {
-			$output .= $exporter->get_bed_annotations($gene, $method, undef);
-		}
-		elsif ($gene and $format eq 'bed12') {
-			$output .= $exporter->get_bed12_annotations($gene, $method, undef);
+		if ($gene and ($format eq 'bed' or $format eq 'bed12' ) ){
+			$output .= $exporter->get_bed_annotations($gene, $method, undef, $format);
 		}
 		elsif ($gene and $format eq 'gtf') {
 			$output .= $exporter->get_gtf_annotations($gene, $method);
