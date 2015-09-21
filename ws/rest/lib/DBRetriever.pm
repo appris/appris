@@ -555,11 +555,8 @@ sub export_features
 		if ($format eq 'tsv') {
 			$result = $exporter->get_tsv_annotations($features, $methods, $res);
 		}
-		elsif ($format eq 'bed') {
-			$result = $exporter->get_bed_annotations($features, $methods, undef);
-	    }
-		elsif ($format eq 'bed12') {
-			$result = $exporter->get_bed12_annotations($features, $methods, undef);
+		elsif ( ($format eq 'bed') or ($format eq 'bed12') ) {
+			$result = $exporter->get_bed_annotations($features, $methods, undef, $format);
 	    }
 		elsif ($format eq 'json') {
 			$result = $exporter->get_json_annotations($features, $methods);

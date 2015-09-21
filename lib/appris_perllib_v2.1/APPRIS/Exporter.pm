@@ -283,7 +283,7 @@ sub get_gff3_annotations {
 =cut
 
 sub get_bed_annotations {
-    my ($self, $feature, $sources, $position) = @_;
+    my ($self, $feature, $sources, $position, $format) = @_;
     my ($output) = '';
 
 	# IMPORTANT:
@@ -321,7 +321,7 @@ sub get_bed_annotations {
 	    }		
 	}
 	if (defined $position and ($position ne '')) {
-		$output .= APPRIS::Export::BED::get_annotations($feature, $position, $sources);		
+		$output .= APPRIS::Export::BED::get_annotations($feature, $position, $sources, $format);		
 	}
     else {
 		warning('Argument must be define');
@@ -329,68 +329,68 @@ sub get_bed_annotations {
 	return $output;
 }
 
-=head2 get_bed12_annotations
-
-  Arg [1]    : Listref of APPRIS::Gene or undef
-  Arg [2]    : String - $sources
-               List of sources ('all', ... )
-  Arg [3]    : String - $position (optional)
-               genome position (chr22:20116979-20137016)
-  Example    : $annot = $exporter->get_bed_annotations($feature,'chr22:20116979-20137016','no','appris');
-  Description: Retrieves text as BED format with the annotations.
-  Returntype : String or undef
-  Exceptions : if we cant get the gene or transcript in given coord system
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub get_bed12_annotations {
-    my ($self, $feature, $sources, $position) = @_;
-    my ($output) = '';
-    
-	# IMPORTANT:
-	# If we have a list of objects, BED annotations only for the first transcript.
-	#if ($feature and (ref($feature) eq 'ARRAY') ) { 
-	#	$feature = $feature->[0];
-	#}
-	
-	# Get position if its not defined
-	unless (defined $position) {
-		my ($chr);
-		my ($start);
-		my ($end);
-		if ($feature and (ref($feature) ne 'ARRAY')) {			
-	    	if ($feature->isa("APPRIS::Gene") or $feature->isa("APPRIS::Transcript")) {
-				$chr = $feature->chromosome;
-				$start = $feature->start;
-				$end = $feature->end;	    		
-	    	}
-		}
-		elsif ($feature and (ref($feature) eq 'ARRAY') ) { # in the case that we have a list of objects
-    		foreach my $feat (@{$feature}) {
-	    		if ($feat->isa("APPRIS::Gene") or $feat->isa("APPRIS::Transcript")) {	    			
-					$chr = $feat->chromosome unless (defined $chr);
-					$start = $feat->start unless (defined $start);
-					$end = $feat->end unless (defined $end);
-	    			
-	    			$start = $feat->start if ($feat->start < $start);
-	    			$end = $feat->end if ($feat->end > $end);
-	    		}
-    		}
-		}
-	    if ( defined $chr and defined $start and defined $end ) {
-	    	$position = "$chr:$start\-$end";
-	    }		
-	}
-	if (defined $position and ($position ne '')) {
-		$output .= APPRIS::Export::BED12::get_annotations($feature, $position, $sources);		
-	}
-    else {
-		warning('Argument must be define');
-    }
-	return $output;
-}
+#=head2 get_bed12_annotations
+#
+#  Arg [1]    : Listref of APPRIS::Gene or undef
+#  Arg [2]    : String - $sources
+#               List of sources ('all', ... )
+#  Arg [3]    : String - $position (optional)
+#               genome position (chr22:20116979-20137016)
+#  Example    : $annot = $exporter->get_bed_annotations($feature,'chr22:20116979-20137016','no','appris');
+#  Description: Retrieves text as BED format with the annotations.
+#  Returntype : String or undef
+#  Exceptions : if we cant get the gene or transcript in given coord system
+#  Caller     : general
+#  Status     : Stable
+#
+#=cut
+#
+#sub get_bed12_annotations {
+#    my ($self, $feature, $sources, $position) = @_;
+#    my ($output) = '';
+#    
+#	# IMPORTANT:
+#	# If we have a list of objects, BED annotations only for the first transcript.
+#	#if ($feature and (ref($feature) eq 'ARRAY') ) { 
+#	#	$feature = $feature->[0];
+#	#}
+#	
+#	# Get position if its not defined
+#	unless (defined $position) {
+#		my ($chr);
+#		my ($start);
+#		my ($end);
+#		if ($feature and (ref($feature) ne 'ARRAY')) {			
+#	    	if ($feature->isa("APPRIS::Gene") or $feature->isa("APPRIS::Transcript")) {
+#				$chr = $feature->chromosome;
+#				$start = $feature->start;
+#				$end = $feature->end;	    		
+#	    	}
+#		}
+#		elsif ($feature and (ref($feature) eq 'ARRAY') ) { # in the case that we have a list of objects
+#    		foreach my $feat (@{$feature}) {
+#	    		if ($feat->isa("APPRIS::Gene") or $feat->isa("APPRIS::Transcript")) {	    			
+#					$chr = $feat->chromosome unless (defined $chr);
+#					$start = $feat->start unless (defined $start);
+#					$end = $feat->end unless (defined $end);
+#	    			
+#	    			$start = $feat->start if ($feat->start < $start);
+#	    			$end = $feat->end if ($feat->end > $end);
+#	    		}
+#    		}
+#		}
+#	    if ( defined $chr and defined $start and defined $end ) {
+#	    	$position = "$chr:$start\-$end";
+#	    }		
+#	}
+#	if (defined $position and ($position ne '')) {
+#		$output .= APPRIS::Export::BED12::get_annotations($feature, $position, $sources);		
+#	}
+#    else {
+#		warning('Argument must be define');
+#    }
+#	return $output;
+#}
 
 =head2 get_json_annotations
 
