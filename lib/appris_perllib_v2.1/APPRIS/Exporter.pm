@@ -48,7 +48,7 @@ use APPRIS::Export::GFF3;
 use APPRIS::Export::SEQ;
 use APPRIS::Export::CDS;
 use APPRIS::Export::BED;
-#use APPRIS::Export::BED12;
+use APPRIS::Export::BED12;
 use APPRIS::Export::JSON;
 use APPRIS::Export::SVG;
 use APPRIS::Export::TXT;
@@ -283,7 +283,7 @@ sub get_gff3_annotations {
 =cut
 
 sub get_bed_annotations {
-    my ($self, $feature, $sources, $position, $format) = @_;
+    my ($self, $feature, $sources, $position) = @_;
     my ($output) = '';
 
 	# IMPORTANT:
@@ -321,7 +321,7 @@ sub get_bed_annotations {
 	    }		
 	}
 	if (defined $position and ($position ne '')) {
-		$output .= APPRIS::Export::BED::get_annotations($feature, $position, $sources, $format);		
+		$output .= APPRIS::Export::BED::get_annotations($feature, $position, $sources);		
 	}
     else {
 		warning('Argument must be define');
