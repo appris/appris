@@ -48,7 +48,7 @@ use APPRIS::Export::GFF3;
 use APPRIS::Export::SEQ;
 use APPRIS::Export::CDS;
 use APPRIS::Export::BED;
-use APPRIS::Export::BED12;
+#use APPRIS::Export::BED12;
 use APPRIS::Export::JSON;
 use APPRIS::Export::SVG;
 use APPRIS::Export::TXT;
