@@ -329,8 +329,9 @@ sub get_trans_annotations {
 					);
 				}
 				if ( ($source =~ /spade/) or ($source eq 'all') ) {
-					if ( $source =~ /spade\-([^\,\$]*)/ ) {
-						foreach my $s_name (split('\|', $1)) {
+					if ( $source =~ /spade\:([^\,\$]*)/ ) {
+						while ( $source =~ /spade\:([^\,\$]*)/mg ) {
+							my ($s_name) = $1;
 							if ( $s_name eq 'domain' ) {		
 								get_spade_annotations(	$typebed,
 														$transcript_id,
@@ -1702,8 +1703,7 @@ sub get_spade_annotations {
  		if ( $analysis->spade ) { 			
 	 		my ($method) = $analysis->spade;
 	 		# get residue annotations
-			if ( defined $method->regions ) {
-								
+			if ( defined $method->regions ) {								
 				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
 				my ($res_list) = $method->regions;
 				my ($num_res) = scalar(@{$res_list});
