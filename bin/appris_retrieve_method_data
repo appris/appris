@@ -297,7 +297,7 @@ fi
 # -----------------------------------------------------------------------------
 # Prepare output depending on the type of FORMAT
 echo "================="	
-METHODS_ARR=$( echo ${METHODS} | sed 's/\-[^\-]*\,/\,/g' | tr "," "\n" | uniq )
+METHODS_ARR=$( echo ${METHODS} | tr "," "\n" | uniq )
 for M in ${METHODS_ARR};do	
 	
 	OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
@@ -309,8 +309,9 @@ for M in ${METHODS_ARR};do
 		mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}
 		
 		# Convert to BigBed
-		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb"
-		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb	
+		M2=$( echo $M | sed 's/\-[^\-]*//g')
+		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb"
+		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb	
 	fi
 	
 	# compress outputs for both formats
