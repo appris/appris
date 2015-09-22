@@ -64,7 +64,7 @@ USAGE="
 \t -m [-method]\n
 \t\t Methods which will execute:\n
 \t\t firestar,matador3d,spade,corsair,thump,crash,proteo,appris\n
-\t\t firestar,matador3d,spade:domain,spade:damaged_domain,corsair,thump,crash,proteo,appris\n
+\t\t firestar,matador3d,spade-domain,spade-damaged_domain,corsair,thump,crash,proteo,appris\n
 \n
 \t -f [-format]\n
 \t\t gtf\n
@@ -297,7 +297,7 @@ fi
 # -----------------------------------------------------------------------------
 # Prepare output depending on the type of FORMAT
 echo "================="	
-METHODS_ARR=$( echo ${METHODS} | sed 's/\:[^\:]*\,/\,/g' | tr "," "\n" | uniq )
+METHODS_ARR=$( echo ${METHODS} | sed 's/\-[^\-]*\,/\,/g' | tr "," "\n" | uniq )
 for M in ${METHODS_ARR};do	
 	
 	OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"

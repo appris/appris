@@ -193,7 +193,7 @@ retrieve_method_data
 
 	--chr  <Genomic region>
 	
-	--methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
+	--methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris,spade-domain,spade-damaged_domain'. Default: ALL)>
 
 	--apprisdb-conf <Config file of APPRIS database>
 				

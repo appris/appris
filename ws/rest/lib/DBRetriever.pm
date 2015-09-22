@@ -341,7 +341,7 @@ sub get_features
 	# We the list of methods will be able to contain the type of track: Eg. spade:domain|damaged_domain,firestar
 	my ($methods_str) = '';
 	foreach my $method (split(',', $methods)) {
-		if ( $method =~ /^([^\:|\$]*)/ ) { $methods_str .= $1 . ',' }
+		if ( $method =~ /^([^\-|\$]*)/ ) { $methods_str .= $1 . ',' }
 	}
 	$methods_str =~ s/\,$//;
 	 

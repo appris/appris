@@ -329,8 +329,8 @@ sub get_trans_annotations {
 					);
 				}
 				if ( ($source =~ /spade/) or ($source eq 'all') ) {
-					if ( $source =~ /spade\:([^\,\$]*)/ ) {
-						while ( $source =~ /spade\:([^\,\$]*)/mg ) {
+					if ( $source =~ /spade\-([^\,\$]*)/ ) {
+						while ( $source =~ /spade\-([^\,\$]*)/mg ) {
 							my ($s_name) = $1;
 							if ( $s_name eq 'domain' ) {		
 								get_spade_annotations(	$typebed,
