@@ -1,5 +1,5 @@
 track PrincipalIsoformsAPPRIS
-bigDataUrl appris_method.appris.bed.bb
+bigDataUrl appris_method.appris.bed12.bb
 shortLabel Princ. Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
@@ -21,7 +21,7 @@ noInherit on
 priority 2
 
 	track WholeDomainsAPPRIS
-	bigDataUrl appris_method.spade-domain.bed.bb
+	bigDataUrl appris_method.spade-domain.bed12.bb
 	parent DomainsAPPRIS on
 	shortLabel Whole Domains
 	longLabel APPRIS - whole protein domains
@@ -31,7 +31,7 @@ priority 2
 	priority 1
 
 	track DamagedDomainsAPPRIS
-	bigDataUrl appris_method.spade-damaged_domain.bed.bb
+	bigDataUrl appris_method.spade-damaged_domain.bed12.bb
 	parent DomainsAPPRIS on
 	shortLabel Damaged Domains
 	longLabel APPRIS - damaged protein domains
@@ -41,7 +41,7 @@ priority 2
 	priority 2
 
 track FunctionalResiduesAPPRIS
-bigDataUrl appris_method.firestar.bed.bb
+bigDataUrl appris_method.firestar.bed12.bb
 shortLabel Func. Residues
 longLabel APPRIS - functional residues
 html ../docs/FIRESTAR
@@ -49,3 +49,44 @@ type bigBed 12
 color 244,169,39
 visibility dense
 priority 3
+
+track 3DStructureAPPRIS
+bigDataUrl appris_method.matador3d.bed12.bb
+shortLabel 3D Structure
+longLabel APPRIS - protein structural information
+html ../docs/MATADOR3D
+type bigBed 12
+color 128,0,0
+visibility pack
+priority 4
+
+track SpeciesConservationAPPRIS
+bigDataUrl appris_method.corsair.bed12.bb
+shortLabel Species Conserv
+longLabel APPRIS - species conservation
+html ../docs/CORSAIR
+type bigBed 12
+color 4,95,180
+visibility full
+priority 5
+
+track TransMembraneHelicesAPPRIS
+bigDataUrl appris_method.thump.bed12.bb
+shortLabel TM Helices
+longLabel APPRIS - predictions of trans-membrane helices
+html ../docs/THUMP
+type bigBed 12
+color 245,169,208
+visibility pack
+priority 6
+
+track SignalPeptideAPPRIS
+bigDataUrl appris_method.crash.bed12.bb
+shortLabel Signal Peptide
+longLabel APPRIS - presence and location of signal peptides
+html ../docs/CRASH
+type bigBed 12
+color 153,153,102
+visibility pack
+priority 7
+

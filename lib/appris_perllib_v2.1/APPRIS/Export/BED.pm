@@ -870,7 +870,8 @@ sub get_appris_annotations {
 					my ($res_list) = $feature->exons;
 					my ($data) = _aux_get_appris_annotations($transcript_id,
 																$feature,
-																$res_list);
+																$res_list,
+																$method);
 					if (defined $data ) {
 						if ( $typebed eq 'bed' ) {
 							${$ref_output}->[1]->{'body'} .= print_data($data);
@@ -885,9 +886,8 @@ sub get_appris_annotations {
  	}
 }
 sub _aux_get_appris_annotations {
-	my ($typebed, $transcript_id, $feature, $aux_res_list) = @_;
-	my ($data);
-	
+	my ($transcript_id, $feature, $aux_res_list, $method) = @_;
+	my ($data);	
 	if ( (ref($aux_res_list) eq 'ARRAY') and (scalar(@{$aux_res_list}) > 0) ) {	
 		my ($num_exons) = scalar(@{$aux_res_list});
 		my ($trans_chr) = $feature->chromosome;
@@ -940,6 +940,11 @@ sub _aux_get_appris_annotations {
 			push(@{$data->{'block_starts'}}, $init);
 			push(@{$data->{'block_sizes'}}, $length);
 		}
+		if ( $method->reliability ) {
+			#$data->{'note'} = $method->reliability;
+			$data->{'name'} = $method->reliability;
+			$data->{'note'} = $transcript_id;	
+		}		
  	}
  	return $data;
 }
