@@ -1253,7 +1253,7 @@ sub _aux_get_firestar_annotations {
 									$thick_start = $thick_start;
 								}
 								elsif ( $cds_phase eq '2') {
-									$thick_start = $thick_start +1;
+									$thick_start = $thick_start;
 								}
 							}
 							else {
