@@ -1227,7 +1227,7 @@ sub _aux_get_firestar_annotations {
 				for (my $i = 0; $i < scalar(@sorted_contained_cds); $i++) {
 					my ($cds_out) = $sorted_contained_cds[$i];
 					my ($cds_strand) = $cds_out->strand;
-					my ($cds_phase) = $cds_out->phase;							
+					my ($cds_phase) = $cds_out->phase;
 					if ( scalar(@sorted_contained_cds) == 1 ) { # Residue fulldown in one CDS
 						my ($pos_start) = $res->start;
 						my ($pos_end) = $res->end;
@@ -1249,11 +1249,11 @@ sub _aux_get_firestar_annotations {
 								$pos_end = $res->start;
 								# the residue falls down between two CDS
 								if ( $cds_phase eq '0') {
-									$thick_start = $thick_start;	
+									$thick_start = $thick_start+1;
 								}
-								#elsif ( $cds_phase eq '2') {
-								#	$thick_start = $thick_start +1;
-								#}
+								elsif ( $cds_phase eq '2') {
+									$thick_start = $thick_start +1;
+								}
 							}
 							else {
 								$pos_start = $res->start;
@@ -1266,7 +1266,7 @@ sub _aux_get_firestar_annotations {
 								$pos_end = $cds_out->end;
 								# the residue falls down between two CDS
 								if ( $cds_phase eq '0') {
-									$thick_start = $thick_start;	
+									$thick_start = $thick_start+1;	
 								}
 								elsif ( $cds_phase eq '2') {
 									$thick_start = $thick_start +1;

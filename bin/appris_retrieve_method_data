@@ -312,11 +312,12 @@ for M in ${METHODS_ARR};do
 		M2=$( echo $M | sed 's/\-[^\-]*//g')
 		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb"
 		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_METHOD}.bb	
-	fi
-	
+	fi	
 	# compress outputs for both formats
 	echo "gzip -9 ${OUTPUT_METHOD}"
-	gzip -9 ${OUTPUT_METHOD}	
+	gzip -9 ${OUTPUT_METHOD}
+	
+	echo ""
 done
 echo "================="
 	
