@@ -297,7 +297,7 @@ fi
 # -----------------------------------------------------------------------------
 # Prepare output depending on the type of FORMAT
 echo "================="	
-METHODS_ARR=$( echo ${METHODS} | sed 's/\-[^\-]*\,/\,/g' | tr "," "\n" | uniq )
+METHODS_ARR=$( echo ${METHODS} | sed 's/\:[^\:]*\,/\,/g' | tr "," "\n" | uniq )
 for M in ${METHODS_ARR};do	
 	
 	OUTPUT_METHOD="${OUTPUT_PREFIX}.${M}.${FORMAT}"
