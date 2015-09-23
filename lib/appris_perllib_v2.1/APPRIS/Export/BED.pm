@@ -1184,19 +1184,20 @@ sub _aux_get_firestar_annotations {
 		my ($color) = 0;
 		my ($blocks) = 0;
 		if ( $trans_strand eq '-' ) {
-			#$trans_start = $res_list->[$num_res-1]->start;
-			#$trans_end = $res_list->[0]->end;
 			$trans_start = $res_list->[$num_res-1]->end;
 			$trans_end = $res_list->[0]->start;
-			$thick_start = $trans_start;
-			$thick_end = $trans_end;
 		}
 		else {
 			$trans_start = $res_list->[0]->start; 
 			$trans_end = $res_list->[$num_res-1]->end;
-			$thick_start = $trans_start;
-			$thick_end = $trans_end;
 		}
+		if ( $trans_start > $trans_end ) {
+			my ($d) = $trans_end;
+			$trans_end = $trans_start;
+			$trans_start = $d;
+		}
+		$thick_start = $trans_start;
+		$thick_end = $trans_end;
 		$data = {
 				'chr'			=> $trans_chr,
 				'name'			=> $transcript_id,
@@ -1209,6 +1210,7 @@ sub _aux_get_firestar_annotations {
 				'color'			=> $color,
 				'blocks'		=> $blocks
 		};
+#print STDERR "DATA_I: \n".Dumper($data);		
 		# get block annotations
 		if ( $feature->translate and $feature->translate->cds ) {
 			my ($translation) = $feature->translate;
@@ -1228,12 +1230,16 @@ sub _aux_get_firestar_annotations {
 					my ($cds_out) = $sorted_contained_cds[$i];
 					my ($cds_strand) = $cds_out->strand;
 					my ($cds_phase) = $cds_out->phase;
+#print STDERR "RES: \n".Dumper($res);
 #print STDERR "CDS_PHASE: \n".Dumper($cds_out);
 					if ( scalar(@sorted_contained_cds) == 1 ) { # Residue fulldown in one CDS
 						my ($pos_start) = $res->start;
 						my ($pos_end) = $res->end;
 						my ($pos_strand) = $res->strand;
+#print STDERR "POS: $pos_end-$thick_start\n";
 						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $thick_start, $thick_end);
+						$init = 0; # HARD-CORE
+#print STDERR "INIT: $init\n";
 						push(@{$data->{'block_starts'}}, $init);
 						push(@{$data->{'block_sizes'}}, $length);
 						$data->{'blocks'}++;	
@@ -1278,14 +1284,16 @@ sub _aux_get_firestar_annotations {
 								$pos_end = $res->end;
 							}
 						}
+#print STDERR "POS_M: $pos_start-$pos_end\n";
 						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
+#print STDERR "INIT_M: $init\n";
 						push(@{$data->{'block_starts'}}, $init);
 						push(@{$data->{'block_sizes'}}, $length);
 						$data->{'blocks'}++;
 					}
-#print STDERR "data: \n".Dumper($data);
-
 				}
+#print STDERR "DATA_F: \n".Dumper($data);
+#print STDERR "\n";
 				if ( $res->ligands ) {
 					my ($lig) = '';
 					my (@ligands) = split(/\|/, $res->ligands);
