@@ -4,12 +4,11 @@
         <p>
         <dd>    APPRIS selects a single CDS variant for each gene as the 'PRINCIPAL' isoform based on the range of protein features. Principal isoforms are tagged with the numbers 1 to 5, with 1 being the most reliable. The definition of the flags are as follows:
             <ul>
-                <li><strong>PRINCIPAL:1</strong> <small>This flag corresponds to the older flag "appris_principal"</small>
+                <li><strong>PRINCIPAL:1</strong>
                     <p>Transcript(s) expected to code for the main functional isoform based solely on the core modules in the APPRIS database. The APPRIS core modules map protein structural and functional information and cross-species conservation to the annotated variants.</p>
                 </li>
 
-                <li><strong>PRINCIPAL:2</strong> <small>This flag corresponds to the older flag
-                    "appris_candidate_ccds"</small>
+                <li><strong>PRINCIPAL:2</strong>
                     <p>Where the APPRIS core modules are unable to choose a clear principal variant (approximately 25% of human protein coding genes), the database chooses two or more of the CDS variants as "candidates" to be the principal variant.</p>
                     <p>If one (but no more than one) of these candidates has a distinct CCDS identifier it is selected as
                         the
@@ -17,7 +16,7 @@
                         and GENCODE/Ensembl for that variant, guaranteeing that the variant has cDNA support.</p>
                 </li>
 
-                <li><strong>PRINCIPAL:3</strong> <small>This is a new flag</small>
+                <li><strong>PRINCIPAL:3</strong>
                     <p>Where the APPRIS core modules are unable to choose a clear principal variant and there more than one of the variants have distinct CCDS identifiers,
                         APPRIS selects the variant with lowest CCDS identifier as the principal variant. The lower the CCDS identifier, the earlier it was annotated.</p>
                     <p>Consensus CDS annotated earlier are likely to have more cDNA evidence.
@@ -25,14 +24,12 @@
                     </p>
                 </li>
 
-                <li><strong>PRINCIPAL:4</strong> <small>This flag corresponds to the Ensembl 78 flag
-                    "appris_candidate_longest_ccds"</small>
+                <li><strong>PRINCIPAL:4</strong>
                     <p>    Where the APPRIS core modules are unable to choose a clear principal CDS and there is more than one variant with a distinct (but consecutive) CCDS identifiers,
                         APPRIS selects the longest CCDS isoform as the principal variant.</p>
                 </li>
 
-                <li><strong>PRINCIPAL:5</strong> <small>This flag corresponds to the Ensembl 78 flag
-                    "appris_candidate_longest_seq"</small>
+                <li><strong>PRINCIPAL:5</strong>
                     <p>    Where the APPRIS core modules are unable to choose a clear principal variant and none of the candidate variants are annotated by CCDS,
                         APPRIS selects the longest of the candidate isoforms as the principal variant.</p>
                 </li>
@@ -43,11 +40,11 @@
             the "candidate" variants not chosen as principal are labeled in the following way:
         </dd>
         <ul>
-            <li><strong>ALTERNATIVE:1</strong> <small>This is a new flag (and under review)</small>
+            <li><strong>ALTERNATIVE:1</strong>
                 <p>Candidate transcript(s) models that are conserved in at least three tested non-primate species.</p>
             </li>
 
-            <li><strong>ALTERNATIVE:2</strong> <small>This is a new flag (and under review)</small>
+            <li><strong>ALTERNATIVE:2</strong>
                 <p>Candidate transcript(s) models that appear to be conserved in fewer than three tested non-primate species.</p>
             </li>
         </ul>
