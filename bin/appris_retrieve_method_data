@@ -287,8 +287,8 @@ else
 		CHR="${CHROMOSOME[${i}]}"
 		POSITION="${CHR}"
 		CHR_OUTPUT_PREFIX="${OUTPUT_PREFIX}.${POSITION}.*"
-		echo "rm ${CHR_OUTPUT_PREFIX}"
-		rm ${CHR_OUTPUT_PREFIX}
+		#echo "rm ${CHR_OUTPUT_PREFIX}"
+		#rm ${CHR_OUTPUT_PREFIX}
 	done
 	echo "================="
 	
