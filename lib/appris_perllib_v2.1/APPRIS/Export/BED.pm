@@ -402,7 +402,7 @@ sub get_trans_annotations {
    	}
 }
 
-=head2 print_data
+=head2 print_track
 
   Arg [1]    : Hast - data attributes of bed
                $data = {
@@ -429,13 +429,14 @@ sub get_trans_annotations {
 
 =cut
 
-sub print_data {
-	my ($data) = @_;
+sub print_track {
+	my ($typebed, $data) = @_;
 	
 	my ($output) = '';
 	my ($chromStart) = ($data->{'start'}-1);
 	my ($chromEnd) = $data->{'end'};
 	my ($chromStarts) = 0;
+	my ($block_ascending) = 1;
 
     # Convert position value for BED format
     my ($pos) = $data->{'chr'};
@@ -445,6 +446,16 @@ sub print_data {
 	else {
 		$pos =~ s/\.([0-9]*)/\-$1/g;
 	}
+    
+    # for BED12: Change the Notes for Names
+    if ( $typebed eq 'bed12' ) {
+		if (exists $data->{'note'} and defined $data->{'note'}) {
+			my ($name) = $data->{'name'};
+			my ($note) = $data->{'note'};
+			$data->{'name'} = $note;
+			$data->{'note'} = $name;
+		}    	
+    }
     
 	$output .= $pos."\t".
 				($data->{'start'}-1)."\t".
@@ -488,128 +499,29 @@ sub print_data {
 			@block_starts = reverse @{$data->{'block_starts'}};
 		}
 		
-		foreach my $start (@block_starts) {
+		my ($last_block);
+		for (my $i=0; $i < scalar(@block_starts); $i++ ) {
+			my ($start) = $block_starts[$i];
 			$output .= $start.',';
+			if ( $i == 0 ) { $last_block = $start }
+			else { if ( $last_block <= $start ) { $block_ascending = 0 } } 
 		}
 		$output =~ s/,$/\t/;
 	}
 	
+	if ( $typebed eq 'bed12' ) {
+		if (exists $data->{'note'} and defined $data->{'note'}) {
+			$output .= $data->{'note'}."\t";
+		}
+	}
+	
+	# BED blocks must be in ascending order without overlap.
+	if ( $block_ascending == 0 ) {
+		$output = '#'.$output;
+	}	
 	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
 	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
 		$output = '#'.$output;
-	}
-
-	$output =~ s/\t$/\n/;	
-	return $output;
-}
-
-=head2 print_data
-
-  Arg [1]    : Hast - data attributes of bed
-               $data = {
-                   'chr'          => ''
-                   'start'        => ''
-                   'end'          => ''
-                   'name'         => ''
-                   'score'        => ''
-                   'strand'       => ''
-                   'thick_start'  => ''
-                   'thick_end'    => ''
-                   'color'        => ''
-                   'blocks'       => ''
-                   'block_sizes'  => ''
-                   'block_starts' => ''
-               };
-  Example    : $annot = print_data($data);
-  Description: Print the bed annotations.
-               Chromosome Start End Name Score Strand 
-                 ThickStart ThickEnd Color Blocks BlockSizes BlockStarts
-                 
-                 The start values are -1 due to UCSC Genome browser prints bad
-  Returntype : String or ''
-
-=cut
-
-sub print_data_bed12 {
-	my ($data) = @_;
-	
-	my ($output) = '';
-	my ($chromStart) = ($data->{'start'}-1);
-	my ($chromEnd) = $data->{'end'};
-	my ($chromStarts) = 0;
-
-    # Convert position value for BED format
-    my ($pos) = $data->{'chr'};
-    if ( !($pos =~ /^chr/) ) {
-    	$pos = 'chr'.$pos;
-	}
-	else {
-		$pos =~ s/\.([0-9]*)/\-$1/g;
-	}
-    
-    # For BED12
-	if (exists $data->{'note'} and defined $data->{'note'}) {
-		my ($name) = $data->{'name'};
-		my ($note) = $data->{'note'};
-		$data->{'name'} = $note;
-		$data->{'note'} = $name;
-	}    
-    
-	$output .= $pos."\t".
-				($data->{'start'}-1)."\t".
-				$data->{'end'}."\t".
-				$data->{'name'}."\t";
-
-	if (exists $data->{'score'} and defined $data->{'score'} and
-		exists $data->{'strand'} and defined $data->{'strand'}
-	){
-		$output .= $data->{'score'}."\t".
-							$data->{'strand'}."\t";
-	}
-
-	if (exists $data->{'thick_start'} and defined $data->{'thick_start'} and
-		exists $data->{'thick_end'} and defined $data->{'thick_end'} and
-		exists $data->{'color'} and defined $data->{'color'} and
-		exists $data->{'blocks'} and defined $data->{'blocks'}
-	){
-		$output .= ($data->{'thick_start'}-1)."\t".
-							$data->{'thick_end'}."\t".
-							$data->{'color'}."\t".
-							$data->{'blocks'}."\t";
-	}
-	if (exists $data->{'block_sizes'} and defined $data->{'block_sizes'}) {
-		my (@block_sizes) = @{$data->{'block_sizes'}};
-		if ($data->{'strand'} eq '-') {
-			@block_sizes=reverse @{$data->{'block_sizes'}};
-		}
-		
-		foreach my $size (@block_sizes)
-		{
-			$output .= $size.',';
-			$chromStarts += $size;
-		}
-		$output =~ s/,$/\t/;
-	}
-
-	if (exists $data->{'block_starts'} and defined $data->{'block_starts'}) {
-		my (@block_starts) = @{$data->{'block_starts'}};
-		if($data->{'strand'} eq '-') {
-			@block_starts = reverse @{$data->{'block_starts'}};
-		}
-		
-		foreach my $start (@block_starts) {
-			$output .= $start.',';
-		}
-		$output =~ s/,$/\t/;
-	}
-	
-	if (exists $data->{'note'} and defined $data->{'note'}) {
-		$output .= $data->{'note'}."\t";
-	}
-	
-	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
-	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
-		#$output = '#'.$output;
 	}
 
 	$output =~ s/\t$/\n/;	
@@ -1062,12 +974,7 @@ sub get_appris_annotations {
 #																$res_list,
 #																$method);
 					if (defined $data ) {
-						if ( $typebed eq 'bed' ) {
-							${$ref_output}->[1]->{'body'} .= print_data($data);
-						}
-						elsif ( $typebed eq 'bed12' ) {
-							${$ref_output}->[1]->{'body'} .= print_data_bed12($data);
-						}
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
  			}
@@ -1325,11 +1232,8 @@ sub get_firestar_annotations {
 																$feature,
 																$res_list);
 					if (defined $data ) {
-						if ( $typebed eq 'bed' ) {
-							${$ref_output}->[1]->{'body'} .= print_data($data);
-						}
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
-
 				}
 				elsif ( $typebed eq 'bed12' ) {
 					foreach my $res (@{$res_list}) {
@@ -1337,9 +1241,7 @@ sub get_firestar_annotations {
 																	$feature,
 																	[$res]);
 						if (defined $data ) {
-							if ( $typebed eq 'bed12' ) {
-								${$ref_output}->[1]->{'body'} .= print_data_bed12($data);
-							}
+							${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 						}
 					}
 				}
@@ -1704,12 +1606,7 @@ sub get_matador3d_annotations {
 #											$feature,
 #											$res_mini_exon);
 				if (defined $data ) {
-					if ( $typebed eq 'bed' ) {
-						${$ref_output}->[1]->{'body'} .= print_data($data);
-					}
-					elsif ( $typebed eq 'bed12' ) {
-						${$ref_output}->[1]->{'body'} .= print_data_bed12($data);
-					}
+					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 				}
 			}
  		}
@@ -1949,16 +1846,10 @@ sub get_spade_annotations {
 															'value' => 'hmm_name'
 														}]);
 					if (defined $data_domain ) {
-						my ($d);
-						if ( $typebed eq 'bed' ) { $d = print_data($data_domain) }
-						elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data_domain) }
-						${$ref_output}->[1]->{'body'} .= $d;
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_domain);
 					}
 					if (defined $data_damg_domain ) {
-						my ($d);
-						if ( $typebed eq 'bed' ) { $d = print_data($data_domain) }
-						elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data_domain) }
-						${$ref_output}->[2]->{'body'} .= $d;
+						${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_domain);
 					}
 #					if ( $source eq 'domain' ) {
 #						my ($data) = _aux_get_spade_annotations('domain',
@@ -2237,12 +2128,7 @@ sub get_corsair_annotations {
 #													$feature,
 #													$res_list);
 					if (defined $data ) {
-						if ( $typebed eq 'bed' ) {
-							${$ref_output}->[1]->{'body'} .= print_data($data);
-						}
-						elsif ( $typebed eq 'bed12' ) {
-							${$ref_output}->[1]->{'body'} .= print_data_bed12($data);
-						}
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
  			}
@@ -2350,20 +2236,10 @@ sub get_inertia_annotations {
 														$feature,
 														$res_u_evol);
 				if (defined $data_evol ) {
-					if ( $typebed eq 'bed' ) {
-						${$ref_output}->[1]->{'body'} .= print_data($data_evol);
-					}
-					elsif ( $typebed eq 'bed12' ) {
-						${$ref_output}->[1]->{'body'} .= print_data_bed12($data_evol);
-					}
+					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_evol);
 				}
 				if (defined $data_u_evol ) {
-					if ( $typebed eq 'bed' ) {
-						${$ref_output}->[2]->{'body'} .= print_data($data_u_evol);
-					}
-					elsif ( $typebed eq 'bed12' ) {
-						${$ref_output}->[2]->{'body'} .= print_data_bed12($data_u_evol);
-					}
+					${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_u_evol);
 				}
 			}
  		}
@@ -2595,14 +2471,11 @@ sub get_crash_annotations {
 #																$feature,
 #																[$res]);
 					if (defined $data ) {
-						my ($d);
-						if ( $typebed eq 'bed' ) { $d = print_data($data) }
-						elsif ( $typebed eq 'bed12' ) { $d = print_data($data) }
 						if ( $method->peptide_signal and ($method->peptide_signal eq $APPRIS::Utils::Constant::OK_LABEL) ){
-							${$ref_output}->[1]->{'body'} .= $d if ( defined $d );
+							${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 						}
 						if ( $method->mitochondrial_signal and ($method->mitochondrial_signal eq $APPRIS::Utils::Constant::OK_LABEL) ){
-							${$ref_output}->[2]->{'body'} .= $d if ( defined $d );			
+							${$ref_output}->[2]->{'body'} .= print_track($typebed, $data);			
 						}						
 					}					
 				}
@@ -2765,16 +2638,10 @@ sub get_thump_annotations {
 																$feature,
 																$res_helix_damaged);
 				if (defined $data_helix ) {
-					my ($d);
-					if ( $typebed eq 'bed' ) { $d = print_data($data_helix) }
-					elsif ( $typebed eq 'bed12' ) { $d = print_data($data_helix) }
-					${$ref_output}->[1]->{'body'} .= $d;
+					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_helix);
 				}					
 				if (defined $data_damg_helix ) {
-					my ($d);
-					if ( $typebed eq 'bed' ) { $d = print_data($data_damg_helix) }
-					elsif ( $typebed eq 'bed12' ) { $d = print_data($data_damg_helix) }
-					${$ref_output}->[2]->{'body'} .= $d;
+					${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_helix);
 				}	
 #				my ($data) = _aux_get_thump_annotations(	$transcript_id,
 #															$feature,
@@ -3111,12 +2978,7 @@ sub get_proteo_annotations {
 #													$feature,
 #													[$res]);
 					if (defined $data ) {
-						if ( $typebed eq 'bed' ) {
-							${$ref_output}->[1]->{'body'} .= print_data($data);
-						}
-						elsif ( $typebed eq 'bed12' ) {
-							${$ref_output}->[1]->{'body'} .= print_data_bed12($data);
-						}
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}													
 				}
 			}
