@@ -504,7 +504,7 @@ sub print_track {
 			my ($start) = $block_starts[$i];
 			$output .= $start.',';
 			if ( $i == 0 ) { $last_block = $start }
-			else { if ( $last_block > $start ) { $block_ascending = 0 } } 
+			else { if ( $last_block > $start ) { $block_ascending = 0 } $last_block = $start } 
 		}
 		$output =~ s/,$/\t/;
 	}
