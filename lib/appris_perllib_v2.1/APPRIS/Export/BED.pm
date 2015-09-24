@@ -1940,7 +1940,7 @@ sub get_spade_annotations {
 						push(@{$res_damaged_domains}, $res);
 					}
 					my ($data_domain);
-					if ( $source eq 'domain' ) {
+					if ( ($source eq 'domain') or ($source eq 'spade') ) {
 						$data_domain = extract_track_region( $transcript_id,
 															$feature,
 															$res_domains,
@@ -1950,7 +1950,7 @@ sub get_spade_annotations {
 															}]);						
 					}
 					my ($data_damg_domain);
-					if ( $source eq 'damaged_domain' ) {					
+					if ( ($source eq 'damaged_domain') or ($source eq 'spade') ) {
 						$data_damg_domain = extract_track_region( $transcript_id,
 															$feature,
 															$res_damaged_domains,
