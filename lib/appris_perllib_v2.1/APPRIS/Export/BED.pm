@@ -428,18 +428,133 @@ sub get_trans_annotations {
   Returntype : String or ''
 
 =cut
-
+#sub print_track {
+#	my ($typebed, $data) = @_;
+#	
+#	my ($output) = '';
+#	my ($chromStart) = ($data->{'start'}-1);
+#	my ($chromEnd) = $data->{'end'};
+#	my ($chromStarts, $blockSizes_last, $chromStarts_last) = (0,0,0);	
+#	my ($block_ascending) = 1;
+#
+#    # Convert position value for BED format
+#    my ($pos) = $data->{'chr'};
+#    if ( !($pos =~ /^chr/) ) {
+#    	$pos = 'chr'.$pos;
+#	}
+#	else {
+#		$pos =~ s/\.([0-9]*)/\-$1/g;
+#	}
+#    
+#    # for BED12: Change the Notes for Names
+#    if ( $typebed eq 'bed12' ) {
+#		if (exists $data->{'note'} and defined $data->{'note'}) {
+#			my ($name) = $data->{'name'};
+#			my ($note) = $data->{'note'};
+#			$data->{'name'} = $note;
+#			$data->{'note'} = $name;
+#		}    	
+#    }
+#    
+#	$output .= $pos."\t".
+#				($data->{'start'}-1)."\t".
+#				$data->{'end'}."\t".
+#				$data->{'name'}."\t";
+#
+#	if (exists $data->{'score'} and defined $data->{'score'} and
+#		exists $data->{'strand'} and defined $data->{'strand'}
+#	){
+#		$output .= $data->{'score'}."\t".
+#							$data->{'strand'}."\t";
+#	}
+#
+#	if (exists $data->{'thick_start'} and defined $data->{'thick_start'} and
+#		exists $data->{'thick_end'} and defined $data->{'thick_end'} and
+#		exists $data->{'color'} and defined $data->{'color'} and
+#		exists $data->{'blocks'} and defined $data->{'blocks'}
+#	){
+#		$output .= ($data->{'thick_start'}-1)."\t".
+#							$data->{'thick_end'}."\t".
+#							$data->{'color'}."\t".
+#							$data->{'blocks'}."\t";
+#	}
+#	if (exists $data->{'block_sizes'} and defined $data->{'block_sizes'}) {
+#		my (@block_sizes) = @{$data->{'block_sizes'}};
+#		if ($data->{'strand'} eq '-') {
+#			@block_sizes=reverse @{$data->{'block_sizes'}};
+#		}
+#		
+#		foreach my $size (@block_sizes)
+#		{
+#			$output .= $size.',';
+#			$chromStarts += $size;
+#		}
+#		$blockSizes_last = $block_sizes[scalar(@block_sizes)-1];		
+#		$output =~ s/,$/\t/;
+#	}
+#
+#	if (exists $data->{'block_starts'} and defined $data->{'block_starts'}) {
+#		my (@block_starts) = @{$data->{'block_starts'}};
+#		if($data->{'strand'} eq '-') {
+#			@block_starts = reverse @{$data->{'block_starts'}};
+#		}
+#		
+#		my ($last_block);
+#		for (my $i=0; $i < scalar(@block_starts); $i++ ) {
+#			my ($start) = $block_starts[$i];
+#			$output .= $start.',';
+#			#$chromStarts += $start;
+#			if ( $i == 0 ) { $last_block = $start }
+#			else { if ( $last_block > $start ) { $block_ascending = 0 } $last_block = $start } 
+#		}
+#		$chromStarts_last = $block_starts[scalar(@block_starts)-1];		
+#		$output =~ s/,$/\t/;
+#	}
+#	
+#	if ( $typebed eq 'bed12' ) {
+#		if (exists $data->{'note'} and defined $data->{'note'}) {
+#			$output .= $data->{'note'}."\t";
+#		}
+#	}
+#	
+#	# BED blocks must be in ascending order without overlap.
+#	if ( $block_ascending == 0 ) {
+#		$output = '1#'.$output;
+#	}	
+#	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
+#	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
+#		$output = '2#'.$output;
+#	}
+#	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd:
+#	unless ( ($chromStart + $blockSizes_last + $chromStarts_last ) == $chromEnd ) {
+#		$output = '3#'.$output;
+#	}
+#
+#	$output =~ s/\t$/\n/;	
+#	return $output;
+#}
 sub print_track {
 	my ($typebed, $data) = @_;
 	
 	my ($output) = '';
+    my ($pos) = $data->{'chr'};
 	my ($chromStart) = ($data->{'start'}-1);
 	my ($chromEnd) = $data->{'end'};
+	my ($name) = $data->{'name'}; $name =~ s/\s/\_/g;
+	my ($score) = (exists $data->{'score'} and defined $data->{'score'}) ? $data->{'score'} : undef;
+	my ($strand) = (exists $data->{'strand'} and defined $data->{'strand'}) ? $data->{'strand'} : undef;
+	my ($thick_start) = (exists $data->{'thick_start'} and defined $data->{'thick_start'}) ? ($data->{'thick_start'}-1) : undef;
+	my ($thick_end) = (exists $data->{'thick_end'} and defined $data->{'thick_end'}) ? $data->{'thick_end'} : undef;
+	my ($color) = (exists $data->{'color'} and defined $data->{'color'}) ? $data->{'color'} : undef;
+	my ($blocks) = (exists $data->{'blocks'} and defined $data->{'blocks'}) ? $data->{'blocks'} : undef;
+	my ($block_sizes) = (exists $data->{'block_sizes'} and defined $data->{'block_sizes'}) ? $data->{'block_sizes'} : undef;
+	my ($block_starts) = (exists $data->{'block_starts'} and defined $data->{'block_starts'}) ? $data->{'block_starts'} : undef;
+	my ($note) = (exists $data->{'note'} and defined $data->{'note'}) ? $data->{'note'} : undef; $note =~ s/\s/\_/g;
+	
 	my ($chromStarts, $blockSizes_last, $chromStarts_last) = (0,0,0);	
 	my ($block_ascending) = 1;
 
     # Convert position value for BED format
-    my ($pos) = $data->{'chr'};
     if ( !($pos =~ /^chr/) ) {
     	$pos = 'chr'.$pos;
 	}
@@ -449,86 +564,72 @@ sub print_track {
     
     # for BED12: Change the Notes for Names
     if ( $typebed eq 'bed12' ) {
-		if (exists $data->{'note'} and defined $data->{'note'}) {
-			my ($name) = $data->{'name'};
-			my ($note) = $data->{'note'};
-			$data->{'name'} = $note;
-			$data->{'note'} = $name;
+		if ( defined $note and defined $name ) {
+			my ($na) = $name;
+			my ($no) = $note;
+			$name = $no;
+			$note = $na;
 		}    	
     }
     
-	$output .= $pos."\t".
-				($data->{'start'}-1)."\t".
-				$data->{'end'}."\t".
-				$data->{'name'}."\t";
+	$output .= 	$pos."\t".
+				$chromStart."\t".
+				$chromEnd."\t".
+				$name."\t";
 
-	if (exists $data->{'score'} and defined $data->{'score'} and
-		exists $data->{'strand'} and defined $data->{'strand'}
-	){
-		$output .= $data->{'score'}."\t".
-							$data->{'strand'}."\t";
+	if ( defined $score and defined $strand ){
+		$output .= 	$score."\t".
+					$strand."\t";
 	}
 
-	if (exists $data->{'thick_start'} and defined $data->{'thick_start'} and
-		exists $data->{'thick_end'} and defined $data->{'thick_end'} and
-		exists $data->{'color'} and defined $data->{'color'} and
-		exists $data->{'blocks'} and defined $data->{'blocks'}
-	){
-		$output .= ($data->{'thick_start'}-1)."\t".
-							$data->{'thick_end'}."\t".
-							$data->{'color'}."\t".
-							$data->{'blocks'}."\t";
+	if (defined $thick_start and defined $thick_end and defined $color and defined $blocks ){
+		$output .= 	$thick_start."\t".
+					$thick_end."\t".
+					$color."\t".
+					$blocks."\t";
 	}
-	if (exists $data->{'block_sizes'} and defined $data->{'block_sizes'}) {
-		my (@block_sizes) = @{$data->{'block_sizes'}};
-		if ($data->{'strand'} eq '-') {
-			@block_sizes=reverse @{$data->{'block_sizes'}};
-		}
-		
-		foreach my $size (@block_sizes)
-		{
+	if ( defined $block_sizes ) {
+		my (@block_sizes) = @{$block_sizes};
+		if ( $strand eq '-') { @block_sizes=reverse @{$block_sizes} }		
+		foreach my $size (@block_sizes) {
 			$output .= $size.',';
-			#$chromStarts += $size;
+			$chromStarts += $size;
 		}
 		$blockSizes_last = $block_sizes[scalar(@block_sizes)-1];		
 		$output =~ s/,$/\t/;
 	}
 
-	if (exists $data->{'block_starts'} and defined $data->{'block_starts'}) {
-		my (@block_starts) = @{$data->{'block_starts'}};
-		if($data->{'strand'} eq '-') {
-			@block_starts = reverse @{$data->{'block_starts'}};
-		}
-		
+	if ( defined $block_starts ) {
+		my (@block_starts) = @{$block_starts};
+		if ( $strand eq '-') { @block_starts = reverse @{$block_starts} }		
 		my ($last_block);
 		for (my $i=0; $i < scalar(@block_starts); $i++ ) {
 			my ($start) = $block_starts[$i];
 			$output .= $start.',';
-			$chromStarts += $start;			
 			if ( $i == 0 ) { $last_block = $start }
-			else { if ( $last_block > $start ) { $block_ascending = 0 } $last_block = $start } 
+			else { if ( $last_block >= $start ) { $block_ascending = 0 } $last_block = $start } 
 		}
 		$chromStarts_last = $block_starts[scalar(@block_starts)-1];		
 		$output =~ s/,$/\t/;
 	}
 	
 	if ( $typebed eq 'bed12' ) {
-		if (exists $data->{'note'} and defined $data->{'note'}) {
-			$output .= $data->{'note'}."\t";
+		if ( defined $note ) {
+			$output .= $note."\t";
 		}
 	}
 	
 	# BED blocks must be in ascending order without overlap.
 	if ( $block_ascending == 0 ) {
-		$output = '#'.$output;
+		$output = '1#'.$output;
 	}	
 	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
 	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
-		$output = '#'.$output;
+		$output = '2#'.$output;
 	}
 	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd:
 	unless ( ($chromStart + $blockSizes_last + $chromStarts_last ) == $chromEnd ) {
-		$output = '#'.$output;
+		$output = '3#'.$output;
 	}
 
 	$output =~ s/\t$/\n/;	
