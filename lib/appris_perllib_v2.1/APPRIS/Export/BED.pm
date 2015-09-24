@@ -551,8 +551,8 @@ sub print_track {
 	my ($block_starts) = (exists $data->{'block_starts'} and defined $data->{'block_starts'}) ? $data->{'block_starts'} : undef;
 	my ($note) = (exists $data->{'note'} and defined $data->{'note'}) ? $data->{'note'} : undef; $note =~ s/\s/\_/g;
 	
-	my ($chromStarts, $blockSizes_last, $chromStarts_last) = (0,0,0);	
-	my ($block_ascending) = 1;
+	my ($chromStarts, $blockSizes_last, $chromStarts_first, $chromStarts_last) = (0,0,0,0);	
+	my ($block_ascending_notoverlap) = 1;
 
     # Convert position value for BED format
     if ( !($pos =~ /^chr/) ) {
@@ -588,9 +588,10 @@ sub print_track {
 					$color."\t".
 					$blocks."\t";
 	}
+	my (@block_sizes);
 	if ( defined $block_sizes ) {
-		my (@block_sizes) = @{$block_sizes};
-		if ( $strand eq '-') { @block_sizes=reverse @{$block_sizes} }		
+		if ( $strand eq '-') { @block_sizes=reverse @{$block_sizes} }
+		else { @block_sizes = @{$block_sizes} }		
 		foreach my $size (@block_sizes) {
 			$output .= $size.',';
 			$chromStarts += $size;
@@ -598,17 +599,19 @@ sub print_track {
 		$blockSizes_last = $block_sizes[scalar(@block_sizes)-1];		
 		$output =~ s/,$/\t/;
 	}
-
+	my (@block_starts);
 	if ( defined $block_starts ) {
-		my (@block_starts) = @{$block_starts};
-		if ( $strand eq '-') { @block_starts = reverse @{$block_starts} }		
-		my ($last_block);
+		if ( $strand eq '-') { @block_starts = reverse @{$block_starts} }
+		else { @block_starts = @{$block_starts} }		
 		for (my $i=0; $i < scalar(@block_starts); $i++ ) {
-			my ($start) = $block_starts[$i];
-			$output .= $start.',';
-			if ( $i == 0 ) { $last_block = $start }
-			else { if ( $last_block >= $start ) { $block_ascending = 0 } $last_block = $start } 
+			$output .= $block_starts[$i].',';
+			if ( $i > 0 ) {
+				if ( ($block_starts[$i-1] + $block_sizes[$i-1]) > $block_starts[$i] ) {
+					$block_ascending_notoverlap = 0
+				}
+			} 
 		}
+		$chromStarts_first = $block_starts[0];
 		$chromStarts_last = $block_starts[scalar(@block_starts)-1];		
 		$output =~ s/,$/\t/;
 	}
@@ -620,16 +623,20 @@ sub print_track {
 	}
 	
 	# BED blocks must be in ascending order without overlap.
-	if ( $block_ascending == 0 ) {
-		$output = '#'.$output;
+	if ( $block_ascending_notoverlap == 0 ) {
+		$output = '#1# '.$output;
 	}	
-	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
-	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
-		$output = '#'.$output;
+	# BED chromStarts[0] = 1, must be 0 so that (chromStart + chromStarts[0]) equals chromStart.
+	unless ( ($chromStart + $chromStarts_first) == $chromStart ) {
+		$output = '#2# '.$output;
 	}
-	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd:
+	# BED chromStarts[i]+chromStart must be less or equal than chromEnd.
+	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
+		$output = '#3# '.$output;
+	}
+	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd.
 	unless ( ($chromStart + $blockSizes_last + $chromStarts_last ) == $chromEnd ) {
-		$output = '#'.$output;
+		$output = '#4# '.$output;
 	}
 
 	$output =~ s/\t$/\n/;	
