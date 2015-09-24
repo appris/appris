@@ -1,4 +1,4 @@
-#genome hg38
+genome hg38
 trackDb hg38/trackDb.txt
 
 genome hg19
