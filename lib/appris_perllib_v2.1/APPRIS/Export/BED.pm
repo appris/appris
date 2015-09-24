@@ -621,15 +621,15 @@ sub print_track {
 	
 	# BED blocks must be in ascending order without overlap.
 	if ( $block_ascending == 0 ) {
-		$output = '1#'.$output;
+		$output = '#'.$output;
 	}	
 	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
 	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
-		$output = '2#'.$output;
+		$output = '#'.$output;
 	}
 	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd:
 	unless ( ($chromStart + $blockSizes_last + $chromStarts_last ) == $chromEnd ) {
-		$output = '3#'.$output;
+		$output = '#'.$output;
 	}
 
 	$output =~ s/\t$/\n/;	
