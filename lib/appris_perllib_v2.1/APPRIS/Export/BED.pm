@@ -1073,10 +1073,6 @@ sub get_appris_annotations {
 					my ($data) = extract_track_cds($transcript_id,
 													$feature,
 													$res_list);
-#					my ($data) = _aux_get_appris_annotations($transcript_id,
-#																$feature,
-#																$res_list,
-#																$method);
 					if (defined $data ) {
 						if ( $method->reliability ) {
 							$data->{'name'} = $method->reliability;
@@ -1449,7 +1445,6 @@ sub _aux_get_firestar_annotations {
 						my ($pos_end) = $cds_out->end;
 						my ($thick_start) = $data->{'thick_start'};
 						my ($thick_end) = $data->{'thick_end'};
-						my ($init, $length);
 						if ( $i==0 ) {
 							if ($trans_strand eq '-') {
 								$pos_start = $cds_out->start;
@@ -1466,7 +1461,7 @@ sub _aux_get_firestar_annotations {
 								$pos_start = $res->start;
 								$pos_end = $cds_out->end;
 							}
-							($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
+							
 						}
 						elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
 							if ( $trans_strand eq '-' ) {
@@ -1484,9 +1479,8 @@ sub _aux_get_firestar_annotations {
 								$pos_start = $cds_out->start;
 								$pos_end = $res->end;
 							}
-							($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
-#							$init = 0; # HARD-CORE
 						}
+						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
 #print STDERR "POS_M: $pos_start-$pos_end\n";
 #print STDERR "INIT_M: $init\n";
 						push(@{$data->{'block_starts'}}, $init);
@@ -1712,10 +1706,6 @@ sub get_matador3d_annotations {
 														'name' => 'note',
 														'value' => 'pdb_id'
 													}]);
-#				my ($data) = _aux_get_matador3d_annotations('mini-exon',
-#											$transcript_id,
-#											$feature,
-#											$res_mini_exon);
 				if (defined $data ) {
 					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 				}
@@ -1962,52 +1952,6 @@ sub get_spade_annotations {
 					if (defined $data_damg_domain ) {
 						${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_domain);
 					}
-#					if ( $source eq 'domain' ) {
-#						my ($data) = _aux_get_spade_annotations('domain',
-#													$transcript_id,
-#													$feature,
-#													$res_domains);
-#						if (defined $data ) {
-#							my ($d);
-#							if ( $typebed eq 'bed' ) { $d = print_data($data) }
-#							elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data) }
-#							${$ref_output}->[1]->{'body'} .= $d;
-#						}
-#					}
-#					elsif ( $source eq 'damaged_domain' ) {
-#						my ($data) = _aux_get_spade_annotations('damaged_domain',
-#													$transcript_id,
-#													$feature,
-#													$res_damaged_domains);
-#						if (defined $data ) {
-#							my ($d);
-#							if ( $typebed eq 'bed' ) { $d = print_data($data) }
-#							elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data) }
-#							${$ref_output}->[2]->{'body'} .= $d;
-#						}
-#					}
-#					else {
-#						my ($data) = _aux_get_spade_annotations('domain',
-#													$transcript_id,
-#													$feature,
-#													$res_domains);
-#						if (defined $data ) {
-#							my ($d);
-#							if ( $typebed eq 'bed' ) { $d = print_data($data) }
-#							elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data) }
-#							${$ref_output}->[1]->{'body'} .= $d;
-#						}
-#						my ($data2) = _aux_get_spade_annotations('damaged_domain',
-#													$transcript_id,
-#													$feature,
-#													$res_damaged_domains);
-#						if (defined $data2 ) {
-#							my ($d);
-#							if ( $typebed eq 'bed' ) { $d = print_data($data2) }
-#							elsif ( $typebed eq 'bed12' ) { $d = print_data_bed12($data2) }
-#							${$ref_output}->[2]->{'body'} .= $d;
-#						}
-#					}
 				}
 			}
  		}
@@ -2235,9 +2179,6 @@ sub get_corsair_annotations {
 					my ($data) = extract_track_cds($transcript_id,
 													$feature,
 													$res_list);
-#					my ($data) = _aux_get_corsair_annotations($transcript_id,
-#													$feature,
-#													$res_list);
 					if (defined $data ) {
 						$data->{'note'} = 'Species Conserv';
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
@@ -2579,9 +2520,6 @@ sub get_crash_annotations {
 					my ($data) = extract_track_region(	$transcript_id,
 														$feature,
 														[$res]);
-#					my ($data) = _aux_get_crash_annotations($transcript_id,
-#																$feature,
-#																[$res]);
 					if (defined $data ) {
 						$data->{'note'} = 'Signal Peptide';
 						if ( $method->peptide_signal and ($method->peptide_signal eq $APPRIS::Utils::Constant::OK_LABEL) ){
@@ -2754,28 +2692,10 @@ sub get_thump_annotations {
 					$data_helix->{'note'} = 'TMHelices';					
 					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_helix);
 				}					
-				if (defined $data_damg_helix ) {
-					$data_helix->{'note'} = 'Damaged TMHelices';					
-					${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_helix);
-				}	
-#				my ($data) = _aux_get_thump_annotations(	$transcript_id,
-#															$feature,
-#															$res_helix);
-#				my ($data2) = _aux_get_thump_annotations(	$transcript_id,
-#															$feature,
-#															$res_helix_damaged);
-#				if (defined $data ) {
-#					my ($d);
-#					if ( $typebed eq 'bed' ) { $d = print_data($data) }
-#					elsif ( $typebed eq 'bed12' ) { $d = print_data($data) }
-#					${$ref_output}->[1]->{'body'} .= $d;
-#				}					
-#				if (defined $data2 ) {
-#					my ($d);
-#					if ( $typebed eq 'bed' ) { $d = print_data($data2) }
-#					elsif ( $typebed eq 'bed12' ) { $d = print_data($data2) }
-#					${$ref_output}->[1]->{'body'} .= $d;
-#				}					
+				#if (defined $data_damg_helix ) {
+				#	$data_damg_helix->{'note'} = 'Damaged TMHelices';					
+				#	${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_helix);
+				#}
 			}
  		}
  	}
