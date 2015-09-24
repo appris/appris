@@ -120,15 +120,15 @@ export PERL5LIB="${PERL5LIB}:${APPRIS_PERL_LIB}:${APPRIS_MODULES_PERL_LIB}"
 # Setting up the ENSEMBL API #
 # ---------------------------#
 
-#module load ensembl/ensembl80
+#module load ensembl/ensembl81
 
-export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl80/ensembl/modules/:${PERL5LIB}"
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl/modules/:${PERL5LIB}"
 
-export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl80/ensembl-compara/modules/:${PERL5LIB}"
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-compara/modules/:${PERL5LIB}"
 
-export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl80/ensembl-variation/modules/:${PERL5LIB}"
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-variation/modules/:${PERL5LIB}"
 
-export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl80/ensembl-functgenomics/modules/:${PERL5LIB}"
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-functgenomics/modules/:${PERL5LIB}"
 
 # ------------------#
 # Add bin into path #
