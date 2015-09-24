@@ -4,7 +4,7 @@ table hg19APPRISspade
   string 			chrom;			"Reference sequence chromosome"
   uint    			chromStart;		"Start position of feature on chromosome"
   uint    			chromEnd;		"End position of feature on chromosome"
-  string  			name;			"Ensembl transcript ID"
+  lstring  			name;			"Ensembl transcript ID"
   uint    			score;			"Score from 0-1000"
   char[1]			strand;			"+ or - for strand"
   uint   			thickStart;		"Coding region start"
