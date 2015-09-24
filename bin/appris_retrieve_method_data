@@ -310,7 +310,7 @@ for M in ${METHODS_ARR};do
 		
 		# Convert to BigBed
 		M2=$( echo $M | sed 's/\-[^\-]*//g')
-		OUTPUT_BB=$( echo $OUTPUT_METHOD | sed 's/bed12//g' | sed 's/bed//g' )
+		OUTPUT_BB=$( echo $OUTPUT_METHOD | sed 's/\.bed12//g' | sed 's/\.bed//g' )
 		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_BB}.bb"
 		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_BB}.bb	
 	fi	
