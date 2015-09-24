@@ -3,6 +3,26 @@
     <title>{APPRIS} - Annotating principal splice isoforms</title>
     <meta name="description" content="{APPRIS} - Annotating principal splice isoforms">
     <meta name="author" content="Jose Rodriguez, CNIO-INB">
+    <style type="text/css">
+        .firestar {
+            color: rgb(244,169,39);
+        }
+        .matador3d {
+            color: rgb(128,0,0);
+        }
+        .spade {
+            color: rgb(164,189,83);
+        }
+        .corsair {
+            color: rgb(4,95,180);
+        }
+        .thump {
+            color: rgb(245,169,208);
+        }
+        .crash {
+            color: rgb(153,153,102);
+        }
+    </style>
 </head>
 
 <body>
@@ -31,30 +51,30 @@
 </ul>
 <img src="img/APPRIS_analysis.png" width="50%" style="display: block; margin-left: auto; margin-right: auto">
 
-<h4>firestar: Functionally Important Residues</h4>
+<h4 class="firestar">firestar: Functionally Important Residues</h4>
 <p><a href="http://firedb.bioinfo.cnio.es/Php/FireStar.php" target="_blank">firestar</a> predicts functionally important residues based on the <a href="http://firedb.bioinfo.cnio.es/Php/FireDB.php" target="_blank">fireDB</a> database. The predictions are based on the local evaluation of alignments between the query sequence and the structures with functional information that are stored in FireDB. The reliability of predictions is assessed with <a href="http://firedb.bioinfo.cnio.es/Php/square.php" target="_blank">SQUARE</a> and the functional information is highlighted along with a reliability score.</p>
 <p>Functional residues are highly conserved, even across large evolutionary distances. Since these residues are unlikely to have arisen by chance we can also use this to help determine the principal isoform.</p>
 <p>Variants that have "lost" conserved functional residues are unlikely to be the principal isoform.</p>
 
-<h4>Matador3D: Protein structural information</h4>
+<h4 class="matador3d">Matador3D: Protein structural information</h4>
 <p>Protein structural information is analysed with Matador3D. In practice variant sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>.</p>
 <p>Protein structure is much more conserved than sequence and isoforms with large inserts or deletions relative to homologous crystal structures are also not likely to be principal.</p>
 
-<h4>SPADE: Scanning Pfam Alignments for Damaged Entities</h4>
+<h4 class="spade">SPADE: Scanning Pfam Alignments for Damaged Entities</h4>
 <p>Proteins are generally comprised of one or more functional regions commonly termed domains. Identifying the functional domains present in a variant can provide insights into the function and to determine the most likely principal isoform.</p>
 <p>The presence of functional domains is analysed with <a href="http://pfam.sanger.ac.uk" target="_blank">Pfamscan</a>.</p>
 <p>Transcripts that have "lost" conserved functional domains are unlikely to be principal isoforms.</p>
 
-<h4>CORSAIR: Species conservation</h4>
+<h4 class="corsair">CORSAIR: Species conservation</h4>
 <p>CORSAIR carries out <a href="http://blast.ncbi.nlm.nih.gov/" target="_blank">BLAST</a> searches against
     vertebrates to determine the most likely principal isoform. The method counts the number of species that align correctly and without gaps for each variant.</p>
 <p>Transcripts that are conserved over greater evolutionary distances are more likely to be the main variant.</p>
 
-<h4>THUMP: Detecting reliable trans-membrane helices</h4>
+<h4 class="thump">THUMP: Detecting reliable trans-membrane helices</h4>
 <p>THUMP makes unanimous predictions of trans-membrane helices using three different methods: <a
         href="http://bioinf.cs.ucl.ac.uk/psipred" target="_blank">MEMSAT 3.0</a>, <a href="http://phobius.sbc.su.se/" target="_blank">Phobius</a>, and <a href="http://topcons.cbr.su.se/index.php?about=proprodiv" target="_blank">PRODIV</a>. A helix has to be predicted by all three methods to be considered reliable.</p><p>Transcripts that have "lost" trans-membrane helices are less likely to be the principal isoform.</p>
 
-<h4>CRASH: Signal Peptide and Mitochondrial Signal Sequences.</h4>
+<h4 class="crash">CRASH: Signal Peptide and Mitochondrial Signal Sequences.</h4>
 <p>The presence and location of signal peptides and cleavage sites in amino acid sequences are analysed with <a
         href="http://www.cbs.dtu.dk/services/SignalP/" target="_blank">SignalP</a> program. And
     <a href="http://www.cbs.dtu.dk/services/TargetP/" target="_blank">TargetP</a> predicts the sub-cellular location of eukaryotic proteins. CRASH uses a rule-based analysis of these two programs to select only reliable predictions.</p>
