@@ -1,5 +1,5 @@
 genome hg38
-trackDb trackDb.txt
+trackDb trackDb.hg38.txt
 
 genome hg19
-trackDb trackDb.txt
+trackDb trackDb.hg19.txt

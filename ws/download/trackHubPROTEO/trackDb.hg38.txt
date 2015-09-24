@@ -1,8 +1,8 @@
 track ProteomicEvidenceCNIO
-bigDataUrl appris_method.proteo.bb
+bigDataUrl hg38/appris_method.proteo.bb
 shortLabel Peptide evidences CNIO
 longLabel Peptides detected from a re-analysis of multiple experiments and databases
-html ../docs/PROTEO
+html docs/PROTEO
 type bigBed 12
 color 153,102,0
 visibility full
