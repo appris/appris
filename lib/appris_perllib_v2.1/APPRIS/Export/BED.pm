@@ -1939,20 +1939,26 @@ sub get_spade_annotations {
 					elsif ( $res->type_domain eq 'domain_wrong' ) {
 						push(@{$res_damaged_domains}, $res);
 					}
-					my ($data_domain) = extract_track_region( $transcript_id,
-														$feature,
-														$res_domains,
-														[{
-															'name' => 'note',
-															'value' => 'hmm_name'
-														}]);
-					my ($data_damg_domain) = extract_track_region( $transcript_id,
-														$feature,
-														$res_damaged_domains,
-														[{
-															'name' => 'note',
-															'value' => 'hmm_name'
-														}]);
+					my ($data_domain);
+					if ( $source eq 'domain' ) {
+						$data_domain = extract_track_region( $transcript_id,
+															$feature,
+															$res_domains,
+															[{
+																'name' => 'note',
+																'value' => 'hmm_name'
+															}]);						
+					}
+					my ($data_damg_domain);
+					if ( $source eq 'damaged_domain' ) {					
+						$data_damg_domain = extract_track_region( $transcript_id,
+															$feature,
+															$res_damaged_domains,
+															[{
+																'name' => 'note',
+																'value' => 'hmm_name'
+															}]);
+					}
 					if (defined $data_domain ) {
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_domain);
 					}
