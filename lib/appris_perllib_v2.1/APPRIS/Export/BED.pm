@@ -965,15 +965,15 @@ sub get_appris_annotations {
 					my ($data) = extract_track_cds($transcript_id,
 													$feature,
 													$res_list);
-					if ( $method->reliability ) {
-						$data->{'name'} = $method->reliability;
-						$data->{'note'} = $transcript_id;	
-					}																
 #					my ($data) = _aux_get_appris_annotations($transcript_id,
 #																$feature,
 #																$res_list,
 #																$method);
 					if (defined $data ) {
+						if ( $method->reliability ) {
+							$data->{'name'} = $method->reliability;
+							$data->{'note'} = $transcript_id;	
+						}
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
@@ -2128,6 +2128,8 @@ sub get_corsair_annotations {
 #													$feature,
 #													$res_list);
 					if (defined $data ) {
+						$data->{'note'} = $data->{'name'};
+						$data->{'name'} = 'Species Conserv';
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
@@ -2471,6 +2473,8 @@ sub get_crash_annotations {
 #																$feature,
 #																[$res]);
 					if (defined $data ) {
+						$data->{'note'} = $data->{'name'};
+						$data->{'name'} = 'Signal Peptide';
 						if ( $method->peptide_signal and ($method->peptide_signal eq $APPRIS::Utils::Constant::OK_LABEL) ){
 							${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 						}
@@ -2638,9 +2642,13 @@ sub get_thump_annotations {
 																$feature,
 																$res_helix_damaged);
 				if (defined $data_helix ) {
+					$data_helix->{'note'} = $data_helix->{'name'};
+					$data_helix->{'name'} = 'TMHelices';					
 					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_helix);
 				}					
 				if (defined $data_damg_helix ) {
+					$data_helix->{'note'} = $data_helix->{'name'};
+					$data_helix->{'name'} = 'Damaged TMHelices';					
 					${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_helix);
 				}	
 #				my ($data) = _aux_get_thump_annotations(	$transcript_id,

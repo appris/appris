@@ -1,6 +1,6 @@
 track PrincipalIsoformsAPPRIS
 bigDataUrl appris_method.appris.bed12.bb
-shortLabel Princ. Isoforms
+shortLabel Principal Isoforms
 longLabel APPRIS - Principal Isoforms
 html ../docs/APPRIS
 type bigBed 12
@@ -11,7 +11,7 @@ priority 1
 track DomainsAPPRIS
 compositeTrack on
 visibility dense
-shortLabel Presence of protein domains
+shortLabel Protein domains
 longLabel APPRIS - presence of whole protein domains and damaged domains
 html ../docs/SPADE
 type bigBed 12
@@ -42,7 +42,7 @@ priority 2
 
 track FunctionalResiduesAPPRIS
 bigDataUrl appris_method.firestar.bed12.bb
-shortLabel Func. Residues
+shortLabel Functional Residues
 longLabel APPRIS - functional residues
 html ../docs/FIRESTAR
 type bigBed 12
@@ -72,7 +72,7 @@ priority 5
 
 track TransMembraneHelicesAPPRIS
 bigDataUrl appris_method.thump.bed12.bb
-shortLabel TM Helices
+shortLabel TMHelices
 longLabel APPRIS - predictions of trans-membrane helices
 html ../docs/THUMP
 type bigBed 12
