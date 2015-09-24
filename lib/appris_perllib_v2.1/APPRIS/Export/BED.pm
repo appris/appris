@@ -435,7 +435,7 @@ sub print_track {
 	my ($output) = '';
 	my ($chromStart) = ($data->{'start'}-1);
 	my ($chromEnd) = $data->{'end'};
-	my ($chromStarts) = 0;
+	my ($chromStarts, $blockSizes_last, $chromStarts_last) = (0,0,0);	
 	my ($block_ascending) = 1;
 
     # Convert position value for BED format
@@ -488,8 +488,9 @@ sub print_track {
 		foreach my $size (@block_sizes)
 		{
 			$output .= $size.',';
-			$chromStarts += $size;
+			#$chromStarts += $size;
 		}
+		$blockSizes_last = $block_sizes[scalar(@block_sizes)-1];		
 		$output =~ s/,$/\t/;
 	}
 
@@ -503,9 +504,11 @@ sub print_track {
 		for (my $i=0; $i < scalar(@block_starts); $i++ ) {
 			my ($start) = $block_starts[$i];
 			$output .= $start.',';
+			$chromStarts += $start;			
 			if ( $i == 0 ) { $last_block = $start }
 			else { if ( $last_block > $start ) { $block_ascending = 0 } $last_block = $start } 
 		}
+		$chromStarts_last = $block_starts[scalar(@block_starts)-1];		
 		$output =~ s/,$/\t/;
 	}
 	
@@ -521,6 +524,10 @@ sub print_track {
 	}	
 	# BED chromStarts[i]+chromStart must be less or equal than chromEnd:
 	unless ( ($chromStart + $chromStarts) <= $chromEnd ) {
+		$output = '#'.$output;
+	}
+	# BED (chromStart + blockSizes[last] + chromStarts[last] ) must equal chromEnd:
+	unless ( ($chromStart + $blockSizes_last + $chromStarts_last ) == $chromEnd ) {
 		$output = '#'.$output;
 	}
 
@@ -1341,6 +1348,7 @@ sub _aux_get_firestar_annotations {
 						my ($pos_end) = $cds_out->end;
 						my ($thick_start) = $data->{'thick_start'};
 						my ($thick_end) = $data->{'thick_end'};
+						my ($init, $length);
 						if ( $i==0 ) {
 							if ($trans_strand eq '-') {
 								$pos_start = $cds_out->start;
@@ -1357,6 +1365,7 @@ sub _aux_get_firestar_annotations {
 								$pos_start = $res->start;
 								$pos_end = $cds_out->end;
 							}
+							($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
 						}
 						elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
 							if ( $trans_strand eq '-' ) {
@@ -1374,9 +1383,10 @@ sub _aux_get_firestar_annotations {
 								$pos_start = $cds_out->start;
 								$pos_end = $res->end;
 							}
+							($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
+#							$init = 0; # HARD-CORE
 						}
 #print STDERR "POS_M: $pos_start-$pos_end\n";
-						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $cds_strand, $thick_start, $thick_end);
 #print STDERR "INIT_M: $init\n";
 						push(@{$data->{'block_starts'}}, $init);
 						push(@{$data->{'block_sizes'}}, $length);
@@ -1384,7 +1394,7 @@ sub _aux_get_firestar_annotations {
 					}
 				}
 #print STDERR "DATA_F: \n".Dumper($data);
-#print STDERR "\n";
+#print STDERR "----------\n";
 				if ( $res->ligands ) {
 					my ($lig) = '';
 					my (@ligands) = split(/\|/, $res->ligands);
@@ -2128,8 +2138,7 @@ sub get_corsair_annotations {
 #													$feature,
 #													$res_list);
 					if (defined $data ) {
-						$data->{'note'} = $data->{'name'};
-						$data->{'name'} = 'Species Conserv';
+						$data->{'note'} = 'Species Conserv';
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
@@ -2473,8 +2482,7 @@ sub get_crash_annotations {
 #																$feature,
 #																[$res]);
 					if (defined $data ) {
-						$data->{'note'} = $data->{'name'};
-						$data->{'name'} = 'Signal Peptide';
+						$data->{'note'} = 'Signal Peptide';
 						if ( $method->peptide_signal and ($method->peptide_signal eq $APPRIS::Utils::Constant::OK_LABEL) ){
 							${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 						}
@@ -2642,13 +2650,11 @@ sub get_thump_annotations {
 																$feature,
 																$res_helix_damaged);
 				if (defined $data_helix ) {
-					$data_helix->{'note'} = $data_helix->{'name'};
-					$data_helix->{'name'} = 'TMHelices';					
+					$data_helix->{'note'} = 'TMHelices';					
 					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_helix);
 				}					
 				if (defined $data_damg_helix ) {
-					$data_helix->{'note'} = $data_helix->{'name'};
-					$data_helix->{'name'} = 'Damaged TMHelices';					
+					$data_helix->{'note'} = 'Damaged TMHelices';					
 					${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_helix);
 				}	
 #				my ($data) = _aux_get_thump_annotations(	$transcript_id,
