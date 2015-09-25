@@ -1,0 +1,90 @@
+track PrincipalIsoformsAPPRIS
+bigDataUrl susScr3/appris_method.appris.bb
+shortLabel Principal Isoforms
+longLabel APPRIS - Principal Isoforms
+html docs/APPRIS
+type bigBed 12
+color 180,95,4
+visibility full
+priority 1
+
+track DomainsAPPRIS
+compositeTrack on
+visibility dense
+shortLabel Protein domains
+longLabel APPRIS - presence of whole protein domains and damaged domains
+html docs/SPADE
+type bigBed 12
+color 164,189,83
+dragAndDrop subTracks
+noInherit on
+priority 2
+
+	track WholeDomainsAPPRIS
+	bigDataUrl susScr3/appris_method.spade-domain.bb
+	parent DomainsAPPRIS on
+	shortLabel Whole Domains
+	color 164,189,83	
+	longLabel APPRIS - whole protein domains
+	type bigBed 12
+	visibility full
+
+	track DamagedDomainsAPPRIS
+	bigDataUrl susScr3/appris_method.spade-damaged_domain.bb
+	parent DomainsAPPRIS on
+	shortLabel Damaged Domains
+	longLabel APPRIS - damaged protein domains
+	type bigBed 12
+	color 86,191,85
+	visibility full
+
+track FunctionalResiduesAPPRIS
+bigDataUrl susScr3/appris_method.firestar.bb
+shortLabel Functional Residues
+longLabel APPRIS - functional residues
+html docs/FIRESTAR
+type bigBed 12
+color 244,169,39
+visibility dense
+priority 3
+
+track 3DStructureAPPRIS
+bigDataUrl susScr3/appris_method.matador3d.bb
+shortLabel 3D Structure
+longLabel APPRIS - protein structural information
+html docs/MATADOR3D
+type bigBed 12
+color 128,0,0
+visibility pack
+priority 4
+
+track SpeciesConservationAPPRIS
+bigDataUrl susScr3/appris_method.corsair.bb
+shortLabel Species Conserv
+longLabel APPRIS - species conservation
+html docs/CORSAIR
+type bigBed 12
+color 4,95,180
+visibility full
+priority 5
+
+track TransMembraneHelicesAPPRIS
+bigDataUrl susScr3/appris_method.thump.bb
+shortLabel TMHelices
+longLabel APPRIS - predictions of trans-membrane helices
+html docs/THUMP
+type bigBed 12
+color 245,169,208
+visibility pack
+priority 6
+
+track SignalPeptideAPPRIS
+bigDataUrl susScr3/appris_method.crash.bb
+shortLabel Signal Peptide
+longLabel APPRIS - presence and location of signal peptides
+html docs/CRASH
+type bigBed 12
+color 153,153,102
+visibility pack
+priority 7
+
