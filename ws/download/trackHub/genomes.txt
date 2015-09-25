@@ -6,3 +6,18 @@ trackDb trackDb.hg19.txt
 
 genome mm10
 trackDb trackDb.mm10.txt
+
+genome danRer10
+trackDb trackDb.danRer10.txt
+
+genome rn6
+trackDb trackDb.rn6.txt
+
+genome susScr3
+trackDb trackDb.susScr3.txt
+
+genome panTro4
+trackDb trackDb.panTro4.txt
+
+genome dm6
+trackDb trackDb.dm6.txt
