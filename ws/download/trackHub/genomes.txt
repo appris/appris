@@ -21,3 +21,6 @@ trackDb trackDb.panTro4.txt
 
 genome dm6
 trackDb trackDb.dm6.txt
+
+genome ce10
+trackDb trackDb.ce10.txt
