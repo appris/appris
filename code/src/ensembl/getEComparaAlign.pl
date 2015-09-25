@@ -13,7 +13,7 @@ use Bio::TreeIO;
 use Bio::Tree::TreeFunctionsI;
 use Bio::EnsEMBL::Registry;
 
-use APPRIS::Parser qw( parse_gencode );
+use APPRIS::Parser qw( parse_infiles );
 use APPRIS::Utils::Exception qw( throw warning deprecate );
 use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile );
 use APPRIS::Utils::Logger;
@@ -208,7 +208,7 @@ sub main()
 
 	# Get cds data from input file
 	$logger->info("-- get gtf data\n");
-	my ($genes_data) = parse_gencode($data_file, $transcripts_file, $translations_file);
+	my ($genes_data) = parse_infiles($data_file, $transcripts_file, $translations_file);
 	#$logger->debug("-- gencode_data:\n".Dumper($genes_data)."\n");	
 	unless ( defined $genes_data ) {
 		$logger->error("can not parse data: $!\n");
