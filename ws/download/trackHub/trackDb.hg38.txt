@@ -24,11 +24,10 @@ priority 2
 	bigDataUrl hg38/appris_method.spade-domain.bb
 	parent DomainsAPPRIS on
 	shortLabel Whole Domains
+	color 164,189,83	
 	longLabel APPRIS - whole protein domains
 	type bigBed 12
-	color 86,191,85
 	visibility full
-	priority 1
 
 	track DamagedDomainsAPPRIS
 	bigDataUrl hg38/appris_method.spade-damaged_domain.bb
@@ -36,9 +35,8 @@ priority 2
 	shortLabel Damaged Domains
 	longLabel APPRIS - damaged protein domains
 	type bigBed 12
-	color 164,189,83
+	color 86,191,85
 	visibility full
-	priority 2
 
 track FunctionalResiduesAPPRIS
 bigDataUrl hg38/appris_method.firestar.bb
