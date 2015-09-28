@@ -52,6 +52,12 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.W
 
 #export APPRIS_TYPE_ALIGN=compara
 
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=invertebrates
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/ce10.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
 # -----------------------------------#
 # Setting up the vars for cached dir #
 # -----------------------------------#

@@ -54,6 +54,10 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Danio_rerio.GRCz10.pep.a
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=fish
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
 # -----------------------------------#
 # Setting up the vars for cached dir #
 # -----------------------------------#

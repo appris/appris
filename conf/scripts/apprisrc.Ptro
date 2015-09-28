@@ -53,6 +53,12 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Pan_troglodytes.CHIMP2.1
 
 #export APPRIS_TYPE_ALIGN=compara
 
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/panTro4.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
 # -----------------------------------#
 # Setting up the vars for cached dir #
 # -----------------------------------#
