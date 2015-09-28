@@ -6,11 +6,17 @@ use FindBin;
 use Getopt::Long;
 use Data::Dumper;
 
+use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
 
 use lib "$FindBin::Bin/lib";
-use common qw( get_seq_report get_longest_seq get_main_report get_label_report get_prin_report );
+use common qw(
+	get_longest_seq
+	get_main_report
+	get_label_report
+	get_prin_report
+);
 
 ###################
 # Global variable #
@@ -109,8 +115,8 @@ sub main()
 	
 	# Get data from file
 	$logger->debug("-- get seq data from files -------\n");
-	my ($seq_report) = common::get_seq_report($input_seq_file);	
-	my ($lon_seq_report) = common::get_longest_seq($seq_report);	
+	my ($seq_report) = APPRIS::Parser::_parse_inseq_transl($input_seq_file);
+	my ($lon_seq_report) = common::get_longest_seq($seq_report);
 	#$logger->debug("SEQ_REPORT:\n".Dumper($seq_report)."\n");
 	#$logger->debug("LONSEQ_REPORT:\n".Dumper($lon_seq_report)."\n");
 
