@@ -48,7 +48,7 @@ CREATE TABLE xref_identify (
 --
 CREATE TABLE coordinate (
   entity_id INT(11) unsigned NOT NULL,
-  chromosome VARCHAR(10) NOT NULL,
+  chromosome VARCHAR(25) NOT NULL,
   start INT(20) unsigned NOT NULL,
   end INT(20) unsigned NOT NULL,
   strand ENUM('.','+','-') NOT NULL, -- default value '.' (the first value)
