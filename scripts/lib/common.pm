@@ -15,11 +15,61 @@ use vars qw(@ISA @EXPORT);
 
 @ISA = qw(Exporter);
 @EXPORT = qw(
+	get_seq_report
 	get_longest_seq
 	get_main_report
 	get_label_report
 	get_prin_report
 );
+
+=head2 get_seq_report
+
+  Arg[1]      : String $seq_file  - File path of translation sequences
+  Description : Retrieves report of sequences.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub get_seq_report($)
+{
+	my ($file) = @_;
+	my ($report);
+
+	if (-e $file and (-s $file > 0) ) {
+		my ($in) = Bio::SeqIO->new(
+							-file => $file,
+							-format => 'Fasta'
+		);
+		while ( my $seq = $in->next_seq() )
+		{
+			if ( $seq->id=~/([^|]*)\|([^|]*)\|([^|]*)/ )
+			{
+				my ($trans_id) = $1;
+				my ($prot_id) = $2;
+				my ($gene_id) = $3;
+				# delete suffix in Ensembl ids
+				if ( $trans_id =~ /^ENS/ ) { $trans_id =~ s/\.\d*$// }
+				if ( $prot_id =~ /^ENS/ ) { $prot_id =~ s/\.\d*$// }
+				if ( $gene_id =~ /^ENS/ ) { $gene_id =~ s/\.\d*$// }
+				if(exists $report->{$gene_id}->{'transcripts'}->{$trans_id}) {
+					if ( $report->{$gene_id}->{'transcripts'}->{$trans_id} eq $seq->seq ) {
+						warning("Duplicated sequence: $trans_id");	
+					}
+					else {
+						throw("Duplicated id but different sequence!!!: $trans_id");
+					}
+				}
+				else {
+					$report->{$gene_id}->{'transcripts'}->{$trans_id} = $seq->seq; 
+				}
+			}
+		}		
+	}
+	return $report;
+	
+} # end get_seq_report
 
 =head2 get_longest_seq
 
@@ -98,7 +148,7 @@ sub get_main_report($$;$)
 	}
 	
 	# create sequence report
-	my ($seq_report) = APPRIS::Parser::_parse_inseq_transl($seq_file);
+	my ($seq_report) = get_seq_report($seq_file);
 		
 	#gene_id	transcript_id	status	biotype	no_codons ccds_id aa_len
 	#
@@ -233,8 +283,8 @@ sub get_label_report($$;$)
 	}
 	
 	# create sequence report
-	my ($seq_report) = APPRIS::Parser::_parse_inseq_transl($seq_file);
-		
+	my ($seq_report) = get_seq_report($seq_file);
+			
 	#gene_id	transcript_id	status	biotype	no_codons ccds_id aa_len
 	#
 	# firestar_annot
