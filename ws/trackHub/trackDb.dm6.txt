@@ -1,5 +1,5 @@
 track PrincipalIsoformsAPPRIS
-bigDataUrl hg38/appris_method.appris.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.appris.bb
 shortLabel Principal Isoforms
 longLabel APPRIS - Principal Isoforms
 html docs/APPRIS
@@ -21,7 +21,7 @@ noInherit on
 priority 2
 
 	track WholeDomainsAPPRIS
-	bigDataUrl hg38/appris_method.spade-domain.bb
+	bigDataUrl ../download/trackHub/dm6/appris_method.spade-domain.bb
 	parent DomainsAPPRIS on
 	shortLabel Whole Domains
 	color 164,189,83	
@@ -30,7 +30,7 @@ priority 2
 	visibility full
 
 	track DamagedDomainsAPPRIS
-	bigDataUrl hg38/appris_method.spade-damaged_domain.bb
+	bigDataUrl ../download/trackHub/dm6/appris_method.spade-damaged_domain.bb
 	parent DomainsAPPRIS on
 	shortLabel Damaged Domains
 	longLabel APPRIS - damaged protein domains
@@ -39,7 +39,7 @@ priority 2
 	visibility full
 
 track FunctionalResiduesAPPRIS
-bigDataUrl hg38/appris_method.firestar.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.firestar.bb
 shortLabel Functional Residues
 longLabel APPRIS - functional residues
 html docs/FIRESTAR
@@ -49,7 +49,7 @@ visibility dense
 priority 3
 
 track 3DStructureAPPRIS
-bigDataUrl hg38/appris_method.matador3d.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.matador3d.bb
 shortLabel 3D Structure
 longLabel APPRIS - protein structural information
 html docs/MATADOR3D
@@ -59,7 +59,7 @@ visibility pack
 priority 4
 
 track SpeciesConservationAPPRIS
-bigDataUrl hg38/appris_method.corsair.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.corsair.bb
 shortLabel Species Conserv
 longLabel APPRIS - species conservation
 html docs/CORSAIR
@@ -69,7 +69,7 @@ visibility full
 priority 5
 
 track TransMembraneHelicesAPPRIS
-bigDataUrl hg38/appris_method.thump.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.thump.bb
 shortLabel TMHelices
 longLabel APPRIS - predictions of trans-membrane helices
 html docs/THUMP
@@ -79,7 +79,7 @@ visibility pack
 priority 6
 
 track SignalPeptideAPPRIS
-bigDataUrl hg38/appris_method.crash.bb
+bigDataUrl ../download/trackHub/dm6/appris_method.crash.bb
 shortLabel Signal Peptide
 longLabel APPRIS - presence and location of signal peptides
 html docs/CRASH
