@@ -1,6 +1,6 @@
 <div data-ng-controller="DownloadsController">
 <h2>Downloads</h2>
-    <p>The annotations of the following species are available. Here you can download the annotations as TABULAR format (TSV) and GTF (a Gene Transfer Format).</p>
+    <p>The annotations of the following species are available.</p>
 Filter by Species:
 <select data-ng-model="elemSpecie">
     <option value="" selected>All</option>
@@ -41,15 +41,17 @@ Gene Dataset:
         <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>
     </div>
 </div>
-    <hr>
-    <help-flags></help-flags>
+<p>For more information of data files, read the following README <a data-ng-href="{{urlREADME}}">link</a>.</p>
 
-    <h4>APPRIS Scores</h4>
-    <p>APPRIS detects principal isoforms based on a range of methods, the scores they report can be downloaded.
-    </p>
-    <h4>Method annotations</h4>
-    <p>Here we show tracks as genome coordinate positions (in compressed GTF format) of the APPRIS methods.
-    </p>
-    <p>For more information of data files, read the following README <a data-ng-href="{{urlREADME}}">link</a>.</p>
+<hr>
+
+<help-flags></help-flags>
+
+<h4>APPRIS Scores</h4>
+<p>APPRIS detects principal isoforms based on a range of methods, the scores they report can be downloaded.
+</p>
+<h4>Method annotations</h4>
+<p>Here we show tracks as genome coordinate positions (in compressed GTF format) of the APPRIS methods.
+</p>
 
 </div>
