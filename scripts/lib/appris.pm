@@ -267,6 +267,14 @@ sub create_appris_input($$)
 			my ($t_strand) = $transcript->strand;
 			my ($t_phase) = '.';
 			my ($transcript_name) = $transcript->external_name ? $transcript->external_name : $transcript_id;
+			my ($data_transc_attrs) = "gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\"; ";
+			my ($ccds_id) = '-';				
+			if ( $transcript->xref_identify ) {
+				foreach my $xref_identify (@{$transcript->xref_identify}) {								
+					if ($xref_identify->dbname eq 'CCDS') { $ccds_id = $xref_identify->id; last; }
+				}
+				if ( $ccds_id ne '-' ) { $data_transc_attrs .= "ccds_id \"$ccds_id\" "; }
+			}
 			$data_cont .=	$chr."\t".
 							'GENCODE'."\t".
 							'transcript'."\t".
@@ -275,8 +283,8 @@ sub create_appris_input($$)
 							'.'."\t".
 							$t_strand."\t".
 							$t_phase."\t".
-							"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\";\n";			
-			
+							$data_transc_attrs."\n";
+							
 			# get transcript seq/exon
 			if ( $transcript->sequence ) {
 				my ($seq) = $transcript->sequence;
