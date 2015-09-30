@@ -45,11 +45,61 @@
 	NEW GENE DATASET:
 	- RefSeq!!! <- TODO!!!!
 	
-	NEW SPECIES:
-	- WormBase
-		> Ensembl81 (WBcel235), 		ens81.v9.17Jul2015 <- TODO!!!!
 	
+#############################
+# A-RELEASE: 	2015_09.v10	#
+# C-RELEASE: 	4.3.2.5		#
+# I-DATE: 		21Aug2015	#
+#############################
 
+* HIGHLIGHTS:
+	- Hand-over for e82: Mouse.
+	- NEW!!! Creation of UCSC 'trackHub' for APPRIS species:
+		human(hg38,hg19), mouse(mm10), zebra-fish(danRer10), rat(rn6), pig(susScr3), chimp(panTro4), fruitfly(dm6), C.elegans(ce10)   
+	
+* APPRIS-DATA, v10
+	New gene data-set for Mouse:
+	- Mouse
+		> Ensembl82/GencodeM7 (GRCm38),	ens82.v10.21Aug2015
+	The same annotations for the rest of species 	
+	
+	NEW SPECIES:
+	- Fruitfly
+		> Ensembl81 (BDGP6), 			ens81.v10.21Aug2015
+	- C-elegans
+		> Ensembl81 (WBcel235), 		ens81.v10.21Aug2015
+	
+#############################
+# A-RELEASE: 	2015_08.v10 #
+# C-RELEASE: 	4.3.2.5		#
+# I-DATE: 		21Aug2015	#
+#############################
+
+* APPRIS-CODE, v2.5
+	- APPRIS 
+		- Horrible bug fixed. The decision in length was bad :-(
+		- Bug fixed in the APPRIS decision:
+        	Eg. for CEP152 gene, we decide as ALTernative transcript that the biotype is not protein_coding and codons not found
+        	But we check also if the gene has unique transcripts, eg. CTD-3222D19.2
+	- Change the name of databases. Add suffix for version
+
+* APPRIS-DATA, v10
+	- Human
+		> Ensembl81/Gencode23 (GRCh38),	ens81.v10.21Aug2015
+		> Ensembl76/Gencode20 (GRCh38),	ens76.v10.21Aug2015
+		> Ensembl74/Gencode19 (GRCh37), gen19.v10.21Aug2015
+	- Mouse
+		> Ensembl81/GencodeM6 (GRCm38),	ens81.v10.21Aug2015
+		> Ensembl74/GencodeM2 (GRCm38),	ens74.v10.21Aug2015
+	- Zebra-fish
+		> Ensembl81 (GRCz10), 			ens81.v10.21Aug2015
+	- Rat
+		> Ensembl81 (Rn6),    			ens81.v10.21Aug2015
+	- Pig
+		> Ensembl81 (Sscrofa10.2),		ens81.v10.21Aug2015
+	- Chimp
+		> Ensembl81 (CHIMP2.1.4), 		ens81.v10.21Aug2015
+		
 #############################
 # A-RELEASE: 	2015_08.v9  #
 # C-RELEASE: 	4.3.2.4 	#
@@ -66,7 +116,7 @@
 	- Improve/fixing the annotations within sequence Browser
 	- Change of 'viewer' web service that prints the UCSC image to 'sequencer'
 	- Include the highlight of CDS regions within Sequence Browser
-	- Row panel with the following frames: GitHub, Google Grupo news-email, and Twitter.
+	- Row panel with the following frames: GitHub, Google Group news-email, and Twitter.
 	- Add the new species into frontpage.
 	- Include version label.
 	- Include 'Changelogs' section.
@@ -87,7 +137,8 @@
 	- In the download directory, we have classified data files into directories based on format type.
 	- APPRIS data file for method have changed their prefix name from 'appris_data.{method_name}' to 'appris_method.{method_name}'
 	- Print the alignments of Pfam separately in BED format
-	- 'retrieve_method_data', Methods as input parameter 
+	- 'retrieve_method_data', Methods as input parameter
+	- Using fork to spread load to multiple cores	
 
 * APPRIS-DATA, v9
 	- Human
@@ -108,7 +159,7 @@
 	- Chimp
 		> Ensembl81 (CHIMP2.1.4), 		ens81.v9.17Jul2015
 	- Fruitfly
-		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015		
+		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015
 		
 #############################
 # A-RELEASE: 	2015_05.v8  #

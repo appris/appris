@@ -28,7 +28,7 @@ Gene Dataset:
                 <span data-ng-if="!isArray(datafile[head.id])">{{datafile[head.id]}}</span>
                 <span data-ng-repeat="datameth in datafile[head.id] track by $index" data-ng-if="isArray(datafile[head.id])">
                     <a
-                        ng-href="{{baseUrlDownload}}/{{datafile.scientific}}/{{datafile.release}}/{{datameth.file}}">
+                        ng-href="{{baseUrlDownload}}/{{version}}/{{datafile.path}}/{{datafile.scientific}}/{{datafile.assembly}}/{{datameth.file}}" target="_blank">
                     {{datameth.format}}</a>
                 </span>
             </td>

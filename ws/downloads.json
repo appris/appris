@@ -1,4 +1,5 @@
 {
+    "version": "2015_09.v10",
     "headers": [
         {
             "id":       "species",
@@ -54,11 +55,6 @@
             "id":       "peptides",
             "label":    "Peptides",
             "desc":     "No. Peptides"
-        },
-        {
-            "id":       "release",
-            "label":    "Release",
-            "desc":     "Annotation version"
         }
     ],
     "datafiles": [
@@ -69,6 +65,7 @@
             "assembly":                 "GRCh38",
             "dataset":                  "gencode23/ensembl82",
             "release":                  "ens82.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -127,6 +124,7 @@
             "assembly":                 "GRCh37",
             "dataset":                  "gencode19/ensembl74",
             "release":                  "gen19.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -185,6 +183,7 @@
             "assembly":                 "GRCm38",
             "dataset":                  "gencodeM7/ensembl82",
             "release":                  "ens82.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -221,6 +220,7 @@
             "assembly":                 "Rnor_6.0",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -257,6 +257,7 @@
             "assembly":                 "Rnor_5.0",
             "dataset":                  "ensembl77",
             "release":                  "ens77.v7.9Feb2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -293,6 +294,7 @@
             "assembly":                 "GRCz10",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -329,6 +331,7 @@
             "assembly":                 "Zv9",
             "dataset":                  "ensembl77",
             "release":                  "ens77.v7.9Feb2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -365,6 +368,7 @@
             "assembly":                 "Sscrofa10.2",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -401,6 +405,7 @@
             "assembly":                 "CHIMP2.1.4",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -437,6 +442,7 @@
             "assembly":                 "BDGP6",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"
@@ -470,9 +476,10 @@
             "default":                  "1",
             "species":                   "C.elegans",
             "scientific":               "caenorhabditis_elegans",
-            "assembly":                 "BDGP6",
+            "assembly":                 "WBcel235",
             "dataset":                  "ensembl81",
             "release":                  "ens81.v10.21Aug2015",
+            "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
                 "format":   "TXT"

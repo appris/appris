@@ -224,13 +224,14 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
 
         // load all data files
         $scope.urlREADME = $rootScope.serverConf.hostWS + '/download/README.txt';
-        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/download/data';
+        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/download/releases';
         $scope.headers = [];
         $scope.datafiles = [];
         $scope.species = [];
         $scope.assemblies = [];
         $scope.datasets = [];
         Downloads.get().$promise.then( function(data) {
+            $scope.version = data.version;
             if (angular.isDefined(data.headers) ) {
                 $scope.headers = data.headers;
             }
@@ -240,6 +241,7 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
                     var specie = val['species'];
                     var assembly = val['assembly'];
                     var dataset = val['dataset'];
+                    var path = val['path'];
                     if ( $scope.species.indexOf(specie) == -1 ) {
                         $scope.species.push(specie);
                     }
