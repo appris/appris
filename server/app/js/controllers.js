@@ -224,8 +224,8 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
 
         // load all data files
         $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.txt';
-        $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/pub/download/';
-        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/download/current_release';
+        $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/pub/';
+        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/current_release';
         $scope.headers = [];
         $scope.datafiles = [];
         $scope.species = [];
