@@ -1085,6 +1085,11 @@ sub get_appris_annotations {
 							$data->{'name'} = $method->reliability;
 							$data->{'note'} = $transcript_id;	
 						}
+						if ( $typebed eq 'bed' ) {
+							my ($na) = $data->{'name'}; my ($no) = $data->{'note'};
+							$data->{'name'} = $no;
+							$data->{'note'} = $na;						
+						}
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}
 				}
