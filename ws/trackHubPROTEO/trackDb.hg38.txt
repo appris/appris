@@ -1,5 +1,5 @@
 track ProteomicEvidenceCNIO
-bigDataUrl ../download/trackHubPROTEO/hg38/appris_method.proteo.bb
+bigDataUrl ../pub/trackHubPROTEO/hg38/appris_method.proteo.bb
 shortLabel Peptide evidences
 longLabel CNIO - Peptides detected from a re-analysis of multiple experiments and databases
 html docs/PROTEO
