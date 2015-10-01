@@ -223,9 +223,9 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
         $scope.isArray = angular.isArray;
 
         // load all data files
-        $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/download/';
-        $scope.urlREADME = $rootScope.serverConf.hostWS + '/download/README.txt';
-        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/download/current_release';
+        $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.txt';
+        $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/pub/download/';
+        $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/download/current_release';
         $scope.headers = [];
         $scope.datafiles = [];
         $scope.species = [];
