@@ -9,10 +9,8 @@ abstract 		'This distribution is for communicating with a APPRIS annotations';
 #license			'perl';
 #perl_version	'5.16.2';
 
-# APPRIS::* depends
-
-requires 'YAML::Tiny'				=> '1.69';
-
+# Perl dependencies
+requires 'YAML::Tiny'				=> 0;
 requires 'DB'						=> 0;
 requires 'DBD::mysql'				=> 0;
 requires 'POSIX'					=> 0;
