@@ -10,7 +10,8 @@ abstract 		'This distribution is for communicating with a APPRIS annotations';
 #perl_version	'5.16.2';
 
 # Perl dependencies
-requires 'YAML::Tiny'				=> 0;
+configure_requires 'YAML::Tiny'		=> '1.69';
+
 requires 'DB'						=> 0;
 requires 'DBD::mysql'				=> 0;
 requires 'POSIX'					=> 0;
@@ -44,6 +45,7 @@ requires 'MIME::Lite'				=> 0;
 requires 'Digest::MD5'				=> 0;
 
 requires 'List::MoreUtils'			=> 0;
+
 
 
 my (%arg_install);
