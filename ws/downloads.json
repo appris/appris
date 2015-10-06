@@ -1,5 +1,5 @@
 {
-    "version": "2015_09.v10",
+    "version": "2015_10.v11",
     "headers": [
         {
             "id":       "species",
@@ -218,8 +218,8 @@
             "species":                   "Rat",
             "scientific":               "rattus_norvegicus",
             "assembly":                 "Rnor_6.0",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
@@ -292,8 +292,8 @@
             "species":                   "Zebrafish",
             "scientific":               "danio_rerio",
             "assembly":                 "GRCz10",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
@@ -366,8 +366,8 @@
             "species":                   "Pig",
             "scientific":               "sus_scrofa",
             "assembly":                 "Sscrofa10.2",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
@@ -403,8 +403,8 @@
             "species":                   "Chimpanzee",
             "scientific":               "pan_troglodytes",
             "assembly":                 "CHIMP2.1.4",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
@@ -440,8 +440,8 @@
             "species":                   "Fruitfly",
             "scientific":               "drosophila_melanogaster",
             "assembly":                 "BDGP6",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",
@@ -477,8 +477,8 @@
             "species":                   "C.elegans",
             "scientific":               "caenorhabditis_elegans",
             "assembly":                 "WBcel235",
-            "dataset":                  "ensembl81",
-            "release":                  "ens81.v10.21Aug2015",
+            "dataset":                  "ensembl82",
+            "release":                  "ens82.v11.01Sep2015",
             "path":                     "ensembl_datafiles/species",
             "principal_isoforms": [{
                 "file":     "appris_data.principal.txt",

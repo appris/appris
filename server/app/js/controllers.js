@@ -4,14 +4,14 @@
 
 var apprisControllers = angular.module('apprisControllers', []);
 
-apprisControllers.run(function($rootScope, serverName, serverVersion, serverType, serverHost, serverHostWS, Species, Methods) {
+apprisControllers.run(function($rootScope, serverName, serverVersion, serverType, serverHost, serverHostWS, Species, Methods, Downloads) {
     $rootScope.serverConf = {
         "name":    serverName,
-        "version": serverVersion,
         "type":    serverType,
         "host":    serverHost,
         "hostWS":  serverHostWS
     };
+    $rootScope.downloads = Downloads.get();
     $rootScope.species = Species.get();
     $rootScope.methods = Methods.get();
     $rootScope.isLoadingScreen = false;
@@ -231,14 +231,14 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
         $scope.species = [];
         $scope.assemblies = [];
         $scope.datasets = [];
-        Downloads.get().$promise.then( function(data) {
-            $scope.version = data.version;
-            if (angular.isDefined(data.headers) ) {
-                $scope.headers = data.headers;
+        if ( angular.isDefined($rootScope.downloads) ) {
+            $scope.version = $rootScope.downloads.version;
+            if (angular.isDefined($rootScope.downloads.headers) ) {
+                $scope.headers = $rootScope.downloads.headers;
             }
-            if (angular.isDefined(data.datafiles) ) {
-                $scope.datafiles = data.datafiles;
-                angular.forEach(data.datafiles, function(val) {
+            if (angular.isDefined($rootScope.downloads.datafiles) ) {
+                $scope.datafiles = $rootScope.downloads.datafiles;
+                angular.forEach($rootScope.downloads.datafiles, function(val) {
                     var specie = val['species'];
                     var assembly = val['assembly'];
                     var dataset = val['dataset'];
@@ -254,7 +254,31 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
                     }
                 });
             }
-        });
+        }
+//        Downloads.get().$promise.then( function(data) {
+//            $scope.version = data.version;
+//            if (angular.isDefined(data.headers) ) {
+//                $scope.headers = data.headers;
+//            }
+//            if (angular.isDefined(data.datafiles) ) {
+//                $scope.datafiles = data.datafiles;
+//                angular.forEach(data.datafiles, function(val) {
+//                    var specie = val['species'];
+//                    var assembly = val['assembly'];
+//                    var dataset = val['dataset'];
+//                    var path = val['path'];
+//                    if ( $scope.species.indexOf(specie) == -1 ) {
+//                        $scope.species.push(specie);
+//                    }
+//                    if ( $scope.assemblies.indexOf(assembly) == -1 ) {
+//                        $scope.assemblies.push(assembly);
+//                    }
+//                    if ( $scope.datasets.indexOf(dataset) == -1 ) {
+//                        $scope.datasets.push(dataset);
+//                    }
+//                });
+//            }
+//        });
     }
 ]);
 
