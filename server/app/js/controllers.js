@@ -4,7 +4,7 @@
 
 var apprisControllers = angular.module('apprisControllers', []);
 
-apprisControllers.run(function($rootScope, serverName, serverVersion, serverType, serverHost, serverHostWS, Species, Methods, Downloads) {
+apprisControllers.run(function($rootScope, serverName, serverType, serverHost, serverHostWS, Species, Methods, Downloads) {
     $rootScope.serverConf = {
         "name":    serverName,
         "type":    serverType,
