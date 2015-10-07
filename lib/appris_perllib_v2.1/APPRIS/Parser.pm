@@ -3592,53 +3592,6 @@ sub _parse_indata_refseq($)
 					$data->{$gene_id}->{'level'} = '3';
 				}
 			}
-#			elsif (defined $gene_id and defined $transcript_id and ($type eq 'mRNA') ) # Transcript Information
-#			{				
-#				my ($transcript);
-#				$transcript->{'chr'} = $chr if(defined $chr);
-#				$transcript->{'start'} = $start if(defined $start);
-#				$transcript->{'end'} = $end if(defined $end);
-#				$transcript->{'strand'} = $strand if(defined $strand);					
-#
-#				if (defined $source)
-#				{
-#					$transcript->{'source'} = $source;
-#				}
-#				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
-#				{
-#					$transcript->{'external_id'} = $attribs->{'Name'};	
-#				}
-#				if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) {
-#					$transcript->{'level'} = '1';
-#				}
-#				elsif ( $source eq 'Gnomon' ) {
-#					$transcript->{'level'} = '3';
-#				}
-#				# cache transc Ids
-#				$cache_transcId->{$ID} = $transcript_id;
-#								
-#				# HARD-CORE attrs!!
-#				if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
-#					$transcript->{'status'} = 'KNOWN';
-#				}
-#				else {
-#					$transcript->{'status'} = 'UNKNOWN';
-#				}
-#				$transcript->{'biotype'} = 'protein_coding';
-#				
-#				# NOTE: We have decided the all mRNA from RefSeq have start/stop codons
-#				for my $type ('start','stop') {
-#					my ($codon);
-#					$codon->{'type'}='start';
-#					#$codon->{'start'} = $start if(defined $start);
-#					#$codon->{'end'} = $end if(defined $end);
-#					#$codon->{'strand'} = $strand if(defined $strand);
-#					#$codon->{'phase'} = $phase if(defined $phase);
-#					push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);					
-#				}				
-#				
-#				$data->{$gene_id}->{'transcripts'}->{$transcript_id} = $transcript if(defined $transcript);
-#			}
 			elsif (defined $gene_id and defined $accesion_id and ($type eq 'exon') ) # Exon Information
 			{
 				my ($exon);
