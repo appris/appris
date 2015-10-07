@@ -3216,9 +3216,7 @@ sub _parse_dataline($)
 	my ($line) = @_;
 	my ($fields);
 	
-	if ( defined $line and ($line ne '') ) {
-		#ignore header
-		next if ( $line =~ /^#/ );
+	if ( defined $line and ($line ne '') and ($line !~ /^#/) ) {
 		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
 		next unless(defined $chr and 
 					defined $source and
