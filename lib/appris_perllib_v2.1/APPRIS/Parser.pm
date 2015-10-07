@@ -3542,6 +3542,7 @@ sub _parse_indata_refseq($)
 	while ( my $line = <IN_FILE> )
 	{
 		my ($fields) = _parse_dataline($line);
+		next unless ( defined $fields );
 		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attribs) = (
 			$fields->{'chr'},
 			$fields->{'source'},
