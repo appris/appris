@@ -70,9 +70,9 @@ my ($loglevel) = undef;
 
 # Get the type of input (the order of conditions is important)
 if ( defined $species and defined $data_file and defined $inpath ) { # required argument for GENCODE choice
-	$type_of_input = 'gencode';
-	if		( defined $gene_list_file ) { $type_of_input = 'gencode-list'; }
-	elsif	( defined $position ) { $type_of_input = 'gencode-position'; }
+	$type_of_input = 'datafile';
+	if		( defined $gene_list_file ) { $type_of_input = 'datafile-list'; }
+	elsif	( defined $position ) { $type_of_input = 'datafile-position'; }
 	$inpath .= '/';
 }
 elsif ( defined $species and defined $e_version and defined $inpath ) { # required argument for ENSEMBL choice
@@ -124,7 +124,7 @@ sub main()
 {
 	# run appris pipeline for each gene depending on input
 	$logger->info("-- from given input...");
-	if ( $type_of_input =~ /gencode/ ) {
+	if ( $type_of_input =~ /datafile/ ) {
 		$logger->info(" $type_of_input type\n");
 		
 		# create gene list
@@ -220,7 +220,7 @@ sub insert_pipeline($$;$)
 	$logger->info("\t-- create parameters ");
 
 	# data from gencode type
-	if ( $type_of_input =~ /gencode/ and defined $gene ) {
+	if ( $type_of_input =~ /datafile/ and defined $gene ) {
 		$logger->info("from $type_of_input\n");
 		if ( $type_of_input eq 'gencode-list' ) {
 			my ($chr) = $gene->chromosome;
