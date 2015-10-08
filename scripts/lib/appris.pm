@@ -298,7 +298,7 @@ sub create_appris_input($$)
 	my ($gene_name) = $gene->external_name ? $gene->external_name : $gene_id;
 	
 	# get gene annots
-	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\";\n";
+	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\"; ";
 	if ( $gene->biotype ) { $data_gene_attrs .= 'gene_type "'.$gene->biotype.'" ' }	
 	$data_cont .=	$chr."\t".
 					'GENCODE'."\t".
