@@ -1,0 +1,208 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+VER=0.1b
+VERDATE="1-Apr-2013"
+
+FILENAME=`basename $0`
+FILENAME="${FILENAME%.*}"
+DIRNAME=`dirname $0`
+
+CONF_SPECIES=""
+
+# -----------------------------------------------------------------------------
+# Load external functions
+source ${DIRNAME}/appris_env
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_ensembl_report\n
+\n
+ Description:\n
+\t Retrieve statistics from gencode report\n
+\n
+ Required arguments:\n
+\t -c [-conf]\n
+\t\t Hsap  - Homo sapiens -\n
+\t\t Mmus  - Mus musculus -\n
+\t\t Rnor  - Rattus norvegicus -\n
+\t\t Drer  - Danio rerio -\n
+\t\t Sscr  - Sus scrofa -\n
+\t\t Ptro  - Pan troglodytes -\n
+\t\t Dmel  - Drosophila melanogaster -\n
+\t\t Cele  - Caenorhabditis elegans -\n
+\t\t Lpar  - Lynx pardinus -\n
+\n
+\t\t Source file for species\n
+\n
+\t -v [version]\n
+\t -h [help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			CONF_SPECIES=$2
+			shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		-v | -version )
+			echo "$VER", "$VERDATE"
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${CONF_SPECIES}" == "" ]; then
+	echo You must specify at least one config file for SPECIES!
+	echo -e $USAGE
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Prepare Environment from config file for SPECIES
+load_appris_specie_env "${CONF_SPECIES}"
+
+
+# -----------------------------------------------------------------------------
+# Check gene and transcripts numbers
+echo "---------------------------"
+echo "Check gene and transcripts numbers:"
+echo ""
+echo "NAME,NUM"
+awk 'BEGIN {num_g=0; num_t=0;} {if ( $3=="gene" && $2=="HAVANA"){num_g++} else {if ( $3=="transcript" && $2=="HAVANA" ){num_t++} }} END { print "HAVANA_GENES," num_g "\nHAVANA_TRANSCRIPTS," num_t }' ${GENCODE_ANNOTATION_FILE}
+awk 'BEGIN {num_g=0; num_t=0;} {if ( $3=="gene" && $2=="ENSEMBL"){num_g++} else {if ( $3=="transcript" && $2=="ENSEMBL" ){num_t++} }} END { print "ENSEMBL_GENES," num_g "\nENSEMBL_TRANSCRIPTS," num_t }' ${GENCODE_ANNOTATION_FILE}
+awk 'BEGIN {num_g=0; num_t=0;} {if ( $3=="gene" ){num_g++} else {if ( $3=="transcript" ){num_t++} }} END {print "GENES," num_g "\nTRANSCRIPTS," num_t }' ${GENCODE_ANNOTATION_FILE}
+echo ""
+
+
+# -----------------------------------------------------------------------------
+# Count gene and transcript for chromosome
+echo "---------------------------"
+echo "Count gene and transcript for chromosome:"
+echo ""
+echo "CHR,N_GENES,N_TRANSC"
+CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+INDEX=${#CHROMOSOME[@]}
+for ((i=0;i<$INDEX;i++)); do
+	POSITION="${CHROMOSOME[${i}]}"
+	awk -v CHR="${POSITION}" 'BEGIN {num_g=0; num_t=0;} {if ( $1==CHR && $3=="gene" ){num_g++} else {if ( $1==CHR && $3=="transcript" ){num_t++} }} END {print CHR "," num_g "," num_t }' ${GENCODE_ANNOTATION_FILE}
+done
+echo ""
+
+# -----------------------------------------------------------------------------
+# Count number of sequences
+echo "---------------------------"
+echo "Count number of transcript sequences:"
+echo ""
+echo -n "N_TRANSC," && grep -c ">" ${GENCODE_TRANSCRIPT_FILE}
+echo ""
+echo "---------------------------"
+echo "Count number of translation sequences:"
+echo ""
+echo -n "N_TRANSL," && grep -c ">" ${GENCODE_TRANSLATION_FILE}
+echo ""
+echo "---------------------------"
+echo "Check total number of cds and exons:"
+echo ""
+awk '{if ( $3=="CDS" ){num_c++} else {if ( $3=="exon" ){num_e++} }} END {print "N_CDS," num_c "\nN_EXON," num_e }' ${GENCODE_ANNOTATION_FILE}
+echo ""
+
+
+# -----------------------------------------------------------------------------
+# Count the number of sequences by chromosome
+echo "---------------------------"
+echo "Count the number of gene/transcript sequences by chromosome:"
+echo ""
+echo "CHR,N_GENES,N_TRANSC"
+CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+INDEX=${#CHROMOSOME[@]}
+for ((i=0;i<$INDEX;i++)); do
+	POSITION="${CHROMOSOME[${i}]}"
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="exon" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NM_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NM_" | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | cut -d "|" -f 4 | sort -u | wc -l)
+	echo "${POSITION},${N_GENES},${N_TRANSC}"
+done
+echo ""
+echo "---------------------------"
+echo "Count the number of gene/transcript translations by chromosome:"
+echo ""
+echo "CHR,N_GENES,N_TRANSL"
+CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
+INDEX=${#CHROMOSOME[@]}
+for ((i=0;i<$INDEX;i++)); do
+	POSITION="${CHROMOSOME[${i}]}"
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="CDS" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NP_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NP_" | fgrep -f - ${GENCODE_TRANSLATION_FILE} | cut -d "|" -f 4 | sort -u | wc -l)	
+	echo "${POSITION},${N_GENES},${N_TRANSC}"
+done
+echo ""
+
+
+# -----------------------------------------------------------------------------
+# Count gene types
+#echo "---------------------------"
+#echo "Count gene types:"
+#echo ""
+#echo "TYPE,NUM"
+#eval TYPE=( $(awk '{ if($3=="gene"){print $14}}' ${GENCODE_ANNOTATION_FILE} | sed -e 's/[\"|\;]//g' | sort | uniq) )
+#INDEX=${#TYPE[@]}
+#for ((i=0;i<$INDEX;i++)); do
+#	N=$(awk '{ if($3=="gene" && $13=="gene_biotype"){print $14}}' ${GENCODE_ANNOTATION_FILE} | grep -c "\"${TYPE[${i}]}\"")
+#	echo "${TYPE[${i}]},$N"
+#done
+#echo ""
+
+
+# -----------------------------------------------------------------------------
+# Count transcript types
+#echo "---------------------------"
+#echo "Count transcript types:"
+#echo ""
+#echo "TYPE,NUM"
+#eval TYPE=( $(awk '{ if($3=="transcript"){print $20}}' ${GENCODE_ANNOTATION_FILE} | sed -e 's/[\"|\;]//g' | sort | uniq) )
+#INDEX=${#TYPE[@]}
+#for ((i=0;i<$INDEX;i++)); do
+#	N=$(awk '{ if ($3=="transcript" && $19=="transcript_type"){print $20}}' ${GENCODE_ANNOTATION_FILE} | grep -c "\"${TYPE[${i}]}\"")
+#	echo "${TYPE[${i}]},$N"
+#done
+#echo ""
+
