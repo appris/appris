@@ -43,9 +43,11 @@ use vars qw(@ISA @EXPORT);
 @EXPORT = qw(
 	create_gene_list
 	get_gene_list
+	get_gene_list_from_seq
 	retrieve_gene_list
 	create_appris_input
 	create_ensembl_input
+	create_appris_seqinput
 	reduce_input
 	create_gencode_data
 	create_indata
@@ -118,6 +120,10 @@ sub create_gene_list
 			$report = create_ensembl_input(undef, $econf, $ever, $spe);			
 		}
 	}
+	elsif ( $itype =~ /sequence/ and defined $gtransl )
+	{
+		$data = create_seqdata($gtransl);
+	}
 	
 	File::Temp::cleanup();
 	
@@ -153,6 +159,54 @@ sub get_gene_list($)
 	foreach my $gene_id (@{$genes}) {
 		$gene_id =~ s/\s*//mg;
 		$list->{$gene_id} = 1 if ( $gene_id ne '');
+	}
+	return $list;
+} # end get_gene_list
+
+=head2 get_gene_list_from_seq
+
+  Arg[1]      : (optional) String $text - notification text to present to user
+  Example     : # run a code snipped conditionally
+                if ($support->user_proceed("Run the next code snipped?")) {
+                    # run some code
+                }
+
+                # exit if requested by user
+                exit unless ($support->user_proceed("Want to continue?"));
+  Description : If running interactively, the user is asked if he wants to
+                perform a script action. If he doesn't, this section is skipped
+                and the script proceeds with the code. When running
+                non-interactively, the section is run by default.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub get_gene_list_from_seq($)
+{
+	my ($file) = @_;
+	my ($list);
+	my ($in) = Bio::SeqIO->new(
+						-file => $file,
+						-format => 'Fasta'
+	);
+	if ( defined $in ) {
+		while ( my $seq = $in->next_seq() )
+		{
+			my ($id);
+			# At the moment, only for UniProt/neXtProt cases
+			if ( $seq->id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
+				$id = $2;
+			}
+			elsif ( $seq->id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
+				$id = $1;
+			}
+			if ( defined $id ) {
+				my ($gene_id) = ( $id =~ /([^\-]*)/ ) ? $1 : $id;
+				$list->{$gene_id} = 1;				
+			}
+		}		
 	}
 	return $list;
 } # end get_gene_list
@@ -244,6 +298,8 @@ sub create_appris_input($$)
 	my ($gene_name) = $gene->external_name ? $gene->external_name : $gene_id;
 	
 	# get gene annots
+	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\";\n";
+	if ( $gene->biotype ) { $data_gene_attrs .= 'gene_type "'.$gene->biotype.'" ' }	
 	$data_cont .=	$chr."\t".
 					'GENCODE'."\t".
 					'gene'."\t".
@@ -252,7 +308,7 @@ sub create_appris_input($$)
 					'.'."\t".
 					$g_strand."\t".
 					$g_phase."\t".
-					"gene_id \"$gene_id\"; gene_name \"$gene_name\";\n";
+					$data_gene_attrs."\n";
 
 	# scan transcript/translation/cds seq/cds info
 	if ( $gene->transcripts ) {
@@ -275,6 +331,7 @@ sub create_appris_input($$)
 				}
 				if ( $ccds_id ne '-' ) { $data_transc_attrs .= "ccds_id \"$ccds_id\" "; }
 			}
+			if ( $transcript->biotype ) { $data_transc_attrs .= 'transcript_type "'.$transcript->biotype.'" ' }			
 			$data_cont .=	$chr."\t".
 							'GENCODE'."\t".
 							'transcript'."\t".
@@ -520,6 +577,65 @@ sub create_ensembl_input($$$$)
 	
 } # end create_ensembl_input
 
+=head2 create_appris_seqinput
+
+  Arg[1]      : (optional) String $text - notification text to present to user
+  Example     : # run a code snipped conditionally
+                if ($support->user_proceed("Run the next code snipped?")) {
+                    # run some code
+                }
+
+                # exit if requested by user
+                exit unless ($support->user_proceed("Want to continue?"));
+  Description : If running interactively, the user is asked if he wants to
+                perform a script action. If he doesn't, this section is skipped
+                and the script proceeds with the code. When running
+                non-interactively, the section is run by default.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub create_appris_seqinput($$)
+{
+	my ($gene,$in_files) = @_;
+	my ($create) = undef;
+	my ($transl_cont) = '';
+	
+	# gene vars
+	my ($gene_id) = $gene->{'id'};
+	my ($gene_name) = ( exists $gene->{'name'} ) ? $gene->{'name'} : $gene_id;
+	
+	# scan translation info
+	if ( exists $gene->{'varsplic'} ) {
+		foreach my $isof_id (sort( keys(%{$gene->{'varsplic'}}) ) ) {
+			my ($isof) = $gene->{'varsplic'}->{$isof_id};
+			if ( exists $isof->{'seq'} ) {
+				my ($seq) = $isof->{'seq'};
+				my ($len) = length($seq);
+				$transl_cont .= ">$isof_id|$isof_id|$gene_id|$gene_name|$len\n";
+				$transl_cont .= $seq."\n";				
+			}
+		}
+	}
+
+	# create files
+	if ( $transl_cont ne '' ) {
+		my ($output_file) = $in_files->{'transl'};
+		my ($printing_file_log) = printStringIntoFile($transl_cont, $output_file);
+		throw("creating $output_file file") unless ( defined $printing_file_log );
+	}
+	
+	# determine if appris has to run
+	if ( $transl_cont ne '' ) {
+		$create = 1;
+	}
+	
+	return $create;
+	
+} # end create_appris_seqinput
+
 =head2 reduce_input
 
   Arg[1]      : (optional) String $text - notification text to present to user
@@ -646,6 +762,78 @@ sub create_indata($;$;$)
 	return $data;
 	
 } # end create_ensembl_data
+
+=head2 create_seqdata
+
+  Arg[1]      : (optional) String $text - notification text to present to user
+  Example     : # run a code snipped conditionally
+                if ($support->user_proceed("Run the next code snipped?")) {
+                    # run some code
+                }
+
+                # exit if requested by user
+                exit unless ($support->user_proceed("Want to continue?"));
+  Description : If running interactively, the user is asked if he wants to
+                perform a script action. If he doesn't, this section is skipped
+                and the script proceeds with the code. When running
+                non-interactively, the section is run by default.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub create_seqdata($)
+{
+	my ($file) = @_;
+	my ($data);
+
+	if (-e $file and (-s $file > 0) ) {
+		my ($in) = Bio::SeqIO->new(
+							-file => $file,
+							-format => 'Fasta'
+		);
+		while ( my $seq = $in->next_seq() ) {
+			my ($s_id) = $seq->id;
+			my ($s_desc) = $seq->desc;
+			my ($s_seq) = $seq->seq;
+			my ($isof_id);
+			my ($gene_name);
+			
+			# At the moment, only for UniProt/neXtProt cases
+			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
+				$isof_id = $2;
+				my (@desc) = split('GN=', $s_desc);
+				if ( scalar(@desc) >= 2 ) {
+					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
+				}				
+			}
+			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
+				$isof_id = $1;
+				my (@desc) = split('Gname=', $s_desc);
+				if ( scalar(@desc) >= 2 ) {
+					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
+				}				
+			}
+			if ( defined $isof_id ) {
+				my ($gene_id) = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;
+				unless ( exists $data->{$gene_id} ) {
+					$data->{$gene_id} = {
+						'id'		=> $gene_id,
+						'name'		=> $gene_name,
+						'varsplic'	=> {}
+					};
+				}
+				$data->{$gene_id}->{'varsplic'}->{$isof_id} = {
+					'desc'		=> $s_desc,
+					'seq' 		=> $s_seq
+				}
+			}
+		}		
+	}
+	return $data;
+	
+} # End create_seqdata
 
 =head2 send_email
 

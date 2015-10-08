@@ -11,6 +11,7 @@ use lib "$FindBin::Bin/lib";
 use appris qw(
 	create_gene_list
 	create_appris_input
+	create_appris_seqinput
 	send_email
 );
 use APPRIS::Utils::File qw(
@@ -171,9 +172,10 @@ $LOGAPPEND	= "--logappend" if ( defined $logappend );
 # Method bodies #
 #################
 sub run_datafile($$);
-sub run_sequence($);
+sub run_sequence($$);
 sub run_ensembl($);
 sub run_pipeline($$;$;$);
+sub prepare_appris_seq_params($$);
 sub prepare_appris_params($$);
 sub create_appris_input($$);
 sub run_cluster_appris($$$);
@@ -225,8 +227,15 @@ sub main()
 	elsif ( $type_of_input =~ /sequence/ ) {
 		$logger->info(" $type_of_input type\n");
 		
+		# create gene list
+		$logger->info("-- create gene list\n");
+		my ($gene_list,$gene_data) = appris::create_gene_list(
+											-type		=> $type_of_input,
+											-gtransl	=> $translations_file,
+		);
+				
 		$logger->info("-- run sequence\n");
-		my ($runtimes) = run_sequence($translations_file);
+		my ($runtimes) = run_sequence($translations_file, $gene_data);
 				
 	}
 	else {
@@ -285,13 +294,32 @@ sub run_ensembl($)
 	return $runtimes;
 } # end run_ensembl
 
-sub run_sequence($)
+#sub run_sequence($)
+#{
+#	my ($transl_file) = @_;
+#	my ($runtimes) = undef;
+#	
+#	my ($runtime) = run_pipeline('', $outpath, undef, $transl_file);
+#	push(@{$runtimes}, $runtime);
+#				
+#	return $runtimes;
+#} # end run_sequence
+sub run_sequence($$)
 {
-	my ($transl_file) = @_;
+	my ($transl_file, $data) = @_;
 	my ($runtimes) = undef;
 	
-	my ($runtime) = run_pipeline('', $outpath, undef, $transl_file);
-	push(@{$runtimes}, $runtime);
+	if ( defined $data ) {
+		while ( my ($gene_id,$gene) = each(%{$data}) ) {
+			my ($runtime) = run_pipeline($gene_id, $outpath, $gene);
+			push(@{$runtimes}, $runtime);
+last;
+		}		
+	}
+	else {
+		my ($runtime) = run_pipeline('', $outpath, undef, $transl_file);
+		push(@{$runtimes}, $runtime);		
+	}
 				
 	return $runtimes;
 } # end run_sequence
@@ -348,11 +376,17 @@ sub run_pipeline($$;$;$)
 
 		$logger->info("\t-- prepare workspace\n");
 		my ($g_workspace) = $workspace;
+		if ( $gene_id ne '' ) { $g_workspace .= $gene_id }
 		$g_workspace = prepare_workspace($g_workspace);
 		$params->{'outpath'} = $g_workspace;
 				
 		$logger->info("\t-- prepare params\n");
-		$params->{'transl'} = $transl_file;		
+		$params->{'transl'} = $transl_file;
+		# UniProt/neXtProt cases
+		if ( $gene_id ne '' ) {
+			$params = prepare_appris_seq_params($gene, $g_workspace);
+			$params->{'id'} = $gene_id;
+		}
 	}
 	else {
 		$logger->info("\t-- do not run appris\n");
@@ -388,7 +422,34 @@ sub run_pipeline($$;$;$)
 	return $runtime;
 	
 } # end run_pipeline
+
+sub prepare_appris_seq_params($$)
+{
+	my ($gene, $workspace) = @_;
+	my ($gene_id) = $gene->{'id'};
 	
+	# require parameter
+	my ($params) = {
+		'species'		=> "'$species'",
+		'outpath'		=> $workspace,
+	};
+	
+	# input files
+	$logger->info("\t-- create datafile input\n");
+	my ($in_files) = {
+			'transl'		=> $workspace.'/'.$gene_id.'.transl.fa',
+	};		
+	my ($create) = appris::create_appris_seqinput($gene, $in_files);
+	if ( defined $create ) {
+		if ( exists $in_files->{'transl'} and -e ($in_files->{'transl'}) ) {
+			$params->{'transl'} = $in_files->{'transl'};
+		}			
+	}
+
+	return $params;
+	
+} # end prepare_appris_seq_params
+
 sub prepare_appris_params($$)
 {
 	my ($gene, $workspace) = @_;
@@ -407,13 +468,13 @@ sub prepare_appris_params($$)
 			'transc'		=> $workspace.'/'.$gene_id.'.transc.fa',
 			'transl'		=> $workspace.'/'.$gene_id.'.transl.fa',
 			'cdsseq'		=> $workspace.'/'.$gene_id.'.cdsseq.fa',			
-			'firestar'		=> $workspace.'/'.$gene_id.'.firestar',
-			'matador3d'		=> $workspace.'/'.$gene_id.'.matador3d',
-			'spade'			=> $workspace.'/'.$gene_id.'.spade',
-			'corsair'		=> $workspace.'/'.$gene_id.'.corsair',
-			'thump'			=> $workspace.'/'.$gene_id.'.thump',
-			'crash'			=> $workspace.'/'.$gene_id.'.crash',
-			'appris'		=> $workspace.'/'.$gene_id.'.appris',
+#			'firestar'		=> $workspace.'/'.$gene_id.'.firestar',
+#			'matador3d'		=> $workspace.'/'.$gene_id.'.matador3d',
+#			'spade'			=> $workspace.'/'.$gene_id.'.spade',
+#			'corsair'		=> $workspace.'/'.$gene_id.'.corsair',
+#			'thump'			=> $workspace.'/'.$gene_id.'.thump',
+#			'crash'			=> $workspace.'/'.$gene_id.'.crash',
+#			'appris'		=> $workspace.'/'.$gene_id.'.appris',
 			'logfile'		=> $workspace.'/'.$gene_id.'.log',
 			'errfile'		=> $workspace.'/'.$gene_id.'.err',
 	};
