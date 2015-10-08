@@ -102,8 +102,11 @@ if [ "${OUTPUT_DIR}" == "" ]; then
 	exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Create dirs
+RELEASE_DIR="${OUTPUT_DIR}/${RELEASE}"
 for dir in "${DIRECTORIES[@]}" ; do
-    prepare_workspace "${OUTPUT_DIR}/${dir}"
+    prepare_workspace "${RELEASE_DIR}/${dir}"
 done
 
 
