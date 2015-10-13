@@ -298,8 +298,8 @@ sub create_appris_input($$)
 	my ($gene_name) = $gene->external_name ? $gene->external_name : $gene_id;
 	
 	# get gene annots
-	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\" ";
-	if ( $gene->biotype ) { $data_gene_attrs .= '; gene_type "'.$gene->biotype.'" ' }	
+	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\"";
+	if ( $gene->biotype ) { $data_gene_attrs .= '; gene_type "'.$gene->biotype.'"' }	
 	$data_cont .=	$chr."\t".
 					'GENCODE'."\t".
 					'gene'."\t".
@@ -323,15 +323,15 @@ sub create_appris_input($$)
 			my ($t_strand) = $transcript->strand;
 			my ($t_phase) = '.';
 			my ($transcript_name) = $transcript->external_name ? $transcript->external_name : $transcript_id;
-			my ($data_transc_attrs) = "gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\" ";
+			my ($data_transc_attrs) = "gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\"";
 			my ($ccds_id) = '-';				
 			if ( $transcript->xref_identify ) {
 				foreach my $xref_identify (@{$transcript->xref_identify}) {								
 					if ($xref_identify->dbname eq 'CCDS') { $ccds_id = $xref_identify->id; last; }
 				}
-				if ( $ccds_id ne '-' ) { $data_transc_attrs .= '; ccds_id "'.$ccds_id.'" '; }
+				if ( $ccds_id ne '-' ) { $data_transc_attrs .= '; ccds_id "'.$ccds_id.'"'; }
 			}
-			if ( $transcript->biotype ) { $data_transc_attrs .= '; transcript_type "'.$transcript->biotype.'" ' }			
+			if ( $transcript->biotype ) { $data_transc_attrs .= '; transcript_type "'.$transcript->biotype.'"' }			
 			$data_cont .=	$chr."\t".
 							'GENCODE'."\t".
 							'transcript'."\t".
