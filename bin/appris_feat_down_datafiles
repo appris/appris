@@ -1,0 +1,170 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+
+# -----------------------------------------------------------------------------
+# Load external functions
+DIRNAME=`dirname $0`
+source ${DIRNAME}/appris_env
+
+CONF_SPECIES=""
+SPECIES=""
+ENSEMBL=""
+OUTPUT_DIR=""
+FTP_ENSEMBL_PUB="ftp://ftp.ensembl.org/pub/"
+SPECIES_ID=""
+SPECIES_FILENAME=""
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_feat_down_datafiles\n
+\n
+ Description:\n
+\t Download the datafiles for APPRIS.\n
+\n
+ Required arguments:\n
+\t Expluded arguments:\n
+\t -c [-conf] {string}\n
+\t\t Hsap  (Homo sapiens)\n
+\t\t Mmus  (Mus musculus)\n
+\t\t Rnor  (Rattus norvegicus)\n
+\t\t Drer  (Danio rerio)\n
+\t\t Sscr  (Sus scrofa)\n
+\t\t Ptro  (Pan troglodytes)\n
+\t\t Dmel  (Drosophila melanogaster)\n
+\t\t Cele  (Caenorhabditis elegans)\n
+\t\t Lpar  (Lynx pardinus)\n
+\n
+\t\t Source file for species\n
+\n
+\tor\n
+\t -s [-species] {string}\n
+\t\t Scientific name of species + assemmbly version\n
+\t\t Eg: \"Felis_catus.Felis_catus_6.2\", \"Bos_taurus.UMD3.1\"\n
+\t\t (Remember to write with commas)\n
+\n
+\t -e [-ensembl] {integer}\n
+\t\t Ensembl release. Eg, 82\n
+\n
+\t -o [-out] {path}\n
+\t\t Output path\n
+\t\t data/g15.v3.15Jul2013/\n
+\n
+\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			CONF_SPECIES=$2
+			shift
+			;;
+		-s | -species )
+			SPECIES=$2
+			shift
+			;;
+		-e | -ensembl )
+			ENSEMBL=$2
+			shift
+			;;
+		-o | -out )
+        	OUTPUT_DIR=$2
+        	shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [[ "${CONF_SPECIES}" == "" && "${SPECIES}" == "" ]]; then
+	echo You must specify at least one config file for CONF_SPECIES or SPECIES!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${ENSEMBL}" == "" ]; then
+	echo You must specify at least one config file for ENSEMBL!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${OUTPUT_DIR}" == "" ]; then
+	echo You must specify at least one config file for OUTPUT_DIR!
+	echo -e $USAGE
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Get the SPECIES ID
+
+if [[  "${CONF_SPECIES}" != "" ]]; then
+	load_appris_specie_env "${CONF_SPECIES}" "verbose"
+	SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+	SPECIES_NAME=$(echo ${APPRIS_SPECIES} | sed 's/ /_/')
+	SPECIES_FILENAME="${SPECIES_NAME}.${APPRIS_ASSEMBLY}"
+else
+	if [[  "${SPECIES}" != "" ]]; then
+		SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
+		SPECIES_FILENAME="${SPECIES}"
+	fi
+fi
+
+# -----------------------------------------------------------------------------
+# Prepare output dir
+prepare_workspace "${OUTPUT_DIR}"
+
+# -----------------------------------------------------------------------------
+# Run pipeline
+
+echo downloand files...
+cd ${OUTPUT_DIR}
+
+wget ${FTP_ENSEMBL_PUB}/release-${ENSEMBL}/gtf/${SPECIES_ID}/${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz
+
+wget ftp://ftp.ensembl.org/pub/release-82/fasta/${SPECIES_ID}/cdna/${SPECIES_FILENAME}.cdna.all.fa.gz
+
+wget ftp://ftp.ensembl.org/pub/release-82/fasta/${SPECIES_ID}/pep/${SPECIES_FILENAME}.pep.all.fa.gz
+
+echo uncompress files...
+gzip -d ${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz ${SPECIES_FILENAME}.pep.all.fa.gz ${SPECIES_FILENAME}.cdna.all.fa.gz
+
+echo rename files...
+mv ${SPECIES_FILENAME}.${ENSEMBL}.gtf ${SPECIES_ID}.annot.gtf
+mv ${SPECIES_FILENAME}.cdna.all.fa ${SPECIES_ID}.transc.fa
+mv ${SPECIES_FILENAME}.pep.all.fa ${SPECIES_ID}.transl.fa
