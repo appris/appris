@@ -203,7 +203,7 @@ else
 				SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
 				SPECIES_FILENAME="${SPECIES}"
 				ENSEMBL=$(echo ${line} | cut -d " " -f 2)
-				SPECIES_OUTDIR="${OUTPUT_DIR}/${SPECIES_ID}/ensembl${ENSEMBL}"
+				SPECIES_OUTDIR="${OUTPUT_DIR}/${SPECIES_ID}/e${ENSEMBL}"
 				echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${SPECIES_OUTDIR} ${RENAME}
 				download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${SPECIES_OUTDIR} ${RENAME}
 			done < "${INFILE}"
