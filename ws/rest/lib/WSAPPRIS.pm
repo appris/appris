@@ -397,9 +397,9 @@ sub _create_param_ensembl {
 	
 	# check if main data files exist
 	my ($spe) = lc($species); $spe =~ s/\s/\_/g;
-	my ($data_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."ensembl$e_version".'/'.$spe.'.annot.gtf';
-	my ($transc_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."ensembl$e_version".'/'.$spe.'.transc.fa';
-	my ($transl_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."ensembl$e_version".'/'.$spe.'.transl.fa';
+	my ($data_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."e$e_version".'/'.$spe.'.annot.gtf';
+	my ($transc_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."e$e_version".'/'.$spe.'.transc.fa';
+	my ($transl_file) = $ENV{APPRIS_FEATURES_DIR}.'/'.$spe.'/'."e$e_version".'/'.$spe.'.transl.fa';
 	if ( -e ($data_file) and (-s $data_file > 0) and
 		 -e ($transc_file) and (-s $transc_file > 0) and
 		 -e ($transl_file) and (-s $transl_file > 0) 
