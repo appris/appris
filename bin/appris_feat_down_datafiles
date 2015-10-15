@@ -199,7 +199,6 @@ else
 	else
 		if [[  "${INFILE}" != "" ]]; then
 			while IFS='' read -r line || [[ -n "$line" ]]; do
-				echo "Text read from file: $line"
 				SPECIES=$(echo ${line} | cut -d " " -f 1)
 				SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
 				SPECIES_FILENAME="${SPECIES}"
