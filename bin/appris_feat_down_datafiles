@@ -29,6 +29,7 @@ OUTPUT_DIR=""
 FTP_ENSEMBL_PUB="ftp://ftp.ensembl.org/pub/"
 SPECIES_ID=""
 SPECIES_FILENAME=""
+RENAME="FALSE"
 
 # -----------------------------------------------------------------------------
 # Usage
@@ -71,7 +72,9 @@ USAGE="
 \t\t Output path\n
 \t\t data/g15.v3.15Jul2013/\n
 \n
-\t -h [-help]\n
+\t -r If it is available we rename the files (server mode)\n
+\n
+\n\t -h [-help]\n
 \n
 \n
  Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
@@ -98,6 +101,10 @@ do
 		-o | -out )
         	OUTPUT_DIR=$2
         	shift
+			;;
+		-r )
+			RENAME="TRUE"		
+			shift
 			;;
 		-h | -help )
 			echo -e $USAGE		
@@ -164,7 +171,9 @@ wget ftp://ftp.ensembl.org/pub/release-82/fasta/${SPECIES_ID}/pep/${SPECIES_FILE
 echo uncompress files...
 gzip -d ${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz ${SPECIES_FILENAME}.pep.all.fa.gz ${SPECIES_FILENAME}.cdna.all.fa.gz
 
-echo rename files...
-mv ${SPECIES_FILENAME}.${ENSEMBL}.gtf ${SPECIES_ID}.annot.gtf
-mv ${SPECIES_FILENAME}.cdna.all.fa ${SPECIES_ID}.transc.fa
-mv ${SPECIES_FILENAME}.pep.all.fa ${SPECIES_ID}.transl.fa
+if [[  "${RENAME}" == "TRUE" ]]; then
+	echo rename files...
+	mv ${SPECIES_FILENAME}.${ENSEMBL}.gtf ${SPECIES_ID}.annot.gtf
+	mv ${SPECIES_FILENAME}.cdna.all.fa ${SPECIES_ID}.transc.fa
+	mv ${SPECIES_FILENAME}.pep.all.fa ${SPECIES_ID}.transl.fa
+fi
