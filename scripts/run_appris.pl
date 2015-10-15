@@ -313,7 +313,6 @@ sub run_sequence($$)
 		while ( my ($gene_id,$gene) = each(%{$data}) ) {
 			my ($runtime) = run_pipeline($gene_id, $outpath, $gene);
 			push(@{$runtimes}, $runtime);
-last;
 		}		
 	}
 	else {
