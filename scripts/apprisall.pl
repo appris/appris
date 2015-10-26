@@ -351,7 +351,7 @@ Executes all APPRIS 'steps
 	* cr - Prediction of signal peptide and sub-cellular location, CRASH
 	* p  - Proteomic evidence, PROTEO
   
-  -f, --format {vector} <Output format: 'gtf,bed', or 'json' (default: JSON)>
+  -f, --format {vector} <Output format: 'gtf,bed,bed12', or 'json' (default: JSON)>
   
   -e, --email {email} <E-mail address>
 
