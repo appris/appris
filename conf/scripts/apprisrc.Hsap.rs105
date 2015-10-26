@@ -38,7 +38,7 @@ export APPRIS_CHR_LIST="NC_000001.10,NC_000002.11,NC_000003.11,NC_000004.11,NC_0
 
 #export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/ref_GRCh38.p2_top_level.gff3"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/ref_GRCh37.p13_top_level.gff3"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/rna.fa"
 
@@ -50,7 +50,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/protein.fa"
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg38.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg37.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 
@@ -58,7 +58,7 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/rs107"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/rs105"
 
 # ---------------------------------#
 # Setting up the vars for database #
