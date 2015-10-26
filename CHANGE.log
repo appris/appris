@@ -14,37 +14,78 @@
 #####################################
 
 
-############################
-# DATE: 		           #
-# RELEASE:  	4.2.2.4.10 #
-# IDATE: 		18Jun2015  #
-############################
+#############################
+# A-RELEASE: 	2015_12.v12	#
+# C-RELEASE: 	4.4.2.7		#
+# I-DATE: 		01Nov2015	#
+#############################
 
 * HIGHLIGHTS:
-	- UCSC TrackHub of species that APPRIS has principal isoforms:
-		hg19, hg38, mm10, rn6, rn5, danRer10, danRer7, susScr3
-	- UCSC TrackHub of CNIO proteomic evidences for human
-		hg19, hg38		
-
+	
 * APPRIS-SERVER, v4.4
 	
-	TrackHub!!! <- TODO!!!!
-	
-	- UCSC TrackHub of species that APPRIS has principal isoforms:
-		hg19, hg38, mm10, rn6, rn5, danRer10, danRer7, susScr3
-	- UCSC TrackHub of CNIO proteomic evidences for human
-		hg19, hg38
-
-
-
-* APPRIS-CODE, v2.4
-
+* APPRIS-CODE, v2.7
+	- SPADE
+		- Include new decition using bitscore
+		- Note: Careful with overlapping (inherited) domains!!!!
 		
-* APPRIS-DATA, v10
+	- THUMP
+		- Bug Fix on consensus section. TODO!!!
 	
-	NEW GENE DATASET:
-	- RefSeq!!! <- TODO!!!!
+	- CRASH
+		- Fix the bug why sometimes it executed and others not. TODO!!! (Eg, ens82.v11.01Sep2015/14/ENSG00000119673) 
 	
+	- NEW CACHE STRUCTURE BASED ON ISOFORM INDEX/DIR. TODO!!!
+			
+* APPRIS-DATA, v12
+
+	
+#############################
+# A-RELEASE: 	2015_10.v11	#
+# C-RELEASE: 	4.4.2.6		#
+# I-DATE: 		01Sep2015	#
+#############################
+
+* HIGHLIGHTS:
+	
+* APPRIS-SERVER, v4.4
+	- New "Search Form". Filter options. TODO!!!
+	
+* APPRIS-CODE, v2.6
+	- APPRIS
+		- The filter of 'codon not found' has been deleted. For cases like GTF3A, or CG43172 gene for drosophila. 
+	
+	- Scripts than download the features files for species and Ensembl version.
+	
+	- Add into 'run_appris.pl' the option to copy the datafiles into the server. TODO!!!
+	
+* APPRIS-DATA, v11
+	- Annotations for all species using the code version v2.6. TODO!!!
+		- Human
+			> Ensembl82/Gencode23 (GRCh38),	ens82.v11.01Sep2015
+			> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015
+		- Mouse
+			> Ensembl81/GencodeM6 (GRCm38),	ens82.v11.01Sep2015
+		- Zebra-fish
+			> Ensembl81 (GRCz10), 			ens82.v11.01Sep2015
+		- Rat
+			> Ensembl81 (Rn6),    			ens82.v11.01Sep2015
+		- Pig
+			> Ensembl81 (Sscrofa10.2),		ens82.v11.01Sep2015
+		- Chimp
+			> Ensembl81 (CHIMP2.1.4), 		ens82.v11.01Sep2015
+		- Fruitfly
+			> Ensembl81 (BDGP6), 			ens82.v11.01Sep2015		
+		- C-elegans
+			> Ensembl81 (WBcel235), 		ens82.v11.01Sep2015
+	
+	- New gene data set: RefSeq!!! (version r107)
+	
+	- New gene data set: RefSeq!!! (version r105 CRGh37) TODO!!!!
+	
+	- New gene data set: UniProt!!! (version 2015_09) TODO!!!!
+	
+	- New gene data set: neXtProt!!! (version 2015-09-01) TODO????!!!!
 	
 #############################
 # A-RELEASE: 	2015_09.v10	#
