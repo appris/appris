@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="mus_musculus/e82_gM7"
+export APPRIS_WS_NAME="mus_musculus/e83_gM8"
 
-export APPRIS_WS_DATE="mus_musculus/ens82.v11.01Sep2015"
+export APPRIS_WS_DATE="mus_musculus/ens83.v12.26Oct2015"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -43,7 +43,7 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,X,Y,M,MT
 
 #export APPRIS_E_VERSION=82
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.82.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.83.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.cdna.all.fa"
 
@@ -63,7 +63,7 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/mus_musculus/e80_gM5"
+export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/mus_musculus/e82_gM7"
 
 # ---------------------------------#
 # Setting up the vars for database #
