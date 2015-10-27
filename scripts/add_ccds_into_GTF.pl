@@ -79,25 +79,26 @@ sub main()
 	$logger->debug("-- add CCDS into current GTF file if not already exits -------\n");	
 	open (IN_FILE, $data_file) or throw('Can not open file');
 	while ( my $line = <IN_FILE> ) {
+		my ($ccds_txt) = "";
 		#ignore header		
-		if ( $line =~ /^#/ ) { $output .= $line; next; }
-		
-		my ($fields) = APPRIS::Parser::_parse_dataline($line);
-		unless ( defined $fields ) { $output .= $line; next; }
-		if ( ($fields->{'type'} eq 'transcript') ) {
-			unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
-				my ($gene_id) = $fields->{'attrs'}->{'gene_id'};
-				my ($transc_id) = $fields->{'attrs'}->{'transcript_id'};
-				if ( exists $old_genedata->{$gene_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
-					my ($ccds_id) = $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
-					$line =~ s/\n*$//g;
-					$output .= $line . " ccds_id \"$ccds_id\"\n";
-				}
-				else { $output .= $line }
+		unless ( $line =~ /^#/ ) {
+			my ($fields) = APPRIS::Parser::_parse_dataline($line);
+			if ( defined $fields ) {
+				if ( ($fields->{'type'} eq 'transcript') ) {
+					unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+						my ($gene_id) = $fields->{'attrs'}->{'gene_id'};
+						my ($transc_id) = $fields->{'attrs'}->{'transcript_id'};
+						if ( exists $old_genedata->{$gene_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
+							my ($ccds_id) = $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+							$line =~ s/\n*$//g;
+							$ccds_txt = " ccds_id \"$ccds_id\"";
+						}
+					}
+				}				
 			}
-			else { $output .= $line }
-		}
-		else { $output .= $line }
+		}		
+		$line =~ s/\n*$//g;
+		$output .= $line . $ccds_txt . "\n";
 	}
 	
 	# Print output
