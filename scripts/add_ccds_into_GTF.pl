@@ -93,7 +93,8 @@ sub main()
 					$line =~ s/\n*$//g;
 					$output .= $line . " ccds_id \"$ccds_id\"\n";
 				}
-			}			
+			}
+			else { $output .= $line }
 		}
 		else { $output .= $line }
 	}
