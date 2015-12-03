@@ -466,7 +466,7 @@ sub _check_alignment($$$)
 	
 			# Exon score
 			my ($escore) = $totalidentity*$totalgaps*$totalres;
-			#if ( ($totalgaps == -1) and ($mini_cds_residues > 5 ) ) { $escore = -1 }
+			if ( ($totalgaps == -1 or $totalgaps == -0.5) and ($mini_cds_residues > 5 ) ) { $escore = $totalgaps }
 			$logger->debug("\tScore: $escore\n");
 									
 			my ($mini_cds_report) = {
