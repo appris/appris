@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="sus_scrofa/e82"
+export APPRIS_WS_NAME="sus_scrofa/e83"
 
-export APPRIS_WS_DATE="sus_scrofa/ens82.v11.01Sep2015"
+export APPRIS_WS_DATE="sus_scrofa/ens83.v13.14Dec2015"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -42,7 +42,7 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,X,Y,MT"
 
 #export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.82.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.83.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Sus_scrofa.Sscrofa10.2.cdna.all.fa"
 
