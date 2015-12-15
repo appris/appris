@@ -15,49 +15,90 @@
 
 
 #############################
-# A-RELEASE: 	2015_12.v12	#
+# A-RELEASE: 	2015_12.v13	#
 # C-RELEASE: 	4.4.2.7		#
-# I-DATE: 		01Nov2015	#
+# I-DATE: 		14Dec2015	#
 #############################
 
 * HIGHLIGHTS:
-	
-* APPRIS-SERVER, v4.4
-	
-* APPRIS-CODE, v2.7
-	- SPADE
-		- Include new decition using bitscore
-		- Note: Careful with overlapping (inherited) domains!!!!
-		
-	- THUMP
-		- Bug Fix on consensus section. TODO!!!
-	
-	- CRASH
-		- Fix the bug why sometimes it executed and others not. TODO!!! (Eg, ens82.v11.01Sep2015/14/ENSG00000119673) 
-	
-	- NEW CACHE STRUCTURE BASED ON ISOFORM INDEX/DIR. TODO!!!
-			
-* APPRIS-DATA, v12
 
+* APPRIS-SERVER, v4.3
+	- Don't print Matador3D annotations in the SequenceBrowser when the score is 0. TODO!!!
+	- Add TSL annots in the report web page.
+
+* APPRIS-CODE, v2.7
+	- Matador3D
+		- Fixed bug: Take into account the -1 and -0.5 score. 
+	
+	- APPRIS
+		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
+			- If all variants has fragments, we don't reject them.
+			- If all variants are NM, we don't reject them.
+			- If all variants are NM or fragments, we don't reject them (and keep going with pipeline).
+		- If fragments have CCDS, we don't reject them (eg, EIF4G2)
+					
+* APPRIS-DATA, v13 TODO!!!!
+		- Human
+			> Ensembl83/Gencode24 (GRCh38),	ens83.v13.14Dec2015
+			> Ensembl74/Gencode19 (GRCh37), gen19.v13.14Dec2015
+		- Mouse
+			> Ensembl83/GencodeM8 (GRCm38),	ens83.v13.14Dec2015
+		- Rat
+			> Ensembl83 (Rn6),    			ens83.v13.14Dec2015
+		- Zebra-fish
+			> Ensembl82 (GRCz10), 			ens83.v13.14Dec2015
+		- Pig
+			> Ensembl82 (Sscrofa10.2),		ens83.v13.14Dec2015
+		- Chimp
+			> Ensembl82 (CHIMP2.1.4), 		ens83.v13.14Dec2015
+		- Fruitfly
+			> Ensembl82 (BDGP6), 			ens83.v13.14Dec2015		
+		- C-elegans
+			> Ensembl82 (WBcel235), 		ens83.v13.14Dec2015
+
+
+#############################
+# A-RELEASE: 	2015_11.v12	#
+# C-RELEASE: 	4.3.2.6		#
+# I-DATE: 		26Oct2015	#
+#############################
+
+* HIGHLIGHTS:
+	- Hand-over for e83: Human, Mouse and Rat.
+		
+* APPRIS-DATA, v12
+		- Human
+			> Ensembl83/Gencode24 (GRCh38),	ens83.v12.26Oct2015
+		- Mouse
+			> Ensembl83/GencodeM8 (GRCm38),	ens83.v12.26Oct2015
+		- Rat
+			> Ensembl83 (Rn6),    			ens83.v12.26Oct2015
+		- Zebra-fish
+			> Ensembl82 (GRCz10), 			ens82.v11.01Sep2015
+		- Pig
+			> Ensembl82 (Sscrofa10.2),		ens82.v11.01Sep2015
+		- Chimp
+			> Ensembl82 (CHIMP2.1.4), 		ens82.v11.01Sep2015
+		- Fruitfly
+			> Ensembl82 (BDGP6), 			ens82.v11.01Sep2015		
+		- C-elegans
+			> Ensembl82 (WBcel235), 		ens82.v11.01Sep2015
+	
+	- New gene data set: RefSeq!!! (version r107)
 	
 #############################
 # A-RELEASE: 	2015_10.v11	#
-# C-RELEASE: 	4.4.2.6		#
+# C-RELEASE: 	4.3.2.6		#
 # I-DATE: 		01Sep2015	#
 #############################
 
 * HIGHLIGHTS:
 	
-* APPRIS-SERVER, v4.4
-	- New "Search Form". Filter options. TODO!!!
-	
 * APPRIS-CODE, v2.6
 	- APPRIS
-		- The filter of 'codon not found' has been deleted. For cases like GTF3A, or CG43172 gene for drosophila. 
+		- The filter of 'codon not found' has been deleted. For cases like GTF3A, or CG43172 gene for Drosophila. 
 	
 	- Scripts than download the features files for species and Ensembl version.
-	
-	- Add into 'run_appris.pl' the option to copy the datafiles into the server. TODO!!!
 	
 * APPRIS-DATA, v11
 	- Annotations for all species using the code version v2.6. TODO!!!
@@ -65,27 +106,19 @@
 			> Ensembl82/Gencode23 (GRCh38),	ens82.v11.01Sep2015
 			> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015
 		- Mouse
-			> Ensembl81/GencodeM6 (GRCm38),	ens82.v11.01Sep2015
+			> Ensembl82/GencodeM7 (GRCm38),	ens82.v11.01Sep2015
 		- Zebra-fish
-			> Ensembl81 (GRCz10), 			ens82.v11.01Sep2015
+			> Ensembl82 (GRCz10), 			ens82.v11.01Sep2015
 		- Rat
-			> Ensembl81 (Rn6),    			ens82.v11.01Sep2015
+			> Ensembl82 (Rn6),    			ens82.v11.01Sep2015
 		- Pig
-			> Ensembl81 (Sscrofa10.2),		ens82.v11.01Sep2015
+			> Ensembl82 (Sscrofa10.2),		ens82.v11.01Sep2015
 		- Chimp
-			> Ensembl81 (CHIMP2.1.4), 		ens82.v11.01Sep2015
+			> Ensembl82 (CHIMP2.1.4), 		ens82.v11.01Sep2015
 		- Fruitfly
-			> Ensembl81 (BDGP6), 			ens82.v11.01Sep2015		
+			> Ensembl82 (BDGP6), 			ens82.v11.01Sep2015		
 		- C-elegans
-			> Ensembl81 (WBcel235), 		ens82.v11.01Sep2015
-	
-	- New gene data set: RefSeq!!! (version r107)
-	
-	- New gene data set: RefSeq!!! (version r105 CRGh37) TODO!!!!
-	
-	- New gene data set: UniProt!!! (version 2015_09) TODO!!!!
-	
-	- New gene data set: neXtProt!!! (version 2015-09-01) TODO????!!!!
+			> Ensembl82 (WBcel235), 		ens82.v11.01Sep2015
 	
 #############################
 # A-RELEASE: 	2015_09.v10	#

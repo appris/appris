@@ -715,6 +715,10 @@ sub get_final_scores($$$)
 	
 } # End get_final_scores
 
+#- If variant has CCDS, we don't reject (eg, EIF4G2)
+#- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
+#	- If all variants has fragments, or If all variants are NM, or If all variants are NM or fragments,
+#		we don't reject them (and keep going with pipeline).
 sub filter_by_class_codons($$\$\$)
 {
 	my ($gene, $i_s_scores, $ref_scores, $ref_nscores) = @_;
@@ -727,16 +731,51 @@ sub filter_by_class_codons($$\$\$)
 		foreach my $transcript_id (@{$i_s_scores->{$appris_score}}) {
 			my ($index) = $gene->{'_index_transcripts'}->{$transcript_id};
 			my ($transcript) = $gene->transcripts->[$index];
+			my ($ccds_id);
+			if ( $transcript->xref_identify ) {
+				foreach my $xref_identify (@{$transcript->xref_identify}) {
+					if ($xref_identify->dbname eq 'CCDS') {
+						$ccds_id = $xref_identify->id;
+						last;
+					}
+				}
+			}
 			my ($appris_nscore) = $$ref_nscores->{$transcript_id}->{$method};
 			my ($frozen_score, $frozen_nscore) = ($appris_score, $appris_nscore);
-			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
-				($frozen_score, $frozen_nscore) = (-1,-1);
+			unless ( defined $ccds_id ) { # If variant has CCDS, we don't reject (eg, EIF4G2)
+				if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
+					$frozen_score = -1;
+				}
+				if ( $transcript->translate->codons ) {
+					my ($aux_codons) = '';
+					foreach my $codon (@{$transcript->translate->codons}) {
+						if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
+							$aux_codons .= $codon->type.',';							
+						}
+					}
+					unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
+						$frozen_score = -1;
+					}
+				}				
 			}
 			push(@{$s_scores->{$frozen_score}}, $transcript_id);
-			$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
-			$$ref_nscores->{$transcript_id}->{$method} = $frozen_nscore;
 		}			
 	}
+	# If all variants has fragments, or If all variants are NM, or If all variants are NM or fragments, 
+	# we don't reject them (and keep going with pipeline).
+	my (@s_scores) = keys(%{$s_scores});
+	if ( scalar(@s_scores) == 1 && $s_scores[0] eq "-1" ) {
+		$s_scores = $i_s_scores;
+	} else {
+		# update scores with 'frozen'
+		while ( my ($frozen_score, $sc) = each(%{$s_scores}) ) {
+			foreach my $transcript_id (@{$sc}) {
+				$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
+				$$ref_nscores->{$transcript_id}->{$method} = $frozen_score;
+			}		
+		}
+	}
+	
 	return $s_scores;
 	
 } # end filter_by_class_codons
