@@ -5,4 +5,4 @@ longLabel CNIO - Peptides detected from a re-analysis of multiple experiments an
 html docs/PROTEO
 type bigBed 12
 color 153,102,0
-visibility full
+visibility pack

@@ -5,7 +5,7 @@ table hg19CNIOproteo
   uint    			chromStart;		"Start position of feature on chromosome"
   uint    			chromEnd;		"End position of feature on chromosome"
   string  			name;			"Peptide sequences"
-  uint    			score;			"Score from 0-1000"
+  uint    			score;			"Number experiments found [2-8]"
   char[1]			strand;			"+ or - for strand"
   uint   			thickStart;		"Coding region start"
   uint				thickEnd;		"Coding region end"
