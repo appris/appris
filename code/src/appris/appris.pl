@@ -654,7 +654,8 @@ sub get_final_scores($$$)
 					elsif ( $method eq 'corsair' ) {
 						# cutoff of AA length. 0 score when is bigger or equal than AA_LEN_CUTOFF
 						my ($max_aa_legnth) = $max_scores->{'aa_length'};
-						if ( $max_aa_legnth < $CORSAIR_AA_LEN_CUTOFF ) { $sc = $scores->{$transcript_id}->{$k_annot2} }
+						my ($max_corsair) = $max_scores->{'corsair'};
+						if ( $max_aa_legnth < $CORSAIR_AA_LEN_CUTOFF or $max_corsair >= $CORSAIR_CUTOFF ) { $sc = $scores->{$transcript_id}->{$k_annot2} }
 						else { $sc = 0 }
 						
 						if ( $max != 0 ) { $n_sc = $sc/$max }
@@ -717,7 +718,7 @@ sub get_final_scores($$$)
 
 #- If variant has CCDS, we don't reject (eg, EIF4G2)
 #- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
-#	- If all variants has fragments, or If all variants are NM, or If all variants are NM or fragments,
+#	- If all variants has fragments, or If all variants are NM,
 #		we don't reject them (and keep going with pipeline).
 sub filter_by_class_codons($$\$\$)
 {
@@ -746,17 +747,6 @@ sub filter_by_class_codons($$\$\$)
 				if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
 					$frozen_score = -1;
 				}
-				if ( $transcript->translate->codons ) {
-					my ($aux_codons) = '';
-					foreach my $codon (@{$transcript->translate->codons}) {
-						if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-							$aux_codons .= $codon->type.',';							
-						}
-					}
-					unless ( ($aux_codons =~ /start/) and ($aux_codons =~ /stop/) ) {
-						$frozen_score = -1;
-					}
-				}				
 			}
 			push(@{$s_scores->{$frozen_score}}, $transcript_id);
 		}			
