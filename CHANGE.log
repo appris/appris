@@ -15,8 +15,39 @@
 
 
 #############################
+# A-RELEASE: 	2016_02.v15	#
+# C-RELEASE: 	4.4.2.9		#
+# I-DATE: 		22Jan2016	#
+#############################
+
+* APPRIS-CODE, v2.9
+	- New Matador3D:
+		- It uses the bitscore.
+		- NOTA!!! Tener en cuenta secuencias que son iguales para pasar el bitscore del template a la nueva variante.!!!
+
+		 
+	
+#############################
+# A-RELEASE: 	2016_01.v14	#
+# C-RELEASE: 	4.3.2.8		#
+# I-DATE: 		22Jan2016	#
+#############################
+
+* HIGHLIGHTS:
+
+* APPRIS-CODE, v2.8
+	- APPRIS
+		- Discard the filter of "start/stop" codon not found.
+		- Add new cutoff for CORSAIR method.
+		If the aa length is longer than len-cutoff but the max score is bigger than score-cutoff, then continue; Otherwise, discard the scores of all variants. Eg, FRYL
+		
+* APPRIS-DATA, v14 TODO!!!!
+
+
+		
+#############################
 # A-RELEASE: 	2015_12.v13	#
-# C-RELEASE: 	4.4.2.7		#
+# C-RELEASE: 	4.3.2.7		#
 # I-DATE: 		14Dec2015	#
 #############################
 

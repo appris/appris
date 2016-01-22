@@ -10,8 +10,12 @@ abstract 		'This distribution is for communicating with a APPRIS annotations';
 #perl_version	'5.16.2';
 
 # Perl dependencies
-configure_requires 'YAML::Tiny'		=> '1.69';
 
+# Module::Install
+requires 'YAML::Tiny'				=> '1.69';
+requires 'File::Remove'				=> '1.52';
+
+# APPRIS
 requires 'DB'						=> 0;
 requires 'DBD::mysql'				=> 0;
 requires 'POSIX'					=> 0;
@@ -20,9 +24,9 @@ requires 'Config::IniFiles'			=> 0;
 requires 'Getopt::Long'				=> 0;
 requires 'Data::Dumper'				=> 0;
 requires 'Exporter'					=> 0;
-requires 'Bio::Seq'					=> 0;
-requires 'Bio::SeqIO'				=> 0;
-requires 'Bio::SearchIO'			=> 0;
+requires 'Bio::Seq'					=> '1.06';
+requires 'Bio::SeqIO'				=> '1.06';
+requires 'Bio::SearchIO'			=> '1.06';
 requires 'File::Temp'				=> 0;
 requires 'File::Basename'			=> 0;
 requires 'Time::localtime'			=> 0;
