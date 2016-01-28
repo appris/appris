@@ -181,8 +181,12 @@ else
 	if [ "${APPRIS_E_VERSION}" != "" ]; then
 		ENSEMBL_PARAMETERS=" --e-version=${APPRIS_E_VERSION}"
 	else
-		echo Error within env variables: APPRIS required GENCODE or ENSEMBL data input!!
-		exit 1
+		if [ "${GENCODE_TRANSLATION_FILE}" != "" ]; then
+			GENCODE_PARAMETERS=" --transl=${GENCODE_TRANSLATION_FILE}"
+		else	
+			echo Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!
+			exit 1
+		fi
 	fi		
 fi
 GENE_LIST_PARAMETERS=""
