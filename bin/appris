@@ -233,7 +233,7 @@ fi
 SCRIPT="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT}.pl"
 
 # From Data,Transc,Transl files
-if [[ "${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" && "${GENCODE_TRANSLATION_FILE}" != "" ]]; then
+if [[ "${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" && "${GENCODE_TRANSLATION_FILE}" != "" ] ||  ["${GENCODE_TRANSLATION_FILE}" != "" ] ]; then
 
 	# chromsome by chromosome
 	if [ "${APPRIS_CHR_LIST}" != "" ] ; then
