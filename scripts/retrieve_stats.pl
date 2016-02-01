@@ -102,7 +102,7 @@ sub _get_prin($);
 sub _get_ccds_disagreement($);
 sub _print_coverage($);
 sub _print_ccds($);
-sub _print_gene_disagree($$);
+sub _print_gene_disagree($$$);
 
 #################
 # Method bodies #
@@ -123,7 +123,7 @@ sub main()
 	# Get data from file
 	$logger->debug("-- get main data from files -------\n");
 	my ($main_report) = common::get_main_report($input_main_file, $input_seq_file);	
-	#$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
+	$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
 
 	# Get data from file
 	$logger->debug("-- get detailed data from files -------\n");
@@ -133,7 +133,7 @@ sub main()
 	# Get principal from file
 	$logger->debug("-- get principal list from files -------\n");
 	my ($prin_report) = common::get_prin_report($input_prin_file);	
-	#$logger->debug("PRIN_REPORT:\n".Dumper($prin_report)."\n");
+	$logger->debug("PRIN_REPORT:\n".Dumper($prin_report)."\n");
 
 	# Get data from file
 	$logger->debug("-- get coverages of methods -------\n");
@@ -148,8 +148,8 @@ sub main()
 	# Get data from file
 	$logger->debug("-- get agreement with genes with unique CCDS -------\n");
 	my ($ccds_report, $genes_disagree) = _get_ccds_disagreement($label_report);	
-	#$logger->debug("CCDS_REPORT:\n".Dumper($ccds_report)."\n");
-	#$logger->debug("GENES_DISAGREE_CCDS:\n".Dumper($genes_disagree)."\n");
+	$logger->debug("CCDS_REPORT:\n".Dumper($ccds_report)."\n");
+	$logger->debug("GENES_DISAGREE_CCDS:\n".Dumper($genes_disagree)."\n");
 	
 	# print stats
 	$logger->debug("-- print coverages of methods -------\n");
@@ -165,7 +165,7 @@ sub main()
 	
 	# print disagreements
 	$logger->debug("-- print ccds disagreements (genes/methods) -------\n");
-	my ($output_content2) = _print_gene_disagree($main_report,$genes_disagree);
+	my ($output_content2) = _print_gene_disagree($genes_disagree,$main_report,$prin_report);
 	if ( $output_content2 ne '' and defined $output_gdisagree_file ) {
 		my ($printing_file_log) = printStringIntoFile($output_content2, $output_gdisagree_file);
 		$logger->error("Printing _print_gene_disagree_content\n") unless(defined $printing_file_log);			
@@ -439,8 +439,9 @@ sub _get_ccds_disagreement($)
 						my ($met) = 'firestar';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";
 						}
 					}
 					elsif ( $i_met == 1 ) {
@@ -448,8 +449,9 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'matador3d';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
 						}
 					}					
 					elsif ( $i_met == 2 ) {
@@ -457,8 +459,9 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'corsair';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
 						}
 					}					
 					elsif ( $i_met == 3 ) {
@@ -466,8 +469,9 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'spade';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
 						}
 					}	
 					elsif ( $i_met == 4 ) {
@@ -475,8 +479,9 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'thump';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";							
 						}
 					}					
 					elsif ( $i_met == 7 ) {
@@ -484,7 +489,8 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'inertia';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
 						}
 					}					
 					elsif ( $i_met == 8 ) {
@@ -492,7 +498,8 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'proteo';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
 						}
 					}					
 					elsif ( $i_met == 9 ) {
@@ -500,8 +507,9 @@ print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_
 						my ($met) = 'appris';
 						if ( $annot eq 'NO' ) {
 							$gene_flags->{$met} = 1;
-							$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
-print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";
+							#$g_disagre->{$met}->{$gene_id} = 1 unless (exists $g_disagre->{$met}->{$gene_id} );
+							$g_disagre->{$met}->{$gene_id}->{$transcript_id} = $ccds_annot;
+#print STDERR "UNIQUE_CCDS_REJECT_".uc($met).":\t$gene_id\t$transcript_id\t$ccds_annot\n";
 						}
 					}					
 				}
@@ -613,10 +621,13 @@ sub _print_ccds($)
 	
 } # end _print_ccds
 
-sub _print_gene_disagree($$)
+sub _print_gene_disagree($$$)
 {
-	my ($main_report, $report) = @_;
+	my ($report, $main_report, $prin_report) = @_;
 	my ($content) = 'gene_id'."\t".
+					'gene_name'."\t".
+					'transc_id'."\t".
+					'ccds_id'."\t".
 					'firestar'."\t".
 					'matador3d'."\t".
 					'corsair'."\t".
@@ -626,7 +637,8 @@ sub _print_gene_disagree($$)
 					#'proteo'."\t".
 					'appris'."\n";
 	
-	foreach my $gene_id (keys %{$main_report}) {
+	#foreach my $gene_id (keys %{$main_report}) {
+	while (my ($gene_id,$gene_report) = each(%{$main_report}) ) {
 		if (
 			exists $report->{'firestar'}->{$gene_id} or
 			exists $report->{'matador3d'}->{$gene_id} or
@@ -646,7 +658,31 @@ sub _print_gene_disagree($$)
 			#if ( exists $report->{'inertia'}->{$gene_id} ) { push(@{$cont}, 1) } else { push(@{$cont}, 0) }
 			#if ( exists $report->{'proteo'}->{$gene_id} ) { push(@{$cont}, 1) } else { push(@{$cont}, 0) }
 			if ( exists $report->{'appris'}->{$gene_id} ) { push(@{$cont}, 1) } else { push(@{$cont}, 0) }
-			$content .= $gene_id."\t".join("\t", @{$cont})."\n";
+			#$content .= $gene_id."\t".join("\t", @{$cont})."\n";
+			my ($ccds_disagree_cont) = join("\t", @{$cont});
+			
+			#foreach my $transc_id (keys %{$gene_report->{'transcripts'}}) {
+			while (my ($transc_id,$transc_report) = each(%{$gene_report->{'transcripts'}}) ) {
+print STDERR "TRANS_ID: $transc_id\n".Dumper($report->{'firestar'}->{$gene_id})."\n";
+				if (
+					exists $report->{'firestar'}->{$gene_id}->{$transc_id} or
+					exists $report->{'matador3d'}->{$gene_id}->{$transc_id} or
+					exists $report->{'corsair'}->{$gene_id}->{$transc_id} or
+					exists $report->{'spade'}->{$gene_id}->{$transc_id} or
+					exists $report->{'thump'}->{$gene_id}->{$transc_id} or
+					#exists $report->{'inertia'}->{$gene_id}->{$transc_id} or
+					#exists $report->{'proteo'}->{$gene_id}->{$transc_id} or
+					exists $report->{'appris'}->{$gene_id}->{$transc_id}
+				) {
+					my ($ccds_id) = ( exists $transc_report->{'ccds_id'} ) ? $transc_report->{'ccds_id'} : '-';
+					my ($gene_name) = ( exists $prin_report->{$gene_id} and exists $prin_report->{$gene_id}->{'gene_name'}) ? $prin_report->{$gene_id}->{'gene_name'} : '-';
+					$content .= $gene_id."\t".
+									$gene_name."\t".
+									$transc_id."\t".
+									$ccds_id."\t".
+									$ccds_disagree_cont."\n";					
+				}
+			}			
 		}
 	}
 	return $content;

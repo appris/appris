@@ -419,6 +419,7 @@ sub get_prin_report($)
 				$report->{$gene_id}->{'num_trans'}=0;		
 			}
 			$report->{$gene_id}->{'num_trans'}++;
+			$report->{$gene_id}->{'gene_name'} = $gene_name;
 			$report->{$gene_id}->{'transcripts'}->{$transcript_id} = $appris_label;
 			unless (exists $report->{$gene_id}->{$appris_label}) {
 				$report->{$gene_id}->{$appris_label} = 1;		
