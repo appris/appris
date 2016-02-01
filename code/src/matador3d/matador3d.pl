@@ -439,9 +439,9 @@ sub _check_alignment($$$)
 				{$totalgaps = 0.33}
 			elsif ($gaps <= 18)
 				{$totalgaps = 0.20}
-			elsif ($gaps > 40)
+			elsif ($gaps > 80)
 				{$totalgaps = -1}
-			elsif ($gaps > 33)
+			elsif ($gaps > 50)
 				{$totalgaps = -0.5}
 			elsif ($gaps > 25)
 				{$totalgaps = 0}
@@ -466,7 +466,9 @@ sub _check_alignment($$$)
 	
 			# Exon score
 			my ($escore) = $totalidentity*$totalgaps*$totalres;
-			if ( ($totalgaps == -1 or $totalgaps == -0.5) and ($mini_cds_residues > 5 ) ) { $escore = $totalgaps }
+			#if ( ($totalgaps == -1 or $totalgaps == -0.5) and ($mini_cds_residues > 5 ) ) { $escore = $totalgaps }
+			#if ( ($totalgaps < 0) and ($totalres == 0 or $totalidentity == 0) ) { $escore = $totalgaps }
+			if ( $totalgaps < 0 ) { $escore = $totalgaps*$totalres }
 			$logger->debug("\tScore: $escore\n");
 									
 			my ($mini_cds_report) = {
