@@ -23,6 +23,8 @@
 * APPRIS-CODE, v2.9
 	- New Matador3D:
 		- It uses the bitscore.
+		
+	- New SPADE
 		- NOTA!!! Tener en cuenta secuencias que son iguales para pasar el bitscore del template a la nueva variante.!!!
 
 		 
@@ -30,7 +32,7 @@
 #############################
 # A-RELEASE: 	2016_01.v14	#
 # C-RELEASE: 	4.3.2.8		#
-# I-DATE: 		22Jan2016	#
+# I-DATE: 		29Jan2016	#
 #############################
 
 * HIGHLIGHTS:
@@ -42,6 +44,13 @@
 		If the aa length is longer than len-cutoff but the max score is bigger than score-cutoff, then continue; Otherwise, discard the scores of all variants. Eg, FRYL
 		
 * APPRIS-DATA, v14 TODO!!!!
+		- Human
+			> Ensembl84/Gencode24 (GRCh38),	ens84.v14.29Jan2016
+			> Ensembl74/Gencode19 (GRCh37), gen19.v14.29Jan2016
+		- Mouse
+			> Ensembl84/GencodeM9 (GRCm38),	ens84.v14.29Jan2016
+		- Zebra-fish
+			> Ensembl84 (GRCz10), 			ens84.v14.29Jan2016
 
 
 		
