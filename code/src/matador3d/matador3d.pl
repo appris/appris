@@ -361,11 +361,12 @@ sub _check_alignment($$$)
 				next;
 			}			
 		        
-			my $gapres = 0;
+			my $gapres = 0;			
 			my $identities = 0;
 			my $res = 0;
 			my $j = 0;
 			my $n = 0;
+			my $targ_gapres = 0;
 	        
 			# Get the index start depending the minus coordinate 
 			if ($mini_cds_start < $targstart)
@@ -381,7 +382,7 @@ sub _check_alignment($$$)
 					if ($target[$res] eq $candidate[$res])
 						{$identities++}
 					if ($target[$res] eq "-")
-						{$gapres++;$j--}
+						{$gapres++;$j--;$targ_gapres++}
 					if ($candidate[$res]eq "-")
 						{$gapres++;}
 					$n++;           	
@@ -428,7 +429,7 @@ sub _check_alignment($$$)
 			# Value of gap score: the sort of conditions is important!!!
 			my $totalgaps = 0;
 			my $gaps = 0;
-			$gaps = $gapres/$mini_cds_residues*100;
+			$gaps = ( $gapres / ($mini_cds_residues + $targ_gapres) ) *100;
 			if ($gaps <= 3)
 				{$totalgaps = 1}
 			elsif ($gaps <= 6)
@@ -441,8 +442,10 @@ sub _check_alignment($$$)
 				{$totalgaps = 0.20}
 			elsif ($gaps > 80)
 				{$totalgaps = -1}
-			elsif ($gaps > 50)
+			elsif ($gaps > 60)
 				{$totalgaps = -0.5}
+			elsif ($gaps > 40)
+				{$totalgaps = -0.25}
 			elsif ($gaps > 25)
 				{$totalgaps = 0}
 			else
