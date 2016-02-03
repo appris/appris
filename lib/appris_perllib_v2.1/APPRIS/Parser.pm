@@ -2054,47 +2054,27 @@ sub parse_proteo_rst($)
 	my ($cutoffs);
 		
 	my (@results) = split('\n',$result);	
-	#$peptide, $gene, $transcripts with, $transcripts without, $transcripts from other genes, $no_expts, $cnio_expt, $peptideatlas, $nagaraj, $geiger, $neuhauser, $mu–oz, $nist, $other_exp
+	#$peptide, $gene, $transcripts with, $transcripts without, $no_expts
 	#You should delete all peptides with the "$transcripts from other genes" and "$transcripts without" column.
-	#VNNEGCFIK,ENSG00000000003.9,ENST00000373020.4;ENST00000431386.2,,,3,,1,,1,,1,
-	#QLNYTIGEVPISFVDRVYGESK,ENSG00000000419.7,ENST00000371582.4;ENST00000371588.5;ENST00000371584.4;ENST00000449701.2;ENST00000371583.5,ENST00000413082.1,,3,,1,,1,,,1
+	#VSLENYFSLLNEK,ENSG00000000003.11,ENST00000373020.5,ENST00000612152.1;ENST00000614008.1,6
+	#DWTDTNYYSEK,ENSG00000000003.11,ENST00000612152.1;ENST00000373020.5;ENST00000614008.1,,4
 	foreach my $transcript_result (@results)
 	{
 		next unless (defined $transcript_result);
-				
+		
 		$transcript_result =~ s/\n*$//;
 		my (@split_line) = split(",", $transcript_result); # version with commas
 		#my (@split_line) = split(/\t/, $transcript_result); # version with tabs
 		next if ( scalar(@split_line) <= 0 );
 		
-		# Discard the peptides with the "$transcripts from other genes" columns.
-		next if ( defined $split_line[4] and ($split_line[4] ne '') );
-
 		my ($mapped_peptide_sequence) = $split_line[0];
 		my ($mapped_gene) = $split_line[1]; # Gene
 		my ($mapped_transcript_list) = $split_line[2]; # GeneTranscripts
 		my ($mapped_transc_without_list) = $split_line[3]; # GeneTranscriptsWithOut
-		my ($mapped_transc_othergene_list) = $split_line[4]; # GeneTranscriptsOtherGene
-		my ($num_experiments) = $split_line[5]; # TotalNumExperiments
-		my ($flag_exp1) = $split_line[6]; # Flag Exp
-		my ($flag_exp2) = $split_line[7]; # Flag Exp
-		my ($flag_exp3) = $split_line[8]; # Flag Exp
-		my ($flag_exp4) = $split_line[9]; # Flag Exp
-		my ($flag_exp5) = $split_line[10]; # Flag Exp
-		my ($flag_exp6) = $split_line[11]; # Flag Exp
-		my ($flag_exp7) = $split_line[12]; # Flag Exp
-		my ($flag_exp8) = $split_line[13]; # Flag Exp
+		my ($num_experiments) = $split_line[4]; # TotalNumExperiments
 		$mapped_peptide_sequence =~ s/^\"//;			$mapped_peptide_sequence =~ s/\"$//;
 		$mapped_peptide_sequence=~s/Z$//;		
 		$mapped_transcript_list =~ s/^\"//;				$mapped_transcript_list =~ s/\"$//;		
-		$flag_exp1 =~ s/\r// if (defined $flag_exp1);
-		$flag_exp2 =~ s/\r// if (defined $flag_exp2);
-		$flag_exp3 =~ s/\r// if (defined $flag_exp3);
-		$flag_exp4 =~ s/\r// if (defined $flag_exp4);
-		$flag_exp5 =~ s/\r// if (defined $flag_exp5);
-		$flag_exp6 =~ s/\r// if (defined $flag_exp6);
-		$flag_exp7 =~ s/\r// if (defined $flag_exp7);
-		$flag_exp8 =~ s/\r// if (defined $flag_exp8);
 		 		
 		unless(
 			defined $mapped_gene and $mapped_gene ne '' and
@@ -2111,21 +2091,10 @@ sub parse_proteo_rst($)
 		foreach my $mapped_transc_id (split(";",$mapped_transcript_list))
 		{
 			if ( defined $mapped_transc_id and $mapped_transc_id ne '' ) {
-				if ( $mapped_transc_id =~ /^ENS/ ) { $mapped_transc_id =~ s/\.\d*$// } # delete suffix in Ensembl ids				
-				my ($exp);
-				$flag_exp1 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp2 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp3 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp4 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp5 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp6 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp7 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				$flag_exp8 ? push(@{$exp}, 1) : push(@{$exp}, 0);
-				my ($experiments) = join("|", @{$exp});
+				if ( $mapped_transc_id =~ /^ENS/ ) { $mapped_transc_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
 				my ($peptide) = {						
 								'sequence'			=> $mapped_peptide_sequence,
 								'num_experiments'	=> $num_experiments,
-								'experiments'		=> $experiments,
 				};
 				$cutoffs->{$mapped_transc_id}->{'gene_id'} = $mapped_gene;
 				push(@{$cutoffs->{$mapped_transc_id}->{'peptides'}}, $peptide);
