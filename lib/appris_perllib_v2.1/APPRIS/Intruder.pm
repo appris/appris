@@ -1687,7 +1687,7 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->peptides ) {
 				foreach my $region (@{$method->peptides}) {
-					if ( defined $region->sequence and defined $region->num_experiments and defined $region->experiments and
+					if ( defined $region->sequence and defined $region->num_experiments and 
 						 defined $region->pstart and defined $region->pend and 
 						 defined $region->start and defined $region->end and defined $region->strand ) {
 						eval {
