@@ -3170,7 +3170,7 @@ sub _is_refseq($)
 		}
 		else {
 			my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-			if ( ($source eq 'RefSeq') and ($type eq 'region') ) { $is_refseq = 1 }
+			if ( ($source =~ /RefSeq/) or ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) ) { $is_refseq = 1 }
 			else { last; }
 		}
 	}

@@ -384,8 +384,7 @@ sub create_appris_input($$)
 					my ($exons) = $transcript->exons;					
 					for (my $icds = 0; $icds < scalar(@{$translate->cds}); $icds++) {
 						my ($cds) = $translate->cds->[$icds];
-						my ($exon) = $exons->[$icds];
-						my ($exon_id) = $exon->stable_id; $exon_id = '-' unless (defined $exon_id);
+						my ($exon_id) = (defined $exons->[$icds] and $exons->[$icds]->stable_id) ? $exons->[$icds]->stable_id : '-';
 						my ($pro_cds) = $translate->cds_sequence->[$icds];
 	
 						my ($cds_start) = $cds->start;
