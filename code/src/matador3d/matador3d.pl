@@ -348,7 +348,7 @@ sub _check_alignment($$$)
 			my @boundaries = split ":", $mini_cds_index;
 			my $mini_cds_start = $boundaries[0];
 			my $mini_cds_end = $boundaries[1];
-#			my ($mini_cds_seq) = substr($target_str, $mini_cds_start-1, ($mini_cds_end - $mini_cds_start) + 1 );	    	
+#			my ($mini_cds_seq) = substr($target_str, $mini_cds_start-1, ($mini_cds_end - $mini_cds_start) + 1 );
 			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");           
 
 			# Finish when target-candidate don't cover exons or
@@ -686,9 +686,6 @@ print STDERR "MAIN_MINI: \n".Dumper($main_mini_pdb_cds_report)."\n";
 					my ($trans_mini_cds_coord_aux) = $trans_mini_cds[1].':'.$trans_mini_cds[0];
 					my ($trans_mini_cds_score) = ( $trans_mini_cds->{'score'} ne '-' ) ? $trans_mini_cds->{'score'} : 0;
 					my ($trans_mini_cds_pdb) = ( exists $trans_mini_cds->{'pdb'} and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
-#if ( $sequence_id eq 'ENST00000445580' ) {
-					$logger->debug($sequence_id."[".$trans_mini_cds_index."] > "."(".$trans_mini_cds->{'coord'}." eq ".$biggest_mini_pdb_cds_coord.") or (".$trans_mini_cds_coord_aux." eq ".$biggest_mini_pdb_cds_coord.")) and (".$trans_mini_cds_score." > ".$biggest_mini_pdb_cds_score.") and (".$trans_mini_cds_pdb." ne ".$biggest_mini_pdb_cds_pdb.") ".$trans_mini_cds_seq."\n");
-#}
 					if(
 						(($trans_mini_cds->{'coord'} eq $biggest_mini_pdb_cds_coord) or
 						($trans_mini_cds_coord_aux eq $biggest_mini_pdb_cds_coord))
@@ -700,7 +697,6 @@ print STDERR "MAIN_MINI: \n".Dumper($main_mini_pdb_cds_report)."\n";
 #						($trans_mini_cds_pdb ne $biggest_mini_pdb_cds_pdb)
 					){
 						$logger->debug("Into:_get_biggest_mini_cds\n");
-$logger->debug("ALT: $sequence_id\n$trans_mini_cds_score:$trans_mini_cds_pdb\n".Dumper($trans_mini_cds)."\n");
 						$external_id = $sequence_id;
 						$biggest_mini_pdb_cds_score = $trans_mini_cds->{'score'};
 						$mini_pdb_cds_report = $trans_mini_cds;

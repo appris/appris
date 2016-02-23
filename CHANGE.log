@@ -15,19 +15,43 @@
 
 
 #############################
-# A-RELEASE: 	2016_02.v15	#
+# A-RELEASE: 	2016_03.v15	#
 # C-RELEASE: 	4.4.2.9		#
-# I-DATE: 		22Jan2016	#
+# I-DATE: 		01Mar2016	#
 #############################
 
+* HIGHLIGHTS:
+	- New name for each release... Forget the date
+	
 * APPRIS-CODE, v2.9
-	- New Matador3D:
-		- It uses the bitscore.
-		
-	- New SPADE
-		- NOTA!!! Tener en cuenta secuencias que son iguales para pasar el bitscore del template a la nueva variante.!!!
+	
+	- Matador3D
+		- Fixed bug with the number of residues. 
 
+	- SPADE v2
+		- Decision with the bitscore.
 		 
+* APPRIS-DATA, v15
+		- Human
+			> Ensembl84/Gencode24 (GRCh38),	ens84.v15
+			> Ensembl81/Gencode23 (GRCh38),	ens81.v15
+			> Ensembl79/Gencode22 (GRCh38),	ens79.v15
+			> Ensembl74/Gencode19 (GRCh37), gen19.v15
+		- Mouse
+			> Ensembl84/GencodeM9 (GRCm38),	ens84.v15
+		- Zebra-fish
+			> Ensembl84 (GRCz10), 			ens84.v15
+		- Rat
+			> Ensembl83 (Rn6),    			ens83.v15
+		- Pig
+			> Ensembl84 (Sscrofa10.2),		ens84.v15
+		- Chimp
+			> Ensembl82 (CHIMP2.1.4), 		ens84.v15
+		- Fruitfly
+			> Ensembl82 (BDGP6), 			ens84.v15		
+		- C-elegans
+			> Ensembl82 (WBcel235), 		ens84.v15
+			
 	
 #############################
 # A-RELEASE: 	2016_01.v14	#
@@ -43,7 +67,7 @@
 		- Add new cutoff for CORSAIR method.
 		If the aa length is longer than len-cutoff but the max score is bigger than score-cutoff, then continue; Otherwise, discard the scores of all variants. Eg, FRYL
 		
-* APPRIS-DATA, v14 TODO!!!!
+* APPRIS-DATA, v14
 		- Human
 			> Ensembl84/Gencode24 (GRCh38),	ens84.v14.29Jan2016
 			> Ensembl74/Gencode19 (GRCh37), gen19.v14.29Jan2016
@@ -63,7 +87,6 @@
 * HIGHLIGHTS:
 
 * APPRIS-SERVER, v4.3
-	- Don't print Matador3D annotations in the SequenceBrowser when the score is 0. TODO!!!
 	- Add TSL annots in the report web page.
 
 * APPRIS-CODE, v2.7
@@ -77,7 +100,7 @@
 			- If all variants are NM or fragments, we don't reject them (and keep going with pipeline).
 		- If fragments have CCDS, we don't reject them (eg, EIF4G2)
 					
-* APPRIS-DATA, v13 TODO!!!!
+* APPRIS-DATA, v13
 		- Human
 			> Ensembl83/Gencode24 (GRCh38),	ens83.v13.14Dec2015
 			> Ensembl74/Gencode19 (GRCh37), gen19.v13.14Dec2015
@@ -141,7 +164,7 @@
 	- Scripts than download the features files for species and Ensembl version.
 	
 * APPRIS-DATA, v11
-	- Annotations for all species using the code version v2.6. TODO!!!
+	- Annotations for all species using the code version v2.6.
 		- Human
 			> Ensembl82/Gencode23 (GRCh38),	ens82.v11.01Sep2015
 			> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015
@@ -261,7 +284,7 @@
 		> Ensembl74/Gencode19 (GRCh37), gen19.v9.17Jul2015 <- FREEZE!!
 	- Mouse
 		> Ensembl81/GencodeM6 (GRCm38),	ens81.v9.17Jul2015
-		> Ensembl74/GencodeM2 (GRCm38),	ens74.v9.17Jul2015 <- FREEZE!! <- TODO!!!!
+		> Ensembl74/GencodeM2 (GRCm38),	ens74.v9.17Jul2015 <- FREEZE!!
 	- Zebra-fish
 		> Ensembl81 (GRCz10), 			ens81.v9.17Jul2015
 	- Rat
@@ -306,7 +329,7 @@
 	- Rat
 		> Ensembl80 (Rn6),				ens80.v8.16Apr2015
 	- Pig
-		> Ensembl80 (Sscrofa10.2),		ens80.v8.16Apr2015 <- TODO: ENSEMBL DOESN'T GIVE ME THE DATA!!!!
+		> Ensembl80 (Sscrofa10.2),		ens80.v8.16Apr2015
 		
 #############################
 # A-RELEASE: 	2015_03.v7  #
