@@ -12,15 +12,17 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="caenorhabditis_elegans/e82"
+export APPRIS_WS_NAME="caenorhabditis_elegans/e83"
 
-export APPRIS_WS_DATE="caenorhabditis_elegans/ens82.v11.01Sep2015"
+export APPRIS_WS_DATE="caenorhabditis_elegans/ens83.v15"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
 
 export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
@@ -44,7 +46,7 @@ export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
 
 #export APPRIS_E_VERSION=82
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.82.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.83.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.cdna.all.fa"
 

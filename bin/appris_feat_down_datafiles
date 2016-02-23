@@ -165,9 +165,9 @@ download_species_datafile() {
 	
 	wget ${FTP_ENSEMBL_PUB}/release-${ENSEMBL}/gtf/${SPECIES_ID}/${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz
 	
-	wget ftp://ftp.ensembl.org/pub/release-82/fasta/${SPECIES_ID}/cdna/${SPECIES_FILENAME}.cdna.all.fa.gz
+	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna/${SPECIES_FILENAME}.cdna.all.fa.gz
 	
-	wget ftp://ftp.ensembl.org/pub/release-82/fasta/${SPECIES_ID}/pep/${SPECIES_FILENAME}.pep.all.fa.gz
+	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep/${SPECIES_FILENAME}.pep.all.fa.gz
 	
 	echo uncompress files...
 	gzip -d ${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz ${SPECIES_FILENAME}.pep.all.fa.gz ${SPECIES_FILENAME}.cdna.all.fa.gz
