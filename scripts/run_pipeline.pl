@@ -76,7 +76,7 @@ sub main()
 		info("executing pipeline...");
 		eval {
 			my ($params) = params_run_pipe();
-			my ($cmd) = "appris $params";
+			my ($cmd) = "apprisall $params";
 			system ($cmd);
 		};
 		throw("executing pipeline") if($@);
