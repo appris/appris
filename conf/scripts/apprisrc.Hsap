@@ -14,13 +14,15 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/e83_g24"
 
-export APPRIS_WS_DATE="homo_sapiens/ens83.v13.14Dec2015"
+export APPRIS_WS_DATE="homo_sapiens/ens83.v15"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
 
 export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
