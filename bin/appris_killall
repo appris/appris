@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+
+
+for Q in $(ps aux | grep appris_run_pipeline | awk '{print $2}'); do kill -9 $Q; done
+
+for Q in $(ps aux | grep apprisall | grep bash | awk '{print $2}'); do kill -9 $Q; done
+
+for Q in $(ps aux | grep run_appris | awk '{print $2}'); do kill -9 $Q; done
+
