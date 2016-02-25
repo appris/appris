@@ -155,7 +155,6 @@ sub _get_best_score($$)
 	{
 		my ($sequence) = $sequence_report->{$sequence_id};
 		$sequence = uc($sequence);
-#		my ($pfam_report) = _get_best_domain_old($sequence_id, $sequence, \%aux_transcript_report);
 		my ($pfam_report) = _get_best_domain($sequence_id, $sequence, \%aux_transcript_report);
 		if ( defined $pfam_report and defined $pfam_report->{'domains'} and (scalar(@{$pfam_report->{'domains'}}) > 0) ) {
 			$transcript_report->{$sequence_id} = $pfam_report;
@@ -169,11 +168,11 @@ sub _get_best_domain($$$)
 {
 	my ($sequence_id, $sequence, $transcript_report) = @_;
 	
-	my ($exist_domains);
-	my ($rest_domains);
-	my ($best_domains);
-	my ($best_domains_no_redundancy);
 	my ($pfam_report);
+	my ($exist_domains);
+	my ($exist_index_domains) = '';
+	my ($best_domains);
+	
 	my ($alignment_list);
 	my ($num_domains) = 0;
 	my ($num_possibly_damaged_domains) = 0;
@@ -198,6 +197,7 @@ sub _get_best_domain($$$)
 				my ($aln_length) = $alignment_report->{'alignment_length'};
 				my ($bit_score) = $alignment_report->{'bit_score'};
 				my ($aln_index) = $aln_start.":".$aln_end;
+				$exist_index_domains .= $aln_index.',';
 				$exist_domains->{$aln_index} = {					
 					'hmm_name'		=> $hmm_name,
 					'hmm_type'		=> $hmm_type,
@@ -211,12 +211,55 @@ sub _get_best_domain($$$)
 			}
 		}
 	}
+
+#print STDERR "EXISTS_DOMAIN:$sequence_id:\n".join( '|', ( sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1};if($b=~/^([0-9]*)/){$b1=$1};$a1<=>$b1} keys($exist_domains) ) )."\n";
+#print STDERR "EXISTS_DOMAIN:$sequence_id:\n".Dumper($exist_domains)."\n";
+#print STDERR "EXISTS_DOMAIN:$sequence_id:\n".join( '|', keys($exist_domains) )."\n";
+
+	# Discard original overlapping
+	$best_domains = $exist_domains;
+	if ( defined $exist_domains ) {
+		my (@sorted_hmm_index) = sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1}; if($b=~/^([0-9]*)/){$b1=$1}; $a1<=>$b1} keys($exist_domains);
+		for (my $i=0; $i< scalar(@sorted_hmm_index); $i++) {
+			my ($hmm_index_i) = $sorted_hmm_index[$i];
+			if ( defined $exist_domains->{$hmm_index_i} ) {
+				my ($domain_report_i) = $exist_domains->{$hmm_index_i};
+				my ($hmm_name_i) = $domain_report_i->{'hmm_name'};
+				my ($hmm_bitscore_i) = $domain_report_i->{'bit_score'};
+				my ($aln_start_i,$aln_end_i);
+				if ( $hmm_index_i =~ /^([^\:]*)\:([^\$]*)$/ ) {
+					$aln_start_i = $1; $aln_end_i = $2;
+				}
+				
+				for (my $j=$i+1; $j < scalar(@sorted_hmm_index); $j++) {
+					my ($hmm_index_j) = $sorted_hmm_index[$j];
+					if ( defined $exist_domains->{$hmm_index_j} ) {
+						my ($domain_report_j) = $exist_domains->{$hmm_index_j};
+						my ($hmm_name_j) = $domain_report_j->{'hmm_name'};
+						my ($hmm_bitscore_j) = $domain_report_j->{'bit_score'};
+						my ($aln_start_j,$aln_end_j);
+						if ( $hmm_index_j =~ /^([^\:]*)\:([^\$]*)$/ ) {
+							$aln_start_j = $1; $aln_end_j = $2;
+						}
+						# overlapping
+						if ( ($aln_start_i <= $aln_end_j) and ($aln_start_j <= $aln_end_i) and ($hmm_name_i eq $hmm_name_j) ) {
+							if ( $hmm_bitscore_j < $hmm_bitscore_i ) {
+								$best_domains->{$hmm_index_j} = undef;
+							}
+							else {
+								$best_domains->{$hmm_index_i} = undef;
+							}
+						}					
+					}
+				}	
+				
+			}
+		}		
+	}
+#print STDERR "EXISTS_DOMAIN:$sequence_id:\n".Dumper($exist_domains)."\n";
+#print STDERR "BEST_DOMAIN:$sequence_id:\n".Dumper($best_domains)."\n";
 	
-print STDERR "EXISTS_DOMAIN:$sequence_id:\n".Dumper($exist_domains)."\n";
-	
-	# add the best alignments if they don't exist yet.
-	$best_domains = $exist_domains;	
-	
+	# add the best alignments if they don't exist yet.	
 	while ( my ($sequence_id2, $pfam_report) = each(%{$transcript_report}) )
 	{
 		next if ($sequence_id eq $sequence_id2); # Jump
@@ -250,76 +293,59 @@ print STDERR "EXISTS_DOMAIN:$sequence_id:\n".Dumper($exist_domains)."\n";
 				
 				if ( $index_domain != -1 )
 				{
-print STDERR "NEW_HMM_INDEX: $hmm_index - $hmm_name?\n";
-#					unless ( exists $best_domains->{$hmm_name}->{$hmm_index} ) { # don't redundance domain
-#						my ($exist_hmm) = $exist_domains->{$hmm_name};
-						# the same alignment region
-						if ( $best_domains->{$hmm_index} ) {
-print STDERR "OK\n";
-							
-							# get the best bitscore for the same alignment
-							my ($exists_hmm_name) = $best_domains->{$hmm_index}->{'hmm_name'};
-							my ($exists_hmm_bitscore) = $best_domains->{$hmm_index}->{'bit_score'};
-							if ( ($hmm_name eq $exists_hmm_name) and ($hmm_bit_score > $exists_hmm_bitscore) ) {
-								$best_domains->{$hmm_index} = undef; # delete old align
-								$best_domains->{$hmm_index} = {
-									'hmm_name'		=> $hmm_name,
-									'hmm_type'		=> $hmm_type,									
-									'seq_domain'	=> $seq_domain_nogaps,							
-									'aln_start'		=> $aln_start,
-									'aln_end'		=> $aln_end,
-									'aln_length'	=> $aln_length,
-									'bit_score'		=> $hmm_bit_score,
-									'report'		=> \%alignment_report2,
-								};
-							}
+					# the same alignment region
+					if ( $best_domains->{$hmm_index} and defined $best_domains->{$hmm_index} ) {
+						# get the best bitscore for the same alignment
+						my ($exists_hmm_name) = $best_domains->{$hmm_index}->{'hmm_name'};
+						my ($exists_hmm_bitscore) = $best_domains->{$hmm_index}->{'bit_score'};
+						if ( ($hmm_name eq $exists_hmm_name) and ($hmm_bit_score > $exists_hmm_bitscore) ) {
+							$best_domains->{$hmm_index} = undef; # delete old align
+							$best_domains->{$hmm_index} = {
+								'hmm_name'		=> $hmm_name,
+								'hmm_type'		=> $hmm_type,									
+								'seq_domain'	=> $seq_domain_nogaps,							
+								'aln_start'		=> $aln_start,
+								'aln_end'		=> $aln_end,
+								'aln_length'	=> $aln_length,
+								'bit_score'		=> $hmm_bit_score,
+								'report'		=> \%alignment_report2,
+							};
 						}
-						else {
-print STDERR "NO\n";
-							# difference alignment region
-							#my ($has_domain) = '';
-							my ($overlapping) = 0;
-							while ( my ($exists_hmm_index, $exists_hmm_rep) = each(%{$best_domains}) ) {
-print STDERR "EXISTS_HMM_INDEX: $exists_hmm_index?\n";
-								if ( $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
-									my ($exists_aln_start) = $1;
-									my ($exists_aln_end) = $2;
-									my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};									
-									my ($exists_hmm_bitscore) = $exists_hmm_rep->{'bit_score'};
-#print STDERR "CHECK_HMM_INDEX: $exists_aln_start:$exists_aln_end - $aln_start:$aln_end\n".Dumper($exists_hmm_rep)."\n";
-print STDERR "($hmm_name eq $exists_hmm_name) and ($hmm_type eq 'Domain') - ";
-print STDERR "( $aln_end <= $exists_aln_start or $aln_start >= $exists_aln_end )\n";
-#print STDERR "( $aln_start <= $exists_aln_end and $aln_end >= $exists_aln_start and $hmm_bit_score > $exists_hmm_bitscore )\n";
-									if ( ($hmm_name eq $exists_hmm_name) or ($hmm_type ne 'Domain') ) {
-										unless ( ( $aln_start <= $exists_aln_start and $aln_end <= $exists_aln_start ) or ( $aln_start >= $exists_aln_end and $aln_end >= $exists_aln_end ) ) { # no overlap existed domain
-print STDERR "OVERLAP";
-											$overlapping = 1;
-										}										
-									}
-print STDERR "\n";
-								}		
-							}
-print STDERR "HAS_DOMAIN: $overlapping\n";
-							if ( $overlapping == 0 ) {
-								$best_domains->{$hmm_index} = {
-									'hmm_name'		=> $hmm_name,
-									'hmm_type'		=> $hmm_type,
-									'seq_domain'	=> $seq_domain_nogaps,							
-									'aln_start'		=> $aln_start,
-									'aln_end'		=> $aln_end,
-									'aln_length'	=> $aln_length,
-									'bit_score'		=> $hmm_bit_score,
-									'report'		=> \%alignment_report2,
-								};								
-							}
+					}
+					else {
+						# difference alignment region
+						my ($overlapping) = 0;
+						while ( my ($exists_hmm_index, $exists_hmm_rep) = each(%{$best_domains}) ) {
+							if ( defined $exists_hmm_rep and $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
+								my ($exists_aln_start) = $1;
+								my ($exists_aln_end) = $2;
+								my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};
+								my ($exists_hmm_type) = $exists_hmm_rep->{'hmm_type'};							
+								my ($exists_hmm_bitscore) = $exists_hmm_rep->{'bit_score'};
+								if ( $hmm_name ne 'Repeat' and $hmm_name eq $exists_hmm_name and $exists_aln_start <= $aln_end and $aln_start <= $exists_aln_end ) { # overlapping
+									$overlapping = 1;
+								}
+							}		
 						}
-#					}
+						if ( $overlapping == 0 ) {
+							$best_domains->{$hmm_index} = {
+								'hmm_name'		=> $hmm_name,
+								'hmm_type'		=> $hmm_type,
+								'seq_domain'	=> $seq_domain_nogaps,							
+								'aln_start'		=> $aln_start,
+								'aln_end'		=> $aln_end,
+								'aln_length'	=> $aln_length,
+								'bit_score'		=> $hmm_bit_score,
+								'report'		=> \%alignment_report2,
+							};								
+						}
+					}
 				}
 			}
 		}
 	}
 	
-print STDERR "BEST_DOMAIN:$sequence_id:\n".Dumper($best_domains)."\n";
+#print STDERR "BEST_DOMAIN:$sequence_id:\n".Dumper($best_domains)."\n";
 
 	# report the alignment list
 	while (my ($hmm_index, $domain_report) = each(%{$best_domains}) ) {
@@ -353,401 +379,6 @@ print STDERR "BEST_DOMAIN:$sequence_id:\n".Dumper($best_domains)."\n";
 	
 	return $pfam_report;	
 }
-
-## Get the first domain that we have found
-#sub _get_best_domain($$$)
-#{
-#	my ($sequence_id, $sequence, $transcript_report) = @_;
-#	
-#	my ($exist_domains);
-#	my ($rest_domains);
-#	my ($best_domains);
-#	my ($best_domains_no_redundancy);
-#	my ($pfam_report);
-#	my ($alignment_list);
-#	my ($num_domains) = 0;
-#	my ($num_possibly_damaged_domains) = 0;
-#	my ($num_damaged_domains) = 0;
-#	my ($num_wrong_domains) = 0;
-#	my ($bitscore) = 0;
-#		
-#	# init the domains with the current domains
-#	if ( exists $transcript_report->{$sequence_id} ) {
-#		my ($pfam_report) = $transcript_report->{$sequence_id};
-#		if ( exists $pfam_report->{'domains'} and $pfam_report->{'domains'} )
-#		{
-#			foreach my $alignment_report (@{$pfam_report->{'domains'}})
-#			{
-#				my ($seq_domain) = $alignment_report->{'sequence'};
-#				my ($seq_domain_nogaps) = $seq_domain;
-#				$seq_domain_nogaps =~ s/\-*//g;
-#				my ($hmm_name) = $alignment_report->{'hmm_name'};
-#				my ($aln_start) = $alignment_report->{'alignment_start'};
-#				my ($aln_end) = $alignment_report->{'alignment_end'};
-#				my ($aln_length) = $alignment_report->{'alignment_length'};
-#				my ($bit_score) = $alignment_report->{'bit_score'};
-#				my ($aln_index) = $aln_start.":".$aln_end;
-#				$exist_domains->{$hmm_name}->{$aln_index} = {
-#					'seq_domain'	=> $seq_domain_nogaps,
-#					'aln_start'		=> $aln_start,
-#					'aln_end'		=> $aln_end,
-#					'aln_length'	=> $aln_length,
-#					'bit_score'		=> $bit_score,
-#					'report'		=> $alignment_report,
-#				};
-#			}
-#		}
-#	}
-#	
-#print STDERR "EXISTS_DOMAIN:$sequence_id:\n".Dumper($exist_domains)."\n";
-#	
-#	# add the best alignments if they don't exist yet.
-#	$best_domains = $exist_domains;	
-#	
-#	while ( my ($sequence_id2, $pfam_report) = each(%{$transcript_report}) )
-#	{
-#		next if ($sequence_id eq $sequence_id2); # Jump
-#
-#		if ( exists $pfam_report->{'domains'} and $pfam_report->{'domains'} )
-#		{
-#			foreach my $alignment_report (@{$pfam_report->{'domains'}})
-#			{
-#				# check if domain exists in other sequence (without gaps)
-#				my ($seq_domain) = $alignment_report->{'sequence'};
-#				my ($seq_domain_nogaps) = $seq_domain;
-#				$seq_domain_nogaps =~ s/\-*//g;
-#				my ($seq_domain_num_gaps) = $seq_domain =~ tr/\-//;
-#				my ($index_domain) = rindex($sequence, $seq_domain_nogaps);
-#				
-#
-#				# get the domain from saying from who
-#				# get the new range of alignment
-##				my (%alignment_report2) = %{$alignment_report};	
-##				$alignment_report2{'external_id'} = $sequence_id2;	
-##				$alignment_report2{'alignment_start'} = $index_domain + 1;
-##				$alignment_report2{'alignment_end'} = $index_domain + length($seq_domain) - $seq_domain_num_gaps;
-#				my ($hmm_name) = $alignment_report->{'hmm_name'};
-#				my ($aln_start) = $index_domain + 1;
-#				my ($aln_end) = $index_domain + length($seq_domain) - $seq_domain_num_gaps;
-#				my ($aln_length) = $alignment_report->{'alignment_length'};
-#				my ($hmm_bit_score) = $alignment_report->{'bit_score'};
-#				my ($hmm_index) = $aln_start.":".$aln_end;
-#
-#				my (%alignment_report2) = %{$alignment_report};	
-#				$alignment_report2{'external_id'} = $sequence_id2;	
-#				$alignment_report2{'alignment_start'} = $aln_start;
-#				$alignment_report2{'alignment_end'} = $aln_end;
-#				
-#				if ( $index_domain != -1 )
-#				{
-#print STDERR "NEW_HMM_INDEX: $hmm_index?\n";
-#					unless ( exists $best_domains->{$hmm_name}->{$hmm_index} ) { # don't redundance domain
-#print STDERR "DIFF DONMAIN\n";
-#						my ($exist_hmm) = $exist_domains->{$hmm_name};
-#						# the same alignment region
-#						if ( $exist_hmm->{$hmm_index} ) {
-#print STDERR "OK\n";
-#							
-#							# get the best bitscore for the same alignment
-#							my ($exists_hmm_bitscore) = $exist_hmm->{$hmm_index}->{'bit_score'};
-#							if ( $hmm_bit_score > $exists_hmm_bitscore ) {
-#								$best_domains->{$hmm_name}->{$hmm_index} = undef; # delete old align
-#								$best_domains->{$hmm_name}->{$hmm_index} = {
-#									'seq_domain'	=> $seq_domain_nogaps,							
-#									'aln_start'		=> $aln_start,
-#									'aln_end'		=> $aln_end,
-#									'aln_length'	=> $aln_length,
-#									'bit_score'		=> $hmm_bit_score,
-#									'report'		=> \%alignment_report2,
-#								};
-#							}
-#						}
-#						else {
-#print STDERR "NO\n";
-#							# difference alignment region
-#							#my ($has_domain) = '';
-#							my ($overlapping) = 0;
-#							while ( my ($exists_hmm_index, $exists_hmm_rep) = each(%{$exist_hmm}) ) {
-#print STDERR "EXISTS_HMM_INDEX: $exists_hmm_index?\n";
-#								if ( $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
-#									my ($exists_aln_start) = $1;
-#									my ($exists_aln_end) = $2;
-#									my ($exists_hmm_bitscore) = $exists_hmm_rep->{'bit_score'};									
-##print STDERR "CHECK_HMM_INDEX: $exists_aln_start:$exists_aln_end - $aln_start:$aln_end\n".Dumper($exists_hmm_rep)."\n";
-#print STDERR "( $aln_end <= $exists_aln_start or $aln_start >= $exists_aln_end )\n";
-##print STDERR "( $aln_start <= $exists_aln_end and $aln_end >= $exists_aln_start and $hmm_bit_score > $exists_hmm_bitscore )\n";
-#									unless ( ( $aln_start <= $exists_aln_start and $aln_end <= $exists_aln_start ) or ( $aln_start >= $exists_aln_end and $aln_end >= $exists_aln_end ) ) { # no overlap existed domain
-#print STDERR "OVERLAP";
-#										$overlapping = 1;
-#									}
-##									if ( $aln_end <= $exists_aln_start or $aln_start >= $exists_aln_end ) { # no overlap existed domain
-##print STDERR "NO_OVERLAP";
-##										$has_domain .= ',';
-##									}
-##									elsif ( $aln_start <= $exists_aln_end and $aln_end >= $exists_aln_start and $hmm_bit_score > $exists_hmm_bitscore ) { # overlap existed domain (has to be higger bitscore)
-##print STDERR "OVERLAP";
-##										$has_domain .= $exists_hmm_index.',';
-##									}
-#print STDERR "\n";
-#								}		
-#							}
-#print STDERR "HAS_DOMAIN: $overlapping\n";
-#							if ( $overlapping == 0 ) {
-##							if ( $has_domain ne '' ) {
-##								# delete existed overlap aligns
-##								foreach my $exists_hmm_index ( split(',', $has_domain) ) {
-##									if ( $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
-##										$best_domains->{$hmm_name}->{$exists_hmm_index} = undef;
-##									}
-##								}
-#								$best_domains->{$hmm_name}->{$hmm_index} = {
-#									'seq_domain'	=> $seq_domain_nogaps,							
-#									'aln_start'		=> $aln_start,
-#									'aln_end'		=> $aln_end,
-#									'aln_length'	=> $aln_length,
-#									'bit_score'		=> $hmm_bit_score,
-#									'report'		=> \%alignment_report2,
-#								};								
-#							}
-#						}
-#					}
-#				}
-#			}
-#		}
-#	}
-#	
-#print STDERR "BEST_DOMAIN:$sequence_id:\n".Dumper($best_domains)."\n";
-##	# delete overlapping
-##	while (my ($hmm_name, $hmm_report) = each(%{$best_domains}) ) {
-##		my (@hmm_index_range) = sort { length($a) <=> length($b) } keys (%{$hmm_report});
-##		if ( scalar(@hmm_index_range) > 1 ) {
-##			for (my $i=0; $i < scalar(@hmm_index_range); $i++ ) {
-##				my ($hmm_index) = $hmm_index_range[$i];
-##				my ($hmm_index_start) = ( $hmm_index =~ /^([^\:]*)\:/ ) ? $1 : undef;
-##				my ($hmm_index_end) = ( $hmm_index =~ /\:([^\$]*)$/ ) ? $1 : undef;
-##				my ($hmm_overlap); 
-##print STDERR "BEST_OVERLAP:$sequence_id:( $hmm_index_start and $hmm_index_end\n";
-##				for (my $j=$i+1; $j < scalar(@hmm_index_range); $j++ ) {
-##					my ($hmm_index_2) = $hmm_index_range[$j];
-##					my ($hmm_index_2_start) = ( $hmm_index_2 =~ /^([^\:]*)\:/ ) ? $1 : undef;
-##					my ($hmm_index_2_end) = ( $hmm_index_2 =~ /\:([^\$]*)$/ ) ? $1 : undef;
-##print STDERR "BEST_OVERLAP:$sequence_id:( $hmm_index_2_start and $hmm_index_2_end)\n";
-##					if ( $hmm_index_start <= $hmm_index_2_end and $hmm_index_end >= $hmm_index_2_start ) {
-##print STDERR "OK\n";
-###						if ( )
-###						$hmm_overlap = 1;
-##					}
-##				}
-##			}			
-##		}
-##		else {
-##			$best_domains_no_redundancy->{$hmm_name} = $hmm_report;
-##		}
-##	}	
-#
-#	# report the alignment list
-#	while (my ($hmm_name, $hmm_report) = each(%{$best_domains}) ) {
-#		while (my ($hmm_index, $domain_report) = each(%{$hmm_report}) ) {
-#			if ( defined $domain_report ) {
-#				my ($alignment_report) = $domain_report->{'report'};
-#				
-#				if( $alignment_report->{'type_domain'} eq 'domain' ) {
-#					$num_domains++;
-#				}
-#				elsif( $alignment_report->{'type_domain'} eq 'domain_possibly_damaged' ) {
-#					$num_possibly_damaged_domains++;
-#				}
-#				elsif ( $alignment_report->{'type_domain'} eq 'domain_damaged' ) {
-#					$num_damaged_domains++;
-#				}
-#				elsif ( $alignment_report->{'type_domain'} eq 'domain_wrong' ) {
-#					$num_wrong_domains++;
-#				}
-#				
-#				if ( exists $alignment_report->{'bit_score'} ) { $bitscore += $alignment_report->{'bit_score'} }
-#				
-#				push(@{$alignment_list}, $alignment_report);
-#			}			
-#		}
-#	}
-#	$pfam_report->{'bitscore'} = $bitscore;
-#	$pfam_report->{'domains'} = $alignment_list;
-#	$pfam_report->{'num_domains'} = $num_domains;
-#	$pfam_report->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
-#	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
-#	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
-#	
-#	return $pfam_report;	
-#}
-
-## Get the first domain that we have found
-#sub _get_best_domain_old($$$)
-#{
-#	my ($sequence_id, $sequence, $transcript_report) = @_;
-#	
-#	my ($exist_domain);
-#	my ($exist_domain_no_redundancy);	
-#	my ($pfam_report);
-#	my ($alignment_list);
-#	my ($num_domains) = 0;
-#	my ($num_possibly_damaged_domains) = 0;
-#	my ($num_damaged_domains) = 0;
-#	my ($num_wrong_domains) = 0;
-#	my ($bitscore) = 0;
-#	
-#	# init the domains with the current domains
-#	if ( exists $transcript_report->{$sequence_id} ) {
-#		my ($pfam_report) = $transcript_report->{$sequence_id};
-#		if ( exists $pfam_report->{'domains'} and $pfam_report->{'domains'} )
-#		{
-#			foreach my $alignment_report (@{$pfam_report->{'domains'}})
-#			{
-#				my ($seq_domain) = $alignment_report->{'sequence'};
-#				$exist_domain->{$seq_domain}->{'bit_score'} = $alignment_report->{'bit_score'};
-#				$exist_domain->{$seq_domain}->{'e_value'} = $alignment_report->{'e_value'};
-#				$exist_domain->{$seq_domain}->{'report'} = $alignment_report;
-#			}
-#		}
-#	}
-#	
-#	# scan the rest of sequences
-#	while ( my ($sequence_id2, $pfam_report2) = each(%{$transcript_report}) )
-#	{
-#		next if ($sequence_id eq $sequence_id2); # Jump
-#
-#		if ( exists $pfam_report2->{'domains'} and $pfam_report2->{'domains'} )
-#		{
-#			foreach my $alignment_report2 (@{$pfam_report2->{'domains'}})
-#			{
-#				my ($seq_domain2) = $alignment_report2->{'sequence'};
-#				my ($seq_domain2_nogaps) = $seq_domain2;
-#				$seq_domain2_nogaps =~ s/\-*//g;
-#				my ($seq_domain2_num_gaps) = $seq_domain2 =~ tr/\-//;
-#				
-#				# check if domain exists in other sequence (without gaps)
-#				my ($index_domain) = rindex($sequence, $seq_domain2_nogaps);
-#				if ( $index_domain != -1 )
-#				{
-#					if ( !(exists $exist_domain->{$seq_domain2}) )
-#					{ # first domain found that has a better e_value
-#						$exist_domain->{$seq_domain2}->{'e_value'} = $alignment_report2->{'e_value'};
-#						$exist_domain->{$seq_domain2}->{'bit_score'} = $alignment_report2->{'bit_score'};
-#						
-#						# get the domain from saying from who
-#						my (%alignment_report) = %{$alignment_report2};					
-#						$alignment_report{'external_id'} = $sequence_id2;
-#	
-#						# get the new range of alignment
-#						$alignment_report{'alignment_start'} = $index_domain + 1;
-#						$alignment_report{'alignment_end'} = $index_domain + length($seq_domain2) - $seq_domain2_num_gaps;
-#	
-#						$exist_domain->{$seq_domain2}->{'report'} = \%alignment_report;
-#					}
-#					elsif ( exists $exist_domain->{$seq_domain2} and 
-##							($alignment_report2->{'e_value'} < $exist_domain->{$seq_domain2}->{'e_value'}) 
-#							($alignment_report2->{'bit_score'} < $exist_domain->{$seq_domain2}->{'bit_score'})
-#					)
-#					{ # next domains with better evalue
-#						$exist_domain->{$seq_domain2}->{'e_value'} = $alignment_report2->{'e_value'};
-#						$exist_domain->{$seq_domain2}->{'bit_score'} = $alignment_report2->{'bit_score'};
-#						
-#						# get the domain from saying from who
-#						my (%alignment_report) = %{$alignment_report2};					
-#						$alignment_report{'external_id'} = $sequence_id2;
-#	
-#						# get the new range of alignment
-#						$alignment_report{'alignment_start'} = $index_domain + 1;
-#						$alignment_report{'alignment_end'} = $index_domain + length($seq_domain2) - $seq_domain2_num_gaps;
-#	
-#						$exist_domain->{$seq_domain2}->{'report'} = \%alignment_report;						
-#					}
-#				}
-#			}
-#		}
-#	}
-#	
-#	# delete the redundancy between alignments (we take the best domain)
-#	my (@aux_list_seq_domain) = sort { length($a) <=> length($b) } keys (%{$exist_domain});
-#	my (@aux_list_seq_domain2) = sort { length($b) <=> length($a) } keys (%{$exist_domain});
-#	foreach my $aux_seq_domain (@aux_list_seq_domain) {
-#		my ($aux_alignment_report) = $exist_domain->{$aux_seq_domain}->{'report'};
-#		my ($aux_type_domain) = 0;
-#		if ( $aux_alignment_report->{'type_domain'} eq 'domain_wrong') { $aux_type_domain = 1 }
-#		elsif ( $aux_alignment_report->{'type_domain'} eq 'domain_damaged') { $aux_type_domain = 2 }
-#		elsif ( $aux_alignment_report->{'type_domain'} eq 'domain_possibly_damaged') { $aux_type_domain = 3 }
-#		elsif ( $aux_alignment_report->{'type_domain'} eq 'domain') { $aux_type_domain = 4 }		
-#		my ($better_domain) = {
-#						'seq'	=> $aux_seq_domain,
-#						'type'	=> $aux_type_domain
-#		};
-#		foreach my $aux_seq_domain2 (@aux_list_seq_domain2) {
-#			my ($aux_alignment_report2) = $exist_domain->{$aux_seq_domain2}->{'report'};
-#			my ($aux_s_domain) = $better_domain->{'seq'};
-#			my ($aux_s_domain2) = $aux_seq_domain2;			
-#			# the seq domain has not to be the same
-#			if ( $aux_s_domain ne $aux_s_domain2 ) {
-#
-#				# the seq domain has to be bigger
-#				if ( $aux_s_domain2 =~ /$aux_s_domain/ ) {
-#					# the seq domain has the same domain
-#					if ( $aux_alignment_report->{'hmm_name'} eq $aux_alignment_report2->{'hmm_name'} ) {
-#						# the seq domain has to be better type of aligment
-#						my ($aux_t_domain) = $better_domain->{'type'};
-#						my ($aux_t_domain2) = 0;	
-#						if ( $aux_alignment_report2->{'type_domain'} eq 'domain_wrong') { $aux_t_domain2 = 1 }
-#						elsif ( $aux_alignment_report2->{'type_domain'} eq 'domain_damaged') { $aux_t_domain2 = 2 }
-#						elsif ( $aux_alignment_report2->{'type_domain'} eq 'domain_possibly_damaged') { $aux_t_domain2 = 3 }
-#						elsif ( $aux_alignment_report2->{'type_domain'} eq 'domain') { $aux_t_domain2 = 4 }
-#						
-#						my ($aux_t_dom_bitscore) = $better_domain->{'bit_score'};
-#						my ($aux_t_dom_bitscore2) = $aux_alignment_report2->{'bit_score'};
-#						
-##						if ( $aux_t_domain2 >= $aux_t_domain ) {
-##							$better_domain->{'seq'} = $aux_s_domain2;
-##							$better_domain->{'type'} = $aux_t_domain2;
-##						}
-#						if ( $aux_t_dom_bitscore2 >= $aux_t_dom_bitscore ) {
-#							$better_domain->{'seq'} = $aux_s_domain2;
-#							$better_domain->{'type'} = $aux_t_domain2;
-#						}
-#					}
-#				}				
-#			}
-#		}
-#		my ($best_seq_domain) = $better_domain->{'seq'};
-#		$exist_domain_no_redundancy->{$best_seq_domain}->{'report'} = $exist_domain->{$best_seq_domain}->{'report'};
-#	}
-#		
-#	# report the alignment list
-#	while (my ($seq_domain2, $domain_report2) = each(%{$exist_domain_no_redundancy}) ) {
-#		my ($alignment_report2) = $domain_report2->{'report'};
-#		
-#		if( $alignment_report2->{'type_domain'} eq 'domain' ) {
-#			$num_domains++;
-#		}
-#		elsif( $alignment_report2->{'type_domain'} eq 'domain_possibly_damaged' ) {
-#			$num_possibly_damaged_domains++;
-#		}
-#		elsif ( $alignment_report2->{'type_domain'} eq 'domain_damaged' ) {
-#			$num_damaged_domains++;
-#		}
-#		elsif ( $alignment_report2->{'type_domain'} eq 'domain_wrong' ) {
-#			$num_wrong_domains++;
-#		}
-#		
-#		if ( exists $alignment_report2->{'bit_score'} ) { $bitscore += $alignment_report2->{'bit_score'} }
-#		
-#		push(@{$alignment_list}, $alignment_report2);
-#	}
-#	$pfam_report->{'bitscore'} = $bitscore;
-#	$pfam_report->{'domains'} = $alignment_list;
-#	$pfam_report->{'num_domains'} = $num_domains;
-#	$pfam_report->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
-#	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
-#	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
-#	
-#	return $pfam_report;	
-#} # end _get_best_domain_old
 
 # Run pfamscan
 sub _run_pfamscan($$)
