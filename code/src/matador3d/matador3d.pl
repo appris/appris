@@ -656,9 +656,6 @@ sub _get_biggest_mini_cds($$$)
 {
 	my ($main_seq_id, $main_mini_pdb_cds_report, $transcript_report) = @_;
 
-print STDERR "MAIN: $main_seq_id\n";
-print STDERR "MAIN_MINI: \n".Dumper($main_mini_pdb_cds_report)."\n";
-
 	my ($mini_pdb_cds_report);
 	my ($external_id);
 	my ($biggest_mini_pdb_cds_score) = $main_mini_pdb_cds_report->{'score'};
