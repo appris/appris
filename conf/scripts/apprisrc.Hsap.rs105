@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/rs105"
 
-export APPRIS_WS_DATE="homo_sapiens/rs105.v11.01Sep2015"
+export APPRIS_WS_DATE="homo_sapiens/rs105.v15"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -64,7 +64,7 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.refseq"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.rs105"
 
 # --------------------------------#
 # Setting up the vars for cluster #
