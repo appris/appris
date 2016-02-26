@@ -18,7 +18,7 @@ fi
 
 
 
-for Q in $(ps aux | grep appris_run_pipeline | awk '{print $2}'); do kill -9 $Q; done
+for Q in $(ps aux | grep appristools | awk '{print $2}'); do kill -9 $Q; done
 
 for Q in $(ps aux | grep apprisall | grep bash | awk '{print $2}'); do kill -9 $Q; done
 
