@@ -150,7 +150,7 @@ sub get_main_report($$;$)
 	# create sequence report
 	my ($seq_report) = get_seq_report($seq_file);
 		
-	#gene_id	transcript_id	status	biotype	no_codons ccds_id aa_len
+	#gene_id	gene_name	transcript_id	status	biotype	no_codons ccds_id aa_len
 	#
 	#fun_res
 	#con_struct
@@ -169,9 +169,9 @@ sub get_main_report($$;$)
 		next if(scalar(@split_line)<=0);
 
 		my($gene_id)=$split_line[0];
-		my($transcript_id)=$split_line[1];
-		my($trans_translation)=$split_line[2];
-		my($trans_status)=$split_line[3];
+		my($gene_name)=$split_line[1];
+		my($transcript_id)=$split_line[2];
+		my($trans_translation)=$split_line[3];
 		my($trans_biotype)=$split_line[4];
 		my($no_codons)=$split_line[5];
 		my($ccds_id)=$split_line[6];
@@ -182,18 +182,22 @@ sub get_main_report($$;$)
 		my($corsair_annot)=$split_line[10];
 		my($spade_annot)=$split_line[11];
 		my($thump_annot)=$split_line[12];
-		my($crash_sp_annot)=$split_line[13];
-		my($crash_tp_annot)=$split_line[14];
-		my($inertia_annot)=$split_line[15];
-		my($proteo_annot)=$split_line[16];
-		my($appris_annot)=$split_line[17];
+		my($crash_annot)=$split_line[13];
+		my(@aux_crash_annot)=split(',', $crash_annot);
+		my($crash_sp_annot)=$aux_crash_annot[0];
+		my($crash_tp_annot)=$aux_crash_annot[1];
+		my($inertia_annot)=$split_line[14];
+		my($proteo_annot)=$split_line[15];
+		my($appris_annot)=$split_line[16];
+		my($appris_label)=$split_line[17];
 
-		if(	defined $gene_id and defined $transcript_id and defined $trans_translation and 
-			defined $trans_status and defined $trans_biotype and defined $no_codons and defined $ccds_id
+		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
+			defined $trans_biotype and defined $no_codons and defined $ccds_id
 		){
-			if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
-				$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
-			}
+			#if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
+			#	$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
+			#}
+			$report->{$gene_id}->{'gene_name'}=$gene_name;
 			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'biotype'}=$trans_biotype;
 			unless (exists $report->{$gene_id}->{'num_trans'}) {
 				$report->{$gene_id}->{'num_trans'}=0;		
@@ -235,7 +239,7 @@ sub get_main_report($$;$)
 				defined $thump_annot and defined $crash_sp_annot and defined $crash_sp_annot and
 				defined $inertia_annot and 
 				defined $proteo_annot and				 
-				defined $appris_annot 
+				defined $appris_annot and defined $appris_label
 			){						
 				push(@{$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'annotations'}},
 					$firestar_annot,
@@ -247,7 +251,8 @@ sub get_main_report($$;$)
 					$crash_tp_annot,
 					$inertia_annot,
 					$proteo_annot,
-					$appris_annot
+					$appris_annot,
+					$appris_label,
 				);
 			}			
 		}		
@@ -285,7 +290,7 @@ sub get_label_report($$;$)
 	# create sequence report
 	my ($seq_report) = get_seq_report($seq_file);
 			
-	#gene_id	transcript_id	status	biotype	no_codons ccds_id aa_len
+	#gene_id	gene_name	transcript_id	status	biotype	no_codons ccds_id aa_len
 	#
 	# firestar_annot
 	# matador3d_annot
@@ -305,9 +310,9 @@ sub get_label_report($$;$)
 		next if(scalar(@split_line)<=0);
 
 		my($gene_id)=$split_line[0];
-		my($transcript_id)=$split_line[1];
-		my($trans_translation)=$split_line[2];
-		my($trans_status)=$split_line[3];
+		my($gene_name)=$split_line[1];
+		my($transcript_id)=$split_line[2];
+		my($trans_translation)=$split_line[3];
 		my($trans_biotype)=$split_line[4];
 		my($no_codons)=$split_line[5];
 		my($ccds_id)=$split_line[6];
@@ -318,20 +323,22 @@ sub get_label_report($$;$)
 		my($corsair_annot)=$split_line[10];
 		my($spade_annot)=$split_line[11];
 		my($thump_annot)=$split_line[12];
-		my($crash_sp_annot)=$split_line[13];
-		my($crash_tp_annot)=$split_line[14];
-		my($inertia_annot)=$split_line[15];
-		
-		my($proteo_annot)=$split_line[16];
-		my($appris_annot)=$split_line[17];
-		my($appris_relia)=$split_line[18];
+		my($crash_annot)=$split_line[13];
+		my(@aux_crash_annot)=split(',', $crash_annot);
+		my($crash_sp_annot)=$aux_crash_annot[0];
+		my($crash_tp_annot)=$aux_crash_annot[1];
+		my($inertia_annot)=$split_line[14];		
+		my($proteo_annot)=$split_line[15];
+		my($appris_annot)=$split_line[16];
+		my($appris_relia)=$split_line[17];
 
-		if(	defined $gene_id and defined $transcript_id and defined $trans_translation and 
-			defined $trans_status and defined $trans_biotype and defined $no_codons and defined $ccds_id
+		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
+			defined $trans_biotype and defined $no_codons and defined $ccds_id
 		){
-			if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
-				$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
-			}
+			#if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
+			#	$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
+			#}
+			$report->{$gene_id}->{'gene_name'}=$gene_name;
 			unless (exists $report->{$gene_id}->{'num_trans'}) {
 				$report->{$gene_id}->{'num_trans'}=0;		
 			}

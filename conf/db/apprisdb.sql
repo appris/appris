@@ -299,6 +299,7 @@ CREATE TABLE spade (
   num_possibly_damaged_domains INT(5) DEFAULT NULL,
   num_damaged_domains INT(5) DEFAULT NULL,
   num_wrong_domains INT(5) DEFAULT NULL,
+  bitscore FLOAT NOT NULL,
   domain_signal ENUM('NO','YES','UNKNOWN') DEFAULT NULL,  
   CONSTRAINT fk_spade_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (spade_id),
@@ -331,9 +332,9 @@ CREATE TABLE spade_alignments (
   trans_start INT(20) unsigned NOT NULL,
   trans_end INT(20) unsigned NOT NULL,
   trans_strand ENUM('.','+','-') NOT NULL, -- default value '.' (the first value)  
-  score INT(3) DEFAULT NULL,
   type_domain ENUM('domain','domain_possibly_damaged','domain_damaged','domain_wrong') DEFAULT NULL,  
   external_id VARCHAR(50) DEFAULT NULL,
+  discarded INT(1) DEFAULT NULL,
   CONSTRAINT fk_spade_spade_alignments FOREIGN KEY (spade_id) REFERENCES spade (spade_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (spade_alignments_id),
   UNIQUE KEY unique_key_spade_alignments_spade_alignments_id (spade_alignments_id),

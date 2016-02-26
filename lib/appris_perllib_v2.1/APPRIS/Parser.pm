@@ -980,30 +980,32 @@ sub parse_spade_rst($)
 
 			$cutoffs->{$id}->{'domain_signal'} = $domain_signal;
 		}
-        elsif ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
+        elsif ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
 		{
-
-			#>ENST00000356093        4       1     	1		0
-			#domain  0       214     290     214     290     PF09379.3       FERM_N  Domain  1       80      80      73.6    7.6e-21 1       CL0072
-			#domain_damaged  .       292     401     292     401     PF00373.11      FERM_M  Domain  1       117     117     74.0    8.3e-21 1       No_clan
-			#domain_possibly_damaged 7       407     490     405     494     PF09380.3       FERM_C  Domain  3       85      90      81.2    3.7e-23 1       CL0266
-			#domain_wrong 7       407     490     405     494     PF09380.3       FERM_C  Domain  3       85      90      81.2    3.7e-23 1       CL0266
+			#>ENST00000356093        571.9   4       2       0       0
+			#domain  5       81      5       81      PF09379.3       FERM_N  Domain  1       80      80      74.3    4.7e-21 1       CL0072  [ext:ENST00000373800]
+			#domain_possibly_damaged 83      192     83      192     PF00373.11      FERM_M  Domain  1       117     117     74.7    4.9e-21 1       No_clan [ext:ENST00000373800]
+			#domain_possibly_damaged 198     281     196     285     PF09380.3       FERM_C  Domain  3       85      90      81.9    2.2e-23 1       CL0266  [ext:ENST00000373800]
+			#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
+			#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
+			#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
 			my ($id) = $1;
-			my ($num_domains) = $2;
-			my ($num_possibly_damaged_domains) = $3;
-			my ($num_damaged_domains) = $4;
-			my ($num_wrong_domains) = $5;
-
+			my ($bitscore) = $2;
+			my ($num_domains) = $3;
+			my ($num_possibly_damaged_domains) = $4;
+			my ($num_damaged_domains) = $5;
+			my ($num_wrong_domains) = $6;
+			$cutoffs->{$id}->{'bitscore'} = $bitscore;
 			$cutoffs->{$id}->{'num_domains'} = $num_domains;
 			$cutoffs->{$id}->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 			$cutoffs->{$id}->{'num_damaged_domains'} = $num_damaged_domains;
 			$cutoffs->{$id}->{'num_wrong_domains'} = $num_wrong_domains;
 	
-			# <type_domain> <domain score>
+			# <type_domain>
 			# <alignment start> <alignment end> <envelope start> <envelope end>
 			# <hmm acc> <hmm name> <type> <hmm start> <hmm end> <hmm length> <bit score> <E-value>
 			# <significance> <clan> <predicted_active_site_residues> -optional values-
-			# <external id, if applied> -optional values-			
+			# <external id> || <discarded> -optional values-
 			my ($alignment_list);
 			while ( $transcript_result =~ /([domain|domain_possibly_damaged|domain_damaged|domain_wrong][^\n]*)\n*/mg )
 			{
@@ -1014,23 +1016,21 @@ sub parse_spade_rst($)
 					my ($alignment_report);
 					
 					my ($type_domain) = $value_list[0];
-					my ($domain_score) = $value_list[1];					
-					my ($alignment_start) = $value_list[2];
-					my ($alignment_end) = $value_list[3];
-					my ($envelope_start) = $value_list[4];
-					my ($envelope_end) = $value_list[5];
-					my ($hmm_acc) = $value_list[6];
-					my ($hmm_name) = $value_list[7];
-					my ($hmm_type) = $value_list[8];
-					my ($hmm_start) = $value_list[9];
-					my ($hmm_end) = $value_list[10];
-					my ($hmm_length) = $value_list[11];
-					my ($bit_score) = $value_list[12];
-					my ($e_value) = $value_list[13];
+					my ($alignment_start) = $value_list[1];
+					my ($alignment_end) = $value_list[2];
+					my ($envelope_start) = $value_list[3];
+					my ($envelope_end) = $value_list[4];
+					my ($hmm_acc) = $value_list[5];
+					my ($hmm_name) = $value_list[6];
+					my ($hmm_type) = $value_list[7];
+					my ($hmm_start) = $value_list[8];
+					my ($hmm_end) = $value_list[9];
+					my ($hmm_length) = $value_list[10];
+					my ($bit_score) = $value_list[11];
+					my ($e_value) = $value_list[12];
 					
 					# required values
 					$alignment_report->{'type_domain'} = $type_domain;
-					$alignment_report->{'score'} = $domain_score;
 					$alignment_report->{'alignment_start'} = $alignment_start;
 					$alignment_report->{'alignment_end'} = $alignment_end;
 					$alignment_report->{'envelope_start'} = $envelope_start;
@@ -1048,26 +1048,35 @@ sub parse_spade_rst($)
 					if(defined $value_list[14] and !($value_list[14] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'significance'} = $value_list[14];
 					}
-					elsif(defined $value_list[14] and ($value_list[14] =~ /\[[^\]]*\]/)) {
-						$alignment_report->{'external_id'} = $value_list[14];
+					elsif(defined $value_list[14] and ($value_list[14] =~ /\[([^\]]*)\]/)) {
+						my ($val) = $1;
+						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
+						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
-
+					
 					if(defined $value_list[15] and !($value_list[15] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'clan'} = $value_list[15];
 					}
-					elsif(defined $value_list[15] and ($value_list[15] =~ /\[[^\]]*\]/)) {
-						$alignment_report->{'external_id'} = $value_list[15];
+					elsif(defined $value_list[15] and ($value_list[15] =~ /\[([^\]]*)\]/)) {
+						my ($val) = $1;
+						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
+						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
 									
 					if(defined $value_list[16] and !($value_list[16] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'predicted_active_site_residues'} = $value_list[16];
 					}
-					elsif(defined $value_list[16] and ($value_list[16] =~ /\[[^\]]*\]/)) {
-						$alignment_report->{'external_id'} = $value_list[16];
+					elsif(defined $value_list[16] and ($value_list[16] =~ /\[([^\]]*)\]/)) {
+						my ($val) = $1;
+						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
+						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
 
-					if(defined $value_list[17] and ($value_list[17] =~ /\[[^\]]*\]/))
-						{ $alignment_report->{'external_id'} = $value_list[17]; }
+					if(defined $value_list[17] and ($value_list[17] =~ /\[([^\]]*)\]/)) {
+						my ($val) = $1;
+						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
+						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
+					}
 
 					push(@{$alignment_list}, $alignment_report);					
 				}
@@ -1160,7 +1169,6 @@ sub parse_spade($$)
 											-start								=> $residue->{'trans_start'},
 											-end								=> $residue->{'trans_end'},
 											-strand								=> $residue->{'trans_strand'},						
-											-score								=> $residue->{'score'},						
 											-type_domain						=> $residue->{'type_domain'},						
 											-alignment_start					=> $residue->{'alignment_start'},					
 											-alignment_end						=> $residue->{'alignment_end'},
@@ -1179,10 +1187,10 @@ sub parse_spade($$)
 							$region->clan($residue->{'clan'}) if (exists $residue->{'clan'} and defined $residue->{'clan'});
 							$region->predicted_active_site_residues($residue->{'predicted_active_site_residues'}) if (exists $residue->{'predicted_active_site_residues'} and defined $residue->{'predicted_active_site_residues'});
 							$region->external_id($residue->{'external_id'}) if (exists $residue->{'external_id'} and defined $residue->{'external_id'});
+							$region->discarded($residue->{'discarded'}) if (exists $residue->{'discarded'} and defined $residue->{'discarded'});
 						}
 						else {
 							$region = APPRIS::Analysis::SPADERegion->new (
-											-score								=> $residue->{'score'},						
 											-type_domain						=> $residue->{'type_domain'},						
 											-alignment_start					=> $residue->{'alignment_start'},					
 											-alignment_end						=> $residue->{'alignment_end'},
@@ -1201,6 +1209,7 @@ sub parse_spade($$)
 							$region->clan($residue->{'clan'}) if (exists $residue->{'clan'} and defined $residue->{'clan'});
 							$region->predicted_active_site_residues($residue->{'predicted_active_site_residues'}) if (exists $residue->{'predicted_active_site_residues'} and defined $residue->{'predicted_active_site_residues'});
 							$region->external_id($residue->{'external_id'}) if (exists $residue->{'external_id'} and defined $residue->{'external_id'});
+							$region->discarded($residue->{'discarded'}) if (exists $residue->{'discarded'} and defined $residue->{'discarded'});
 						}
 						push(@{$regions}, $region);
 					}
@@ -1214,7 +1223,8 @@ sub parse_spade($$)
 							-num_domains					=> $report->{'num_domains'},
 							-num_possibly_damaged_domains	=> $report->{'num_possibly_damaged_domains'},
 							-num_damaged_domains			=> $report->{'num_damaged_domains'},
-							-num_wrong_domains				=> $report->{'num_wrong_domains'}
+							-num_wrong_domains				=> $report->{'num_wrong_domains'},
+							-bitscore						=> $report->{'bitscore'}
 			);
 			$method->regions($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
 			
@@ -2283,7 +2293,7 @@ sub parse_appris_rst($$)
 
 		my (@rst2) = split("\t", $transcript_result2);
 
-        # gene_id	transcript_id	translation	status	biotype	no_codons ccds_id (7)
+        # gene_id	gene_name	transcript_id	translation	status	biotype	no_codons ccds_id (7)
         # fun_res
         # con_struct
         # vert_signal
@@ -2297,9 +2307,9 @@ sub parse_appris_rst($$)
         
         if ( scalar(@rst2) == 18 ) {
 			my ($gene_id) = $rst2[0];
-			my ($transc_id) = $rst2[1];
-			my ($translation) = $rst2[2];
-			my ($status) = $rst2[3];
+			my ($gene_name) = $rst2[1];
+			my ($transc_id) = $rst2[2];
+			my ($translation) = $rst2[3];
 			my ($biotype) = $rst2[4];
 			my ($no_codons) = $rst2[5];
 			my ($ccds_id) = $rst2[6];
@@ -2310,11 +2320,14 @@ sub parse_appris_rst($$)
 			my ($vert_con_annot) = $rst2[10];
 			my ($dom_annot) = $rst2[11];
 			my ($tmh_annot) = $rst2[12];
-			my ($spep_annot) = $rst2[13];
-			my ($mit_annot) = $rst2[14];
-			my ($u_evol_annot) = $rst2[15];
-			my ($n_pep_annot) = $rst2[16];
-			my ($p_isof_annot) = $rst2[17];
+			my ($spep_mit_annot) = $rst2[13];
+			my (@aux_crash_annot) = split(',', $spep_mit_annot);
+			my ($spep_annot) = $aux_crash_annot[0];
+			my ($mit_annot) = $aux_crash_annot[1];
+			my ($u_evol_annot) = $rst2[14];
+			my ($n_pep_annot) = $rst2[15];
+			my ($p_isof_annot) = $rst2[16];
+			my ($relia_annot) = $rst2[17];
 			
 			$cutoffs->{$transc_id}->{'functional_residues_score'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_score'} = $con_struct_annot;
@@ -2326,6 +2339,7 @@ sub parse_appris_rst($$)
 			$cutoffs->{$transc_id}->{'unusual_evolution_score'} = $u_evol_annot;
 			$cutoffs->{$transc_id}->{'peptide_evidence_score'} = $n_pep_annot;
 			$cutoffs->{$transc_id}->{'principal_isoform_score'} = $p_isof_annot;
+			$cutoffs->{$transc_id}->{'reliability'} = $relia_annot;
 						
 			# join transcript results
 			if ( defined $transcript_result2 and ($transcript_result2 ne '') ) {
@@ -2347,7 +2361,7 @@ sub parse_appris_rst($$)
 
 		my (@rst2) = split("\t", $transcript_result2);
 
-        # gene_id	transcript_id	translation	status	biotype	no_codons ccds_id (7)
+        # gene_id	gene_name	transcript_id	translation	status	biotype	no_codons ccds_id (7)
         # fun_res
         # con_struct
         # vert_signal
@@ -2359,11 +2373,11 @@ sub parse_appris_rst($$)
         # mit_signal
         # prin_isoform
         
-        if ( scalar(@rst2) == 19 ) {        	
+        if ( scalar(@rst2) == 18 ) {        	
 			my ($gene_id) = $rst2[0];
-			my ($transc_id) = $rst2[1];
-			my ($translation) = $rst2[2];
-			my ($status) = $rst2[3];
+			my ($gene_name) = $rst2[1];
+			my ($transc_id) = $rst2[2];
+			my ($translation) = $rst2[3];
 			my ($biotype) = $rst2[4];
 			my ($no_codons) = $rst2[5];
 			my ($ccds_id) = $rst2[6];
@@ -2374,12 +2388,14 @@ sub parse_appris_rst($$)
 			my ($vert_con_annot) = $rst2[10];
 			my ($dom_annot) = $rst2[11];
 			my ($tmh_annot) = $rst2[12];
-			my ($spep_annot) = $rst2[13];
-			my ($mit_annot) = $rst2[14];			
-			my ($u_evol_annot) = $rst2[15];
-			my ($n_pep_annot) = $rst2[16];
-			my ($prin_isoform_annot) = $rst2[17];
-			my ($relia_annot) = $rst2[18];
+			my ($spep_mit_annot) = $rst2[13];
+			my (@aux_crash_annot) = split(',', $spep_mit_annot);
+			my ($spep_annot) = $aux_crash_annot[0];
+			my ($mit_annot) = $aux_crash_annot[1];			
+			my ($u_evol_annot) = $rst2[14];
+			my ($n_pep_annot) = $rst2[15];
+			my ($prin_isoform_annot) = $rst2[16];
+			my ($relia_annot) = $rst2[17];
 			
 			$cutoffs->{$transc_id}->{'functional_residues_signal'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_signal'} = $con_struct_annot;
@@ -2552,25 +2568,6 @@ sub parse_appris($$$)
 
 =cut
 
-#sub parse_appris_methods($$$$$$$$;$;$;$;$;$;$;$)
-#{
-#	my (
-#		$gene,
-#		$firestar_result,
-#		$matador3d_result,
-#		$spade_result,
-#		$corsair_result,
-#		$crash_result,
-#		$thump_result,
-#		$inertia_result,
-#		$inertia_maf_result,
-#		$inertia_prank_result,
-#		$inertia_kalign_result,
-#		$inertia_compara_result,
-#		$proteo_result,
-#		$appris_result,
-#		$appris_lb_result
-#	) = @_;
 sub parse_appris_methods($$$$$$$$;$;$;$)
 {
 	my (

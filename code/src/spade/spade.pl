@@ -244,10 +244,12 @@ sub _get_best_domain($$$)
 						# overlapping
 						if ( ($aln_start_i <= $aln_end_j) and ($aln_start_j <= $aln_end_i) and ($hmm_name_i eq $hmm_name_j) ) {
 							if ( $hmm_bitscore_j < $hmm_bitscore_i ) {
-								$best_domains->{$hmm_index_j} = undef;
+								#$best_domains->{$hmm_index_j} = undef;
+								$best_domains->{$hmm_index_j}->{'discarded'} = 1;
 							}
 							else {
-								$best_domains->{$hmm_index_i} = undef;
+								#$best_domains->{$hmm_index_i} = undef;
+								$best_domains->{$hmm_index_i}->{'discarded'} = 1;
 							}
 						}					
 					}
@@ -294,7 +296,8 @@ sub _get_best_domain($$$)
 				if ( $index_domain != -1 )
 				{
 					# the same alignment region
-					if ( $best_domains->{$hmm_index} and defined $best_domains->{$hmm_index} ) {
+					#if ( $best_domains->{$hmm_index} and defined $best_domains->{$hmm_index} ) {
+					if ( exists $best_domains->{$hmm_index} and !(exists $best_domains->{$hmm_index}->{'discarded'}) ) {
 						# get the best bitscore for the same alignment
 						my ($exists_hmm_name) = $best_domains->{$hmm_index}->{'hmm_name'};
 						my ($exists_hmm_bitscore) = $best_domains->{$hmm_index}->{'bit_score'};
@@ -316,13 +319,14 @@ sub _get_best_domain($$$)
 						# difference alignment region
 						my ($overlapping) = 0;
 						while ( my ($exists_hmm_index, $exists_hmm_rep) = each(%{$best_domains}) ) {
-							if ( defined $exists_hmm_rep and $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
+							#if ( defined $exists_hmm_rep and $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ ) {
+							if ( $exists_hmm_index =~ /^([^\:]*)\:([^\$]*)$/ and !(exists $best_domains->{$exists_hmm_index}->{'discarded'}) ) {
 								my ($exists_aln_start) = $1;
 								my ($exists_aln_end) = $2;
 								my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};
 								my ($exists_hmm_type) = $exists_hmm_rep->{'hmm_type'};							
 								my ($exists_hmm_bitscore) = $exists_hmm_rep->{'bit_score'};
-								if ( $hmm_name ne 'Repeat' and $hmm_name eq $exists_hmm_name and $exists_aln_start <= $aln_end and $aln_start <= $exists_aln_end ) { # overlapping
+								if ( ($hmm_name ne 'Repeat') and ($hmm_name eq $exists_hmm_name) and ($exists_aln_start <= $aln_end) and ($aln_start <= $exists_aln_end) ) { # overlapping
 									$overlapping = 1;
 								}
 							}		
@@ -349,9 +353,9 @@ sub _get_best_domain($$$)
 
 	# report the alignment list
 	while (my ($hmm_index, $domain_report) = each(%{$best_domains}) ) {
-		if ( defined $domain_report ) {
-			my ($alignment_report) = $domain_report->{'report'};
-			
+		#if ( defined $domain_report ) {
+		my ($alignment_report) = $domain_report->{'report'};
+		if ( !(exists $best_domains->{$hmm_index}->{'discarded'}) ) {
 			if( $alignment_report->{'type_domain'} eq 'domain' ) {
 				$num_domains++;
 			}
@@ -365,10 +369,12 @@ sub _get_best_domain($$$)
 				$num_wrong_domains++;
 			}
 			
-			if ( exists $alignment_report->{'bit_score'} ) { $bitscore += $alignment_report->{'bit_score'} }
-			
-			push(@{$alignment_list}, $alignment_report);
-		}			
+			if ( exists $alignment_report->{'bit_score'} ) { $bitscore += $alignment_report->{'bit_score'} }				
+		}
+		else {
+			$alignment_report->{'discarded'} = 1;
+		}
+		push(@{$alignment_list}, $alignment_report);
 	}
 	$pfam_report->{'bitscore'} = $bitscore;
 	$pfam_report->{'domains'} = $alignment_list;
@@ -648,8 +654,13 @@ sub _get_record_annotations($)
 				if (exists $alignment_report->{'predicted_active_site_residues'} and defined $alignment_report->{'predicted_active_site_residues'} )
 					{ $output_content .= $alignment_report->{'predicted_active_site_residues'}."\t"; }
 	
-				if (exists $alignment_report->{'external_id'} and defined $alignment_report->{'external_id'} )
-					{ $output_content .= "[".$alignment_report->{'external_id'}."]"."\t"; }
+				if(	exists $alignment_report->{'discarded'} and defined $alignment_report->{'discarded'} ){
+					$output_content .= "[discarded]"."\t";
+				}
+				else {
+					if (exists $alignment_report->{'external_id'} and defined $alignment_report->{'external_id'} )
+						{ $output_content .= "[ext:".$alignment_report->{'external_id'}."]"."\t"; }
+				}
 	
 				$output_content =~ s/\t$/\n/;								
 			}

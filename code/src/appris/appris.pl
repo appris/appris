@@ -168,14 +168,14 @@ $logger->init_log($str_params);
 sub get_scores($$);
 sub get_final_scores($$$);
 sub filter_by_class_codons($$\$\$);
-sub get_annotations($$$);
+sub get_annotations($$$$);
 sub is_unique($$);
 sub step_appris($$);
-sub step_ccds($$);
-sub step_tsl($$);
-sub step_ccds_eldest($$);
-sub step_ccds_longest($$);
-sub step_longest($$);
+sub step_ccds($$$);
+sub step_tsl($$$);
+sub step_ccds_eldest($$$);
+sub step_ccds_longest($$$);
+sub step_longest($$$);
 #sub step_num_peptides($$$$$);
 sub step_tags($$$$);
 sub get_score_output($$$);
@@ -333,11 +333,11 @@ sub main()
 	my ($s_scores) = filter_by_class_codons($gene, $pre_s_scores, $scores, $nscores);
 	$logger->debug("SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("N_SCORES:\n".Dumper($nscores)."\n");
-	$logger->debug("G_SCORES:\n".Dumper($s_scores)."\n");
+	$logger->debug("SORT_SCORES:\n".Dumper($s_scores)."\n");
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	my ($annots) = get_annotations($gene, $scores, $s_scores);
+	my ($annots) = get_annotations($gene, $scores, $s_scores, $nscores);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs
@@ -487,12 +487,10 @@ sub get_scores($$)
 				if ( defined $analysis->num_domains and 
 					 defined $analysis->num_possibly_damaged_domains and
 					 defined $analysis->num_damaged_domains and
-					 defined $analysis->num_wrong_domains ) {
-					 	my ($sum_domains) = $analysis->num_domains + $analysis->num_possibly_damaged_domains;
-					 	my ($sum_damaged_domains) = $analysis->num_damaged_domains + $analysis->num_wrong_domains;
-						my ($sc) = $sum_domains;
-						#$scores->{$transcript_id}->{$k_annot2} = $sum_domains . '-' . $sum_damaged_domains;
-						$scores->{$transcript_id}->{$k_annot2} = $sum_domains;						
+					 defined $analysis->num_wrong_domains and 
+					 defined $analysis->bitscore ) {
+						my ($sc) = $analysis->bitscore;
+						$scores->{$transcript_id}->{$k_annot2} = $sc;						
 						if ( !(exists $max_scores->{$m}) ) {
 							$max_scores->{$m} = $sc; 
 						}
@@ -519,7 +517,6 @@ sub get_scores($$)
 				if ( defined $analysis->num_tmh and 
 					 defined $analysis->num_damaged_tmh ) {
 					my ($sc) = $analysis->num_tmh;
-					#$scores->{$transcript_id}->{$k_annot2} = $analysis->num_tmh.'-'.$analysis->num_damaged_tmh;
 					$scores->{$transcript_id}->{$k_annot2} = $analysis->num_tmh;
 					if ( !(exists $max_scores->{$m}) ) {
 						$max_scores->{$m} = $sc; 
@@ -743,27 +740,18 @@ sub filter_by_class_codons($$\$\$)
 			}
 			my ($appris_nscore) = $$ref_nscores->{$transcript_id}->{$method};
 			my ($frozen_score, $frozen_nscore) = ($appris_score, $appris_nscore);
-			unless ( defined $ccds_id ) { # If variant has CCDS, we don't reject (eg, EIF4G2)
-				if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
-					$frozen_score = -1;
-				}
+			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
+				$frozen_score = -1;
 			}
 			push(@{$s_scores->{$frozen_score}}, $transcript_id);
 		}			
 	}
-	# If all variants has fragments, or If all variants are NM, or If all variants are NM or fragments, 
-	# we don't reject them (and keep going with pipeline).
-	my (@s_scores) = keys(%{$s_scores});
-	if ( scalar(@s_scores) == 1 && $s_scores[0] eq "-1" ) {
-		$s_scores = $i_s_scores;
-	} else {
-		# update scores with 'frozen'
-		while ( my ($frozen_score, $sc) = each(%{$s_scores}) ) {
-			foreach my $transcript_id (@{$sc}) {
-				$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
-				$$ref_nscores->{$transcript_id}->{$method} = $frozen_score;
-			}		
-		}
+	# update scores with 'frozen'
+	while ( my ($frozen_score, $sc) = each(%{$s_scores}) ) {
+		foreach my $transcript_id (@{$sc}) {
+			$$ref_scores->{$transcript_id}->{$METHOD_LABELS->{$method}->[1]} = $frozen_score;
+			$$ref_nscores->{$transcript_id}->{$method} = $frozen_score;
+		}		
 	}
 	
 	return $s_scores;
@@ -771,9 +759,9 @@ sub filter_by_class_codons($$\$\$)
 } # end filter_by_class_codons
 
 # get the final annotation
-sub get_annotations($$$)
+sub get_annotations($$$$)
 {
-	my ($gene, $scores, $sort_scores) = @_;
+	my ($gene, $scores, $sort_scores, $nscores) = @_;
 	
 	my ($annotations);
 		
@@ -791,7 +779,7 @@ sub get_annotations($$$)
 		}
 
 		# 2. from preserved transcript, we keep transcripts that they have got CCDS
-		$princ_list = step_ccds($princ_list, $isof_report);
+		$princ_list = step_ccds($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_2: \n".Dumper($princ_list)."\n");			
 		if ( is_unique($princ_list, $isof_report) ) {
 			$annotations = step_tags(2, $scores, $princ_list, $isof_report);
@@ -799,7 +787,7 @@ sub get_annotations($$$)
 		}
 
 		# 3. from preserved transcript, we keep transcripts that they have got TSL1
-		$princ_list = step_tsl($princ_list, $isof_report);
+		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$annotations = step_tags(3, $scores, $princ_list, $isof_report);
@@ -807,7 +795,7 @@ sub get_annotations($$$)
 		}
 
 		# 3_2. from preserved transcript, we keep transcripts that they have got eldest CCDS
-		$princ_list = step_ccds_eldest($princ_list, $isof_report);
+		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$annotations = step_tags(3, $scores, $princ_list, $isof_report);
@@ -815,7 +803,7 @@ sub get_annotations($$$)
 		}
 
 		# 4. from preserved transcript, we keep transcripts that they have got longest seq with CCDS
-		$princ_list = step_ccds_longest($princ_list, $isof_report);
+		$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$annotations = step_tags(4, $scores, $princ_list, $isof_report);
@@ -823,7 +811,7 @@ sub get_annotations($$$)
 		}
 
 		# 5. from preserved transcript, we keep transcripts that they have got longest seq
-		$princ_list = step_longest($princ_list, $isof_report);
+		$princ_list = step_longest($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
 		$annotations = step_tags(5, $scores, $princ_list, $isof_report);
 		
@@ -866,7 +854,7 @@ sub is_unique($$)
 
 sub step_appris($$)
 {
-	my ($gene, $appris_scores) = @_;
+	my ($gene, $sorted_scores) = @_;
 	my ($gene_id) = $gene->stable_id;
 	my ($highest_score) = 0;
 	my ($princ_list, $isof_report);
@@ -876,14 +864,14 @@ sub step_appris($$)
 	my ($tsl_transcs) = get_tsl_annots($gene_id);
 
 	# scan the transcripts from the sorted APPRIS scores
-	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$appris_scores});			
+	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$sorted_scores});			
 	for ( my $i = 0; $i < scalar(@sorted_ap_scores); $i++ ) {
 		
 		# save the highest score (the first one)
 		if ( $i == 0 ) { $highest_score = $sorted_ap_scores[$i] }
 		
 		my ($ap_score) = $sorted_ap_scores[$i];		
-		foreach my $transc_id (@{$appris_scores->{$ap_score}}) {
+		foreach my $transc_id (@{$sorted_scores->{$ap_score}}) {
 			my ($index) = $gene->{'_index_transcripts'}->{$transc_id};
 			my ($transcript) = $gene->transcripts->[$index];
 			my ($transl_seq) = $transcript->translate->sequence;
@@ -925,14 +913,13 @@ sub step_appris($$)
 				$transc_rep->{'tsl'} = 1;
 			}
 			# save the APPRIS decision
-			# discarding the transcripts are not protein cofing (NMD): app_score is -1
+			# discarding the transcripts are not protein coding (NMD): app_score is -1
 			# But we accept the last terms when the transcript is unique 
-			my ($unique_transc) = ( scalar(keys(%{$appris_scores})) == 1 and scalar(@{$appris_scores->{$sorted_ap_scores[0]}}) >= 1 ) ? 1 : 0;
+			my ($unique_transc) = ( scalar(keys(%{$sorted_scores})) == 1 and scalar(@{$sorted_scores->{$sorted_ap_scores[0]}}) >= 1 ) ? 1 : 0;
 			if ( ( ($highest_score - $ap_score) <=  $APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
 				$transc_rep->{'principal'} = 1;
 				$princ_list->{$transc_id} = 1;
 			}
-			#else { $transc_rep->{'principal'} = 0 }
 			
 			push(@{$isof_report}, $transc_rep);
 
@@ -942,19 +929,20 @@ sub step_appris($$)
 	
 } # end step_appris
 
-sub step_ccds($$)
+sub step_ccds($$$)
 {
-	my ($i_princ_list, $isof_report) = @_;
+	my ($i_princ_list, $isof_report, $nscores) = @_;
 	my ($report);
 	
 	# preliminar report
+	# discarding the transcripts are not protein coding (NMD): app_score is -1
 	my ($princ_isof);
 	foreach my $princ ( @{$isof_report} ) {
 		my ($transc_id) = $princ->{'id'};
 		if ( exists $i_princ_list->{$transc_id} ) {
-			
-			if ( exists $princ->{'ccds'} ) { push(@{$princ_isof}, $princ) }
-			
+			if ( exists $nscores->{$transc_id} and defined $nscores->{$transc_id} and $nscores->{$transc_id}->{'appris'} != '-1' ) {
+				if ( exists $princ->{'ccds'} ) { push(@{$princ_isof}, $princ) }				
+			}
 		}
 	}	
 
@@ -971,19 +959,20 @@ sub step_ccds($$)
 		
 } # end step_ccds
 
-sub step_tsl($$)
+sub step_tsl($$$)
 {
-	my ($i_princ_list, $isof_report) = @_;
+	my ($i_princ_list, $isof_report, $nscores) = @_;
 	my ($report);
 	
 	# preliminar report
+	# discarding the transcripts are not protein coding (NMD): app_score is -1
 	my ($princ_isof);
 	foreach my $princ ( @{$isof_report} ) {
 		my ($transc_id) = $princ->{'id'};
 		if ( exists $i_princ_list->{$transc_id} ) {
-			
-			if ( exists $princ->{'tsl'} ) { push(@{$princ_isof}, $princ) }
-			
+			if ( exists $nscores->{$transc_id} and defined $nscores->{$transc_id} and $nscores->{$transc_id}->{'appris'} != '-1' ) {
+				if ( exists $princ->{'tsl'} ) { push(@{$princ_isof}, $princ) }
+			}
 		}
 	}
 		
@@ -1000,19 +989,20 @@ sub step_tsl($$)
 		
 } # end step_tsl
 
-sub step_ccds_eldest($$)
+sub step_ccds_eldest($$$)
 {
-	my ($i_princ_list, $isof_report) = @_;
+	my ($i_princ_list, $isof_report, $nscores) = @_;
 	my ($report);
 	
 	# preliminar report
+	# discarding the transcripts are not protein coding (NMD): app_score is -1
 	my ($princ_isof);
 	foreach my $princ ( @{$isof_report} ) {
 		my ($transc_id) = $princ->{'id'};
-		if ( exists $i_princ_list->{$transc_id} ) {
-			
-			if ( exists $princ->{'ccds'} ) { push(@{$princ_isof}, $princ) }
-			
+		if ( exists $i_princ_list->{$transc_id} ) {			
+			if ( exists $nscores->{$transc_id} and defined $nscores->{$transc_id} and $nscores->{$transc_id}->{'appris'} != '-1' ) {
+				if ( exists $princ->{'ccds'} ) { push(@{$princ_isof}, $princ) }
+			}
 		}
 	}	
 
@@ -1035,9 +1025,9 @@ sub step_ccds_eldest($$)
 		
 } # end step_ccds_eldest
 
-sub step_ccds_longest($$)
+sub step_ccds_longest($$$)
 {
-	my ($i_princ_list, $isof_report) = @_;
+	my ($i_princ_list, $isof_report, $nscores) = @_;
 	my ($report);
 	
 	# preliminar report
@@ -1070,34 +1060,67 @@ sub step_ccds_longest($$)
 		
 } # end step_ccds_longest
 
-sub step_longest($$)
+sub step_longest($$$)
 {
-	my ($i_princ_list, $isof_report) = @_;
+	my ($i_princ_list, $isof_report, $nscores) = @_;
 	my ($report);
 	
 	# preliminar report
 	my ($princ_isof);
+	my ($princ_isof_seqs);
+	my ($princ_isof_scores);
 	foreach my $princ ( @{$isof_report} ) {
 		my ($transc_id) = $princ->{'id'};
 		if ( exists $i_princ_list->{$transc_id} ) {
-			
-			if ( exists $princ->{'length'} ) { push(@{$princ_isof}, $princ) }
-			
+			if ( exists $princ->{'length'} and exists $princ->{'seq'} ) {
+				my ($len) = $princ->{'length'};
+				my ($seq) = $princ->{'seq'};
+				push(@{$princ_isof->{$len}}, $transc_id);
+				$princ_isof_seqs->{$transc_id} = $seq;
+			}			
+		}
+		if ( exists $nscores->{$transc_id} ) {
+			if ( exists $nscores->{$transc_id}->{'appris'} ) {
+				my ($sc) = $nscores->{$transc_id}->{'appris'};
+				push(@{$princ_isof_scores->{$sc}}, $transc_id);
+			}
 		}
 	}	
 
 	# print princ isoforms with longest seq
-	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
+	if ( defined $princ_isof ) {
 		# the first elem is the longest (b <=> a - descending)
-		my (@sort_transc) = sort { $b->{'length'} <=> $a->{'length'} } @{$princ_isof};
-		my ($longest_ccds) = $sort_transc[0]->{'length'};
-		foreach my $princ ( @{$princ_isof} ) {
-			my ($transc_id) = $princ->{'id'};
-			my ($len) = $princ->{'length'};
-			if ( abs($len - $longest_ccds) == 0 ) {
-				$report->{$transc_id} = 1;
-			}			
-		}				
+		my (@sort_lengths) = sort { $b <=> $a } keys (%{$princ_isof});
+		my ($longest) = $sort_lengths[0];
+		if ( scalar(@{$princ_isof->{$longest}}) == 1 ) {
+			my ($transc_id) = ($princ_isof->{$longest})->[0];
+			$report->{$transc_id} = 1;
+		}
+		else {
+			# check if they are the same seqs
+			my ($equal) = 1;
+			my ($transc_id_0) = ($princ_isof->{$longest})->[0];
+			my ($seq_0) = $princ_isof_seqs->{$transc_id_0};
+			for (my $i=1; $i < scalar(@{$princ_isof->{$longest}}); $i++) {
+				my ($transc_id_i) = ($princ_isof->{$longest})->[$i];
+				my ($seq_i) = $princ_isof_seqs->{$transc_id_i};
+				if ( $seq_i ne $seq_0 ) { $equal = 0 }
+			}
+			if ( $equal == 1 ) {
+				foreach my $transc_id ( @{$princ_isof->{$longest}} ) {
+					$report->{$transc_id} = 1;
+				}
+			}
+			else { # the decision base on biggest appris-score
+				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
+				my ($longest_sc) = $sort_sc[0];
+				if ( scalar(@{$princ_isof_scores->{$longest_sc}}) == 1 ) {
+					my ($transc_id) = $princ_isof_scores->{$longest_sc}[0];
+					$report->{$transc_id} = 1;
+				}
+				
+			}
+		}
 	}
 	else { $report = $i_princ_list }
 
@@ -1154,12 +1177,12 @@ sub get_score_output($$$)
 {
 	my ($gene, $scores, $annots) = @_;
 	my ($stable_id) = $gene->stable_id;
+	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
-		my ($status) = '-';
 		my ($biotype) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
@@ -1176,7 +1199,6 @@ sub get_score_output($$$)
 		my ($inertia_annot) = '-';
 		my ($appris_annot) = '-';
 		my ($appris_relia) = '-';
-		$status = $transcript->status if ($transcript->status);
 		$biotype = $transcript->biotype if ( defined $transcript->biotype);		
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			
@@ -1217,9 +1239,9 @@ sub get_score_output($$$)
 			}
 						
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$status."\t".
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
@@ -1229,18 +1251,18 @@ sub get_score_output($$$)
 						$corsair_annot."\t".
 						$spade_annot."\t".
 						$thump_annot."\t".
-						$crash_sp_annot."\t".
-						$crash_tp_annot."\t".
+						$crash_sp_annot.",".$crash_tp_annot."\t".
 						$inertia_annot."\t".
 						$proteo_annot."\t".
-						$appris_annot."\n";
+						$appris_annot."\t".
+						$appris_relia."\n";
 		}
 		else {
 			$translation = 'NO_TRANSLATION';
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$status."\t".
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\n";						
@@ -1255,6 +1277,7 @@ sub get_nscore_output($$$$)
 {
 	my ($gene, $scores, $nscores, $annots) = @_;
 	my ($stable_id) = $gene->stable_id;
+	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 
 	foreach my $transcript (@{$gene->transcripts})
@@ -1283,7 +1306,6 @@ sub get_nscore_output($$$$)
 			$crash_annot = $nscores->{$transcript_id}->{'crash'} if ( exists $nscores->{$transcript_id}->{'crash'} );
 			$inertia_annot = $nscores->{$transcript_id}->{'inertia'} if ( exists $nscores->{$transcript_id}->{'inertia'} );
 			$proteo_annot = $nscores->{$transcript_id}->{'proteo'} if ( exists $nscores->{$transcript_id}->{'proteo'} );
-			#$appris_annot = $scores->{$transcript_id}->{'score_principal_isoform'} if ( exists $scores->{$transcript_id}->{'score_principal_isoform'} );
 			$appris_annot = $nscores->{$transcript_id}->{'appris'} if ( exists $nscores->{$transcript_id}->{'appris'} );
 						
 			$transl_len = length($transcript->translate->sequence);
@@ -1310,6 +1332,7 @@ sub get_nscore_output($$$$)
 			}
 						
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$biotype."\t".
 						$no_codons."\t".
@@ -1327,6 +1350,7 @@ sub get_nscore_output($$$$)
 		}
 		else {
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$biotype."\t".
 						$no_codons."\t".
@@ -1342,12 +1366,12 @@ sub get_label_output($$$)
 {
 	my ($gene, $scores, $annots) = @_;
 	my ($stable_id) = $gene->stable_id;
+	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
-		my ($status) = '-';
 		my ($biotype) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
@@ -1364,7 +1388,6 @@ sub get_label_output($$$)
 		my ($proteo_annot) = '-';
 		my ($appris_annot) = '-';
 		my ($appris_relia) = '-';
-		$status = $transcript->status if ($transcript->status);
 		$biotype = $transcript->biotype if ( defined $transcript->biotype);
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			
@@ -1405,9 +1428,9 @@ sub get_label_output($$$)
 			}
 						
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$status."\t".
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
@@ -1417,8 +1440,7 @@ sub get_label_output($$$)
 						$corsair_annot."\t".
 						$spade_annot."\t".
 						$thump_annot."\t".
-						$crash_sp_annot."\t".
-						$crash_tp_annot."\t".
+						$crash_sp_annot.",".$crash_tp_annot."\t".
 						$inertia_annot."\t".
 						$proteo_annot."\t".
 						$appris_annot."\t".
@@ -1427,9 +1449,9 @@ sub get_label_output($$$)
 		else {
 			$translation = 'NO_TRANSLATION';
 			$content .= $stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$status."\t".
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\n";						
@@ -1445,6 +1467,7 @@ sub get_strange_output($$)
 {
 	my ($gene, $annots) = @_;
 	my ($stable_id) = $gene->stable_id;
+	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 	
 	foreach my $transcript (@{$gene->transcripts})
@@ -1463,6 +1486,7 @@ sub get_strange_output($$)
 			}			
 			$content .= $chr."\t".
 						$stable_id."\t".
+						$gene_name."\t".
 						$transcript_id."\t".
 						$ccds_id."\n";
 		}

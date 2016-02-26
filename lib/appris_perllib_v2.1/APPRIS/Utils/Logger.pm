@@ -416,11 +416,13 @@ sub init_log {
     # print script name, date, user who is running it
     my $hostname = `hostname`;
     chomp $hostname;
-    my $script = "$hostname:$Bin/$Script";
+    my $script = "$Bin/$Script";
     my $user = `whoami`;
     chomp $user;
+    $params =~ s/\n/ \\\n/g;
     $self->info("# ---------------\n");
-    $self->info("Script: $script\n");    
+    $self->info("Script:$hostname\n");
+    $self->info("perl $script \\\n");    
     $self->info("$params\n") if ($params); # print parameters the script is running with
     $self->info("Date: ".$self->date."\n");
     $self->info("User: $user\n");

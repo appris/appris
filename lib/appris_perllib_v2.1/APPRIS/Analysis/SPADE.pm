@@ -75,13 +75,13 @@ sub new {
 		$result,						$domain_signal,
 		$num_domains,					$num_damaged_domains,
 		$num_possibly_damaged_domains,	$num_wrong_domains,
-		$regions
+		$bitscore,						$regions
 	)
 	= rearrange( [
 		'result',						'domain_signal',
 		'num_domains',					'num_damaged_domains',
 		'num_possibly_damaged_domains',	'num_wrong_domains',
-		'regions'
+		'bitscore',						'regions'
 	],
 	@_
 	);
@@ -92,6 +92,7 @@ sub new {
 	$self->num_possibly_damaged_domains($num_possibly_damaged_domains) if(defined $num_possibly_damaged_domains);
 	$self->num_damaged_domains($num_damaged_domains) if(defined $num_damaged_domains);
 	$self->num_wrong_domains($num_wrong_domains) if(defined $num_wrong_domains);
+	$self->bitscore($bitscore) if(defined $bitscore);
 	$self->regions($regions) if(defined $regions);
 		
 	return $self;
@@ -211,6 +212,26 @@ sub num_wrong_domains {
 	my ($self) = shift;
 	$self->{'num_wrong_domains'} = shift if(@_);
 	return $self->{'num_wrong_domains'};
+}
+
+=head2 bitscore
+
+  Arg [1]    : (optional) Int - the number of wrong domains for 
+               the analysis
+  Example    : $analysis->bitscore(5);
+  Description: Getter/setter for the number of wrong domains 
+               that for this analysis
+  Returntype : Int
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub bitscore {
+	my ($self) = shift;
+	$self->{'bitscore'} = shift if(@_);
+	return $self->{'bitscore'};
 }
 
 =head2 regions

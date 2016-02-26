@@ -84,7 +84,7 @@ sub new {
 	
 	my (
 		$start,		$end,		$strand,
-		$score,				$type_domain,
+		$type_domain,
 		$alignment_start,	$alignment_end,
 		$envelope_start,	$envelope_end,
 		$hmm_start,			$hmm_end,
@@ -93,11 +93,11 @@ sub new {
 		$bit_score,			$evalue,
 		$significance,		$clan,
 		$predicted_active_site_residues,
-		$external_id
+		$external_id,		$discarded
 	)
 	= rearrange( [
 		'start',	'end',		'strand',
-		'score',			'type_domain',
+		'type_domain',
 		'alignment_start',	'alignment_end',
 		'envelope_start',	'envelope_end',
 		'hmm_start',		'hmm_end',
@@ -106,7 +106,7 @@ sub new {
 		'bit_score',		'evalue',
 		'significance',		'clan',
 		'predicted_active_site_residues',
-		'external_id'
+		'external_id',		'discarded'
 	],
 	@_
 	);
@@ -114,7 +114,6 @@ sub new {
  	$self->start($start);
  	$self->end($end);
  	$self->strand($strand);
- 	$self->score($score);
  	$self->type_domain($type_domain);
  	$self->alignment_start($alignment_start) if (defined $alignment_start);
  	$self->alignment_end($alignment_end) if (defined $alignment_end);
@@ -136,26 +135,11 @@ sub new {
 	if (defined $external_id and $external_id ne 'NULL') {
 		$self->external_id($external_id);
 	}
+	if (defined $discarded and $discarded ne 'NULL') {
+		$self->discarded($discarded);
+	}
   
 	return $self;
-}
-
-=head2 score
-
-  Arg [1]    : (optional) Int - the score of the region is on
-  Example    : $region->score(1);
-  Description: Getter/setter for the score that for this region
-  Returntype : Int
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub score {
-	my ($self) = shift;
-	$self->{'score'} = shift if(@_);
-	return $self->{'score'};
 }
 
 =head2 type_domain
@@ -463,6 +447,25 @@ sub external_id {
 	$self->{'external_id'} = shift if(@_);
 	return $self->{'external_id'};
 }
+
+=head2 discarded
+
+  Arg [1]    : (optional) String - transcript if from other Pfam result
+  Example    : $region->discarded(1);
+  Description: Getter/setter for the domain coming from Pfam result of other transcript
+  Returntype : String
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub discarded {
+	my ($self) = shift;
+	$self->{'discarded'} = shift if(@_);
+	return $self->{'discarded'};
+}
+
 
 sub DESTROY {}
 

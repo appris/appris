@@ -24,6 +24,10 @@
 	- New name for each release... Forget the date
 	
 * APPRIS-CODE, v2.9
+
+	- APPRIS
+		- New columns for the outputs.
+		- Difference sequence with same label of APPRIS. Eg, GNAO1. Here the problem is the length step...
 	
 	- Matador3D
 		- Fixed bug with the number of residues. 

@@ -1365,6 +1365,7 @@ sub feed_transc_by_analysis {
 							$parameters{clan} = $region->clan if ( $region->clan );
 							$parameters{predicted_active_site_residues} = $region->predicted_active_site_residues if ( $region->predicted_active_site_residues );
 							$parameters{external_id} = $region->external_id if ( $region->external_id );
+							$parameters{discarded} = $region->discarded if ( defined $region->discarded );
 
 							my ($method_residues_id) = $self->dbadaptor->insert_spade_alignments(%parameters);
 						};
