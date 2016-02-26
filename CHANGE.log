@@ -28,6 +28,9 @@
 	- APPRIS
 		- New columns for the outputs.
 		- Difference sequence with same label of APPRIS. Eg, GNAO1. Here the problem is the length step...
+		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
+			- If all variants has fragments, we don't reject them (and keep going with pipeline).
+		- We keep discarding the NMDs		
 	
 	- Matador3D
 		- Fixed bug with the number of residues. 
