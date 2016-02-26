@@ -22,6 +22,8 @@ export APPRIS_ANNOT_DIR="${APPRIS_WORKSPACE}/annotations/${APPRIS_WS_DATE}"
 
 export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
 
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
+
 # -----------------------------------------#
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
