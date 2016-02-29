@@ -2639,7 +2639,7 @@ sub insert_spade_alignments {
 												envelope_start, envelope_end, 
 												hmm_start, hmm_end, hmm_length, hmm_acc, hmm_name, hmm_type, 
 												bit_score, evalue, significance, clan, predicted_active_site_residues,
-												trans_start, trans_end, trans_strand, score, type_domain, external_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)},
+												trans_start, trans_end, trans_strand, type_domain, external_id, discarded) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)},
 			undef,(
 				$args{'spade_id'},
 				$args{'alignment_start'},
@@ -2660,9 +2660,9 @@ sub insert_spade_alignments {
 				$args{'trans_start'},
 				$args{'trans_end'},
 				$args{'trans_strand'},
-				$args{'score'},
 				$args{'type_domain'},
-				$args{'external_id'} ));
+				$args{'external_id'},
+				$args{'discarded'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};
