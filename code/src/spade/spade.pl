@@ -65,7 +65,6 @@ $PROG_IN_SUFFIX		= 'faa';
 $PROG_OUT_SUFFIX	= 'pfam';
 $PROG_EVALUE		= $cfg->val( 'SPADE_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val( 'SPADE_VARS', 'cutoff');
-$APPRIS_CUTOFF		= 10;
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
