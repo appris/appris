@@ -49,6 +49,7 @@ $APPRIS_PROTEO_DATA_FILE = $ENV{APPRIS_PROTEO_DATA_FILE};
 # TEMPORAL SOLUTION!!!!
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($id) = undef;
 my ($inpath) = undef;
 my ($species) = undef;
@@ -99,7 +100,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 #################
 # Method bodies #

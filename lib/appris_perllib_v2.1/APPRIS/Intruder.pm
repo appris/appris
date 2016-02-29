@@ -1333,7 +1333,7 @@ sub feed_transc_by_analysis {
 			if ( defined $method->regions ) {
 				foreach my $region (@{$method->regions}) {
 
-					if ( defined $region->score and defined $region->type_domain and 
+					if ( defined $region->type_domain and 
 						 defined $region->alignment_start and defined $region->alignment_end and
 						 defined $region->envelope_start and defined $region->envelope_end and
 						 defined $region->hmm_start and defined $region->hmm_end and defined $region->hmm_length and
@@ -1343,7 +1343,6 @@ sub feed_transc_by_analysis {
 						eval {
 							my (%parameters) = (
 											spade_id			=> $global_id,
-											score				=> $region->score,
 											type_domain			=> $region->type_domain,
 											alignment_start		=> $region->alignment_start,
 											alignment_end		=> $region->alignment_end,

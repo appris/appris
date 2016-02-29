@@ -24,6 +24,7 @@ $ENV{APPRIS_METHODS}="firestar,matador3d,spade,corsair,thump,crash,appris";
 # TEMPORAL SOLUTION!!!!
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($id) = undef;
 my ($inpath) = undef;
 my ($outfile) = undef;
@@ -59,7 +60,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 #################
 # Method bodies #
