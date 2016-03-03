@@ -446,15 +446,15 @@ sub _check_alignment($$$)
 				{$totalgaps = 0.33}
 			elsif ($gaps <= 18)
 				{$totalgaps = 0.20}
-			elsif ($gaps > 66)
+			elsif ($gaps > 80)
 				{$totalgaps = -1}
-			elsif ($gaps > 50)
+			elsif ($gaps > 66)
 				{$totalgaps = -0.75}
-			elsif ($gaps > 40)
+			elsif ($gaps > 50)
 				{$totalgaps = -0.5}
 			elsif ($gaps > 33)
 				{$totalgaps = -0.25}
-			elsif ($gaps > 25)
+			elsif ($gaps > 20)
 				{$totalgaps = 0}
 			else
 				{$totalgaps = 0}
