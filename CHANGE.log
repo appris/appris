@@ -22,21 +22,27 @@
 
 * HIGHLIGHTS:
 	- New name for each release... Forget the date
+	- New algorithm for SPADE: SPADE2
 	
 * APPRIS-CODE, v2.9
 
 	- APPRIS
+		- Now appris scripts contains the decision of all methods.
 		- New columns for the outputs.
-		- Difference sequence with same label of APPRIS. Eg, GNAO1. Here the problem is the length step...
 		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
 			- If all variants has fragments, we don't reject them (and keep going with pipeline).
-		- We keep discarding the NMDs		
+		- We keep discarding the NMDs
+		- In the step_length: (Eg, GNAO1)
+			-  When the sequences are different but with the same length we choose the winner based on the appris-score. TODO!!!
 	
 	- Matador3D
 		- Fixed bug with the number of residues. 
 
-	- SPADE v2
+	- SPADE2
 		- Decision with the bitscore.
+		- First of all, discard overlapping domains coming from pfamscan
+		- Herence only domains with bigger bitscore. Eg, ENSG00000164692
+
 		 
 * APPRIS-DATA, v15
 		- Human
