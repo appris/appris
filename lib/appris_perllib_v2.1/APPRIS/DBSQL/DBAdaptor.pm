@@ -1747,7 +1747,6 @@ sub query_spade_alignments {
 		a.trans_start,
 		a.trans_end,
 		a.trans_strand,
-		a.score,
 		a.type_domain,
 		a.external_id,
 		a.discarded
