@@ -668,7 +668,7 @@ sub get_final_scores($$\$\$)
 			my ($n_sc) = 0;
 			my ($max) = $$ref_s_scores->{$m}->{'max'};
 			my ($min) = $$ref_s_scores->{$m}->{'min'};
-			if ( $max != 0 ) {
+			if ( $max != 0 and ($max - $min != 0) ) {
 				my ($label) = $METHOD_LABELS->{$m}->[1];
 				my ($sc) = $$ref_scores->{$transcript_id}->{$label};
 				$n_sc = ($sc - $min)/($max - $min);
