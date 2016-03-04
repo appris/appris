@@ -679,8 +679,7 @@ sub get_spade_annotations {
 			# get residue annotations
 			if ( defined $method->regions ) {
 				foreach my $region (@{$method->regions}) {
-					if ( defined $region->score and defined $region->type_domain and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->type_domain and defined $region->start and defined $region->end and defined $region->strand ) {
 						# common attributes
 						my ($common) = {
 								'seqname'	=> $feature->chromosome,
@@ -688,7 +687,7 @@ sub get_spade_annotations {
 								'type'		=> $region->type_domain,
 								'start'		=> $region->start,
 								'end'		=> $region->end,
-								'score'		=> $region->score,
+								'score'		=> $method_score,
 								'strand'	=> $region->strand,
 								'phase'		=> $method_phase
 						};
