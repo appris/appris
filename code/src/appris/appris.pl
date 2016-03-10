@@ -610,7 +610,7 @@ sub get_final_scores($$\$\$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $max != 0 and ($max - $min != 0) ) { $n_sc = ($sc - $min)/($max - $min) }
+					if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } #$n_sc = ($sc - $min)/($max - $min)
 					else { $n_sc = 0 }
 				}
 				if ( $n_sc < 0 ) { $n_sc = 0 }
