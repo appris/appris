@@ -120,7 +120,7 @@ $METHOD_WEIGHTED = {
 					  'max'    => 7,
 					  'weight' => 3	
 					}],
-	'thump'		=> 1,
+	'thump'		=> 0,
 	'crash'		=> 0,
 	'inertia'	=> 0,
 	'proteo'	=> 0,
