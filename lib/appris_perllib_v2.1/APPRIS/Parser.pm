@@ -3616,7 +3616,7 @@ sub _parse_indata_refseq($)
 								
 				# HARD-CORE attrs!!
 				#if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
-				if ( $accesion_id =~ /^NM\_/ ) {
+				if ( $accesion_id =~ /^NM\_/ or $accesion_id =~ /^XM\_/ ) {
 					$transcript->{'status'} = 'KNOWN';
 				}
 				else {
