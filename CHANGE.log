@@ -27,13 +27,15 @@
 * APPRIS-CODE, v2.9
 
 	- APPRIS
+		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1),
+			if all variants has fragments, we don't reject them (and keep going with pipeline).
+		- We keep discarding the NMDs
+		- In the step_length: (Eg, GNAO1),
+			the sequences are different but with the same length we choose the winner based on the appris-score.
 		- Now appris scripts contains the decision of all methods.
 		- New columns for the outputs.
-		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1):
-			- If all variants has fragments, we don't reject them (and keep going with pipeline).
-		- We keep discarding the NMDs
-		- In the step_length: (Eg, GNAO1)
-			-  When the sequences are different but with the same length we choose the winner based on the appris-score. TODO!!!
+		- Increase the weight of SPADE
+		- For the moment, discard THUMP method
 	
 	- Matador3D
 		- Fixed bug with the number of residues. 
