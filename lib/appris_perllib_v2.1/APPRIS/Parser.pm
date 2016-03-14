@@ -3524,7 +3524,7 @@ sub _parse_indata_refseq($)
 		);
 
 		# Only BestRefSeq features
-		next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) );
+		#next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) );
 		
 		# Always we have Gene Id
 		if(	exists $attribs->{'ID'} and defined $attribs->{'ID'} )
