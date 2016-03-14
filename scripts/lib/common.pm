@@ -166,7 +166,7 @@ sub get_main_report($$;$)
 	{
 		$input_line=~s/\n*$//;
 		my(@split_line)=split("\t", $input_line);
-		next if(scalar(@split_line)<=0);
+		next if(scalar(@split_line)<=7);
 
 		my($gene_id)=$split_line[0];
 		my($gene_name)=$split_line[1];
@@ -175,24 +175,25 @@ sub get_main_report($$;$)
 		my($trans_biotype)=$split_line[4];
 		my($no_codons)=$split_line[5];
 		my($ccds_id)=$split_line[6];
-		my($prot_len)=$split_line[7];
+		my($tsl)=$split_line[7];
+		my($prot_len)=$split_line[8];
 
-		my($firestar_annot)=$split_line[8];
-		my($matador3d_annot)=$split_line[9];
-		my($corsair_annot)=$split_line[10];
-		my($spade_annot)=$split_line[11];
-		my($thump_annot)=$split_line[12];
-		my($crash_annot)=$split_line[13];
+		my($firestar_annot)=$split_line[9];
+		my($matador3d_annot)=$split_line[10];
+		my($corsair_annot)=$split_line[11];
+		my($spade_annot)=$split_line[12];
+		my($thump_annot)=$split_line[13];
+		my($crash_annot)=$split_line[14];
 		my(@aux_crash_annot)=split(',', $crash_annot);
 		my($crash_sp_annot)=$aux_crash_annot[0];
 		my($crash_tp_annot)=$aux_crash_annot[1];
-		my($inertia_annot)=$split_line[14];
-		my($proteo_annot)=$split_line[15];
-		my($appris_annot)=$split_line[16];
-		my($appris_label)=$split_line[17];
+		my($inertia_annot)=$split_line[15];
+		my($proteo_annot)=$split_line[16];
+		my($appris_annot)=$split_line[17];
+		my($appris_label)=$split_line[18];
 
 		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
-			defined $trans_biotype and defined $no_codons and defined $ccds_id
+			defined $trans_biotype and defined $no_codons and defined $ccds_id and defined $prot_len
 		){
 			#if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
 			#	$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
@@ -206,6 +207,9 @@ sub get_main_report($$;$)
 			if($no_codons ne '-') {
 				$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'no_codons'}=$no_codons;
 			}
+			
+			# add the protein length
+			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'aa_length'}=$prot_len;
 
 			# get ccds taking into account the pep sequence. We take into account the unique ccds,
 			# then we add new ccds if the seq is unique.				
@@ -234,6 +238,7 @@ sub get_main_report($$;$)
 					}
 				}
 			}
+			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'tsl'}=$tsl;
 			
 			if(	defined $firestar_annot and defined $matador3d_annot and defined $corsair_annot and defined $spade_annot and 
 				defined $thump_annot and defined $crash_sp_annot and defined $crash_sp_annot and
@@ -307,7 +312,7 @@ sub get_label_report($$;$)
 	{
 		$input_line=~s/\n*$//;
 		my(@split_line)=split("\t", $input_line);
-		next if(scalar(@split_line)<=0);
+		next if(scalar(@split_line)<=7);
 
 		my($gene_id)=$split_line[0];
 		my($gene_name)=$split_line[1];
@@ -316,24 +321,25 @@ sub get_label_report($$;$)
 		my($trans_biotype)=$split_line[4];
 		my($no_codons)=$split_line[5];
 		my($ccds_id)=$split_line[6];
-		my($prot_len)=$split_line[7];
+		my($tsl)=$split_line[7];
+		my($prot_len)=$split_line[8];
 
-		my($firestar_annot)=$split_line[8];
-		my($matador3d_annot)=$split_line[9];
-		my($corsair_annot)=$split_line[10];
-		my($spade_annot)=$split_line[11];
-		my($thump_annot)=$split_line[12];
-		my($crash_annot)=$split_line[13];
+		my($firestar_annot)=$split_line[9];
+		my($matador3d_annot)=$split_line[10];
+		my($corsair_annot)=$split_line[11];
+		my($spade_annot)=$split_line[12];
+		my($thump_annot)=$split_line[13];
+		my($crash_annot)=$split_line[14];
 		my(@aux_crash_annot)=split(',', $crash_annot);
 		my($crash_sp_annot)=$aux_crash_annot[0];
 		my($crash_tp_annot)=$aux_crash_annot[1];
-		my($inertia_annot)=$split_line[14];		
-		my($proteo_annot)=$split_line[15];
-		my($appris_annot)=$split_line[16];
-		my($appris_relia)=$split_line[17];
+		my($inertia_annot)=$split_line[15];		
+		my($proteo_annot)=$split_line[16];
+		my($appris_annot)=$split_line[17];
+		my($appris_relia)=$split_line[18];
 
 		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
-			defined $trans_biotype and defined $no_codons and defined $ccds_id
+			defined $trans_biotype and defined $no_codons and defined $ccds_id and defined $prot_len
 		){
 			#if ( exists $data_cont->{$gene_id} and exists $data_cont->{$gene_id}->{'external_id'} and defined $data_cont->{$gene_id}->{'external_id'} ) {
 			#	$report->{$gene_id}->{'gene_name'}=$data_cont->{$gene_id}->{'external_id'};
@@ -346,6 +352,9 @@ sub get_label_report($$;$)
 			if($no_codons ne '-') {
 				$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'no_codons'}=$no_codons;
 			}
+			
+			# add the protein length
+			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'aa_length'}=$prot_len;			
 
 			# get ccds taking into account the pep sequence. We take into account the unique ccds,
 			# then we add new ccds if the seq is unique.				
@@ -374,6 +383,8 @@ sub get_label_report($$;$)
 					}
 				}
 			}
+			
+			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'tsl'}=$tsl;
 			
 			if(	defined $firestar_annot and defined $matador3d_annot and defined $corsair_annot and defined $spade_annot and 
 				defined $thump_annot and defined $crash_sp_annot and defined $crash_sp_annot and

@@ -596,6 +596,11 @@ INSERT INTO datasource SET
   description='Consensus CDS',
   url='http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';
 
+INSERT INTO datasource SET
+  datasource_id='10',
+  name='TSL',
+  description='Transcript Support Level',
+  url='http://www.ensembl.org/Help/Glossary?id=492';
 
 --
 -- Insert default value into type table

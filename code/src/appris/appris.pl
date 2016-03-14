@@ -696,6 +696,7 @@ sub get_final_annotations($$$$$)
 		# 1. acquire the dominant transcripts from appris score.
 		# They have to pass the cutoff to be added into "principal" list
 		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method}, $annots);
+		$logger->debug("GENE_2: \n".Dumper($gene)."\n");
 		$logger->debug("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
 		$logger->debug("PRINC_REP_1: \n".Dumper($isof_report)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
@@ -838,7 +839,17 @@ sub step_appris($$$)
 			# save TSL(1) annot
 			if ( exists $tsl_transcs->{$transc_id} and ($tsl_transcs->{$transc_id} eq 'tsl1') ) {
 				$transc_rep->{'tsl'} = 1;
+				my ($xref_identities);
+				push(@{$xref_identities},
+						APPRIS::XrefEntry->new
+						(
+							-id				=> '1',
+							-dbname			=> 'TSL'
+						)
+				);
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
 			}
+					
 			# APPRIS says could be a principal when:
 			# 1.	the Core of pipeline has not rejected the transcript (IT DOES NOT APPLY YET)
 			# APPRIS rejected a transcript when:
@@ -1123,6 +1134,7 @@ sub get_score_output($$$)
 		my ($biotype) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
+		my ($tsl) = '-';
 		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
@@ -1158,7 +1170,9 @@ sub get_score_output($$$)
 				foreach my $xref (@{$transcript->xref_identify}) {
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
-						last;					
+					}
+					elsif ( $xref->dbname eq 'TSL') {
+						$tsl = $xref->id;
 					}
 				}
 			}		
@@ -1182,6 +1196,7 @@ sub get_score_output($$$)
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
+						$tsl."\t".
 						$transl_len."\t".
 						$firestar_annot."\t".
 						$matador3d_annot."\t".
@@ -1199,10 +1214,7 @@ sub get_score_output($$$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\t".						
-						$biotype."\t".
-						$no_codons."\t".
-						$ccds_id."\n";						
+						$translation."\n";
 		}
 	}
 	
@@ -1222,6 +1234,7 @@ sub get_nscore_output($$)
 		my ($transcript_id) = $transcript->stable_id;
 		my ($biotype) = '-';
 		my ($ccds_id) = '-';
+		my ($tsl) = '-';
 		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
@@ -1251,7 +1264,9 @@ sub get_nscore_output($$)
 				foreach my $xref (@{$transcript->xref_identify}) {
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
-						last;					
+					}
+					elsif ( $xref->dbname eq 'TSL') {
+						$tsl = $xref->id;
 					}
 				}
 			}		
@@ -1274,6 +1289,7 @@ sub get_nscore_output($$)
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
+						$tsl."\t".
 						$transl_len."\t".
 						$firestar_annot."\t".
 						$matador3d_annot."\t".
@@ -1284,14 +1300,6 @@ sub get_nscore_output($$)
 						$inertia_annot."\t".
 						$proteo_annot."\t".
 						$appris_annot."\n";
-		}
-		else {
-			$content .= $stable_id."\t".
-						$gene_name."\t".
-						$transcript_id."\t".
-						$biotype."\t".
-						$no_codons."\t".
-						$ccds_id."\n";						
 		}
 	}
 	
@@ -1312,6 +1320,7 @@ sub get_label_output($$)
 		my ($biotype) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
+		my ($tsl) = '-';
 		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
@@ -1347,7 +1356,9 @@ sub get_label_output($$)
 				foreach my $xref (@{$transcript->xref_identify}) {
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
-						last;					
+					}
+					elsif ( $xref->dbname eq 'TSL') {
+						$tsl = $xref->id;
 					}
 				}
 			}		
@@ -1371,6 +1382,7 @@ sub get_label_output($$)
 						$biotype."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
+						$tsl."\t".
 						$transl_len."\t".				
 						$firestar_annot."\t".
 						$matador3d_annot."\t".
@@ -1388,10 +1400,7 @@ sub get_label_output($$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\t".						
-						$biotype."\t".
-						$no_codons."\t".
-						$ccds_id."\n";						
+						$translation."\n";					
 		}
 	}
 	
