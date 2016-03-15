@@ -1314,7 +1314,6 @@ sub get_label_output($$)
 	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 
-print STDERR "GENE: ".Dumper($gene)."\n";
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
