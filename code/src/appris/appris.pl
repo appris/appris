@@ -839,7 +839,7 @@ sub step_appris($$$)
 			# save TSL(1) annot
 			if ( exists $tsl_transcs->{$transc_id} and ($tsl_transcs->{$transc_id} eq 'tsl1') ) {
 				$transc_rep->{'tsl'} = 1;
-				my ($xref_identities);
+				my ($xref_identities) = $transcript->xref_identify();
 				push(@{$xref_identities},
 						APPRIS::XrefEntry->new
 						(
@@ -1314,6 +1314,7 @@ sub get_label_output($$)
 	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
 
+print STDERR "GENE: ".Dumper($gene)."\n";
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
