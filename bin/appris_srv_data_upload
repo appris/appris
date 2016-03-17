@@ -34,7 +34,7 @@ USAGE="
  APPRIS's binary package.\n
 \n
  Name:\n
-\t appris_srv_upload_datafiles\n
+\t appris_srv_data_upload\n
 \n
  Description:\n
 \t Upload the datafiles into server.\n
