@@ -150,7 +150,7 @@ sub get_main_report($$;$)
 	# create sequence report
 	my ($seq_report) = get_seq_report($seq_file);
 		
-	#gene_id	gene_name	transcript_id	status	biotype	no_codons ccds_id aa_len
+	#gene_id	gene_name	transcript_id	status	biotype	no_codons ccds_id tsl aa_len
 	#
 	#fun_res
 	#con_struct

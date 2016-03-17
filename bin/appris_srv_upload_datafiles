@@ -43,12 +43,6 @@ USAGE="
 \t -c [-conf] {file}\n
 \t\t Bash file with config variables\n
 \n
-\t -r [-rel] {string}\n
-\t\t Release version. Eg, 2016_03.v15\n
-\n
-\t -v [-vers] {list}\n
-\t\t List of versions to upload in server. Eg, */ens84.v15,homo_sapiens/gen19.v15,homo_sapiens/ens81.v15\n
-\n
 \t -h [-help]\n
 \n
 \n
@@ -63,18 +57,6 @@ do
 	case "$1" in
 		-c | -conf )
 			CONFIG=$2
-			shift
-			;;
-		-r | -rel )
-			RELEASE=$2
-			shift
-			;;
-		-r | -rel )
-			RELEASE=$2
-			shift
-			;;
-		-v | -vers )
-			VLISTS=$2
 			shift
 			;;
 		-h | -help )
@@ -96,19 +78,27 @@ if [ "${CONFIG}" == "" ]; then
 	exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Local methods
+
 run() {
 	echo $1
-	#$1
+	eval $1
 }
+
+
 # -----------------------------------------------------------------------------
 # Read variables from config file
 source "${CONFIG}"
 
+## 
+echo "# locale in annotation dir:"
+run "cd ${APPRIS_ANNOT_DIR}"
+
 ##
 echo "# create link from assembly version to data version:"
-run "cd ${APPRIS_ANNOT_DIR}"
 for ALINK in "${LINKS_VDATA_TO_ASSEMBLIES[@]}" ; do
-	run "${ALINK}"
+	run "cd ${APPRIS_ANNOT_DIR} && ${ALINK}"
 done
 
 ##
@@ -121,60 +111,8 @@ done
 for FILE in "${VDATAFILES[@]}" ; do
 	TARFILES_DAT+="${FILE} "
 done
-
 if [[ ("${TARFILES_ASS}" == "") || ("${TARFILES_DAT}" == "") ]]; then
 	echo Empty list of versions
 	exit 1
 fi
-run "tar -cf - ${TARFILES_ASS} ${TARFILES_DAT} | ssh ${SRV_NAME} 'cd ${SRV_DATADIR}/; tar -xf -'"
-
-
-
-
-
-
-exit 1
-
-
-
-if [ "${RELEASE}" == "" ]; then
-	echo You must specify the release
-	echo -e $USAGE
-	exit 1
-fi
-
-if [ "${VLISTS}" == "" ]; then
-	echo You must specify the list of versions
-	echo -e $USAGE
-	exit 1
-fi
-# Create data dir
-
-SRV_DATADIR="${SRV_RELEASEDIR}/${RELEASE}/datafiles"
-
-# Create list of datafiles
-TAR_VLISTS=""
-IFS=',' read -ra VERSIONS <<< "$VLISTS"
-for version in "${VERSIONS[@]}" ; do
-	TAR_VLISTS+="${version} "
-done
-
-if [ "${TAR_VLISTS}" == "" ]; then
-	echo Empty list of versions
-	exit 1
-fi
-
-
-# Link to current release
-cd ${SRV_DATADIR}
-ln -s gen19.v15 homo_sapiens/GRCh37
-ln -s ens84.v15 homo_sapiens/GRCh38
-ln -s ens84.v15 mus_musculus/GRCm38
-ln -s ens84.v15 rattus_norvegicus/Rnor_6.0
-ln -s ens84.v15 sus_scrofa/Sscrofa10.2
-ln -s ens84.v15 pan_troglodytes/CHIMP2.1.4
-ln -s ens84.v15 drosophila_melanogaster/BDGP6
-ln -s ens84.v15 caenorhabditis_elegans/WBcel235
-	
-
-
+run "cd ${APPRIS_ANNOT_DIR} && tar -cf - ${TARFILES_ASS} ${TARFILES_DAT} | ssh ${SRV_NAME} 'mkdir -p ${SRV_DATADIR}; cd ${SRV_DATADIR}/; tar -xf -'"
