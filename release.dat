@@ -1,6 +1,35 @@
-#2016_03.v16
-homo_sapiens				ens84.v15	GRCh38		appris_homo_sapiens_e84v15
-#2016_03.v15
+==APPRIS_RELEASE:RELNOTES:2016_03.v15==
+#############################
+# A-RELEASE: 	2016_03.v15	#
+# C-RELEASE: 	4.4.2.9		#
+#############################
+
+* HIGHLIGHTS:
+	- New name for each release... Forget the date
+	- New algorithm for SPADE: SPADE2
+	
+* APPRIS-CODE, v2.9
+
+	- APPRIS
+		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1),
+			if all variants has fragments, we don't reject them (and keep going with pipeline).
+		- We keep discarding the NMDs
+		- In the step_length: (Eg, GNAO1),
+			the sequences are different but with the same length we choose the winner based on the appris-score.
+		- Now appris scripts contains the decision of all methods.
+		- New columns for the outputs including the TSL annotation
+		- Increase the weight of SPADE
+		- For the moment, discard THUMP method
+	
+	- Matador3D
+		- Fixed bug with the number of residues. 
+
+	- SPADE2
+		- Decision with the bitscore.
+		- First of all, discard overlapping domains coming from pfamscan
+		- Herence only domains with bigger bitscore. Eg, ENSG00000164692
+		
+==APPRIS_RELEASE:DATAFILES:2016_03.v15==
 homo_sapiens				ens84.v15	GRCh38		appris_homo_sapiens_e84v15
 homo_sapiens				gen19.v15	GRCh37		appris_homo_sapiens_g19v15
 homo_sapiens				ens81.v15	-		appris_homo_sapiens_e81v15

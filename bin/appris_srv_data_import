@@ -19,7 +19,7 @@ fi
 # -----------------------------------------------------------------------------
 # Global parameters
 SRV_NAME="appris@appris"
-SRV_RELEASEDIR="/local/appris/pub/releases"
+SRV_PUB_RELEASE_DIR="/local/appris/pub/releases"
 SRV_DB_HOST="localhost"
 SRV_DB_USER="appris"
 SRV_DB_PWD="appris.appris"
@@ -38,10 +38,10 @@ USAGE="
  APPRIS's binary package.\n
 \n
  Name:\n
-\t appris_srv_data_upload\n
+\t appris_srv_data_import\n
 \n
  Description:\n
-\t Upload the datafiles into server from a given release\n
+\t Make the migration of datafiles and databases to server\n
 \n
  Required arguments:\n
 \t -r [-rel] {string}\n
@@ -103,20 +103,19 @@ run() {
 	eval $1
 }
 load_release_data() {
-	file="$1"
-	rel="$2"
+	dat="$1"
+	file="$2"
+	rel="$3"
 	flag=0
 	out=""
 	while IFS='' read -r line || [[ -n "$line" ]]; do
-		if [[ "$line" =~ ^#.* ]]; then
-			if [[ "$line" =~ ^#${rel} ]]; then
-    			flag=1
-    		else
-    			flag=0
-    		fi    		
+		if [[ "$line" =~ ^==APPRIS_RELEASE:${dat}:${rel} ]]; then
+			flag=1
+		elif [[ "$line" =~ ^==APPRIS_RELEASE:.* ]]; then
+   			flag=0
     	fi
     	if [[ "$flag" == 1 ]]; then
-    		if [[ ! "$line" =~ ^#.* ]]; then
+    		if [[ ! "$line" =~ ^==APPRIS_RELEASE:.* ]]; then
     			out+="$line\n"
     		fi
     	fi
@@ -126,12 +125,24 @@ load_release_data() {
 
 # -----------------------------------------------------------------------------
 
+##
+SRV_RELEASE_DIR="${SRV_PUB_RELEASE_DIR}/${RELEASE}"
+SRV_REL_DATADIR="${SRV_RELEASE_DIR}/datafiles"
 
-# 
-echo "extract release data:"
-SRV_RELEASE_DATA=$(load_release_data "${RELEASE_DATAFILE}" "${RELEASE}")
+## 
+echo "# extract release data:"
+SRV_RELEASE_DATA=$(load_release_data "DATAFILES" "${RELEASE_DATAFILE}" "${RELEASE}")
+echo "${SRV_RELEASE_DATA}"
+echo ""
 
-#
+##
+echo "# extract release notes:"
+SRV_RELEASE_RELNOTES=$(load_release_data "RELNOTES" "${RELEASE_DATAFILE}" "${RELEASE}")
+echo "${SRV_RELEASE_RELNOTES}"
+echo ""
+
+
+##
 echo "# create link from assembly version to data version:"
 TARFILES=""
 while read -r SRV_DATA; do
@@ -153,12 +164,11 @@ echo ""
 
 ##
 echo "# upload datafiles to server:"
-SRV_DATADIR="${SRV_RELEASEDIR}/${RELEASE}/datafiles"
 if [[ "${TARFILES}" == "" ]]; then
 	echo Empty list of versions
 	exit 1
 fi
-run "cd ${APPRIS_DATA_DIR} && tar -cf - ${TARFILES} | ssh ${SRV_NAME} 'mkdir -p ${SRV_DATADIR}; cd ${SRV_DATADIR}/; tar -xf -'"
+run "cd ${APPRIS_DATA_DIR} && tar -cf - ${TARFILES} | ssh ${SRV_NAME} 'mkdir -p ${SRV_REL_DATADIR}; cd ${SRV_REL_DATADIR}/; tar -xf -'"
 echo ""
 
 ##
@@ -171,7 +181,8 @@ while read -r SRV_DATA; do
 	DB=${SDATA[3]}
 	RELDIR="${SPECIES}/${REL}"
 	ASSDIR="${SPECIES}/${ASS}"
-	RELDATAFILE="${SRV_DATADIR}/${RELDIR}/appris_db.dump.gz"
+	RELDATAFILE="${SRV_REL_DATADIR}/${RELDIR}/appris_db.dump.gz"
+	CMD_IMPORT_DBS+="appris_db_create -d ${DB} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} && "
 	CMD_IMPORT_DBS+="appris_db_import -d ${DB} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} -i ${RELDATAFILE} && "
 done <<< "$SRV_RELEASE_DATA"
 if [[ "${CMD_IMPORT_DBS}" == "" ]]; then
@@ -181,4 +192,15 @@ fi
 CMD_IMPORT_DBS=$(echo "${CMD_IMPORT_DBS}" | sed s'/&& $//g')
 run "ssh ${SRV_NAME} '${CMD_IMPORT_DBS}'"
 echo ""
+
+##
+echo "# copy release datafile into server:"
+run "scp ${RELEASE_DATAFILE} ${SRV_NAME}:${SRV_PUB_RELEASE_DIR}"
+echo ""
+
+##
+#echo "# create release note from given release:"
+#run "echo '${SRV_RELEASE_RELNOTES}' | ssh ${SRV_NAME} 'cat > ${SRV_RELEASE_DIR}/relnotes.txt' "
+#run "echo -e \"${SRV_RELEASE_RELNOTES}\" > /tmp/kk"
+#echo ""
 
