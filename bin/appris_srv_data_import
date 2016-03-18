@@ -182,7 +182,7 @@ while read -r SRV_DATA; do
 	RELDIR="${SPECIES}/${REL}"
 	ASSDIR="${SPECIES}/${ASS}"
 	RELDATAFILE="${SRV_REL_DATADIR}/${RELDIR}/appris_db.dump.gz"
-	CMD_IMPORT_DBS+="appris_db_create -d ${DB} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} && "
+	CMD_IMPORT_DBS+="appris_db_create -d ${DB} -h ${SRV_DB_HOST} -u root && "
 	CMD_IMPORT_DBS+="appris_db_import -d ${DB} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} -i ${RELDATAFILE} && "
 done <<< "$SRV_RELEASE_DATA"
 if [[ "${CMD_IMPORT_DBS}" == "" ]]; then
