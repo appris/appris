@@ -89,7 +89,7 @@ if [ "${RELEASE}" == "" ]; then
 	exit 1
 fi
 
-if [ "${RELEASE_DATAFILE}" == "" ]; then
+if [[ "${RELEASE_DATAFILE}" == "" || ! (-e "${RELEASE_DATAFILE}") ]]; then
 	echo You must specify the data file of release
 	echo -e $USAGE
 	exit 1
@@ -152,7 +152,7 @@ done <<< "$SRV_RELEASE_DATA"
 echo ""
 
 ##
-echo "# upload datafiles:"
+echo "# upload datafiles to server:"
 SRV_DATADIR="${SRV_RELEASEDIR}/${RELEASE}/datafiles"
 if [[ "${TARFILES}" == "" ]]; then
 	echo Empty list of versions
@@ -162,7 +162,7 @@ run "cd ${APPRIS_DATA_DIR} && tar -cf - ${TARFILES} | ssh ${SRV_NAME} 'mkdir -p 
 echo ""
 
 ##
-echo "# import database files into server:"
+echo "# import databases into server:"
 while read -r SRV_DATA; do
 	SDATA=($SRV_DATA)
 	SPECIES=${SDATA[0]}
@@ -172,7 +172,7 @@ while read -r SRV_DATA; do
 	RELDIR="${SPECIES}/${REL}"
 	ASSDIR="${SPECIES}/${ASS}"
 	RELDATAFILE="${SRV_DATADIR}/${RELDIR}/appris_db.dump.gz"
-	CMD_IMPORT_DBS+="appris_db_import -d ${SRV_DB_NAME} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} -i ${RELDATAFILE} && "
+	CMD_IMPORT_DBS+="appris_db_import -d ${DB} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} -i ${RELDATAFILE} && "
 done <<< "$SRV_RELEASE_DATA"
 if [[ "${CMD_IMPORT_DBS}" == "" ]]; then
 	echo Empty list of databases
@@ -182,49 +182,3 @@ CMD_IMPORT_DBS=$(echo "${CMD_IMPORT_DBS}" | sed s'/&& $//g')
 run "ssh ${SRV_NAME} '${CMD_IMPORT_DBS}'"
 echo ""
 
-
-
-
-
-
-
-
-
-
-exit 1
-
-for SRV_DATA in "${SRV_RELEASE_DATA[@]}" ; do
-	SDATA=($SRV_DATA)
-	for S in "${SDATA[@]}" ; do
-		echo "S: ${S}"
-	done
-	echo " KK"	
-done
-
-exit 1
-
-## 
-echo "# locale in annotation dir:"
-run "cd ${APPRIS_ANNOT_DIR}"
-
-##
-echo "# create link from assembly version to data version:"
-for ALINK in "${LINKS_VDATA_TO_ASSEMBLIES[@]}" ; do
-	run "cd ${APPRIS_ANNOT_DIR} && ${ALINK}"
-done
-
-##
-echo "# upload datafiles:"
-TARFILES_ASS=""
-TARFILES_DAT=""
-for FILE in "${VASSEMBLIES[@]}" ; do
-	TARFILES_ASS+="${FILE} "
-done
-for FILE in "${VDATAFILES[@]}" ; do
-	TARFILES_DAT+="${FILE} "
-done
-if [[ ("${TARFILES_ASS}" == "") || ("${TARFILES_DAT}" == "") ]]; then
-	echo Empty list of versions
-	exit 1
-fi
-run "cd ${APPRIS_ANNOT_DIR} && tar -cf - ${TARFILES_ASS} ${TARFILES_DAT} | ssh ${SRV_NAME} 'mkdir -p ${SRV_DATADIR}; cd ${SRV_DATADIR}/; tar -xf -'"
