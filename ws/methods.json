@@ -23,7 +23,7 @@
         "order":        3,
         "id":          "functional_domain",
         "name":         "spade",
-        "label":        "Whole Domains",
+        "label":        "Domains score",
         "desc":         "Whole Pfam functional domains",
         "description":  "SPADE identifies the functional domains present in a transcript and detects those domains that are damaged (not whole)",
         "class":        "s",
