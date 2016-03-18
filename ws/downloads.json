@@ -1,5 +1,5 @@
 {
-    "version": "2015_10.v11",
+    "version": "2016_03.v15",
     "headers": [
         {
             "id":       "species",
@@ -63,59 +63,17 @@
             "species":                   "Human",
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh38",
-            "dataset":                  "gencode23/ensembl82",
-            "release":                  "ens82.v10.21Aug2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.firestar.bed.gz",
-                "format":   "BED"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.matador3d.bed.gz",
-                "format":   "BED"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.corsair.bed.gz",
-                "format":   "BED"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.spade.bed.gz",
-                "format":   "BED"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.thump.bed.gz",
-                "format":   "BED"
-            }],
-            "peptides": [{
-                "file":     "appris_method.proteo.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.proteo.bed.gz",
-                "format":   "BED"
-            }]
+            "dataset":                  "gencode24/ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"},{"file":"appris_method.firestar.bed.gz","format":"BED"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"},{"file":"appris_method.matador3d.bed.gz","format":"BED"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"},{"file":"appris_method.corsair.bed.gz","format":"BED"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"},{"file":"appris_method.spade.bed.gz","format":"BED"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"},{"file":"appris_method.thump.bed.gz","format":"BED"}],
+            "peptides":[{"file":"appris_method.proteo.gtf.gz","format":"GTF"},{"file":"appris_method.proteo.bed.gz","format":"BED"}]
         },
         {
             "default":                  "1",
@@ -123,132 +81,48 @@
             "scientific":               "homo_sapiens",
             "assembly":                 "GRCh37",
             "dataset":                  "gencode19/ensembl74",
-            "release":                  "gen19.v10.21Aug2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.firestar.bed.gz",
-                "format":   "BED"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.matador3d.bed.gz",
-                "format":   "BED"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.corsair.bed.gz",
-                "format":   "BED"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.spade.bed.gz",
-                "format":   "BED"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.thump.bed.gz",
-                "format":   "BED"
-            }],
-            "peptides": [{
-                "file":     "appris_method.proteo.gtf.gz",
-                "format":   "GTF"
-            },{
-                "file":     "appris_method.proteo.bed.gz",
-                "format":   "BED"
-            }]
+            "release":                  "gen19.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"},{"file":"appris_method.firestar.bed.gz","format":"BED"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"},{"file":"appris_method.matador3d.bed.gz","format":"BED"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"},{"file":"appris_method.corsair.bed.gz","format":"BED"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"},{"file":"appris_method.spade.bed.gz","format":"BED"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"},{"file":"appris_method.thump.bed.gz","format":"BED"}],
+            "peptides":[{"file":"appris_method.proteo.gtf.gz","format":"GTF"},{"file":"appris_method.proteo.bed.gz","format":"BED"}]
         },
         {
             "default":                  "1",
             "species":                   "Mouse",
             "scientific":               "mus_musculus",
             "assembly":                 "GRCm38",
-            "dataset":                  "gencodeM7/ensembl82",
-            "release":                  "ens82.v10.21Aug2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "gencodeM9/ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "Rat",
             "scientific":               "rattus_norvegicus",
             "assembly":                 "Rnor_6.0",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
@@ -257,72 +131,30 @@
             "assembly":                 "Rnor_5.0",
             "dataset":                  "ensembl77",
             "release":                  "ens77.v7.9Feb2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_data.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_data.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_data.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_data.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_data.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_data.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_data.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_data.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_data.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_data.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "Zebrafish",
             "scientific":               "danio_rerio",
             "assembly":                 "GRCz10",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
@@ -331,183 +163,78 @@
             "assembly":                 "Zv9",
             "dataset":                  "ensembl77",
             "release":                  "ens77.v7.9Feb2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_data.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_data.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_data.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_data.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_data.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_data.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_data.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_data.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_data.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_data.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "Pig",
             "scientific":               "sus_scrofa",
             "assembly":                 "Sscrofa10.2",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "Chimpanzee",
             "scientific":               "pan_troglodytes",
             "assembly":                 "CHIMP2.1.4",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "Fruitfly",
             "scientific":               "drosophila_melanogaster",
             "assembly":                 "BDGP6",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         },
         {
             "default":                  "1",
             "species":                   "C.elegans",
             "scientific":               "caenorhabditis_elegans",
             "assembly":                 "WBcel235",
-            "dataset":                  "ensembl82",
-            "release":                  "ens82.v11.01Sep2015",
-            "path":                     "ensembl_datafiles/species",
-            "principal_isoforms": [{
-                "file":     "appris_data.principal.txt",
-                "format":   "TXT"
-            }],
-            "appris_scores": [{
-                "file":     "appris_data.appris.txt",
-                "format":   "TXT"
-            }],
-            "functional_residues": [{
-                "file":     "appris_method.firestar.gtf.gz",
-                "format":   "GTF"
-            }],
-            "tertiary_structure": [{
-                "file":     "appris_method.matador3d.gtf.gz",
-                "format":   "GTF"
-            }],
-            "vertebrates_conservation": [{
-                "file":     "appris_method.corsair.gtf.gz",
-                "format":   "GTF"
-            }],
-            "whole_domains": [{
-                "file":     "appris_method.spade.gtf.gz",
-                "format":   "GTF"
-            }],
-            "transmembrane_helices": [{
-                "file":     "appris_method.thump.gtf.gz",
-                "format":   "GTF"
-            }]
+            "dataset":                  "ensembl84",
+            "release":                  "ens84.v15",
+            "path":                     "datafiles",
+            "principal_isoforms":[{"file":"appris_data.principal.txt","format":"TXT"}],
+            "appris_scores":[{"file":"appris_data.appris.txt","format":"TXT"}],
+            "functional_residues":[{"file":"appris_method.firestar.gtf.gz","format":"GTF"}],
+            "tertiary_structure":[{"file":"appris_method.matador3d.gtf.gz","format":"GTF"}],
+            "vertebrates_conservation":[{"file":"appris_method.corsair.gtf.gz","format":"GTF"}],
+            "whole_domains":[{"file":"appris_method.spade.gtf.gz","format":"GTF"}],
+            "transmembrane_helices":[{"file":"appris_method.thump.gtf.gz","format":"GTF"}]
         }
     ]
 }
