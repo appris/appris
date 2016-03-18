@@ -1,0 +1,230 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+# -----------------------------------------------------------------------------
+# Global parameters
+SRV_NAME="appris@appris"
+SRV_RELEASEDIR="/local/appris/pub/releases"
+SRV_DB_HOST="localhost"
+SRV_DB_USER="appris"
+SRV_DB_PWD="appris.appris"
+
+APPRIS_DATA_DIR="/home/jmrodriguez/projects/APPRIS/data"
+
+# Input parameters
+RELEASE=""
+RELEASE_DATAFILE=""
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_srv_data_upload\n
+\n
+ Description:\n
+\t Upload the datafiles into server from a given release\n
+\n
+ Required arguments:\n
+\t -r [-rel] {string}\n
+\t\t Release version. Eg, 2016_03.v15\n
+\n
+\t -d [-dat] {file}\n
+\t\t Data file of given release. Eg, release.dat\n
+\n
+\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-r | -rel )
+			RELEASE=$2
+			shift
+			;;
+		-d | -dat )
+			RELEASE_DATAFILE=$2
+			shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${RELEASE}" == "" ]; then
+	echo You must specify the release
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${RELEASE_DATAFILE}" == "" ]; then
+	echo You must specify the data file of release
+	echo -e $USAGE
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Local methods
+
+run() {
+	echo $1
+	eval $1
+}
+load_release_data() {
+	file="$1"
+	rel="$2"
+	flag=0
+	out=""
+	while IFS='' read -r line || [[ -n "$line" ]]; do
+		if [[ "$line" =~ ^#.* ]]; then
+			if [[ "$line" =~ ^#${rel} ]]; then
+    			flag=1
+    		else
+    			flag=0
+    		fi    		
+    	fi
+    	if [[ "$flag" == 1 ]]; then
+    		if [[ ! "$line" =~ ^#.* ]]; then
+    			out+="$line\n"
+    		fi
+    	fi
+	done < "$file"
+	echo -e $out
+}
+
+# -----------------------------------------------------------------------------
+
+
+# 
+echo "extract release data:"
+SRV_RELEASE_DATA=$(load_release_data "${RELEASE_DATAFILE}" "${RELEASE}")
+
+#
+echo "# create link from assembly version to data version:"
+TARFILES=""
+while read -r SRV_DATA; do
+	SDATA=($SRV_DATA)
+	SPECIES=${SDATA[0]}
+	REL=${SDATA[1]}
+	ASS=${SDATA[2]}
+	DB=${SDATA[3]}
+	RELDIR="${SPECIES}/${REL}"
+	ASSDIR="${SPECIES}/${ASS}"
+
+	if [[ "${ASS}" != "-" ]]; then
+		run "cd ${APPRIS_DATA_DIR} && rm ${ASSDIR} ; ln -s ${REL} ${ASSDIR}"
+		TARFILES+="${ASSDIR} "
+	fi
+	TARFILES+="${RELDIR} "
+done <<< "$SRV_RELEASE_DATA"
+echo ""
+
+##
+echo "# upload datafiles:"
+SRV_DATADIR="${SRV_RELEASEDIR}/${RELEASE}/datafiles"
+if [[ "${TARFILES}" == "" ]]; then
+	echo Empty list of versions
+	exit 1
+fi
+run "cd ${APPRIS_DATA_DIR} && tar -cf - ${TARFILES} | ssh ${SRV_NAME} 'mkdir -p ${SRV_DATADIR}; cd ${SRV_DATADIR}/; tar -xf -'"
+echo ""
+
+##
+echo "# import database files into server:"
+while read -r SRV_DATA; do
+	SDATA=($SRV_DATA)
+	SPECIES=${SDATA[0]}
+	REL=${SDATA[1]}
+	ASS=${SDATA[2]}
+	DB=${SDATA[3]}
+	RELDIR="${SPECIES}/${REL}"
+	ASSDIR="${SPECIES}/${ASS}"
+	RELDATAFILE="${SRV_DATADIR}/${RELDIR}/appris_db.dump.gz"
+	CMD_IMPORT_DBS+="appris_db_import -d ${SRV_DB_NAME} -h ${SRV_DB_HOST} -u ${SRV_DB_USER} -p ${SRV_DB_PWD} -i ${RELDATAFILE} && "
+done <<< "$SRV_RELEASE_DATA"
+if [[ "${CMD_IMPORT_DBS}" == "" ]]; then
+	echo Empty list of databases
+	exit 1
+fi
+CMD_IMPORT_DBS=$(echo "${CMD_IMPORT_DBS}" | sed s'/&& $//g')
+run "ssh ${SRV_NAME} '${CMD_IMPORT_DBS}'"
+echo ""
+
+
+
+
+
+
+
+
+
+
+exit 1
+
+for SRV_DATA in "${SRV_RELEASE_DATA[@]}" ; do
+	SDATA=($SRV_DATA)
+	for S in "${SDATA[@]}" ; do
+		echo "S: ${S}"
+	done
+	echo " KK"	
+done
+
+exit 1
+
+## 
+echo "# locale in annotation dir:"
+run "cd ${APPRIS_ANNOT_DIR}"
+
+##
+echo "# create link from assembly version to data version:"
+for ALINK in "${LINKS_VDATA_TO_ASSEMBLIES[@]}" ; do
+	run "cd ${APPRIS_ANNOT_DIR} && ${ALINK}"
+done
+
+##
+echo "# upload datafiles:"
+TARFILES_ASS=""
+TARFILES_DAT=""
+for FILE in "${VASSEMBLIES[@]}" ; do
+	TARFILES_ASS+="${FILE} "
+done
+for FILE in "${VDATAFILES[@]}" ; do
+	TARFILES_DAT+="${FILE} "
+done
+if [[ ("${TARFILES_ASS}" == "") || ("${TARFILES_DAT}" == "") ]]; then
+	echo Empty list of versions
+	exit 1
+fi
+run "cd ${APPRIS_ANNOT_DIR} && tar -cf - ${TARFILES_ASS} ${TARFILES_DAT} | ssh ${SRV_NAME} 'mkdir -p ${SRV_DATADIR}; cd ${SRV_DATADIR}/; tar -xf -'"

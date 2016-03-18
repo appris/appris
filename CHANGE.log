@@ -33,7 +33,7 @@
 		- In the step_length: (Eg, GNAO1),
 			the sequences are different but with the same length we choose the winner based on the appris-score.
 		- Now appris scripts contains the decision of all methods.
-		- New columns for the outputs.
+		- New columns for the outputs including the TSL annotation
 		- Increase the weight of SPADE
 		- For the moment, discard THUMP method
 	
@@ -57,15 +57,15 @@
 		- Zebra-fish
 			> Ensembl84 (GRCz10), 			ens84.v15
 		- Rat
-			> Ensembl83 (Rn6),    			ens83.v15
+			> Ensembl84 (Rn6),    			ens84.v15
 		- Pig
 			> Ensembl84 (Sscrofa10.2),		ens84.v15
 		- Chimp
-			> Ensembl82 (CHIMP2.1.4), 		ens84.v15
+			> Ensembl84 (CHIMP2.1.4), 		ens84.v15
 		- Fruitfly
-			> Ensembl82 (BDGP6), 			ens84.v15		
+			> Ensembl84 (BDGP6), 			ens84.v15		
 		- C-elegans
-			> Ensembl82 (WBcel235), 		ens84.v15
+			> Ensembl84 (WBcel235), 		ens84.v15
 			
 	
 #############################
