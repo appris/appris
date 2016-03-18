@@ -123,7 +123,7 @@
         "assemblies":   [{
             "name":     "UMD3.1|bosTau8",
             "id":       "bosTau8",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        7
@@ -135,7 +135,7 @@
         "assemblies":   [{
             "name":     "CanFam3.1|canFam3",
             "id":       "canFam3",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        8
@@ -147,7 +147,7 @@
         "assemblies":   [{
             "name":     "Felis_catus_6.2|felCat5",
             "id":       "felCat5",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        9
@@ -159,7 +159,7 @@
         "assemblies":   [{
             "name":     "BROADO5|monDom5",
             "id":       "monDom5",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        10
@@ -171,7 +171,7 @@
         "assemblies":   [{
             "name":     "Galgal4|galGal4",
             "id":       "galGal4",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        11
@@ -183,7 +183,7 @@
         "assemblies":   [{
             "name":     "taeGut3.2.4|taeGut1",
             "id":       "taeGut1",
-            "dataset":  79
+            "dataset":  84
         }],
         "popular":      0,
         "order":        12
@@ -195,7 +195,7 @@
         "assemblies":   [{
             "name":     "AnoCar2.0|anoCar2",
             "id":       "anoCar2",
-            "dataset":  79
+            "dataset":  84
         }],
         "popular":      0,
         "order":        13
@@ -207,7 +207,7 @@
         "assemblies":   [{
             "name":     "JGI4.2|xenTro3",
             "id":       "xenTro3",
-            "dataset":  79
+            "dataset":  84
         }],
         "popular":      0,
         "order":        14
@@ -219,7 +219,7 @@
         "assemblies":   [{
             "name":     "FUGU4|fr3",
             "id":       "fr3",
-            "dataset":  77
+            "dataset":  84
         }],
         "popular":      0,
         "order":        15
