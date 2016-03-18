@@ -350,12 +350,12 @@ sub get_trans_annotations {
 							}
 						}
 					} else {
-						#get_spade_annotations(	$typebed,
-						#						$transcript_id,
-		           		#						$feature,
-		           		#						\$track->[3],
-		           		#						$source
-						#);
+						get_spade_annotations(	$typebed,
+												$transcript_id,
+		           								$feature,
+		           								\$track->[3],
+		           								$source
+						);
 						get_spade_annotations(	$typebed,
 												$transcript_id,
 		           								$feature,
