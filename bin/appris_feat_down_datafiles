@@ -155,28 +155,27 @@ download_species_datafile() {
 	local SPECIES_ID=$1
 	local SPECIES_FILENAME=$2
 	local ENSEMBL=$3
-	local OUTPUT_DIR=$4
-	local RENAME=$5
+	local RENAME=$4
+		
+	echo prepare workspace...
+	SPECIES_OUTDIR="${PWD}/${OUTPUT_DIR}/${SPECIES_ID}/e${ENSEMBL}"
+	prepare_workspace "${SPECIES_OUTDIR}"
 	
-	prepare_workspace "${OUTPUT_DIR}"
+	echo download files...	
+	wget ${FTP_ENSEMBL_PUB}/release-${ENSEMBL}/gtf/${SPECIES_ID}/${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz -P "${SPECIES_OUTDIR}"
 	
-	echo download files...
-	cd ${OUTPUT_DIR}
+	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna/${SPECIES_FILENAME}.cdna.all.fa.gz -P "${SPECIES_OUTDIR}"
 	
-	wget ${FTP_ENSEMBL_PUB}/release-${ENSEMBL}/gtf/${SPECIES_ID}/${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz
-	
-	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna/${SPECIES_FILENAME}.cdna.all.fa.gz
-	
-	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep/${SPECIES_FILENAME}.pep.all.fa.gz
+	wget ftp://ftp.ensembl.org/pub/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep/${SPECIES_FILENAME}.pep.all.fa.gz -P "${SPECIES_OUTDIR}"
 	
 	echo uncompress files...
-	gzip -d ${SPECIES_FILENAME}.${ENSEMBL}.gtf.gz ${SPECIES_FILENAME}.pep.all.fa.gz ${SPECIES_FILENAME}.cdna.all.fa.gz
+	gzip -d ${SPECIES_OUTDIR}/*.gz
 	
 	if [[  "${RENAME}" == "TRUE" ]]; then
 		echo rename files...
-		mv ${SPECIES_FILENAME}.${ENSEMBL}.gtf ${SPECIES_ID}.annot.gtf
-		mv ${SPECIES_FILENAME}.cdna.all.fa ${SPECIES_ID}.transc.fa
-		mv ${SPECIES_FILENAME}.pep.all.fa ${SPECIES_ID}.transl.fa
+		mv ${SPECIES_OUTDIR}/${SPECIES_FILENAME}.${ENSEMBL}.gtf ${SPECIES_OUTDIR}/${SPECIES_ID}.annot.gtf
+		mv ${SPECIES_OUTDIR}/${SPECIES_FILENAME}.cdna.all.fa 	${SPECIES_OUTDIR}/${SPECIES_ID}.transc.fa
+		mv ${SPECIES_OUTDIR}/${SPECIES_FILENAME}.pep.all.fa 	${SPECIES_OUTDIR}/${SPECIES_ID}.transl.fa
 	fi
 }
 
@@ -203,9 +202,8 @@ else
 				SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
 				SPECIES_FILENAME="${SPECIES}"
 				ENSEMBL=$(echo ${line} | cut -d " " -f 2)
-				SPECIES_OUTDIR="${OUTPUT_DIR}/${SPECIES_ID}/e${ENSEMBL}"
-				echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${SPECIES_OUTDIR} ${RENAME}
-				download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${SPECIES_OUTDIR} ${RENAME}
+				echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
+				download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
 			done < "${INFILE}"
 		fi
 	fi
