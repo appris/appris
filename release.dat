@@ -35,7 +35,10 @@ homo_sapiens				gen19.v15	GRCh37		appris_homo_sapiens_g19v15
 homo_sapiens				ens81.v15	-		appris_homo_sapiens_e81v15
 homo_sapiens				ens79.v15	-		appris_homo_sapiens_e79v15
 mus_musculus				ens84.v15 	GRCm38		appris_mus_musculus_e84v15
+danio_rerio					ens84.v15 	GRCz10		appris_danio_rerio_e84v15
+danio_rerio					ens77.v7.9Feb2015 	Zv9			appris_danio_rerio_e77
 rattus_norvegicus			ens84.v15	Rnor_6.0	appris_rattus_norvegicus_e84v15
+rattus_norvegicus			ens77.v7.9Feb2015	Rnor_5.0	appris_rattus_norvegicus_e77
 sus_scrofa				ens84.v15	Sscrofa10.2	appris_sus_scrofa_e84v15
 pan_troglodytes				ens84.v15	CHIMP2.1.4	appris_pan_troglodytes_e84v15
 drosophila_melanogaster			ens84.v15	BDGP6		appris_drosophila_melanogaster_e84v15
