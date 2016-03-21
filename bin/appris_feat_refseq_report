@@ -157,8 +157,8 @@ CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 INDEX=${#CHROMOSOME[@]}
 for ((i=0;i<$INDEX;i++)); do
 	POSITION="${CHROMOSOME[${i}]}"
-	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="exon" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NM_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
-	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NM_" | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | cut -d "|" -f 4 | sort -u | wc -l)
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="exon" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep -e "NM_\|XM_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep -e "NM_\|XM_" | fgrep -f - ${GENCODE_TRANSCRIPT_FILE} | cut -d "|" -f 4 | sort -u | wc -l)
 	echo "${POSITION},${N_GENES},${N_TRANSC}"
 done
 echo ""
@@ -170,8 +170,8 @@ CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 INDEX=${#CHROMOSOME[@]}
 for ((i=0;i<$INDEX;i++)); do
 	POSITION="${CHROMOSOME[${i}]}"
-	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="CDS" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NP_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
-	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep "NP_" | fgrep -f - ${GENCODE_TRANSLATION_FILE} | cut -d "|" -f 4 | sort -u | wc -l)	
+	N_GENES=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && $3=="CDS" && match($9,/(GeneID\:[^\,\;]*,Genbank\:[^\,\;]*)/, GEN) ){print GEN[1]} }' ${GENCODE_ANNOTATION_FILE} | grep -e "NP_\|XP_" | sed 's/,Genbank\:[^\,\;]*//g' | sed 's/GeneID\://g' | sort -nu | wc -l )
+	N_TRANSC=$(awk -F "\t" -v CHR="${POSITION}" '{if ( $1==CHR && match($9,/Genbank\:([^\,\;]*)/, TRANS) ){print TRANS[1]} }' ${GENCODE_ANNOTATION_FILE} | grep -e "NP_\|XP_" | fgrep -f - ${GENCODE_TRANSLATION_FILE} | cut -d "|" -f 4 | sort -u | wc -l)	
 	echo "${POSITION},${N_GENES},${N_TRANSC}"
 done
 echo ""
