@@ -8,4 +8,4 @@
 [HOMO_SAPIENS_DB]
   specie_name=Human  
   specie=homo_sapiens
-  db=appris_homo_sapiens_rs105v15
+  db=appris_homo_sapiens_rs105v16
