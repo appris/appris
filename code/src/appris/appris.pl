@@ -641,6 +641,10 @@ sub get_final_scores($$\$\$)
 			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
 				$appris_score = -1;
 			}
+			# filter by readthrough_transcript
+			if ( $transcript->tag and exists $transcript->tag->{'readthrough_transcript'} ) {
+				$appris_score = -1;
+			}
 						
 			# save appris score and normalize score
 			my ($m) = 'appris';

@@ -73,6 +73,8 @@ use APPRIS::Utils::Exception qw(throw warning deprecate);
         string - the transcripts source, e.g. "ensembl"        
   Arg [-level] :
         int - the level of this transcript
+  Arg [-tag] :
+        list - list of tags
   Arg [-version] :
         int - the version of this transcript
   Arg [-sequence] : (optional)
@@ -110,10 +112,10 @@ sub new {
 		$stable_id,			$description,
 		$biotype,			$status,
 		$source,			$level,
-		$version,			$external_name,
-		$xref_identify,		$sequence,
-		$translate,			$exons,
-		$analysis
+		$version,			$tag,			
+		$external_name,		$xref_identify,
+		$sequence,			$translate,
+		$exons,				$analysis
 	)
 	= rearrange( [
 		'chr',				'start',
@@ -121,10 +123,10 @@ sub new {
 		'stable_id',		'description',		
 		'biotype',			'status',
 		'source',			'level',
-		'version',			'external_name',
-		'xref_identify',	'sequence',
-		'translate',		'exons',
-		'analysis'
+		'version',			'tag',
+		'external_name',	'xref_identify',
+		'sequence',			'translate',
+		'exons',			'analysis'
 	],
 	@_
 	);
@@ -140,6 +142,7 @@ sub new {
 	$self->source($source);
 	$self->level($level);
 	$self->version($version);
+	$self->tag($tag) if(defined $tag);
 	$self->sequence($sequence) if(defined $sequence);
 	$self->external_name($external_name) if(defined $external_name);
 	$self->xref_identify($xref_identify) if(defined $xref_identify);
@@ -346,6 +349,30 @@ sub version {
 	my ($self) = shift;
 	$self->{'version'} = shift if( @_ );
 	return $self->{'version'};
+}
+
+=head2 tag
+
+  Arg [1]    : (optional) list - list of tags
+  Example    : $transcript->tag(2);
+  Description: Getter/setter for attribute level
+  Returntype : List
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub tag {
+  my ($self) = shift;
+
+  if(@_) {
+    my ($in) = shift;
+    my ($tags);
+    foreach my $i (@{$in}) { $tags->{$i} = 1 }
+    $self->{'tag'} = $tags;
+  }
+  return $self->{'tag'};
 }
 
 =head2 sequence
