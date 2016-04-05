@@ -114,7 +114,6 @@ sub main()
 					}
 					# add TSL
 					unless ( $line =~ /"tsl[0-9]"/ ) {
-print STDERR "TSL: $transc_id\n";
 						if ( exists $tsl_list->{$transc_id} ) {
 							my ($tsl) = $tsl_list->{$transc_id};
 							$new_values .= "'; tag \"$tsl\"";
