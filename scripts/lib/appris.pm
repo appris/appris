@@ -332,6 +332,7 @@ sub create_appris_input($$)
 				if ( $ccds_id ne '-' ) { $data_transc_attrs .= '; ccds_id "'.$ccds_id.'"'; }
 			}
 			if ( $transcript->biotype ) { $data_transc_attrs .= '; transcript_type "'.$transcript->biotype.'"' }
+			if ( $transcript->tsl ) { $data_transc_attrs .= '; tsl "'.$transcript->tsl.'"' }
 			if ( $transcript->tag ) {
 				foreach my $tag (keys %{$transcript->tag}) {
 					$data_transc_attrs .= '; tag "'.$tag.'"';

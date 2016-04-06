@@ -279,6 +279,8 @@ sub get_appris_annotations {
 			}
 		}		
 	}
+	my ($tsl_annot) = $feature->tsl;
+	my ($tag_annot) = $feature->tag;	
 	my ($length_na);
 	if ($feature->sequence) {
 		$length_na = length($feature->sequence);
@@ -342,7 +344,9 @@ sub get_appris_annotations {
 						'transcript_id'		=> $transcript_id,
 						'transcript_name'	=> $external_id,
 						'biotype'			=> $biotype_annot,
-						'status'			=> $status_annot,				
+						'status'			=> $status_annot,
+						'tsl'				=> $tsl_annot,
+						'tag'				=> $tag_annot,				
 				};
 				$optional->{'ccds_id'}			= $ccds_id if (defined $ccds_id);
 				$optional->{'length_na'}		= $length_na if (defined $length_na);

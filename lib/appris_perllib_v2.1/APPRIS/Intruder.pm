@@ -644,7 +644,9 @@ sub feed_transc_by_gencode {
 								biotype			=> $entity->biotype,
 								status			=> $entity->status,
 								level			=> $entity->level,
-								version			=> $entity->version
+								version			=> $entity->version,
+								tsl				=> $entity->tsl,
+								tag				=> join(',', keys(%{$entity->tag}) )
 		);
 		$entity_id = $self->dbadaptor->insert_entity(%parameters);
 		throw('Inserting transcript entity') unless ( defined $entity_id );			

@@ -874,7 +874,9 @@ sub fetch_entity_by_xref_entry {
 										'status'		=> $xref_identifier->{'status'},
 										'source'		=> $xref_identifier->{'source'},
 										'level'			=> $xref_identifier->{'level'},
-										'version'		=> $xref_identifier->{'version'}
+										'version'		=> $xref_identifier->{'version'},
+										'tsl'			=> $xref_identifier->{'tsl'},
+										'tag'			=> $xref_identifier->{'tag'}
 					});
 				}		
 			}
@@ -901,6 +903,8 @@ sub fetch_entity_by_xref_entry {
 		$entity_report->{'source'} = $query_entity->{'source'};
 		$entity_report->{'level'} = $query_entity->{'level'};
 		$entity_report->{'version'} = $query_entity->{'version'};
+		$entity_report->{'tsl'} = $query_entity->{'tsl'} if ( defined $query_entity->{'tsl'} );
+		$entity_report->{'tag'} = $query_entity->{'tag'} if ( defined $query_entity->{'tag'} );
 
 		# Get coordinate of entity
 		my ($coordinate);
@@ -1006,6 +1010,8 @@ sub fetch_entity_by_xref_entry {
 		$entity->source($entity_report->{'source'});
 		$entity->level($entity_report->{'level'});
 		$entity->version($entity_report->{'version'});
+		$entity->tsl($entity_report->{'tsl'}) if (defined $entity_report->{'tsl'});
+		$entity->tag($entity_report->{'tag'}) if (defined $entity_report->{'tag'});
 		$entity->external_name($external_name) if (defined $external_name);
 		$entity->xref_identify($xref_identifies) if (defined $xref_identifies);
 		
@@ -1342,7 +1348,9 @@ sub fetch_by_transc_stable_id {
 		-status		=> $entity->{'status'},
 		-source		=> $entity->{'source'},
 		-level		=> $entity->{'level'},
-		-version	=> $entity->{'version'}
+		-version	=> $entity->{'version'},
+		-tsl		=> $entity->{'tsl'},
+		-tag		=> $entity->{'tag'},
 	);
 	$transcript->sequence($sequence) if (defined $sequence);
 	$transcript->external_name($external_name) if (defined $external_name);

@@ -40,7 +40,7 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/apprisdb.ini';
+$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
 	$APPRIS_METHODS->{$method} = 1;
 }

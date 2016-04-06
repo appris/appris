@@ -73,6 +73,8 @@ use APPRIS::Utils::Exception qw(throw warning deprecate);
         string - the transcripts source, e.g. "ensembl"        
   Arg [-level] :
         int - the level of this transcript
+  Arg [-tsl] :
+        int - the transcript support level
   Arg [-tag] :
         list - list of tags
   Arg [-version] :
@@ -112,7 +114,8 @@ sub new {
 		$stable_id,			$description,
 		$biotype,			$status,
 		$source,			$level,
-		$version,			$tag,			
+		$version,			$tag,
+		$tsl,		
 		$external_name,		$xref_identify,
 		$sequence,			$translate,
 		$exons,				$analysis
@@ -124,6 +127,7 @@ sub new {
 		'biotype',			'status',
 		'source',			'level',
 		'version',			'tag',
+		'tsl',
 		'external_name',	'xref_identify',
 		'sequence',			'translate',
 		'exons',			'analysis'
@@ -143,6 +147,7 @@ sub new {
 	$self->level($level);
 	$self->version($version);
 	$self->tag($tag) if(defined $tag);
+	$self->tsl($tsl) if(defined $tsl);
 	$self->sequence($sequence) if(defined $sequence);
 	$self->external_name($external_name) if(defined $external_name);
 	$self->xref_identify($xref_identify) if(defined $xref_identify);
@@ -351,6 +356,24 @@ sub version {
 	return $self->{'version'};
 }
 
+=head2 tsl
+
+  Arg [1]    : (optional) Int - the tsl to set
+  Example    : $transcript->tsl(2);
+  Description: Getter/setter for attribute level
+  Returntype : Int
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub tsl {
+	my ($self) = shift;
+	$self->{'tsl'} = shift if( @_ );
+	return $self->{'tsl'};
+}
+
 =head2 tag
 
   Arg [1]    : (optional) list - list of tags
@@ -364,15 +387,9 @@ sub version {
 =cut
 
 sub tag {
-  my ($self) = shift;
-
-  if(@_) {
-    my ($in) = shift;
-    my ($tags);
-    foreach my $i (@{$in}) { $tags->{$i} = 1 }
-    $self->{'tag'} = $tags;
-  }
-  return $self->{'tag'};
+	my ($self) = shift;
+	$self->{'tag'} = shift if(@_);
+	return $self->{'tag'};
 }
 
 =head2 sequence

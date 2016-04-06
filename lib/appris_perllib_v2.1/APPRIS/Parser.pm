@@ -3204,7 +3204,7 @@ sub _parse_dataline($)
 		{
 			my ($c_type);
 			my ($c_value);
-			if ( $add_attributes[$i] =~ /^(.+)\s(.+)$/ ) {
+			if ( $add_attributes[$i] =~ /^(.+)\s+\"([^\"]*)\"$/ ) {
 				$c_type  = $1;
 				$c_value = $2;			
 			}
@@ -3269,56 +3269,6 @@ sub _parse_indata($)
 			$fields->{'phase'},
 			$fields->{'attrs'}
 		);
-						
-#		#ignore header
-#		next if ( $line =~ /^#/ );
-#		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-#		next unless(defined $chr and 
-#					defined $source and
-#					defined $type and
-#					defined $start and
-#					defined $end and
-#					defined $score and
-#					defined $strand and
-#					defined $phase and 
-#					defined $attributes);
-#
-#		#store nine columns in hash
-#		my ($fields) = {
-#				chr        => $chr,
-#				source     => $source,
-#				type       => $type,
-#				start      => $start,
-#				end        => $end,
-#				score      => $score,
-#				strand     => $strand,
-#				phase      => $phase,
-#				attributes => $attributes,
-#		};
-#		if (defined $chr and $chr=~/chr(\w*)/) { $chr = $1 if(defined $1) }
-#		
-#		#store ids and additional information in second hash
-#		my ($attribs);
-#		my (@add_attributes) = split(";", $attributes);				
-#		for ( my $i=0; $i<scalar @add_attributes; $i++ )
-#		{
-#			$add_attributes[$i] =~ /^(.+)\s(.+)$/;
-#			my ($c_type) = $1;
-#			my ($c_value) = $2;
-#			if(	defined $c_type and !($c_type=~/^\s*$/) and
-#				defined $c_value and !($c_value=~/^\s*$/))
-#			{
-#				$c_type =~ s/^\s//;
-#				$c_value =~ s/"//g;
-#				if(!exists($attribs->{$c_type})) {
-#					$attribs->{$c_type} = $c_value;
-#				}
-#				else {
-#					if ( ref( $attribs->{$c_type} ) eq 'ARRAY' ) { push(@{$attribs->{$c_type}}, $c_value) }
-#					else { $attribs->{$c_type} = [$attribs->{$c_type}, $c_value] }
-#				}
-#			}
-#		}
 		
 		# Always we have Gene Id
 		if(	exists $attribs->{'gene_id'} and defined $attribs->{'gene_id'} )
@@ -3431,9 +3381,18 @@ sub _parse_indata($)
 				{
 					$transcript->{'ccdsid'} = $attribs->{'ccds_id'};	
 				}
-				elsif(exists $attribs->{'tag'} and defined $attribs->{'tag'})
+				if(exists $attribs->{'tag'} and defined $attribs->{'tag'})
 				{
 					$transcript->{'tag'} = $attribs->{'tag'};
+				}
+				if(exists $attribs->{'transcript_support_level'} and defined $attribs->{'transcript_support_level'})
+				{
+					my ($t) = $attribs->{'transcript_support_level'};
+					if ( $t =~ /^([0-9]*)\s*/ ) { $transcript->{'tsl'} = $1 }					
+				}
+				elsif(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
+				{
+					$transcript->{'tsl'} = $attribs->{'tsl'};
 				}
 					
 				$data->{$gene_id}->{'transcripts'}->{$transcript_id} = $transcript if(defined $transcript);
@@ -3631,6 +3590,10 @@ sub _parse_indata_refseq($)
 				{
 					$transcript->{'tag'} = $attribs->{'tag'};
 				}
+				if(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
+				{
+					$transcript->{'tsl'} = $attribs->{'tsl'};
+				}				
 				
 				# cache transc Ids
 				$cache_transcId->{$ID} = $accesion_id;
@@ -3893,8 +3856,9 @@ sub _fetch_transc_objects($$;$;$)
 			-status		=> $transcript_features->{'status'},
 			-source		=> $transcript_features->{'source'},
 			-level		=> $transcript_features->{'level'},
-			-tag		=> $transcript_features->{'tag'},
-			-version	=> $transcript_features->{'version'}
+			-version	=> $transcript_features->{'version'},
+			-tsl		=> $transcript_features->{'tsl'},
+			-tag		=> join(',', @{$transcript_features->{'tag'}} )
 		);
 			
 		# Xref identifiers

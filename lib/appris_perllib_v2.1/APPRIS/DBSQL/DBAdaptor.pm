@@ -1018,7 +1018,9 @@ sub query_entity {
 		biotype,
 		status,
 		level,
-		version
+		version,
+		tsl,
+		tag
   
 		from entity ";
 	my @bindvalues;
@@ -1046,7 +1048,9 @@ sub query_entity_like {
 		biotype,
 		status,
 		level,
-		version
+		version,
+		tsl,
+		tag
 
 		from entity ";
 
@@ -1231,6 +1235,8 @@ sub query_entity_coordinate {
 		x.status as status,
 		x.level as level,
 		x.version as version,
+		x.tsl as tsl,
+		x.tag as tag,
 		y.chromosome as chromosome,
 		y.start as start,
 		y.end as end,
@@ -1276,6 +1282,8 @@ sub query_entity_coordinate2 {
 		x.status as status,
 		x.level as level,
 		x.version as version,
+		x.tsl as tsl,
+		x.tag as tag,
 		y.chromosome as chromosome,
 		y.start as start,
 		y.end as end,
@@ -1290,53 +1298,6 @@ sub query_entity_coordinate2 {
 	my $final = _do_query($dbh, $statement, @bindvalues);
 	return $final;
 }
-
-# DEPRECATED
-#sub query_entity_coordinate3 {
-#	my ($self, %args) = @_;
-#	my $dbh = $self->dbh;
-#
-#	my @args;
-#	while (my ($k, $v) = each %args){
-#		if(ref $v eq 'ARRAY')
-#		{
-#			foreach my $v1 (@{$v})
-#			{
-#				push @args, ({$k => $v1}, "or"); # OR 
-#			}
-#			pop @args; # remove final "or" and add "AND"
-#			push @args, "and";
-#		}
-#		else
-#		{
-#			push @args, ({$k => $v}, "and"); # AND
-#		}
-#	}
-#	if (keys(%args)){ pop @args;}  # remove final "and"
-#		
-#        my $statement = "select
-#		x.entity_id as entity_id,
-#		x.datasource_id as datasource_id,
-#		x.identifier as identifier,
-#		x.source as source,
-#		x.biotype as biotype,
-#		x.status as status,
-#		x.level as level,
-#		x.version as version,
-#		y.chromosome as chromosome,
-#		y.start as start,
-#		y.end as end,
-#		y.strand as strand
-#		
-#  
-#		from entity as x, coordinate as y ";
-#
-#	my @bindvalues;
-#	($statement, @bindvalues) = _add_condition_combine12($statement, @args);
-#	my $final = _do_query($dbh, $statement, @bindvalues);
-#	return $final;
-#}
-# DEPRECATED
 
 sub query_entity_coordinate4 {
 	my ($self, %args) = @_;
@@ -1369,6 +1330,8 @@ sub query_entity_coordinate4 {
 		x.status as status,
 		x.level as level,
 		x.version as version,
+		x.tsl as tsl,
+		x.tag as tag,
 		y.chromosome as chromosome,
 		y.start as start,
 		y.end as end,
@@ -1418,6 +1381,8 @@ sub query_entity_coordinate5 {
 		x.status as status,
 		x.level as level,
 		x.version as version,
+		x.tsl as tsl,
+		x.tag as tag,
 		y.chromosome as chromosome,
 		y.start as start,
 		y.end as end,
@@ -2300,7 +2265,7 @@ sub insert_entity {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into entity (datasource_id, identifier, source, biotype, status, level, version) values (?,?,?,?,?,?,?)},
+	$dbh->do(q{insert into entity (datasource_id, identifier, source, biotype, status, level, version, tsl, tag) values (?,?,?,?,?,?,?,?,?)},
 			undef,(
 				$args{'datasource_id'},
 				$args{'identifier'},
@@ -2308,7 +2273,9 @@ sub insert_entity {
 				$args{'biotype'},
 				$args{'status'},
 				$args{'level'},
-				$args{'version'}	));
+				$args{'version'},
+				$args{'tsl'},
+				$args{'tag'}	));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};

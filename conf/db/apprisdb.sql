@@ -21,6 +21,8 @@ CREATE TABLE entity (
   status VARCHAR(50) DEFAULT NULL,
   level INT(1) DEFAULT NULL,
   version INT(5) DEFAULT NULL,
+  tsl INT(1) DEFAULT NULL,
+  tag TEXT DEFAULT NULL,
   CONSTRAINT fk_entity_datasource FOREIGN KEY (datasource_id) REFERENCES datasource (datasource_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (entity_id),
   UNIQUE KEY unique_key_entity_entity_id (entity_id),
@@ -299,7 +301,7 @@ CREATE TABLE spade (
   num_possibly_damaged_domains INT(5) DEFAULT NULL,
   num_damaged_domains INT(5) DEFAULT NULL,
   num_wrong_domains INT(5) DEFAULT NULL,
-  bitscore FLOAT NOT NULL,
+  bitscore FLOAT DEFAULT NULL,
   domain_signal ENUM('NO','YES','UNKNOWN') DEFAULT NULL,  
   CONSTRAINT fk_spade_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (spade_id),
@@ -595,12 +597,6 @@ INSERT INTO datasource SET
   name='CCDS',
   description='Consensus CDS',
   url='http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';
-
-INSERT INTO datasource SET
-  datasource_id='10',
-  name='TSL',
-  description='Transcript Support Level',
-  url='http://www.ensembl.org/Help/Glossary?id=492';
 
 --
 -- Insert default value into type table

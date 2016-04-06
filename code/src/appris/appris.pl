@@ -190,7 +190,6 @@ sub get_corsair_annots($$$\$);
 sub get_thump_annots($$$\$);
 sub get_crash_annots($$$$\$);
 sub get_num_unusual_exons($);
-sub get_tsl_annots($);
 
 #################
 # Method bodies #
@@ -642,7 +641,7 @@ sub get_final_scores($$\$\$)
 				$appris_score = -1;
 			}
 			# filter by readthrough_transcript
-			if ( $transcript->tag and exists $transcript->tag->{'readthrough_transcript'} ) {
+			if ( $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) {
 				$appris_score = -1;
 			}
 						
@@ -718,8 +717,8 @@ sub get_final_annotations($$$$$)
 			return $tag;
 		}
 
-		# 3. from preserved transcript, we keep transcripts that they have got TSL1
-		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
+		# 3_1. from preserved transcript, we keep transcripts that they have got eldest CCDS
+		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
@@ -727,8 +726,8 @@ sub get_final_annotations($$$$$)
 			return $tag;
 		}
 
-		# 3_2. from preserved transcript, we keep transcripts that they have got eldest CCDS
-		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
+		# 3_2. from preserved transcript, we keep transcripts that they have got TSL1
+		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
 		$logger->debug("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
@@ -794,9 +793,6 @@ sub step_appris($$$)
 	my ($princ_list, $isof_report);
 	my ($ccds_ids);
 	
-	# get TSL(1) annot
-	my ($tsl_transcs) = get_tsl_annots($gene_id);
-
 	# scan the transcripts from the sorted APPRIS scores
 	my ($highest_score) = $s_scores->{'max'};
 	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$s_scores->{'scores'}});			
@@ -841,17 +837,8 @@ sub step_appris($$$)
 				}
 			}			
 			# save TSL(1) annot
-			if ( exists $tsl_transcs->{$transc_id} and ($tsl_transcs->{$transc_id} eq 'tsl1') ) {
+			if ( $transcript->tsl and $transcript->tsl eq '1' ) {
 				$transc_rep->{'tsl'} = 1;
-				my ($xref_identities) = $transcript->xref_identify();
-				push(@{$xref_identities},
-						APPRIS::XrefEntry->new
-						(
-							-id				=> '1',
-							-dbname			=> 'TSL'
-						)
-				);
-				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
 			}
 					
 			# APPRIS says could be a principal when:
@@ -1136,6 +1123,7 @@ sub get_score_output($$$)
 	{	
 		my ($transcript_id) = $transcript->stable_id;
 		my ($biotype) = '-';
+		my ($flags) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
@@ -1152,7 +1140,8 @@ sub get_score_output($$$)
 		my ($inertia_annot) = '-';
 		my ($appris_annot) = '-';
 		my ($appris_relia) = '-';
-		$biotype = $transcript->biotype if ( defined $transcript->biotype);		
+		$biotype = $transcript->biotype if ( defined $transcript->biotype);
+		$flags = $transcript->biotype if ( defined $transcript->biotype);
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			
 			$firestar_annot = $scores->{$transcript_id}->{'num_functional_residues'} if ( exists $scores->{$transcript_id}->{'num_functional_residues'} );
@@ -1175,9 +1164,6 @@ sub get_score_output($$$)
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
 					}
-					elsif ( $xref->dbname eq 'TSL') {
-						$tsl = $xref->id;
-					}
 				}
 			}		
 			if ( $transcript->translate->codons ) {
@@ -1192,12 +1178,15 @@ sub get_score_output($$$)
 				$no_codons =~ s/^\-// if ($no_codons ne '-');
 				$no_codons =~ s/\/$// if ($no_codons ne '-');
 			}
+			$tsl = $transcript->tsl if ( defined $transcript->tsl);
+			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }		
 						
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$biotype."\t".
+						#$biotype."\t".
+						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
 						$tsl."\t".
@@ -1237,6 +1226,7 @@ sub get_nscore_output($$)
 	{	
 		my ($transcript_id) = $transcript->stable_id;
 		my ($biotype) = '-';
+		my ($flags) = '-';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
 		my ($no_codons) = '-';
@@ -1250,7 +1240,8 @@ sub get_nscore_output($$)
 		my ($proteo_annot) = '-';
 		my ($inertia_annot) = '-';
 		my ($appris_annot) = '-';
-		$biotype = $transcript->biotype if ( defined $transcript->biotype);		
+		$biotype = $transcript->biotype if ( defined $transcript->biotype);
+		$flags = $transcript->biotype if ( defined $transcript->biotype);		
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			$firestar_annot = $nscores->{$transcript_id}->{'firestar'} if ( exists $nscores->{$transcript_id}->{'firestar'} );
 			$matador3d_annot = $nscores->{$transcript_id}->{'matador3d'} if ( exists $nscores->{$transcript_id}->{'matador3d'} );
@@ -1269,9 +1260,6 @@ sub get_nscore_output($$)
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
 					}
-					elsif ( $xref->dbname eq 'TSL') {
-						$tsl = $xref->id;
-					}
 				}
 			}		
 			if ( $transcript->translate->codons ) {
@@ -1286,11 +1274,14 @@ sub get_nscore_output($$)
 				$no_codons =~ s/^\-// if ($no_codons ne '-');
 				$no_codons =~ s/\/$// if ($no_codons ne '-');
 			}
+			$tsl = $transcript->tsl if ( defined $transcript->tsl);
+			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }
 						
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$biotype."\t".
+						#$biotype."\t".
+						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
 						$tsl."\t".
@@ -1322,6 +1313,7 @@ sub get_label_output($$)
 	{	
 		my ($transcript_id) = $transcript->stable_id;
 		my ($biotype) = '-';
+		my ($flags) = '-';
 		my ($translation) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
@@ -1339,6 +1331,7 @@ sub get_label_output($$)
 		my ($appris_annot) = '-';
 		my ($appris_relia) = '-';
 		$biotype = $transcript->biotype if ( defined $transcript->biotype);
+		$flags = $transcript->biotype if ( defined $transcript->biotype);
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			
 			$firestar_annot = $annots->{$transcript_id}->{'functional_residue'} if ( exists $annots->{$transcript_id}->{'functional_residue'} );
@@ -1361,9 +1354,6 @@ sub get_label_output($$)
 					if ( $xref->dbname eq 'CCDS') {
 						$ccds_id = $xref->id;
 					}
-					elsif ( $xref->dbname eq 'TSL') {
-						$tsl = $xref->id;
-					}
 				}
 			}		
 			if ( $transcript->translate->codons ) {
@@ -1378,12 +1368,15 @@ sub get_label_output($$)
 				$no_codons =~ s/^\-// if ($no_codons ne '-');
 				$no_codons =~ s/\/$// if ($no_codons ne '-');
 			}
+			$tsl = $transcript->tsl if ( defined $transcript->tsl);
+			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }
 						
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
 						$translation."\t".						
-						$biotype."\t".
+						#$biotype."\t".
+						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
 						$tsl."\t".
@@ -1725,31 +1718,6 @@ sub get_num_unusual_exons($)
 	return $num_un_exons;
 	
 } # End get_num_unusual_exons
-
-sub get_tsl_annots($)
-{
-	my ($gene_id) = @_;
-	my ($report);
-	
-	# retrieve tsl annots from text file
-	if ( defined $gene_id and ($gene_id ne '') ) {
-		$logger->info("-- retrieve tsl annots from text file\n");
-		my ($cmd) = "awk '{ if ( (\$1 ~ /$gene_id/) && (\$3 ~ /tsl1/) ) { print \$0 } }' $TSL_DB";
-		my (@txt_out) = `$cmd`;
-		foreach my $txt_line (@txt_out) {
-			my (@txt_cols) = split('\t', $txt_line);
-			my ($g_id) = $txt_cols[0];
-			my ($t_id) = $txt_cols[1];
-			my ($tsl_annot) = $txt_cols[2];
-			my ($appris_annot) = $txt_cols[3];
-			if ( $tsl_annot =~ /^tsl1/ ) {
-				$report->{$t_id} = 'tsl1';
-			}			
-		}
-	}	
-	return $report;
-	
-} # End get_tsl_annots
 
 
 main();
