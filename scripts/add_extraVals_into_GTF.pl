@@ -116,7 +116,7 @@ sub main()
 					unless ( $line =~ /"tsl[0-9]"/ ) {
 						if ( exists $tsl_list->{$transc_id} ) {
 							my ($tsl) = $tsl_list->{$transc_id};
-							$new_values .= "'; tag \"$tsl\"";
+							$new_values .= "; tag \"$tsl\"";
 						}
 					}
 					
