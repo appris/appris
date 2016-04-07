@@ -3858,7 +3858,7 @@ sub _fetch_transc_objects($$;$;$)
 			-level		=> $transcript_features->{'level'},
 			-version	=> $transcript_features->{'version'},
 			-tsl		=> $transcript_features->{'tsl'},
-			-tag		=> join(',', @{$transcript_features->{'tag'}} )
+			-tag		=> $transcript_features->{'tag'}
 		);
 			
 		# Xref identifiers
