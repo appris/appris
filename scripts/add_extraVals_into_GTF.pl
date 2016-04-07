@@ -127,8 +127,8 @@ sub main()
 									}							
 								}
 								# add TSL
-								if ( exists $old_genedata->{$ens_gene_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'transcript_support_level'} ) {
-									my ($tsl) = $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'transcript_support_level'};
+								if ( exists $old_genedata->{$ens_gene_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
+									my ($tsl) = $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
 									$new_values .= ";tsl=$tsl";
 								}
 							}
