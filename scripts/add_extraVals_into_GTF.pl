@@ -122,10 +122,8 @@ sub main()
 								# add RT
 								if ( exists $old_genedata->{$ens_gene_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ) {
 									my ($old_tags) = $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
-									foreach my $old_tag ( @{$old_tags} ) {
-										if ( $old_tag eq 'readthrough_transcript' ) {
-											$new_values .= ";tag=readthrough_transcript";									
-										}							
+									if ( $old_tags =~ /readthrough_transcript/ ) {
+										$new_values .= ";tag=readthrough_transcript";									
 									}							
 								}
 								# add TSL
@@ -156,11 +154,9 @@ sub main()
 						unless ( $line =~ /"readthrough_transcript"/ ) {
 							if ( exists $old_genedata->{$gene_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'} ) {
 								my ($old_tags) = $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'};
-								foreach my $old_tag ( @{$old_tags} ) {
-									if ( $old_tag eq 'readthrough_transcript' ) {
-										$new_values .= '; tag "readthrough_transcript"';									
-									}									
-								}
+								if ( $old_tags =~ /readthrough_transcript/ ) {
+									$new_values .= '; tag "readthrough_transcript"';									
+								}							
 							}				
 						}					
 					}					
