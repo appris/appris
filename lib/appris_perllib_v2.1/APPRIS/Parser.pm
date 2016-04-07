@@ -3217,14 +3217,14 @@ sub _parse_dataline($)
 			{
 				$c_type =~ s/^\s//;
 				$c_value =~ s/"//g;
-				if ( $c_type eq 'tag' ) {
-					push(@{$attribs->{$c_type}}, $c_value);
+				if(!exists($attribs->{$c_type})) {
+					$attribs->{$c_type} = $c_value;						
 				}
 				else {
-					if(!exists($attribs->{$c_type})) {
-						$attribs->{$c_type} = $c_value;						
+					if ( $c_type eq 'tag' ) {
+						$attribs->{$c_type} .= ','.$c_value;
 					}
-				}
+				}				
 			}
 		}
 		
