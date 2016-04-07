@@ -333,11 +333,7 @@ sub create_appris_input($$)
 			}
 			if ( $transcript->biotype ) { $data_transc_attrs .= '; transcript_type "'.$transcript->biotype.'"' }
 			if ( $transcript->tsl ) { $data_transc_attrs .= '; tsl "'.$transcript->tsl.'"' }
-			if ( $transcript->tag ) {
-				foreach my $tag (keys %{$transcript->tag}) {
-					$data_transc_attrs .= '; tag "'.$tag.'"';
-				}
-			}
+			if ( $transcript->tag ) { $data_transc_attrs .= '; tag "'.$transcript->tag.'"' }
 			$data_cont .=	$chr."\t".
 							'GENCODE'."\t".
 							'transcript'."\t".
