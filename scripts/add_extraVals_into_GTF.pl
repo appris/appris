@@ -128,8 +128,10 @@ sub main()
 								}
 								# add TSL
 								if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
-									my ($tsl) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
-									$new_values .= ";tsl=$tsl";
+									my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
+									if ( $extra_val ne '' ) {
+										$new_values .= ";tsl=$extra_val";
+									}
 								}
 							}
 						}
@@ -162,8 +164,10 @@ sub main()
 						# add TSL
 						unless ( $line =~ /transcript_support_level/ or $line =~ /\;\s*tsl/ ) {
 							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
-								my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
-								$new_values .= "; tsl \"$extra_tags\"";
+								my ($extra_val) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
+								if ( $extra_val ne '' ) {
+									$new_values .= "; tsl \"$extra_val\"";									
+								}
 							}				
 						}					
 					}					
