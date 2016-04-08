@@ -74,8 +74,8 @@ sub main()
 	my ($output) = ""; 
 
 	$logger->info("-- get gene report from extra GTF file -------\n");
-	my ($old_genedata) = APPRIS::Parser::_parse_indata($extra_data_file);
-	$logger->debug(Dumper($old_genedata)."\n");
+	my ($extra_genedata) = APPRIS::Parser::_parse_indata($extra_data_file);
+	$logger->debug(Dumper($extra_genedata)."\n");
 	
 	my ($xref_data);
 	my $_extract_dbXref;
@@ -120,15 +120,15 @@ sub main()
 								my ($ens_gene_id) = $xref_data->{$accesion_id}->{'gene_id'};
 								my ($ens_transc_id) = $xref_data->{$accesion_id}->{'transc_id'};
 								# add RT
-								if ( exists $old_genedata->{$ens_gene_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ) {
-									my ($old_tags) = $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
-									if ( $old_tags =~ /readthrough_transcript/ ) {
+								if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ) {
+									my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
+									if ( $extra_tags =~ /readthrough_transcript/ ) {
 										$new_values .= ";tag=readthrough_transcript";									
 									}							
 								}
 								# add TSL
-								if ( exists $old_genedata->{$ens_gene_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
-									my ($tsl) = $old_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
+								if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
+									my ($tsl) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
 									$new_values .= ";tsl=$tsl";
 								}
 							}
@@ -145,18 +145,25 @@ sub main()
 						
 						# add CCDS
 						unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
-							if ( exists $old_genedata->{$gene_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
-								my ($ccds_id) = $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
+								my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
 								$new_values .= "; ccds_id \"$ccds_id\"";
 							}
 						}					
 						# add RT
 						unless ( $line =~ /"readthrough_transcript"/ ) {
-							if ( exists $old_genedata->{$gene_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'} ) {
-								my ($old_tags) = $old_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'};
-								if ( $old_tags =~ /readthrough_transcript/ ) {
+							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'} ) {
+								my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'};
+								if ( $extra_tags =~ /readthrough_transcript/ ) {
 									$new_values .= '; tag "readthrough_transcript"';									
 								}							
+							}				
+						}					
+						# add TSL
+						unless ( $line =~ /transcript_support_level/ or $line =~ /\;\s*tsl/ ) {
+							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
+								my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
+								$new_values .= '; tsl "$extra_tags"';
 							}				
 						}					
 					}					
