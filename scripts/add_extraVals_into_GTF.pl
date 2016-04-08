@@ -24,7 +24,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 my ($is_refseq) = undef;
 my ($xref_file) = undef;
 my ($data_file) = undef;
-my ($old_data_file) = undef;
+my ($extra_data_file) = undef;
 my ($out_file) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -34,7 +34,7 @@ my ($loglevel) = undef;
 	'ref|r'				=> \$is_refseq,
 	'xref=s'			=> \$xref_file,
 	'data=s'			=> \$data_file,
-	'old-data=s'		=> \$old_data_file,
+	'extra-data=s'		=> \$extra_data_file,
 	'outfile=s'			=> \$out_file,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -43,7 +43,7 @@ my ($loglevel) = undef;
 );
 
 # Required arguments
-unless ( defined $data_file and defined $old_data_file and defined $out_file )
+unless ( defined $data_file and defined $extra_data_file and defined $out_file )
 {
 	print `perldoc $0`;
 	exit 1;
@@ -73,8 +73,8 @@ sub main()
 {
 	my ($output) = ""; 
 
-	$logger->info("-- get gene report from older GTF file -------\n");
-	my ($old_genedata) = APPRIS::Parser::_parse_indata($old_data_file);
+	$logger->info("-- get gene report from extra GTF file -------\n");
+	my ($old_genedata) = APPRIS::Parser::_parse_indata($extra_data_file);
 	$logger->debug(Dumper($old_genedata)."\n");
 	
 	my ($xref_data);
@@ -237,7 +237,7 @@ retrieve_exon_data
 	
 	--data=  <Current Gene annotation file>
 	
-	--old-data=  <Older Gene annotation file with CCDS, RT values>
+	--extra-data=  <Extra Gene annotation file with CCDS, RT values>
 	
 	--outfile <Output Gene annotation file>	
 	
@@ -259,7 +259,7 @@ perl add_extraVals_into_GTF.pl
 	
 	--data=e84_g24/Homo_sapiens.GRCh38.84.gtf
 	
-	--old-data=e83_g24/gencode.v23.annotation.gtf
+	--extra-data=e83_g24/gencode.v23.annotation.gtf
 	
 	--outfile=e84_g24/Homo_sapiens.GRCh38.84.extra.gtf
 
@@ -273,7 +273,7 @@ perl add_extraVals_into_GTF.pl
 	
 	--data=rs107/ref_GRCh38.p2_top_level.gff3
 
-	--old-data=e84_g24/gencode.v24.annotation.gtf
+	--extra-data=e84_g24/gencode.v24.annotation.gtf
 	
 	--outfile=rs107/ref_GRCh38.p2_top_level.extra.gff3
 	
