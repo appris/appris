@@ -163,7 +163,7 @@ sub main()
 						unless ( $line =~ /transcript_support_level/ or $line =~ /\;\s*tsl/ ) {
 							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
 								my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
-								$new_values .= '; tsl "$extra_tags"';
+								$new_values .= "; tsl \"$extra_tags\"";
 							}				
 						}					
 					}					
