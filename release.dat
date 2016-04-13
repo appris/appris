@@ -1,3 +1,52 @@
+==APPRIS_RELEASE:RELNOTES:2016_04.v16==
+#############################
+# A-RELEASE: 	2016_04.v16	#
+# C-RELEASE: 	4.5.2.10	#
+#############################
+
+* HIGHLIGHTS:
+	- RefSeq has been included in APPRIS!!!
+	- RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively.
+	
+* APPRIS-SERVER, v4.5
+	- Add TSL annots in the report web page. TODO!!!!
+
+* APPRIS-CODE, v2.10
+
+	- Use the "release.dat" file as config file to update the Web Server and Web Databases. TODO!!!!
+	
+	- Fixed bug: BED12 for SPADE method. TODO!!!!
+	
+	- Add "tag" field into database and return its values like "readthought_transcripts"
+	
+	- Script that add extra values into dataset file
+
+	- APPRIS
+		- Use the tag features to identify the "readthought_transcripts"
+		
+		- Fixed bug: It is wrong the assignation of Principal in the step of eldest CCDS and TSL. Eg. BAIAP2 TODO????? It's working correctly
+		
+		- Check tsl order in ensemble and gencode. Eg. BBS9
+		
+		- Now TSL annotations is obtained from gene annotation file. The function that extracts the TSL is deprecated.
+		
+==APPRIS_RELEASE:DATAFILES:2016_04.v16==
+homo_sapiens				rs107.v16	GRCh38		appris_homo_sapiens_rs107v16
+homo_sapiens				rs105.v16	GRCh37		appris_homo_sapiens_rs105v16
+homo_sapiens				ens84.v16	GRCh38		appris_homo_sapiens_e84v16
+homo_sapiens				gen19.v16	GRCh37		appris_homo_sapiens_g19v16
+homo_sapiens				ens81.v16	-		appris_homo_sapiens_e81v16
+homo_sapiens				ens79.v16	-		appris_homo_sapiens_e79v16
+mus_musculus				ens84.v16 	GRCm38		appris_mus_musculus_e84v16
+danio_rerio					ens84.v15 	GRCz10		appris_danio_rerio_e84v15
+danio_rerio					ens77.v7.9Feb2015 	Zv9			appris_danio_rerio_e77
+rattus_norvegicus			ens84.v15	Rnor_6.0	appris_rattus_norvegicus_e84v15
+rattus_norvegicus			ens77.v7.9Feb2015	Rnor_5.0	appris_rattus_norvegicus_e77
+sus_scrofa				ens84.v15	Sscrofa10.2	appris_sus_scrofa_e84v15
+pan_troglodytes				ens84.v15	CHIMP2.1.4	appris_pan_troglodytes_e84v15
+drosophila_melanogaster			ens84.v15	BDGP6		appris_drosophila_melanogaster_e84v15
+caenorhabditis_elegans			ens84.v15	WBcel235	appris_caenorhabditis_elegans_e84v15
+
 ==APPRIS_RELEASE:RELNOTES:2016_03.v15==
 #############################
 # A-RELEASE: 	2016_03.v15	#
