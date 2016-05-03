@@ -75,11 +75,13 @@ sub new {
 	
 	my (
 		$start,			$end,
-		$strand,		$phase
+		$strand,		$phase,
+		$stable_id		
     )
     = rearrange( [
 		'start',		'end',
-		'strand',		'phase'
+		'strand',		'phase',
+    	'stable_id',
 	],
 	@_
 	);
@@ -88,6 +90,7 @@ sub new {
  	$self->end($end);
  	$self->strand($strand);
  	$self->phase($phase);
+ 	$self->stable_id($stable_id);
   
 	return $self;
 }
@@ -162,6 +165,24 @@ sub phase {
   my $self = shift;
   $self->{'phase'} = shift if(@_);
   return $self->{'phase'};
+}
+
+=head2 stable_id
+
+  Arg [1]    : (optional) String - the stable ID to set
+  Example    : $cds->stable_id("ENSE0000000001");
+  Description: Getter/setter for stable id for this exon
+  Returntype : String
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub stable_id {
+  my $self = shift;
+  $self->{'stable_id'} = shift if(@_);
+  return $self->{'stable_id'};
 }
 
 sub DESTROY {}

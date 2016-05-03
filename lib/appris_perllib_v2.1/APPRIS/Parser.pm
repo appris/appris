@@ -3215,7 +3215,7 @@ sub _parse_dataline($)
 			if(	defined $c_type and !($c_type=~/^\s*$/) and
 				defined $c_value and !($c_value=~/^\s*$/))
 			{
-				$c_type =~ s/^\s//;
+				$c_type =~ s/^\s*//g;
 				$c_value =~ s/"//g;
 				if(!exists($attribs->{$c_type})) {
 					$attribs->{$c_type} = $c_value;						
@@ -3421,10 +3421,12 @@ sub _parse_indata($)
 				$cds->{'strand'} = $strand if(defined $strand);
 				$cds->{'phase'} = $phase if(defined $phase);
 				
-				if(exists $attribs->{'cds_id'} and defined $attribs->{'cds_id'})
+				if(exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'})
 				{
-					$cds->{'cds_id'} = $attribs->{'cds_id'};	
-				}
+					my ($x) = $attribs->{'exon_id'};
+					if ( $x =~ /^ENS/ ) { $x =~ s/\.\d*$// } # delete suffix in Ensembl ids
+					$cds->{'exon_id'} = $x;
+				}				
 				
 				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'cds'}},$cds);
 				
@@ -3985,6 +3987,10 @@ sub _fetch_transl_objects($$;$)
 		my ($aux_cds);
 		foreach my $cds (@{$transcript_features->{'cds'}})
 		{
+			my ($exon_id);
+			if (exists $cds->{'exon_id'} and defined $cds->{'exon_id'}) {
+				$exon_id = $cds->{'exon_id'};
+			}			
 			push(@{$aux_cds},
 				APPRIS::CDS->new
 				(
@@ -3992,6 +3998,7 @@ sub _fetch_transl_objects($$;$)
 					-end		=> $cds->{'end'},
 					-strand		=> $cds->{'strand'},
 					-phase		=> $cds->{'phase'},
+					-stable_id	=> $exon_id,
 				)
 			);
 		}
