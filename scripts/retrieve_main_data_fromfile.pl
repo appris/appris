@@ -17,6 +17,7 @@ use common qw( get_main_report get_label_report );
 ###################
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($input_old_main_file) = undef;
 my ($input_old_seq_file) = undef;
 my ($input_main_file) = undef;
@@ -58,7 +59,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 
 #####################
