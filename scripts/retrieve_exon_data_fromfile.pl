@@ -26,6 +26,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 $GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens76.v7.9Feb2015/gencode.tsl.e78.txt';
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($data_file) = undef;
 my ($transcripts_file) = undef;
 my ($translations_file) = undef;
@@ -67,7 +68,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 
 #####################
@@ -86,14 +87,14 @@ my ($GEN_TSL_REPORT) = extract_gencode_tsl($GENCODE_TSL_FILE);
 # Main subroutine
 sub main()
 {
-	$logger->debug("-- get gene dataset from files -------\n");
+	$logger->info("-- get gene dataset from files -------\n");
 	my ($data_report) = appris::create_indata($data_file, $transcripts_file, $translations_file);
-	#$logger->debug("DATA_REPORT:\n".Dumper($data_report)."\n");
+	$logger->debug("DATA_REPORT:\n".Dumper($data_report)."\n");
 
 	# Get data from file
-	$logger->debug("-- get label data from files -------\n");
+	$logger->info("-- get label data from files -------\n");
 	my ($label_report) = common::get_label_report($input_label_file, $translations_file, $data_file);	
-	#$logger->debug("MAIN_REPORT:\n".Dumper($label_report)."\n");
+	$logger->debug("MAIN_REPORT:\n".Dumper($label_report)."\n");
 	
 	# Get data by region
 	$logger->info("-- get exon data -------\n");
@@ -103,7 +104,7 @@ sub main()
 		my ($printing_file_log) = printStringIntoFile($output_content, $outfile);
 		$logger->error("printing") unless(defined $printing_file_log);		
 	}
-	
+		
 	# get prin transc
 	$logger->info("-- get principal exons -------\n");
 	my ($outfile_prin) = $outpath.'/appris_data.exons.prin.gff';
@@ -124,30 +125,108 @@ sub main()
 	};
 	throw("getting alternative exons") if($@);
 	
-	# get alternative exons that do not overlap with principal exons
-	$logger->info("-- get alternative exons that do not overlap -------\n");
-	my ($outfile_altNoOver) = $outpath.'/appris_data.exons.altNoOver.gff';
+	# get the specific principal exons (that do not overlap with alternative exons)
+	$logger->info("-- get the specific principal exons -------\n");
+	my ($outfile_PI) = $outpath.'/appris_data.exons.PI.gff';
 	eval {
-		my ($cmd) = "intersectBed -a $outfile_alt -b $outfile_prin  -v > $outfile_altNoOver";
+		my ($cmd) = "subtractBed -a $outfile_prin -b $outfile_alt > $outfile_PI";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting prin exons that do not overlap") if($@);
+		
+	# get the specific alternative exons (that do not overlap with principal exons)
+	$logger->info("-- get the specific alternative exons -------\n");
+	my ($outfile_NPI) = $outpath.'/appris_data.exons.NPI.gff';
+	eval {
+		my ($cmd) = "subtractBed -a $outfile_alt -b $outfile_prin > $outfile_NPI";
 		$logger->debug("\n** script: $cmd\n");
 		system ($cmd);
 	};
 	throw("getting alt exons that do not overlap") if($@);
+
+	# get the overlap regions PI+NPI
+	$logger->info("-- get the overlapping regions PI+NPI -------\n");
+	my ($outfile_OVER) = $outpath.'/appris_data.exons.OVER.gff';
+	eval {
+		my ($cmd) = "intersectBed -a $outfile_prin -b $outfile_alt -wb > $outfile_OVER";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting over regions") if($@);
 	
-	# Add start/stop codons for alt exons
-	$logger->info("-- add start/stop codons for alt exons -------\n");
-	my ($outcont_altNoOverCod) = add_codons($data_report, $outfile_altNoOver);
-	my ($outfile_altNoOverCod) = $outpath.'/appris_data.exons.altNoOverCod.gff';
-	if ($outfile_altNoOverCod ne '') {
-		my ($printing_file_log) = printStringIntoFile($outcont_altNoOverCod, $outfile_altNoOverCod);
-		$logger->error("printing") unless(defined $printing_file_log);		
-	}
+	
+#	# Add start/stop codons for alt exons
+#	$logger->info("-- add start/stop codons for alt exons -------\n");
+#	my ($outcont_NPI_wCodons) = add_codons($data_report, $outfile_NPI);
+#	my ($outfile_NPI_wCodons) = $outpath.'/appris_data.exons.NPIwithCodons.gff';
+#	if ($outcont_NPI_wCodons ne '') {
+#		my ($printing_file_log) = printStringIntoFile($outcont_NPI_wCodons, $outfile_NPI_wCodons);
+#		$logger->error("printing") unless(defined $printing_file_log);		
+#	}
+		
+	
+#	# get the specific principal exons (that do not overlap with alternative exons)
+#	$logger->info("-- get the specific principal exons -------\n");
+#	my ($outfile_PI) = $outpath.'/appris_data.exons.PI.gff';
+#	eval {
+#		my ($cmd) = "intersectBed -v -a $outfile_prin -b $outfile_alt > $outfile_PI";
+#		$logger->debug("\n** script: $cmd\n");
+#		system ($cmd);
+#	};
+#	throw("getting prin exons that do not overlap") if($@);
+#		
+#	# get the specific alternative exons (that do not overlap with principal exons)
+#	$logger->info("-- get the specific alternative exons -------\n");
+#	my ($outfile_NPI) = $outpath.'/appris_data.exons.NPI.gff';
+#	eval {
+#		my ($cmd) = "intersectBed -v -a $outfile_alt -b $outfile_prin > $outfile_NPI";
+#		$logger->debug("\n** script: $cmd\n");
+#		system ($cmd);
+#	};
+#	throw("getting alt exons that do not overlap") if($@);
+
+
+#	$logger->info("-- merge over regions -------\n");
+#	my ($outfile_OVER) = $outpath.'/appris_data.exons.OVER.gff';
+#	eval {
+#		#my ($cmd) = "bedtools merge -i $outfile_aOVER -c 4,5,6,7,8,9 -o collapse -delim '|' > $outfile_OVER ";
+#		my ($cmd) = "bedtools merge -i $outfile_aOVER -c 9 -o collapse -delim '|' > $outfile_OVER ";
+#		$logger->debug("\n** script: $cmd\n");
+#		system ($cmd);
+#	};
+#	throw("mergging over regions") if($@);
+	
+	
+#	# get prin transc
+#	$logger->info("-- get count bp of principal exons -------\n");
+#	eval {
+#		my ($cmd) = "bedtools coverage -a $outfile_prin -b $outfile_prin | cut -f 12 | awk '{s+=$1} END {printf \"%.0f\", s}'";
+#		$logger->debug("\n** script: $cmd\n");
+#		system ($cmd);
+#	};
+#	throw("getting principal exons") if($@);
+#		
+#	# get prin transc
+#	$logger->info("-- get count bp of alternative exons -------\n");
+#	eval {
+#		my ($cmd) = "bedtools coverage -a $outfile_alt -b $outfile_alt | cut -f 12 | awk '{s+=$1} END {printf \"%.0f\", s}'";
+#		$logger->debug("\n** script: $cmd\n");
+#		system ($cmd);
+#	};
+#	throw("getting principal exons") if($@);
+
 	
 	$logger->finish_log();
 	
 	exit 0;	
 }
 
+sub count_bp() {
+	my ($file) = @_;
+	
+	
+}
 sub get_exon_data($$)
 {
 	my ($dataset, $labelset) = @_;
@@ -156,8 +235,8 @@ sub get_exon_data($$)
 	
 	foreach my $gene (@{$dataset}) {
 		my ($gene_id) = $gene->stable_id;
+		my ($gene_name) = $gene->external_name;
 		my ($chr) = $gene->chromosome;
-		$logger->info("-- $gene_id\n");
 
 		#my ($g_report);		
 		my ($e_report);
@@ -191,12 +270,12 @@ sub get_exon_data($$)
 					#if ( $appris_annot eq 'YES' ) {
 					#	$a_annot = 'PRINCIPAL';
 					#	$g_appris_annot = 'PRINCIPAL';
-					#	$g_appris_transc_list .= $transcript_id.';';
+					#	$g_appris_transc_list .= $transcript_id.',';
 					#}
 					#elsif ( $appris_annot eq 'UNKNOWN' ) {
 					#	$a_annot = 'ALTERNATIVE';
 					#	$g_appris_annot = 'ALTERNATIVE';
-					#	$g_appris_transc_list .= $transcript_id.';';	
+					#	$g_appris_transc_list .= $transcript_id.',';	
 					#}
 					#elsif ( $appris_annot eq 'NO' ) {
 					#	$a_annot = 'REJECTED';					
@@ -206,12 +285,12 @@ sub get_exon_data($$)
 					if ( $appris_annot =~ /PRINCIPAL/ ) {
 						$a_annot = $appris_annot;
 						$g_appris_annot = $appris_annot;
-						$g_appris_transc_list .= $transcript_id.';';
+						$g_appris_transc_list .= $transcript_id.',';
 					}
 					elsif ( $appris_annot =~ /ALTERNATIVE/ ) {
 						$a_annot = $appris_annot;
 						#$g_appris_annot = $appris_annot;
-						#$g_appris_transc_list .= $transcript_id.';';
+						#$g_appris_transc_list .= $transcript_id.',';
 					}
 					elsif ( $appris_annot eq 'MINOR' ) {
 						$a_annot = $appris_annot;					
@@ -245,12 +324,16 @@ sub get_exon_data($$)
 						# cds annotation
 						for (my $icds = 0; $icds < scalar(@{$translate->cds}); $icds++) {
 							my ($cds) = $translate->cds->[$icds];	
+							my ($exon_id) = $cds->stable_id;
 							my ($cds_start) = $cds->start;
 							my ($cds_end) = $cds->end;
 							my ($cds_strand) = $cds->strand;
 							my ($cds_phase) = $cds->phase;
 							my ($cds_index) = $cds_start.'-'.$cds_end.':'.$cds_strand.':'.$cds_phase;
 							
+							if ( defined $exon_id ) {
+								$e_report->{$cds_index}->{'exon_id'} = $exon_id;
+							}
 							if ( exists $t_report->{'appris_annot'} and defined $t_report->{'appris_annot'} ) {
 								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'appris_annot'} = $t_report->{'appris_annot'};
 							}
@@ -283,7 +366,11 @@ sub get_exon_data($$)
 			if ( $cds_index =~ /^([^\-]*)\-([^\:]*)\:([^\:]*)\:([^\$]*)$/) {
 				($cds_start,$cds_end,$cds_strand,$cds_phase) = ($1,$2,$3,$4);
 			}
-			my ($t_appris_annot) = '-';		
+			my ($exon_id) = '-';
+			if ( exists $cds_report->{'exon_id'} and defined $cds_report->{'exon_id'} ) {
+				$exon_id = $cds_report->{'exon_id'};
+			}
+			my ($t_appris_annot) = '-';
 			my ($c_annot) = '-';
 			my ($transc_list) = '';
 			my ($biotype_rep);
@@ -294,7 +381,7 @@ sub get_exon_data($$)
 				if ( $trans_report->{'appris_annot'} =~ /^PRINCIPAL/ ) {
 					$t_appris_annot = $trans_report->{'appris_annot'};					
 				}
-				$transc_list .= $transc_id.';';
+				$transc_list .= $transc_id.',';
 				#if ( exists $trans_report->{'corsair_score'} and defined $trans_report->{'corsair_score'} and ($trans_report->{'corsair_score'} > 0) ) {
 				#	$c_annot = $trans_report->{'corsair_score'};
 				#}				
@@ -326,8 +413,8 @@ sub get_exon_data($$)
 					}
 				}				
 			}
-			$transc_list =~ s/\;$//mg;
-			$biotype_list = join(';', keys(%{$biotype_rep}) );
+			$transc_list =~ s/\,$//mg;
+			$biotype_list = join(',', keys(%{$biotype_rep}) );
 
 			$t_appris_annot = 'ALTERNATIVE' if ( $t_appris_annot eq '-');
 			
@@ -341,7 +428,9 @@ sub get_exon_data($$)
 						'.'."\t".
 						$cds_strand."\t".
 						$cds_phase."\t".
+						'exon_id "'.$exon_id.'"'."; ".
 						'gene_id "'.$gene_id.'"'."; ".
+						'gene_name "'.$gene_name.'"'."; ".
 						'transc_list "'.$transc_list.'"'."; ".
 						'biotype_list "'.$biotype_list.'"'."; ".
 						'appris_gene_annot "'.$g_appris_annot.'"'."; ".
@@ -350,7 +439,6 @@ sub get_exon_data($$)
 						'tsl "'.$t_annot.'"'."\n";
 			}			
 		}
-		$logger->info("\n");
 	}
 	return $output;
 }
