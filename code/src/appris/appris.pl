@@ -1057,9 +1057,12 @@ sub step_longest($$$)
 			else { # the decision base on biggest appris-score
 				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
 				my ($longest_sc) = $sort_sc[0];
-				if ( scalar(@{$princ_isof_scores->{$longest_sc}}) == 1 ) {
-					my ($transc_id) = $princ_isof_scores->{$longest_sc}[0];
-					$report->{$transc_id} = 1;
+				foreach my $transc_id ( @{$princ_isof_scores->{$longest_sc}} ) {
+					foreach my $transc_id2 ( @{$princ_isof->{$longest}} ) {
+						if ( $transc_id eq $transc_id2 ) {
+							$report->{$transc_id} = 1;
+						}
+					}
 				}
 				
 			}
