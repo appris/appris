@@ -1021,15 +1021,13 @@ sub step_longest($$$)
 				push(@{$princ_isof->{$len}}, $transc_id);
 				$princ_isof_seqs->{$transc_id} = $seq;
 			}			
-		}
-		if ( exists $nscores->{$transc_id} ) {
-			if ( exists $nscores->{$transc_id}->{'appris'} ) {
+			if ( exists $nscores->{$transc_id} and exists $nscores->{$transc_id}->{'appris'} ) {
 				my ($sc) = $nscores->{$transc_id}->{'appris'};
 				push(@{$princ_isof_scores->{$sc}}, $transc_id);
 			}
 		}
-	}	
-
+	}
+	
 	# print princ isoforms with longest seq
 	if ( defined $princ_isof ) {
 		# the first elem is the longest (b <=> a - descending)
@@ -1054,7 +1052,8 @@ sub step_longest($$$)
 					$report->{$transc_id} = 1;
 				}
 			}
-			else { # the decision base on biggest appris-score
+			else {
+				# the decision base on biggest appris-score
 				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
 				my ($longest_sc) = $sort_sc[0];
 				foreach my $transc_id ( @{$princ_isof_scores->{$longest_sc}} ) {
