@@ -159,10 +159,10 @@ sub create_entity($$)
 	my ($id, $inpath) = @_;
 	my ($entity);	
 	my ($inputs) = {
-		'data'		=> $inpath.'/'.$id.'.annot.gtf',
-		'pdata'		=> $inpath.'/'.$id.'.pannot.gtf',
-		'transc'	=> $inpath.'/'.$id.'.transc.fa',
-		'transl'	=> $inpath.'/'.$id.'.transl.fa',
+		'data'		=> $inpath.'/'.'annot.gtf',
+		'pdata'		=> $inpath.'/'.'pannot.gtf',
+		'transc'	=> $inpath.'/'.'transc.fa',
+		'transl'	=> $inpath.'/'.'transl.fa',
 	};
 	if ( -e $inputs->{'data'} and (-s $inputs->{'data'} > 0) and
 			-e $inputs->{'pdata'} and (-s $inputs->{'pdata'} > 0) and
@@ -202,11 +202,11 @@ sub create_reports($$$)
 				$inputs->{$met} = $entity;
 			}
 			elsif ( $met eq 'appris' ) {
-				$inputs->{$met} = $inpath.'/'.$id.'.'.$met;
-				$inputs->{$met.'_label'} = $inpath.'/'.$id.'.'.$met.'.label';
+				$inputs->{$met} = $inpath.'/'.$met;
+				$inputs->{$met.'_label'} = $inpath.'/'.'label';
 			}
 			else {
-				$inputs->{$met} = $inpath.'/'.$id.'.'.$met;				
+				$inputs->{$met} = $inpath.'/'.$met;
 			}
 		}
 		else {

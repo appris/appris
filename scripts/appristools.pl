@@ -77,6 +77,7 @@ sub main()
 		eval {
 			my ($params) = params_run_pipe();
 			my ($cmd) = "apprisall $params";
+			info($cmd);
 			system ($cmd);
 		};
 		throw("executing pipeline") if($@);
@@ -85,6 +86,7 @@ sub main()
 		eval {
 			my ($params) = param_check_files();
 			my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/check_files.pl $params ";
+			info($cmd);
 			my (@output) = `$cmd`;
 print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		};
@@ -105,6 +107,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($params) = param_retrieve_data();
 			my ($cmd) = "appris_retrieve_main_data $params";
+			info($cmd);
 			system ($cmd);
 		};
 		throw("retrieving the main data") if($@);
@@ -128,6 +131,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($params) = param_db_create();
 			my ($cmd) = "appris_db_create $params";
+			info($cmd);
 			system ($cmd);
 		};
 		throw("creating database") if($@);
@@ -136,6 +140,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($params) = param_db_insert();
 			my ($cmd) = "appris_insert_appris $params";
+			info($cmd);
 			system ($cmd);
 		};
 		throw("inserting data") if($@);
@@ -148,6 +153,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 		eval {
 			my ($params) = param_db_backup();
 			my ($cmd) = "appris_db_backup $params";
+			info($cmd);
 			system ($cmd);
 		};
 		throw("creating db backup") if($@);
@@ -174,6 +180,7 @@ print STDOUT "OUTPUT: \n".Dumper(@output)."\n";
 			    #close STDOUT; close STDERR; # so parent can go on
 				eval {
 					my ($cmd) = "appris_retrieve_method_data $params";
+					info($cmd);
 					system ($cmd);
 				};
 				exit 1 if($@);

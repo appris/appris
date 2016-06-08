@@ -176,14 +176,22 @@ sub main()
 	$outpath = prepare_workspace($outpath);
 	if ( ($type_of_input eq 'gencode') or ($type_of_input eq 'sequence') ) {
 		my ($name, $inpath, $suffix) = fileparse($transl_file, qr/\.[^.]+/);
-		unless ( defined $id ) {
-			if ( defined $name and $name =~ /^([^\.]+\.[\d]+)/ ) {
-				$id = $1;
-			}
-			elsif ( defined $name and $name =~ /^([^\.]+)/ ) {
-				$id = $1;
-			}
-			else { $logger->error("id not defined"); }
+#		unless ( defined $id ) {
+#			if ( defined $name and $name =~ /^([^\.]+\.[\d]+)/ ) {
+#				$id = $1;
+#			}
+#			elsif ( defined $name and $name =~ /^([^\.]+)/ ) {
+#				$id = $1;
+#			}
+#			else { $logger->error("id not defined"); }
+#		}
+		my (@inpath_n) = split('/', $inpath);
+		if ( scalar(@inpath_n) > 0 ) {
+			my ($num) = scalar(@inpath_n);
+			$id = $inpath_n[$num-1];
+		}
+		else {
+			$logger->error("id not defined");
 		}
 	}
 	elsif ( $type_of_input eq 'inpath' ) {
@@ -475,10 +483,10 @@ sub run_getgtf($$$$)
 {
 	my ($id, $species, $e_version, $datadir) = @_;	
 	my ($input_files) = {
-		'annot'			=> $datadir.'/'.$id.'.annot.gtf',
-		'pannot'		=> $datadir.'/'.$id.'.pannot.gtf',
-		'transc'		=> $datadir.'/'.$id.'.transc.fa',
-		'transl'		=> $datadir.'/'.$id.'.transl.fa'
+		'annot'			=> $datadir.'/'.'annot.gtf',
+		'pannot'		=> $datadir.'/'.'pannot.gtf',
+		'transc'		=> $datadir.'/'.'transc.fa',
+		'transl'		=> $datadir.'/'.'transl.fa'
 	};
 	my ($data_file, $pdata_file, $transc_file, $transl_file) = ( 
 		$input_files->{'annot'},
@@ -641,10 +649,10 @@ sub create_inputs($$)
 			'species'		=> "'$species'"
 		};
 		my ($ifiles) = {
-			'annot'			=> $inpath.'/'.$id.'.annot.gtf',
-			'pannot'		=> $inpath.'/'.$id.'.pannot.gtf',
-			'transc'		=> $inpath.'/'.$id.'.transc.fa',
-			'transl'		=> $inpath.'/'.$id.'.transl.fa'
+			'annot'			=> $inpath.'/'.'annot.gtf',
+			'pannot'		=> $inpath.'/'.'pannot.gtf',
+			'transc'		=> $inpath.'/'.'transc.fa',
+			'transl'		=> $inpath.'/'.'transl.fa'
 		};
 		while ( my ($i, $ifil) = each(%{$ifiles}) ) {
 			if ( -e $ifil and (-s $ifil > 0) ) {
@@ -759,11 +767,11 @@ sub run_pipeline($$$)
 	foreach my $method ( split(',',$methods_list) ) {		
 		if ( $method eq 'appris' ) {
 			foreach my $met ( @{$METHOD_STRUCT} ) {
-				$files->{$method}->{$met} = $outpath.'/'.$id.'.'.$met;				
+				$files->{$method}->{$met} = $outpath.'/'.$met;
 			}
 		}
 		else {
-			$files->{$method} = $outpath.'/'.$id.'.'.$method;				
+			$files->{$method} = $outpath.'/'.$method;
 		}
 	}
 	
@@ -1011,17 +1019,17 @@ perl appris.pl
 
 	--species='Homo sapiens'
 	
-	--data={ABSOLUTE_PATH}/ENSG00000140416.annot.gtf
+	--data={ABSOLUTE_PATH_WITH_ID_WITH_ID}/ENSG00000140416/annot.gtf
 	
-	--data={ABSOLUTE_PATH}/ENSG00000140416.pannot.gtf
+	--data={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/pannot.gtf
 	
-	--transc={ABSOLUTE_PATH}/ENSG00000140416.transc.fa
+	--transc={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/transc.fa
 	
-	--transl={ABSOLUTE_PATH}/ENSG00000140416.transl.fa
+	--transl={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/transl.fa
 	
-	--outpath={ABSOLUTE_PATH}/ENSG00000140416/
+	--outpath={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/
 	
-	--logpath={ABSOLUTE_PATH}/logs/
+	--logpath={ABSOLUTE_PATH_WITH_ID}/logs/
 			
 	--logfile=apprisall.log
 	
@@ -1036,19 +1044,19 @@ perl appris.pl
 
 	--species='Homo sapiens'
 	
-	--data={ABSOLUTE_PATH}/ENSG00000140416.annot.gtf
+	--data={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/annot.gtf
 	
-	--data={ABSOLUTE_PATH}/ENSG00000140416.pannot.gtf
+	--data={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/pannot.gtf
 	
-	--transc={ABSOLUTE_PATH}/ENSG00000140416.transc.fa
+	--transc={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/transc.fa
 	
-	--transl={ABSOLUTE_PATH}/ENSG00000140416.transl.fa
+	--transl={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/transl.fa
 	
 	--position=22,10,M
 	
-	--outpath={ABSOLUTE_PATH}/ENSG00000140416/
+	--outpath={ABSOLUTE_PATH_WITH_ID}/ENSG00000140416/
 	
-	--logpath={ABSOLUTE_PATH}/logs/
+	--logpath={ABSOLUTE_PATH_WITH_ID}/logs/
 			
 	--logfile=apprisall.log
 	
@@ -1069,7 +1077,7 @@ perl appris.pl
 	
 	--id=ENSMUSG00000017167.13
 
-	--outpath={ABSOLUTE_PATH}
+	--outpath={ABSOLUTE_PATH_WITH_ID}
 
 	--methods=firestar,matador3d
 	
@@ -1086,11 +1094,11 @@ perl appris.pl
 	
 	--id=ENSG00000160404.13
 
-	--transl={ABSOLUTE_PATH}/ENSG00000160404.13/ENSG00000160404.13.transl.fa
+	--transl={ABSOLUTE_PATH_WITH_ID}/ENSG00000160404.13/transl.fa
 
-	--outpath={ABSOLUTE_PATH}/ENSG00000160404.13/
+	--outpath={ABSOLUTE_PATH_WITH_ID}/ENSG00000160404.13/
 	
-	--logfile={ABSOLUTE_PATH}/ENSG00000160404.13/ENSG00000160404.13.log
+	--logfile={ABSOLUTE_PATH_WITH_ID}/ENSG00000160404.13/log
 	
 	--loglevel=debug
 	
@@ -1107,13 +1115,13 @@ perl appris.pl
 	
 	--id=WSERVER_ENSG00000160404_XXXX
 
-	--transl={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/WSERVER_ENSG00000160404_XXXX.transl.fa
+	--transl={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX/transl.fa
 
-	--outpath={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX
+	--outpath={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/cluster.ini.wserver
 	
-	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/WSERVER_ENSG00000160404_XXXX.log
+	--logfile={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX/log
 	
 	--loglevel=debug
 	
@@ -1130,11 +1138,11 @@ perl appris.pl
 	
 	--e-version=74
 	
-	--outpath={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX
+	--outpath={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/cluster.ini.wserver
 	
-	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/ENSG00000160404.13.log
+	--logfile={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/log
 	
 	--loglevel=debug
 	
@@ -1149,23 +1157,23 @@ perl appris.pl
 
 	--species='Homo sapiens'
 	
-	--outpath={ABSOLUTE_PATH}/ENSG00000168556.5/
+	--outpath={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/
 	
-	--transl={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.transl.fa
+	--transl={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/transl.fa
 	
-	--transc={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.transc.fa
+	--transc={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/transc.fa
 	
-	--pdata={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.pannot.gtf
+	--pdata={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/pannot.gtf
 	
-	--data={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.annot.gtf
+	--data={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/annot.gtf
 	
 	--methods=firestar
 	
 	--t-align=compara
 	
-	--cached-path={ABSOLUTE_PATH}/appris/code/cached/homo_sapiens/e_70
+	--cached-path={ABSOLUTE_PATH_WITH_ID}/appris/code/cached/homo_sapiens/e_70
 	
-	--logfile={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.log
+	--logfile={ABSOLUTE_PATH_WITH_ID}/ENSG00000168556.5/log
 	
 	--loglevel=debug
 	
@@ -1207,7 +1215,7 @@ perl appris.pl
 	
 	--logpath=examples/ENSG00000099999/
 	
-	--logfile=ENSG00000099999.log
+	--logfile=log
 	
 =head1 EXAMPLE
 
@@ -1223,13 +1231,13 @@ perl appris.pl
 	
 	--e-version=74
 
-	--transl=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/ENSG00000168556.5.transl.fa
+	--transl=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/transl.fa
 	
-	--transc=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/ENSG00000168556.5.transc.fa
+	--transc=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/transc.fa
 	
-	--pdata=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/ENSG00000168556.5.pannot.gtf
+	--pdata=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/pannot.gtf
 	
-	--data=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/ENSG00000168556.5.annot.gtf
+	--data=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/annot.gtf
 	
 	--outpath=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/
 	
@@ -1245,7 +1253,7 @@ perl appris.pl
 	
 	--logpath=/local/jmrodriguez/gencode19/annotations/chr4/ENSG00000168556.5/
 	
-	--logfile=ENSG00000168556.5.log		
+	--logfile=log
 	
 
 =head1 AUTHOR

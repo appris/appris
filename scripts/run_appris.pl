@@ -462,20 +462,13 @@ sub prepare_appris_params($$)
 	
 	# input files
 	my ($in_files) = {
-			'data'			=> $workspace.'/'.$gene_id.'.annot.gtf',
-			'pdata'			=> $workspace.'/'.$gene_id.'.pannot.gtf',
-			'transc'		=> $workspace.'/'.$gene_id.'.transc.fa',
-			'transl'		=> $workspace.'/'.$gene_id.'.transl.fa',
-			'cdsseq'		=> $workspace.'/'.$gene_id.'.cdsseq.fa',			
-#			'firestar'		=> $workspace.'/'.$gene_id.'.firestar',
-#			'matador3d'		=> $workspace.'/'.$gene_id.'.matador3d',
-#			'spade'			=> $workspace.'/'.$gene_id.'.spade',
-#			'corsair'		=> $workspace.'/'.$gene_id.'.corsair',
-#			'thump'			=> $workspace.'/'.$gene_id.'.thump',
-#			'crash'			=> $workspace.'/'.$gene_id.'.crash',
-#			'appris'		=> $workspace.'/'.$gene_id.'.appris',
-			'logfile'		=> $workspace.'/'.$gene_id.'.log',
-			'errfile'		=> $workspace.'/'.$gene_id.'.err',
+			'data'			=> $workspace.'/'.'annot.gtf',
+			'pdata'			=> $workspace.'/'.'pannot.gtf',
+			'transc'		=> $workspace.'/'.'transc.fa',
+			'transl'		=> $workspace.'/'.'transl.fa',
+			'cdsseq'		=> $workspace.'/'.'cdsseq.fa',
+			'logfile'		=> $workspace.'/'.'log',
+			'errfile'		=> $workspace.'/'.'err',
 	};
 	
 	# delete any log file for the new execution
@@ -803,7 +796,7 @@ sub run_cluster_appris($$$)
 		
 	# create main script
 	my ($c_logpath) = $c_wspace;
-	my ($c_logfile) = $c_id.'.log';
+	my ($c_logfile) = 'log';
 	my ($c_cmd) = "\n".
 				"perl $c_jobhome/code/appris.pl ".
 				" $c_parameters ".
@@ -868,7 +861,7 @@ sub run_appris($$$)
 	my ($c_id) = $id; if ( defined $wserver and $type_of_input =~ /sequence/ ) { $c_id = $wserver }	
 	my ($c_wspace) = $workspace.'/'.$id;	
 	my ($c_logpath) = $c_wspace;
-	my ($c_logfile) = $c_id.'.log';
+	my ($c_logfile) = 'log';
 	my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/appris.pl ".
 				" $parameters ".
 				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
