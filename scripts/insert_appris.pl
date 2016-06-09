@@ -281,7 +281,7 @@ sub insert_appris($$$)
 	my ($c_wspace) = $workspace;
 	my ($c_id) = $id;
 	my ($c_logpath) = $c_wspace;
-	my ($c_logfile) = $c_id.'.log';
+	my ($c_logfile) = 'log';
 
 	# run
 	eval {
