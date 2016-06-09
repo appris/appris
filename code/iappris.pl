@@ -203,7 +203,7 @@ sub create_reports($$$)
 			}
 			elsif ( $met eq 'appris' ) {
 				$inputs->{$met} = $inpath.'/'.$met;
-				$inputs->{$met.'_label'} = $inpath.'/'.'label';
+				$inputs->{$met.'_label'} = $inpath.'/'.$met.'.label';
 			}
 			else {
 				$inputs->{$met} = $inpath.'/'.$met;
