@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="rattus_norvegicus/e84"
+export APPRIS_WS_NAME="danio_rerio/e77"
 
-export APPRIS_WS_DATE="rattus_norvegicus/ens84.v17"
+export APPRIS_WS_DATE="danio_rerio/ens77.v17"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -28,39 +28,37 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Rattus norvegicus"
+export APPRIS_SPECIES="Danio rerio"
 
-export APPRIS_ASSEMBLY="Rnor_6.0"
+export APPRIS_ASSEMBLY="Zv9"
 
 #export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
-export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
-#export APPRIS_CHR_LIST="1,6,11,16,X"
-#export APPRIS_CHR_LIST="2,7,12,17,MT"
-#export APPRIS_CHR_LIST="3,8,13,18"
-#export APPRIS_CHR_LIST="4,9,14,19"
-#export APPRIS_CHR_LIST="5,10,15,20"
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,MT"
+#export APPRIS_CHR_LIST="3,2,19,15,25"
+#export APPRIS_CHR_LIST="4,8,22,21,18"
+#export APPRIS_CHR_LIST="1,20,9,23,14"
+#export APPRIS_CHR_LIST="5,16,13,12,24"
+#export APPRIS_CHR_LIST="7,6,17,10,11,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-#export APPRIS_E_VERSION=81
+#export APPRIS_E_VERSION=77
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.84.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.cdna.all.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.pep.all.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transl.fa"
 
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
-#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=fish
 
-#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/rn6.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer7.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 
@@ -68,13 +66,13 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/e83"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/danio_rerio/e77"
 
 # ---------------------------------#
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.Drer.e77"
 
 # --------------------------------#
 # Setting up the vars for cluster #

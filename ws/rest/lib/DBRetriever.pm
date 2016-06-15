@@ -340,9 +340,10 @@ sub load_registry {
 						
 			}				
 		}
-	}	
-print STDERR "REGISTRY:\n".Dumper($registries)."\n";
+	}
+	
 	return $registries;
+	
 } # end load_registry
 
 =head2 get_features

@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="rattus_norvegicus/e84"
+export APPRIS_WS_NAME="rattus_norvegicus/e77"
 
-export APPRIS_WS_DATE="rattus_norvegicus/ens84.v17"
+export APPRIS_WS_DATE="rattus_norvegicus/ens77.v17"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -30,7 +30,7 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 
 export APPRIS_SPECIES="Rattus norvegicus"
 
-export APPRIS_ASSEMBLY="Rnor_6.0"
+export APPRIS_ASSEMBLY="Rnor_5.0"
 
 #export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
 export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
@@ -44,13 +44,13 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-#export APPRIS_E_VERSION=81
+#export APPRIS_E_VERSION=77
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.84.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.cdna.all.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.pep.all.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.transl.fa"
 
 #export APPRIS_GENE_LIST=""
 
@@ -60,7 +60,7 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/rn6.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/rn5.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 
@@ -68,13 +68,13 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/e83"
+#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/e77"
 
 # ---------------------------------#
 # Setting up the vars for database #
 # ---------------------------------#
 
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.Rnor.e77"
 
 # --------------------------------#
 # Setting up the vars for cluster #
