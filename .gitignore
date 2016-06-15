@@ -36,3 +36,4 @@ db/*
 !db/README.txt
 !db/another_fire_mess_web
 !db/discardEmptySeqsPDB.pl
+.Rproj.user

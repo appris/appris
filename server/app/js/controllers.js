@@ -142,14 +142,6 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
         $rootScope.isLoadingScreen = true;
         var id = $routeParams.id;
 
-//        // load specie list
-//        if ( angular.isUndefined($rootScope.species) ) {
-//            $rootScope.species = null;
-//            Species.get().$promise.then( function(data) {
-//                $rootScope.species = data;
-//            });
-//        }
-
         // load results
 
         // create search summary
@@ -162,26 +154,22 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                 if (  angular.isUndefined(specieResult[item.species]) ) {
                     specieResult[item.species] = [];
                 }
-                var assemblies = $rootScope.species[item.species].assemblies;
-                angular.forEach(assemblies, function(assembly) {
-                    if ( assembly.dataset === parseInt(item.dataset) ) {
-                        var speRst = {
-                            "species":      item.species,
-                            "assembly": {
-                                "id": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].id,
-                                "name": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].name
-                            },
-                            "dataset":      item.dataset,
-                            "label":        item.label,
-                            "namespace":    item.namespace,
-                            "id":           item.id,
-                            "biotype":      item.biotype,
-                            "dblink":       item.dblink,
-                            "position":     'chr'+item.chr+':'+item.start+'-'+item.end
-                        }
-                        specieResult[item.species].push(speRst);
-                    }
-                });
+                var speRst = {
+                    "species":      item.species,
+                    "assembly": {
+                        "id": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].id,
+                        "name": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].name
+                    },
+                    "source":      item.source,
+                    "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
+                    "label":        item.label,
+                    "namespace":    item.namespace,
+                    "id":           item.id,
+                    "biotype":      item.biotype,
+                    "dblink":       item.dblink,
+                    "position":     item.chr+':'+item.start+'-'+item.end
+                }
+                specieResult[item.species].push(speRst);
             });
 
             // sort by specie

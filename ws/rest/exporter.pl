@@ -14,7 +14,8 @@ $|=1; # not use buffering
 # Global variable #
 ###################
 use vars qw(
-	$CONFIG_INI_FILE
+	$CONFIG_DB_FILE
+	$CONFIG_SERVER_FILE
 	$FORMAT
 	$METHODS
 	$TYPE_BED
@@ -22,7 +23,8 @@ use vars qw(
 	
 );
 
-$CONFIG_INI_FILE	= $ENV{APPRIS_WSERVER_SCRIPTS_DB_INI};
+$CONFIG_DB_FILE 	= $ENV{APPRIS_WSERVER_CONF_DB_FILE};
+$CONFIG_SERVER_FILE = $ENV{APPRIS_WSERVER_CONF_SR_FILE};
 $METHODS			= $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE};
 $FORMAT				= $ENV{APPRIS_WSERVER_OUTPUT_FORMAT};
 $TYPE_BED			= $ENV{APPRIS_WSERVER_TYPEBED}; # NOT EXISTS
@@ -52,11 +54,11 @@ sub main()
 		if ( scalar(@input_parameters) > 4 );
 
 	my ($type) = $input_parameters[1];
-	my ($specie) = $input_parameters[2];
+	my ($species) = $input_parameters[2];
 	my ($inputs) = $input_parameters[3];
 
 	print_http_response(400)
-		unless ( defined $type and defined $specie and defined $inputs );
+		unless ( defined $type and defined $species and defined $inputs );
 
 	print_http_response(405, "The parameter $type is not allowed. The parameter must be: 'id', 'name', or 'position'.")
 		if ( ($type ne 'id') and ($type ne 'name') and ($type ne 'position') );
@@ -82,34 +84,38 @@ sub main()
 		}
 	}
 	
-	# Ensembl database version is checked
-	my ($db) = $cgi->param('db') || undef ;
-	
-	my ($ens) = $cgi->param('ens') || undef ;
-	if ( defined $ens and ($ens ne '') ) {
-		my ($db) = new DBRetriever(
-								-conf   => $CONFIG_INI_FILE,
-								-specie => $specie,
-								-ens	=> $ens
-		);
-		unless ( $db->is_registry($specie,$ens) ) {
-			my ($specie_ens) = '';
-			eval {
-				my (@info_list) = `grep '_DB' $CONFIG_INI_FILE`;
-				if ( scalar(@info_list) > 0 ) {
-					$specie_ens = "The parameter is optional; otherwise it must be: ";
-					foreach my $info (@info_list) {
-						$info =~ s/\n*//g;
-						if ( lc($info) =~ /$specie\_ens(\d*)\_db/) {
-							$specie_ens .= $1.',';
-						}
-					}
-					$specie_ens =~ s/\,$//;
-				}
-			};
-			print_http_response(405, "The parameters specie: $specie + ensembl version: $ens is not allowed. $specie_ens")
-		}
-	} 
+	# Optional paramteres
+	my ($as) = ( $cgi->param('as') ) ? $cgi->param('as') : undef; # assembly
+	my ($sc) = ( $cgi->param('sc') ) ? $cgi->param('sc') : undef; # source name
+	my ($ds) = ( $cgi->param('ds') ) ? $cgi->param('ds') : undef; # dataset version
+
+	# Chech if parameters exists
+# TODO!! Fix!!!	
+#	my ($ens) = $cgi->param('ens') || undef ;
+#	if ( defined $ens and ($ens ne '') ) {
+#		my ($db) = new DBRetriever(
+#								-conf   => $CONFIG_INI_FILE,
+#								-specie => $species,
+#								-ens	=> $ens
+#		);
+#		unless ( $db->is_registry($species,$ens) ) {
+#			my ($species_ens) = '';
+#			eval {
+#				my (@info_list) = `grep '_DB' $CONFIG_INI_FILE`;
+#				if ( scalar(@info_list) > 0 ) {
+#					$species_ens = "The parameter is optional; otherwise it must be: ";
+#					foreach my $info (@info_list) {
+#						$info =~ s/\n*//g;
+#						if ( lc($info) =~ /$species\_ens(\d*)\_db/) {
+#							$species_ens .= $1.',';
+#						}
+#					}
+#					$species_ens =~ s/\,$//;
+#				}
+#			};
+#			print_http_response(405, "The parameters specie: $species + ensembl version: $ens is not allowed. $species_ens")
+#		}
+#	} 
 	
 	# Get optional parameters
 	my ($format) = $cgi->param('format') || undef ;
@@ -130,10 +136,12 @@ sub main()
 	# Get features from input
 	my ($features);
 	my ($retriever) = new DBRetriever(
-								-conf   	=> $CONFIG_INI_FILE,
-								-specie 	=> $specie,
-								-ens		=> $ens,
-								-assembly	=> $db,
+								-dbconf   	=> $CONFIG_DB_FILE,
+								-srvconf   	=> $CONFIG_SERVER_FILE,
+								-species 	=> $species,
+								-assembly	=> $as,								
+								-source		=> $sc,
+								-dataset	=> $ds,
 								-type   	=> $type,
 								-input		=> $inputs
 	);

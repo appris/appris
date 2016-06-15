@@ -7,8 +7,17 @@
         <h4 class="media-heading">{{specie.common}}</h4>
         <h6 class="media-heading">{{specie.scientific}}</h6>
         <ul class="list-unstyled">
-            <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}.
-                Latest dataset version: <em>Ensembl{{assembly.dataset}}</em></li>
+            <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}
+                <!--<ul class="list-unstyled">Datasets:-->
+                    <!--<li data-ng-repeat="dataset in assembly.datasets">{{dataset.id | delete_version }} {{$last ? '' : ', '}}</li>-->
+                <!--</ul>-->
+                <ul class="list-unstyled">Datasets:
+                    <scan data-ng-repeat="dataset in assembly.datasets">{{dataset.source.name | capitalize}}
+                        ({{dataset.id | delete_version}}){{$last? '' : ',
+                        '}}</scan>
+                </ul>
+
+                <!--Latest dataset version: <em>Ensembl{{assembly.dataset}}</em></li>-->
             <!--<li><strong>Archives:</strong> <scan data-ng-repeat="ens in specie.archives">Ensembl{{ens}}  </scan> </li>-->
         </ul>
     </div>

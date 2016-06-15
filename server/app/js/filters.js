@@ -124,17 +124,24 @@ apprisFilters.filter('capitalize', function() {
     }
 });
 
+apprisFilters.filter('delete_version', function() {
+    return function(input) {
+        return (!!input) ? input.replace(/\.([^$]*)$/g, '') : '';
+    }
+});
+
+
 /**
  * SPECIFIC FILTERS
  **/
 
 // For SPECIES PAGE: retrieves the 'popular genomes'
-apprisFilters.filter('showPopularGenomes', function() {
+apprisFilters.filter('showHousesGenomes', function() {
     return function(items) {
         if (!angular.isObject(items)) return items;
         var filtered = [];
         angular.forEach(items, function(item) {
-            if ( angular.isObject(item) && item.popular === 1 ) {
+            if ( angular.isObject(item) && item.category === 'houses' ) {
                 filtered.push(item) ;
             }
         });

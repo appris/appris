@@ -90,8 +90,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                     tid: $routeParams.tid,
                     species: $routeParams.species,
                     id: $routeParams.id,
-                    //ens: $routeParams.ens,
-                    db: $routeParams.db,
+                    as: $routeParams.as,
                     methods: 'appris'
                 };
             }
@@ -120,11 +119,17 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                             id: "biotype",
                             label: "Biotype"
                         },{
-                            id: "no_codons",
-                            label: "Codons not found"
-                        },{
                             id: "ccds_id",
                             label: "CCDS"
+//                        },{
+//                            id: "no_codons",
+//                            label: "Codons not found"
+//                        },{
+//                            id: "tsl",
+//                            label: "TSL"
+                        },{
+                            id: "flags",
+                            label: "Flags"
                         },{
                             id: "principal_isoform",
                             label: "Principal Isoform"
@@ -254,7 +259,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                 species: $routeParams.species,
                 id: $routeParams.id,
                 //ens: $routeParams.ens
-                db: $routeParams.db
+                as: $routeParams.as
             };
         }
         else if ( $scope.runnerid ) {
@@ -348,21 +353,34 @@ apprisFilters.filter('convertTransScoreObj', function() {
                 if ( !(filtered[iTrans]) ) {
                     filtered[iTrans] = {};
                     filtered[iTrans]['transcript_id'] = iTrans;
+                    filtered[iTrans]['flags'] = '';
                     if ( angular.isDefined(item.transcript_name) ) {
                         filtered[iTrans]['transcript_name'] = item.transcript_name;
-                    }
-                    if ( angular.isDefined(item.biotype) ) {
-                        filtered[iTrans]['biotype'] = item.biotype;
-                    }
-                    if ( angular.isDefined(item.length_aa) ) {
-                        filtered[iTrans]['length_aa'] = item.length_aa;
                     }
                     if ( angular.isDefined(item.ccds_id) ) {
                         filtered[iTrans]['ccds_id'] = item.ccds_id;
                     }
+                    if ( angular.isDefined(item.length_aa) ) {
+                        filtered[iTrans]['length_aa'] = item.length_aa;
+                    }
+                    if ( angular.isDefined(item.biotype) ) {
+                        filtered[iTrans]['biotype'] = item.biotype;
+                    }
                     if ( angular.isDefined(item.no_codons) ) {
                         filtered[iTrans]['no_codons'] = item.no_codons;
                     }
+                    if ( angular.isDefined(item.tsl) ) {
+                        filtered[iTrans]['flags'] += ', '+'TSL'+item.tsl;
+                    }
+                    if ( angular.isDefined(item.no_codons) ) {
+                        filtered[iTrans]['flags'] += ', '+item.no_codons+'_codon_NF';
+                    }
+                    if ( angular.isDefined(item.tag) ) {
+                        if ( item.tag.indexOf('readthrough_transcript') > -1 ) {
+                            filtered[iTrans]['flags'] += ', '+'ReadThrough';
+                        }
+                    }
+                    filtered[iTrans]['flags'] = filtered[iTrans]['flags'].replace(/^,\s*/g,'');
                     var id = {}
                     id['id'] = iTrans;
                     if ( angular.isDefined(item.length_aa) ) {

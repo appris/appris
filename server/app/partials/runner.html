@@ -17,7 +17,7 @@
         <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
               data-target="#infoSpecies"></span>
         <div class="input-group-addon">
-            <select class="form-control"  data-ng-model="runnerForm.species" data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.category for ( specie_id, specie_val ) in species | orderObjectBy:'order' " required>
+            <select class="form-control"  data-ng-model="runnerForm.species" data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.group for ( specie_id, specie_val ) in species | orderObjectBy:'order' " required>
                 <option value="" selected>-- Select species --</option>
             </select>
         </div>

@@ -91,7 +91,7 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-my ($species_json) = JSON->new(); $SPECIES = $species_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json') );
+my ($species_json) = JSON->new(); $SPECIES = $species_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_SR_FILE}) );
 my ($methods_json) = JSON->new(); $METHODS = $methods_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 	my ($met_name) = lc($met_report->{'name'});
@@ -962,12 +962,10 @@ sub get_gen_annotations
 	my ($result) = '';
 	
 	# retrieve images from UCSC
-	if ( $self->species and $self->ens ) {
-		my ($query_id) = 'runner/result/' . $self->jobid;		
-		$result = $self->get_gen_features($query_id, $self->species, $self->ens, $methods, $ids);		
-	}
-	else {
-		$result = "Job query needs genome information\n";		
+	my ($query_id) = 'runner/result/' . $self->jobid;		
+	$result = $self->get_gen_features($query_id, $self->species, $self->assembly, $self->source, $self->dataset, $methods, $ids);		
+	unless ( defined $result ) {
+		$result = "Job query needs genome information\n";
 	}
 	
 	return $result;
@@ -1636,70 +1634,76 @@ sub get_gen_features {
 	my ($self) = shift;
 	my ($query_id) = shift;
 	my ($species) = shift;
-	my ($ens) = shift;
+	my ($assembly) = shift;
+	my ($source) = shift;
+	my ($dataset) = shift;
 	my ($methods) = shift if (@_);
 	my ($ids) = shift if (@_);
 	my ($result) = undef;
 	
-	my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
-	
-	# get UCSC dbs from species
-	my ($ucsc_db) = '';
-	my ($gencode_db) = '22'; # by default
-	if ( exists $SPECIES->{$species_id} and $SPECIES->{$species_id}->{'assemblies'} ) {
-		foreach my $assembly (@{$SPECIES->{$species_id}->{'assemblies'}}) {
-			my ($assembly_id) = $assembly->{'id'};
-			my ($dataset) = $assembly->{'dataset'};
-			my ($gencode) = $assembly->{'gencode'} if ( exists $assembly->{'gencode'} ); 
-			if ( $ens == $dataset ) {
-				$ucsc_db = $assembly_id;
-				$gencode_db = $gencode if ( defined $gencode );
-			}
+	# species has to be defined
+	if ( defined $species ) {
+		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
+		my ($cfg_species) = $SPECIES->{$species_id};
+
+		# If not defined: get the official assembly (the last one), and the first dataset
+		unless ( defined $assembly ) { if ( exists $cfg_species->{'official'} ) { $assembly = $cfg_species->{'official'} } }
+				
+		# create exporter URL to get the BED tracks
+		my ($required_params) = 'format=bed' . '%26' . "as=$assembly";
+		my ($optional_params) = '';
+		if ( defined $methods ) {
+			$optional_params .= '%26'.'methods='.$methods;
+			if ( $species_id eq 'homo_sapiens' ) { $optional_params .= ',proteo' }
 		}
+		if ( defined $ids ) { $optional_params .= '%26'.'ids='.$ids }
+		if ( defined $source ) { $optional_params .= '%26'.'sc='.$source }
+		if ( defined $dataset ) { $optional_params .= '%26'.'ds='.$dataset }
+		my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
+		
+		# make a request to render tracks of UCSC
+		my ($params) = 'db=' . $assembly;
+		$params .= '&' . 'textSize=' . '12';
+		$params .= '&' . 'hgt.labelWidth=' . '20';
+		$params .= '&' . 'pix=' . '1100';
+		#$params .= '&' . 'hideTracks=1';
+		$params .= '&' . 'hgt.customText=' . $query;
+		#$params .= '&' . 'ccdsGene=full';
+		#$params .= '&' . 'ensGene=full';
+		#$params .= '&' . 'knownGene=full';
+		
+		if ( defined $source and $source eq 'refseq' ) {
+			$params .= '&' . 'refGene.label.acc=1';
+			$params .= '&' . 'refGene.label.gene=0';
+			$params .= '&' . 'refGene.label.omimhg38=0';
+			$params .= '&' . 'refGene.hideNoncoding=1';
+		}
+		else {
+			$params .= '&' . 'knownGene.label.gencodeId=1';
+			$params .= '&' . 'knownGene.label.gene=0';
+			$params .= '&' . 'knownGene.label.kgId=0';
+			$params .= '&' . 'knownGene.label.prot=0';
+			$params .= '&' . 'knownGene.label.omimhg38=0';
+			$params .= '&' . 'knownGene.show.comprehensive=1';
+			$params .= '&' . 'knownGene.show.spliceVariants=1';
+			$params .= '&' . 'knownGene.show.noncoding=0';
+			# for mouse and old species
+			my ($gencode_db_for_mouse) = 'M4'; # HARD-CORE!!! due UCSC does not update correctly
+			$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'_sel=' . '1';
+			$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db_for_mouse.'_sel=' . '0';
+			$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db_for_mouse.'_sel=' . '0';
+			$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'.label=' . 'accession';				
+		}
+		
+		my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
+		my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
+
+#return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
+
+		$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
+					"<img class='imgTrackUCSC img-responsive' src='".$ucsc_render_track_url."'>".
+				  "</a>";
 	}
-			
-	# create BED URLs
-	my ($required_params) = 'format=bed' . '%26' . "db=$ucsc_db";
-	my ($optional_params) = '';
-	if ( defined $methods ) {
-		$optional_params .= '%26'.'methods='.$methods;
-		if ( $species_id eq 'homo_sapiens' ) { $optional_params .= ',proteo' }
-	}
-	if ( defined $ids ) {
-		$optional_params .= '%26'.'ids='.$ids;
-	}
-	my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
-	
-	# make a request to render tracks of UCSC
-	my ($params) = 'db=' . $ucsc_db;
-	$params .= '&' . 'textSize=' . '12';
-	$params .= '&' . 'hgt.labelWidth=' . '20';
-	$params .= '&' . 'pix=' . '1100';
-	#$params .= '&' . 'hideTracks=1';
-	$params .= '&' . 'hgt.customText=' . $query;
-	#$params .= '&' . 'ccdsGene=full';
-	#$params .= '&' . 'ensGene=full';
-	#$params .= '&' . 'knownGene=full';
-	$params .= '&' . 'knownGene.label.gencodeId=1';
-	$params .= '&' . 'knownGene.label.gene=0';
-	$params .= '&' . 'knownGene.label.kgId=0';
-	$params .= '&' . 'knownGene.label.prot=0';
-	$params .= '&' . 'knownGene.label.omimhg38=0';
-	$params .= '&' . 'knownGene.show.comprehensive=1';
-	$params .= '&' . 'knownGene.show.spliceVariants=1';
-	$params .= '&' . 'knownGene.show.noncoding=0';
-	# for mouse
-	$gencode_db = 'M4'; # HARD-CORE!!! due UCSC does not update correctly
-	$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'_sel=' . '1';
-	$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db.'_sel=' . '0';
-	$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db.'_sel=' . '0';
-	$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db.'.label=' . 'accession';
-	
-	my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
-	my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
-	$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
-				"<img class='imgTrackUCSC img-responsive' src='".$ucsc_render_track_url."'>".
-			  "</a>";
 			  
 	return $result;
 
@@ -1782,6 +1786,7 @@ sub create_seeker_report($)
 	{
 		my ($species) = $feature->{'species'};
 		my ($assembly) = $feature->{'assembly'};
+		my ($source) = $feature->{'source'};
 		my ($dataset) = $feature->{'dataset'};
 		my ($entity) = $feature->{'entity'};
 		$assembly = undef if ( $assembly eq 'none' ); # undef assembly from WSRetriever jobs
@@ -1789,6 +1794,7 @@ sub create_seeker_report($)
 			my ($match) = {
 				'species'	=> $species,
 				'assembly'	=> $assembly,
+				'source'	=> $source,
 				'dataset'	=> $dataset,
 				'id'		=> $entity->stable_id,
 				'version'	=> $entity->version,
@@ -1801,10 +1807,10 @@ sub create_seeker_report($)
 			};
 			if ( $entity->chromosome and $entity->start and $entity->end ) {
 				if ( $entity->isa("APPRIS::Gene") ) {
-					$match->{'namespace'} = 'Ensembl_Gene_Id';	
+					$match->{'namespace'} = 'Gene_Id';	
 				}
 				elsif ( $entity->isa("APPRIS::Transcript") ) {
-					$match->{'namespace'} = 'Ensembl_Transcript_Id';
+					$match->{'namespace'} = 'Transcript_Id';
 				}					
 			}
 			if ( $entity->external_name ) {
@@ -1827,7 +1833,7 @@ sub create_seeker_report($)
 				foreach my $transcript (@{$entity->transcripts}) {
 					my ($dblink) = {
 						'id'		=> $transcript->stable_id,
-						'namespace'	=> 'Ensembl_Transcript_Id'
+						'namespace'	=> 'Transcript_Id'
 					};
 					push(@{$match->{'dblink'}}, $dblink);
 				}

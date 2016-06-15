@@ -43,17 +43,19 @@ package DBRetriever;
 use strict;
 use warnings;
 use FindBin;
+use JSON;
 use Config::IniFiles;
 use File::Temp;
 use Data::Dumper;
 
 # these modules are loaded in load_registry function
-#use APPRIS::Registry;
-#use APPRIS::Exporter;
+use APPRIS::Registry;
+use APPRIS::Exporter;
 use APPRIS::Utils::Argument qw(rearrange);
 use APPRIS::Utils::Exception qw(info throw warning deprecate);
+use APPRIS::Utils::File qw(getStringFromFile);
 
-use WSRetriever;
+#use WSRetriever;
 
 {
 	#___________________________________________________________
@@ -82,28 +84,40 @@ use WSRetriever;
 	}
 	
 	# Substitute values within template
-	sub conf {
+	sub dbconf {
 		my ($self, $arg) = @_;
-		$self->{'conf'} = $arg if defined $arg;
-		return $self->{'conf'};
+		$self->{'dbconf'} = $arg if defined $arg;
+		return $self->{'dbconf'};
 	}
 	
-	sub specie {
+	sub srvconf {
 		my ($self, $arg) = @_;
-		$self->{'specie'} = $arg if defined $arg;
-		return $self->{'specie'};
-	}
-	
-	sub ens {
-		my ($self, $arg) = @_;
-		$self->{'ens'} = $arg if defined $arg;
-		return $self->{'ens'};
+		$self->{'srvconf'} = $arg if defined $arg;
+		return $self->{'srvconf'};
 	}
 
+	sub species {
+		my ($self, $arg) = @_;
+		$self->{'species'} = $arg if defined $arg;
+		return $self->{'species'};
+	}
+	
 	sub assembly {
 		my ($self, $arg) = @_;
 		$self->{'assembly'} = $arg if defined $arg;
 		return $self->{'assembly'};
+	}
+	
+	sub source {
+		my ($self, $arg) = @_;
+		$self->{'source'} = $arg if defined $arg;
+		return $self->{'source'};
+	}
+
+	sub dataset {
+		my ($self, $arg) = @_;
+		$self->{'dataset'} = $arg if defined $arg;
+		return $self->{'dataset'};
 	}
 
 	sub type {
@@ -121,14 +135,18 @@ use WSRetriever;
 
 =head2 new
 
-  Arg [-conf]:
-        string - config ini
-  Arg [-specie]:
+  Arg [-dbconf]:
+        string - config file of Database host
+  Arg [-srvconf]:
+        string - config file of Server
+  Arg [-species]:
         string - specie name (human, mouse, rat)
-  Arg [-ens]:
-        integer - Ensembl version
   Arg [-assembly]:
         string - Assembly version
+  Arg [-source]:
+        string - source name (ensembl,refseq,uniprot)
+  Arg [-dataset]:
+        string - Dataset version
   Arg [-type]:
         string - type of input (id, name, position)
   Arg [-input]:
@@ -154,17 +172,19 @@ sub new {
 		$self->{$attrname} = $self->_default_for($attrname);
 	}
 
-	my ( $conf, $specie, $ens, $assembly, $type, $input ) = rearrange( [ 'conf', 'specie', 'ens', 'assembly', 'type', 'input' ], @_ );
+	my ( $dbconf, $srvconf, $species, $assembly, $source, $dataset, $type, $input ) = rearrange( [ 'dbconf', 'srvconf', 'species', 'assembly', 'source', 'dataset', 'type', 'input' ], @_ );	
 
 	# require paramater
-	if ( defined $conf and -e $conf ) { $self->conf($conf); }
+	if ( defined $dbconf and -e $dbconf ) { $self->dbconf($dbconf); }
 	else { return undef; }
-	if ( defined $specie ) { $self->specie($specie); }
-	#else { return undef; }
+	if ( defined $srvconf and -e $srvconf ) { $self->srvconf($srvconf); }
+	else { return undef; }
 
 	# optional parameter
-	if ( defined $ens ) { $self->ens($ens); }
+	if ( defined $species ) { $self->species($species); }
 	if ( defined $assembly ) { $self->assembly($assembly); }
+	if ( defined $source ) { $self->source($source); }
+	if ( defined $dataset ) { $self->dataset($dataset); }
 	if ( defined $type ) { $self->type($type); }
 	if ( defined $input ) { $self->input($input); }
 	
@@ -189,53 +209,55 @@ sub new {
   Caller     : generally on error
 
 =cut
-sub is_registry {
-	my ($self) = shift;
-	my ($specie) = shift;
-	my ($ens) = shift;
-	my ($species);
-	my ($is_registry);
-	
-	# config ini
-	my ($cfg) = new Config::IniFiles( -file => $self->{'conf'} );
-	
-	# unless defined, then check all species
-	if ( defined $specie ) {
-		$species = [ $specie ];
-	} else {
-		$species = [ split( ',', $cfg->val('APPRIS_DATABASES', 'species') ) ];
-	}
-	
-	foreach my $specie_ens (@{$species}) {
-		if ( defined $ens and ($ens ne '') ) {
-			$specie_ens .= '_ens'.$ens; 
-		}
-		else {
-			# assign default version for each assembly/database. We get the first one
-			my ($versions) = [ split( ',', $cfg->val($specie, 'versions') ) ];
-			$ens = $versions->[0];
-			$self->ens($ens);
-			$specie_ens .= '_ens'.$ens; 		
-		}
-		
-		my ($specie_db) = uc($specie_ens.'_db');
-		my ($specie_dbname) = $cfg->val($specie_db, 'db');		
-		if ( defined $specie_dbname ) {
-			$is_registry = $specie_dbname;
-		}		
-	}
-		
-	return $is_registry;
-}
+#sub is_registry {
+#	my ($self) = shift;
+#	my ($specie) = shift;
+#	my ($ds) = shift;
+#	my ($db) = shift;
+#	my ($all_species);
+#	my ($is_registry);
+#	
+#	# config ini
+#	my ($cfg) = new Config::IniFiles( -file => $self->{'conf'} );
+#	
+#	# unless defined, then check all species
+#	if ( defined $specie ) {
+#		$all_species = [ $specie ];
+#	} else {
+#		$all_species = [ split( ',', $cfg->val('APPRIS_DATABASES', 'species') ) ];
+#	}
+#	
+#	foreach my $species (@{$all_species}) {
+#		my ($datasets) = [ split( ',', $cfg->val($species, 'datasets') ) ];
+#		if ( defined $db and ($db ne '') ) {
+#			$species_db .= 'DB_'.$ens; 
+#		}
+#		else {
+#			# assign default version for each assembly/database. We get the first one
+#			my ($versions) = [ split( ',', $cfg->val($specie, 'versions') ) ];
+#			$ens = $versions->[0];
+#			$self->ens($ens);
+#			$specie_ens .= '_ens'.$ens; 		
+#		}
+#		
+#		my ($specie_db) = uc($specie_ens.'_db');
+#		my ($species_dbname) = $cfg->val($species_db, 'db');		
+#		if ( defined $species_dbname ) {
+#			$is_registry = $species_dbname;
+#			
+#			return $is_registry;			
+#		}		
+#	}
+#		
+#	return $is_registry;
+#}
 
 =head2 load_registry
 
-  Arg [1]    : String $specie
-               specie name (humna, mouse)
-  Arg [2]    : Integer $ens
-               Ensembl version
+  Arg [1]    : String $type
+               type of datase (current, archives)
   Example    : use DBRetriever qw(load_registry);
-               my $rst = load_registry($specie);
+               my $rst = load_registry();
   Description: Throws an exception which if not caught by an eval will
                provide a stack trace to STDERR and die.  If the verbosity level
                is lower than the level of the throw, then no error message is
@@ -246,67 +268,82 @@ sub is_registry {
   Caller     : generally on error
 
 =cut
+
 sub load_registry {
 	my ($self) = shift;
-	my ($specie) = shift;
-	my ($ensembl) = shift;
-	my ($assembly) = shift if (@_);
-	my ($registry);
+	my ($ds_type) = shift if (@_);
+	my ($species)  = $self->species  || undef;
+	my ($assembly) = $self->assembly || undef;
+	my ($source)   = $self->source   || undef;
+	my ($dataset)  = $self->dataset  || undef;
+	my ($registries);
 	
 	# config ini
-	my ($cfg) = new Config::IniFiles( -file => $self->{'conf'} );
-	
-	# if defined 'assembly' we overwrite the official version of ensembl
-	my ($ens) = $ensembl;
-	if ( defined $assembly ) {
-		foreach my $version ( split( ',', $cfg->val($specie, 'versions') ) ) {
-			my ($species_ens) = $specie.'_ens'.$version;
-			my ($species_db) = uc($species_ens.'_db');
-			my ($species_assembly) = $cfg->val($species_db, 'assembly');				
-			if ( !defined $assembly or ( defined $assembly and (lc($species_assembly) eq $assembly) ) ) {
-				$ens = $version;
+	my ($db_cfg) = new Config::IniFiles( -file => $self->dbconf );
+
+	# Get Server config file
+	my ($server_json) = JSON->new();
+	my ($server_cfg) = $server_json->decode( getStringFromFile($self->srvconf) );
+		
+	# For each species. By default, all species
+	my (@all_species);
+	if ( defined $species ) { push(@all_species, $species) }
+	else { @all_species = keys(%{$server_cfg}) }
+	foreach my $species_id ( @all_species ) {
+		my ($cfg_species) = $server_cfg->{$species_id};
+		
+		# For each assembly. By default, all assemblies
+		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
+			my ($found_as) = 0;			
+			if ( defined $assembly ) {
+				if ( lc($assembly) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }				
+			} else {
+				if ( lc($cfg_species->{'official'}) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
 			}
-		}		
-	}
-		
-	# get database name for available species
-	my ($specie_ens) = $specie;
-	if ( defined $ens and ($ens ne '') ) {
-		$specie_ens .= '_ens'.$ens; 
-	}
-	else {
-		# assign default version for each assembly/database. We get the first one
-		my ($versions) = [ split( ',', $cfg->val($specie, 'versions') ) ];
-		$ens = $versions->[0];
-		$self->ens($ens);
-		$specie_ens .= '_ens'.$ens; 		
-	}
-	
-	# load database and specific libs
-	my ($specie_db) = uc($specie_ens.'_db');
-	my ($specie_dbname) = $cfg->val($specie_db, 'db');
-	if ( defined $specie_dbname ) {
-		
-		# load perllib dynamically!!!!!
-		my ($appris_perllib) = $cfg->val($specie_db, 'perllib');
-		eval "use lib qw($FindBin::Bin/../lib/$appris_perllib);
-		require APPRIS::Registry;
-		require APPRIS::Exporter;";
-		if ($@) { die "Error loading APPRIS modules:\n$@\n"; }
+			if ( $found_as == 1 ) {
 				
-		# load registry
-		$registry = APPRIS::Registry->new();		
-		$registry->load_registry_from_db(
-								-dbhost	=> $cfg->val('APPRIS_DATABASES', 'host'),
-								-dbuser	=> $cfg->val('APPRIS_DATABASES', 'user'),
-								-dbpass	=> $cfg->val('APPRIS_DATABASES', 'pass'),
-								-dbport	=> $cfg->val('APPRIS_DATABASES', 'port'),
-								-dbname	=> $cfg->val($specie_db, 'db'),
-		);		
-	}
-	
-	return $registry;
-}	
+				foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+					my ($found_sc,$found_ds,$found_ty) = (0,0,0);
+
+					if ( defined $source ) {
+						if ( lc($source) eq lc($cfg_dataset->{'source'}->{'name'}) ) { $found_sc = 1 }				
+					} else { $found_sc = 1 }
+
+					if ( defined $dataset ) {
+						if ( lc($cfg_dataset->{'id'}) =~ /^$dataset/ ) { $found_ds = 1 }				
+					} else { $found_ds = 1 }
+
+					if ( defined $ds_type and (lc($ds_type) eq 'archives') ) { $found_ty = 1
+					} else {
+						if ( lc($cfg_dataset->{'type'}) eq 'current' ) { $found_ty = 1 }
+						else { $found_ty = 0 }
+					}
+
+					if ( $found_sc == 1 and $found_ds == 1 and $found_ty == 1 ) {						
+						my ($registry) = APPRIS::Registry->new();		
+						$registry->load_registry_from_db(
+												-dbhost	=> $db_cfg->val('APPRIS_DATABASES', 'host'),
+												-dbuser	=> $db_cfg->val('APPRIS_DATABASES', 'user'),
+												-dbpass	=> $db_cfg->val('APPRIS_DATABASES', 'pass'),
+												-dbport	=> $db_cfg->val('APPRIS_DATABASES', 'port'),
+												-dbname	=> $cfg_dataset->{'db'}
+						);
+						push(@{$registries}, {
+								'species'	=> $species_id,
+								'assembly'	=> $cfg_assembly->{'id'},
+								'source'	=> $cfg_dataset->{'source'}->{'name'},
+								'dataset'	=> $cfg_dataset->{'id'},
+								'registry'	=> $registry								
+						});
+					}
+				}
+						
+			}				
+		}
+	}	
+print STDERR "REGISTRY:\n".Dumper($registries)."\n";
+	return $registries;
+} # end load_registry
 
 =head2 get_features
 
@@ -333,9 +370,10 @@ sub get_features
 	my ($ids) = shift if (@_);
 	my ($type) = $self->type;
 	my ($inputs) = $self->input;
-	my ($specie) = $self->specie;
-	my ($ensembl) = $self->ens if ( $self->ens );
-	my ($assembly) = lc($self->assembly) if ( $self->assembly );	
+	my ($species)  = $self->species;
+	my ($assembly) = $self->assembly || undef;
+	my ($source)   = $self->source   || undef;
+	my ($dataset)  = $self->dataset  || undef;	
 	my ($features);
 	
 	# We the list of methods will be able to contain the type of track: Eg. spade:domain|damaged_domain,firestar
@@ -344,38 +382,41 @@ sub get_features
 		if ( $method =~ /^([^\-|\$]*)/ ) { $methods_str .= $1 . ',' }
 	}
 	$methods_str =~ s/\,$//;
-	 
-	my ($registry) = $self->load_registry($specie,$ensembl,$assembly);
-	return undef unless (defined $registry);
-		
-	if ( defined $type ) {
-		if ( ($type eq 'id') and $inputs ) {
-			if ( defined $ids ) { $inputs = $ids }
-			foreach my $input (split(',', $inputs)) {
-				my ($feat) = $self->get_feat_by_stable_id($registry, $input, $methods_str);
-				if ( defined $feat ) {
-					push(@{$features}, $feat) ;
+
+	# Get the list of APPRIS::Registry
+	my ($registries) = $self->load_registry();
+
+	# For each registry, extract the input query
+	foreach my $registry (@{$registries}) {		
+		if ( defined $type ) {
+			if ( ($type eq 'id') and $inputs ) {
+				if ( defined $ids ) { $inputs = $ids }
+				foreach my $input (split(',', $inputs)) {
+					my ($feat) = $self->get_feat_by_stable_id($registry, $input, $methods_str);
+					if ( defined $feat ) {
+						push(@{$features}, $feat) ;
+					}
 				}
 			}
+			elsif ( ($type eq 'name') and $inputs ) {
+				if ( defined $ids ) { $inputs = $ids }
+				foreach my $input (split(',', $inputs)) {
+					my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods_str);
+					if ( defined $feat and scalar(@{$feat}) > 0 ) {
+						foreach my $f (@{$feat}) { push(@{$features}, $f); }
+					}
+				}
+			}
+			elsif ( ($type eq 'position') and $inputs ) {
+				if ( defined $ids ) { $inputs = $ids }
+				foreach my $input (split(',', $inputs)) {
+					my ($feat) = $self->get_feat_by_region($registry, $input, $methods_str);
+					if ( defined $feat and scalar(@{$feat}) > 0 ) {
+						foreach my $f (@{$feat}) { push(@{$features}, $f); }
+					}
+				}
+			}			
 		}
-		elsif ( ($type eq 'name') and $inputs ) {
-			if ( defined $ids ) { $inputs = $ids }
-			foreach my $input (split(',', $inputs)) {
-				my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods_str);
-				if ( defined $feat and scalar(@{$feat}) > 0 ) {
-					foreach my $f (@{$feat}) { push(@{$features}, $f); }
-				}
-			}
-		}
-		elsif ( ($type eq 'position') and $inputs ) {
-			if ( defined $ids ) { $inputs = $ids }
-			foreach my $input (split(',', $inputs)) {
-				my ($feat) = $self->get_feat_by_region($registry, $input, $methods_str);
-				if ( defined $feat and scalar(@{$feat}) > 0 ) {
-					foreach my $f (@{$feat}) { push(@{$features}, $f); }
-				}
-			}
-		}			
 	}
 	
 	return $features;
@@ -405,74 +446,53 @@ sub get_seek_features
 	my ($self) = shift;
 	my ($methods) = shift;
 	my ($inputs) = $self->input;
-	my ($ensembl) = $self->ens if ( $self->ens );
-	my ($assembly) = lc($self->assembly) if ( $self->assembly );
+	my ($species)  = $self->species  || undef;
+	my ($assembly) = $self->assembly || undef;
+	my ($source)   = $self->source   || undef;
+	my ($dataset)  = $self->dataset  || undef;	
 	my ($features);
 	
-	# check all species using default ensembl version
-	my ($cfg) = new Config::IniFiles( -file => $self->{'conf'} );
-	my ($species) = [ split( ',', $cfg->val('APPRIS_DATABASES', 'species') ) ];	
-	foreach my $spe (@{$species}) {
-		my ($ens_dbs) = $cfg->val($spe, 'dbs');
-		if ( defined $ensembl ) {
-			$ens_dbs = $ensembl;
-		}
-		else {
-			$ens_dbs = $cfg->val($spe, 'dbs');
-		}
-		foreach my $ens ( split(',',$ens_dbs) ) {
-			my ($registry) = $self->load_registry($spe, $ens, $assembly);
-			if ( defined $registry ) {
-				my ($species_ens) = $spe.'_ens'.$ens;
-				my ($species_db) = uc($species_ens.'_db');
-				my ($species_assembly) = $cfg->val($species_db, 'assembly');				
-				#if ( !defined $assembly or ( defined $assembly and (lc($species_assembly) =~ /^$assembly\|/ or lc($species_assembly) =~ /\|$assembly$/) ) ) {
-					if ( !defined $assembly or ( defined $assembly and (lc($species_assembly) eq $assembly) ) ) {				
-					foreach my $input (split(',', $inputs)) {
-						my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods);
-						#foreach my $f (@{$feat}) { push(@{$features->{$spe}->{$species_assembly}}, $f); }
-						foreach my $f (@{$feat}) {
-							push(@{$features}, {
-								'species'	=> $spe,
-								'assembly'	=> $species_assembly,
-								'dataset'	=> $ens,
-								'entity'	=> $f
-							});
-						}
-					}
-				}			
-			}			
+	# Get the list of APPRIS::Registry
+	my ($registries) = $self->load_registry();
+	
+	# For each registry, extract the input query
+	foreach my $registry (@{$registries}) {
+		foreach my $input (split(',', $inputs)) {
+			my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods);
+			foreach my $f (@{$feat}) {
+				push(@{$features}, {
+					'species'	=> $registry->{'species'},
+					'assembly'	=> $registry->{'assembly'},
+					'source'	=> $registry->{'source'},
+					'dataset'	=> $registry->{'dataset'},
+					'entity'	=> $f
+				});
+			}
 		}
 	}
-		
+				
 	return $features;
 	
 } # end get_seek_features
 
-
 sub get_feat_by_stable_id {
 	my ($self) = shift;
-	my ($registry) = shift;
+	my ($aregistry) = shift;
 	my ($id) = shift;
 	my ($methods) = shift;
+	my ($registry) = $aregistry->{'registry'};
 	my ($feat);
 
-	if ( lc($id) =~ /^ens(\w\w\w)?g(\d){11,13}/ or
-		 lc($id) =~ /^ens(\w\w\w)?gr(\d){10,13}/ or
-		 lc($id) =~ /^ensgr(\d){10,13}/ or
-		 lc($id) =~ /^fbgn(\d){7}/ or
-		 lc($id) =~ /^wbgene(\d){8}/		 
-	) {
+	if ( (lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or lc($id) =~ /^ensgr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
 		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
 	}
-	elsif (  lc($id) =~ /^ens(\w\w\w)?t(\d){11,13}/ or
-			 lc($id) =~ /^ens(\w\w\w)?tr(\d){10,13}/ or
-			 lc($id) =~ /^enstr(\d){10,13}/ or
-			 lc($id) =~ /^fbtr(\d){7}/
-	) {
+	elsif (	(lc($id) =~ /^(\d+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
+		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
+	}
+	elsif (  (lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or lc($id) =~ /^enstr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
 		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
 	}
-	else {
+	elsif (  (lc($id) =~ /^xm\_([\d+|\.]+)$/ or lc($id) =~ /^nm\_([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
 		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
 	}
 	
@@ -481,9 +501,10 @@ sub get_feat_by_stable_id {
 
 sub get_feat_by_xref_entry {
 	my ($self) = shift;
-	my ($registry) = shift;
+	my ($aregistry) = shift;
 	my ($name) = shift;
 	my ($methods) = shift;
+	my ($registry) = $aregistry->{'registry'};
 	
 	my ($feat) = $registry->fetch_by_xref_entry($name, $methods);
 	
@@ -492,10 +513,11 @@ sub get_feat_by_xref_entry {
 
 sub get_feat_by_region {
 	my ($self) = shift;
-	my ($registry) = shift;
+	my ($aregistry) = shift;
 	my ($input) = shift;
 	my ($methods) = shift;
-	my ($chr,$start,$end) = (undef,undef,undef);	
+	my ($chr,$start,$end) = (undef,undef,undef);
+	my ($registry) = $aregistry->{'registry'};
 	my ($feat);
 	
 	if ( $input =~ /^([^\:]*)\:(\d*)-(\d*)$/ ) {
@@ -623,6 +645,7 @@ sub export_seq_features
 			my ($seq_result) = $exporter->get_seq_annotations($features, $type, 'fasta');
 			my ($num_seq) = $seq_result =~ tr/\>//;
 			if ( $num_seq >= 2 ) {
+				require WSRetriever;
 				my ($wsretriever) = new WSRetriever();
 				$result = $wsretriever->get_aln_annotations($seq_result, $format, $ids);
 			}
@@ -724,33 +747,14 @@ sub get_gen_annotations
 	my ($ids) = shift if (@_);
 	my ($result) = '';
 	
-	# assign default ensembl version from assembly. Otherwise, the first value.
-	unless ( $self->ens ) {
-		my ($cfg) = new Config::IniFiles( -file => $self->conf );
-		my ($assembly) = $self->assembly;
-		my ($specie) = $self->specie;
-		my ($versions) = [ split( ',', $cfg->val($specie, 'versions') ) ];
-		my ($ens) = $versions->[0];		
-		if ( defined $assembly ) {
-			foreach my $version ( @{$versions} ) {
-				my ($species_ens) = $specie.'_ens'.$version;
-				my ($species_db) = uc($species_ens.'_db');
-				my ($species_assembly) = $cfg->val($species_db, 'assembly');				
-				if ( !defined $assembly or ( defined $assembly and (lc($species_assembly) eq $assembly) ) ) {
-					$ens = $version;
-				}
-			}		
-		}
-		$self->ens($ens);
-	}
-	
-	# retrieve images from UCSC
+	require WSRetriever;
 	my ($wsretriever) = new WSRetriever();
-	if ( $self->specie and $self->ens ) {
-		my ($query_id) = 'exporter/' . $self->type . '/' . $self->specie . '/' . $self->input;
-		$result = $wsretriever->get_gen_features($query_id, $self->specie, $self->ens, $methods, $ids);
+	my ($query_id) = 'exporter/' . $self->type . '/' . $self->species . '/' . $self->input;
+	$result = $wsretriever->get_gen_features($query_id, $self->species, $self->assembly, $self->source, $self->dataset, $methods, $ids);
+	unless ( defined $result ) {
+		$result = "Job query needs genome information\n";
 	}
-	
+			
 	return $result;
 	
 } # end get_gen_annotations
@@ -786,7 +790,7 @@ sub seek_features
 	my ($format) = shift;
 	my ($result) = '';	
 	my ($features) = $self->get_seek_features('none');
-
+	
 	if ( defined $features ) {
 		my ($wsretriever) = new WSRetriever();		
 		my ($report) = $wsretriever->create_seeker_report($self->input, $features);
@@ -872,10 +876,10 @@ sub seek_features
 #					'status'	=> $entity->status,
 #				};
 #				if ( $entity->isa("APPRIS::Gene") ) {
-#					$match->{'namespace'} = 'Ensembl_Gene_Id';	
+#					$match->{'namespace'} = 'Gene_Id';	
 #				}
 #				elsif ( $entity->isa("APPRIS::Transcript") ) {
-#					$match->{'namespace'} = 'Ensembl_Transcript_Id';
+#					$match->{'namespace'} = 'Transcript_Id';
 #				}
 #				if ( $entity->external_name ) {
 #					my ($dblink) = {
@@ -897,7 +901,7 @@ sub seek_features
 #					foreach my $transcript (@{$entity->transcripts}) {
 #						my ($dblink) = {
 #							'id'		=> $transcript->stable_id,
-#							'namespace'	=> 'Ensembl_Transcript_Id'
+#							'namespace'	=> 'Transcript_Id'
 #						};
 #						push(@{$match->{'dblink'}}, $dblink);
 #					}

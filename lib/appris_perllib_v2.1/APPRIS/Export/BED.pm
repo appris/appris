@@ -302,7 +302,7 @@ sub get_trans_annotations {
 				my ($external_id) = $feature->external_name;
 				if ($feature->xref_identify) {
 					foreach my $xref_identify (@{$feature->xref_identify}) {
-						if ( $xref_identify->dbname eq 'Ensembl_Gene_Id' ) {
+						if ( $xref_identify->dbname eq 'Gene_Id' ) {
 							$gene_id = $xref_identify->id;							
 						}
 					}		

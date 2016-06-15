@@ -1,261 +1,380 @@
 {
     "homo_sapiens": {
+        "order":        1,
         "scientific":   "Homo sapiens",
         "common":       "Human",
-        "category":     "popular",
+        "group":        "popular",
+        "category":     "houses",
+        "official":     "hg38",
         "assemblies":   [{
             "name":     "GRCh38|hg38",
             "id":       "hg38",
-            "gencode":  23,
-            "dataset":  84
+            "datasets": [{
+                "id":   "ens84.v16",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_homo_sapiens_e84v16"
+            },{
+                "id":   "rs107.v16",
+                "type": "current",
+                "source": {
+                    "name": "refseq",
+                    "version": "107"
+                },
+                "db":   "appris_homo_sapiens_rs107v16"
+            },{
+                "id":   "ens81.v15",
+                "type": "archive",
+                "source": {
+                    "name": "ensembl",
+                    "version": "81"
+                },
+                "db":   "appris_homo_sapiens_e81v15"
+            },{
+                "id":   "ens79.v15",
+                "type": "archive",
+                "source": {
+                    "name": "ensembl",
+                    "version": "79"
+                },
+                "db":   "appris_homo_sapiens_e79v15"
+            }]
         },{
             "name":     "GRCh37|hg19",
             "id":       "hg19",
-            "gencode":  19,
-            "dataset":  74
-        }],
-        "archives":   [{
-            "name":     "GRCh38|hg38",
-            "id":       "hg38",
-            "datasets": [82,81,80,79,77,76,75]
-        }],
-        "popular":      1,
-        "order":        1
+            "datasets": [{
+                "id":   "gen19.v16",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "74"
+                },
+                "db":   "appris_homo_sapiens_g19v16"
+            },{
+                "id":   "rs105.v16",
+                "type": "current",
+                "source": {
+                    "name": "refseq",
+                    "version": "105"
+                },
+                "db":   "appris_homo_sapiens_rs105v16"
+            }]
+        }]
     },
     "mus_musculus": {
+        "order":        2,
         "scientific":   "Mus musculus",
         "common":       "Mouse",
-        "category":     "popular",
+        "group":        "popular",
+        "category":     "houses",
+        "official":     "mm10",
         "assemblies":   [{
             "name":     "GRCm38|mm10",
             "id":       "mm10",
-            "gencode":  "M7",
-            "dataset":  84
-        }],
-        "archives":   [{
-            "name":     "GRCm38|mm10",
-            "id":       "mm10",
-            "datasets": [82,81,80,78,77,74]
-        }],
-        "popular":      1,
-        "order":        2
+            "datasets": [{
+                "id":   "ens84.v16",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_mus_musculus_e84v15"
+            }]
+        }]
     },
     "danio_rerio": {
+        "order":        3,
         "scientific":   "Danio rerio",
         "common":       "Zebrafish",
-        "category":     "popular",
+        "group":        "popular",
+        "category":     "houses",
+        "official":      "danRer10",
         "assemblies":   [{
             "name":     "GRCz10|danRer10",
             "id":       "danRer10",
-            "dataset":  84
+            "datasets": [{
+                "id":   "ens84.v16",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_danio_rerio_e84v15"
+            }]
         },{
             "name":     "Zv9|danRer7",
             "id":       "danRer7",
-            "dataset":  77
-        }],
-        "archives":   [{
-            "name":     "GRCz10|danRer10",
-            "id":       "danRer10",
-            "datasets": [84,81,80]
-        }],
-        "popular":      1,
-        "order":        3
+            "datasets": [{
+                "id":   "ens77.v7.9Feb2015",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "77"
+                },
+                "db":   "appris_danio_rerio_e77"
+            }]
+        }]
     },
     "rattus_norvegicus": {
+        "order":        4,
         "scientific":   "Rattus norvegicus",
         "common":       "Rat",
-        "category":     "rodents",
+        "group":        "rodents",
+        "category":     "houses",
+        "official":     "rn6",
         "assemblies":   [{
             "name":     "Rnor_6.0|rn6",
             "id":       "rn6",
-            "dataset":  84
+            "datasets": [{
+                "id":   "ens84.v15",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_rattus_norvegicus_e84v15"
+            }]
         },{
             "name":     "Rnor_5.0|rn5",
             "id":       "rn5",
-            "dataset":  77
-        }],
-        "archives":   [{
-            "name":     "Rnor_6.0|rn6",
-            "id":       "rn6",
-            "datasets": [82,81,80]
-        }],
-        "popular":      1,
-        "order":        4
+            "datasets": [{
+                "id":   "ens77.v7.9Feb2015",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "77"
+                },
+                "db":   "appris_rattus_norvegicus_e77"
+            }]
+        }]
     },
     "sus_scrofa": {
+        "order":        5,
         "scientific":   "Sus scrofa",
         "common":       "Pig",
-        "category":     "laurasiatheria",
+        "group":        "laurasiatheria",
+        "category":     "houses",
+        "official":     "susScr3",
         "assemblies":   [{
             "name":     "Sscrofa10.2|susScr3",
             "id":       "susScr3",
-            "dataset":  84
-        }],
-        "archives":   [{
-            "name":     "Sscrofa10.2|susScr3",
-            "id":       "susScr3",
-            "datasets": [82,81,77]
-        }],
-        "popular":      1,
-        "order":        5
+            "datasets": [{
+                "id":   "ens84.v15",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_sus_scrofa_e84v15"
+            }]
+        }]
     },
     "pan_troglodytes": {
+        "order":        6,
         "scientific":   "Pan troglodytes",
         "common":       "Chimpanzee",
-        "category":     "primates",
+        "group":        "primates",
+        "category":     "houses",
+        "official":     "panTro4",
         "assemblies":   [{
             "name":     "CHIMP2.1.4|panTro4",
             "id":       "panTro4",
-            "dataset":  84
-        }],
-        "archives":   [{
-            "name":     "CHIMP2.1.4|panTro4",
-            "id":       "panTro4",
-            "datasets": [82,81]
-        }],
-        "popular":      1,
-        "order":        6
+            "datasets": [{
+                "id":   "ens84.v15",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_pan_troglodytes_e84v15"
+            }]
+        }]
     },
     "bos_taurus": {
+        "order":        7,
         "scientific":   "Bos taurus",
         "common":       "Cow",
-        "category":     "laurasiatheria",
+        "group":       "laurasiatheria",
+        "official":     "bosTau8",
         "assemblies":   [{
             "name":     "UMD3.1|bosTau8",
             "id":       "bosTau8",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        7
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "canis_familiaris": {
+        "order":        8,
         "scientific":   "Canis familiaris",
         "common":       "Dog",
-        "category":     "laurasiatheria",
+        "group":        "laurasiatheria",
+        "official":     "canFam3",
         "assemblies":   [{
             "name":     "CanFam3.1|canFam3",
             "id":       "canFam3",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        8
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "felis_catus": {
+        "order":        9,
         "scientific":   "Felis catus",
         "common":       "Cat",
-        "category":     "laurasiatheria",
+        "group":        "laurasiatheria",
+        "official":     "felCat5",
         "assemblies":   [{
             "name":     "Felis_catus_6.2|felCat5",
             "id":       "felCat5",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        9
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "monodelphis_domestica": {
+        "order":        10,
         "scientific":   "Monodelphis domestica",
         "common":       "Opossum",
-        "category":     "mammals",
+        "group":        "mammals",
+        "official":     "monDom5",
         "assemblies":   [{
             "name":     "BROADO5|monDom5",
             "id":       "monDom5",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        10
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "gallus_gallus": {
+        "order":        11,
         "scientific":   "Gallus gallus",
         "common":       "Chicken",
-        "category":     "birds",
+        "group":        "birds",
+        "official":     "galGal4",
         "assemblies":   [{
             "name":     "Galgal4|galGal4",
             "id":       "galGal4",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        11
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "taeniopygia_guttata": {
+        "order":        12,
         "scientific":   "Taeniopygia guttata",
         "common":       "Zebra Finch",
-        "category":     "birds",
+        "group":        "birds",
+        "official":     "taeGut1",
         "assemblies":   [{
             "name":     "taeGut3.2.4|taeGut1",
             "id":       "taeGut1",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        12
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "anolis_carolinensis": {
+        "order":        13,
         "scientific":   "Anolis carolinensis",
         "common":       "Anole lizard",
-        "category":     "reptiles",
+        "group":        "reptiles",
+        "official":     "anoCar2",
         "assemblies":   [{
             "name":     "AnoCar2.0|anoCar2",
             "id":       "anoCar2",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        13
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "xenopus_tropicalis": {
+        "order":        14,
         "scientific":   "Xenopus tropicalis",
         "common":       "Xenopus",
-        "category":     "amphibians",
+        "group":        "amphibians",
+        "official":     "xenTro3",
         "assemblies":   [{
             "name":     "JGI4.2|xenTro3",
             "id":       "xenTro3",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        14
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "takifugu_rubripes": {
+        "order":        15,
         "scientific":   "Takifugu rubripes",
         "common":       "Fugu",
-        "category":     "fish",
+        "group":        "fish",
+        "official":     "fr3",
         "assemblies":   [{
             "name":     "FUGU4|fr3",
             "id":       "fr3",
-            "dataset":  84
-        }],
-        "popular":      0,
-        "order":        15
+            "datasets": [{
+                "id":   "e84"
+            }]
+        }]
     },
     "drosophila_melanogaster": {
+        "order":        16,
         "scientific":   "Drosophila melanogaster",
         "common":       "Fruitfly",
-        "category":     "invertebrates",
+        "group":        "invertebrates",
+        "category":     "houses",
+        "official":     "dm6",
         "assemblies":   [{
             "name":     "BDGP6|dm6",
             "id":       "dm6",
-            "dataset":  84
-        }],
-        "archives":   [{
-            "name":     "BDGP6|dm6",
-            "id":       "dm6",
-            "datasets": [82,81]
-        }],
-        "popular":      1,
-        "order":        16
+            "datasets": [{
+                "id":   "ens84.v15",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_drosophila_melanogaster_e84v15"
+            },{
+                "id":   "ens81.v10.21Aug2015",
+                "type": "archive",
+                "source": {
+                    "name": "ensembl",
+                    "version": "81"
+                },
+                "db":   "appris_drosophila_melanogaster_e81v10"
+            }]
+        }]
     },
     "caenorhabditis_elegans": {
+        "order":        17,
         "scientific":   "Caenorhabditis elegans",
         "common":       "C.elegans",
-        "category":     "invertebrates",
+        "group":        "invertebrates",
+        "category":     "houses",
+        "official":     "ce10",
         "assemblies":   [{
             "name":     "WBcel235|ce10",
             "id":       "ce10",
-            "dataset":  84
-        }],
-        "archives":   [{
-            "name":     "WBcel235|ce10",
-            "id":       "ce10",
-            "datasets": [82,81]
-        }],
-        "popular":      1,
-        "order":        17
+            "datasets": [{
+                "id":   "ens84.v15",
+                "type": "current",
+                "source": {
+                    "name": "ensembl",
+                    "version": "84"
+                },
+                "db":   "appris_caenorhabditis_elegans_e84v15"
+            },{
+                "id":   "ens81.v10.21Aug2015",
+                "type": "archive",
+                "source": {
+                    "name": "ensembl",
+                    "version": "81"
+                },
+                "db":   "appris_caenorhabditis_elegans_e81v10"
+            }]
+        }]
     }
 }

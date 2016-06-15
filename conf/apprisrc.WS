@@ -20,7 +20,9 @@ export APPRIS_NUM_PARALLEL_PROC=1
 
 #export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
 
-export APPRIS_WSERVER_SCRIPTS_DB_INI="${APPRIS_WSERVER_CONF_DIR}/apprisdb.ini"
+export APPRIS_WSERVER_CONF_DB_FILE="${APPRIS_WSERVER_CONF_DIR}/apprisdb.ini"
+
+export APPRIS_WSERVER_CONF_SR_FILE="${APPRIS_WSERVER_CONF_DIR}/species.json"
 
 export APPRIS_WSERVER_PIPELINE_STRUCTURE="firestar,matador3d,spade,corsair,thump,crash,appris"
 

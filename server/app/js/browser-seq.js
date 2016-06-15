@@ -530,8 +530,8 @@ function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFi
 
                     if ( angular.isDefined(query.species) && angular.isDefined(query.id) && angular.isDefined(query.ids) ) {
                         var al = urlExporter + '/' + 'id/' + query.species + '/' + query.id + '?' + 'ids=' + query.ids + '&methods=' + mname + '&format=raw';
-                        if ( angular.isDefined(query.db) && query.db !== null ) {
-                            al += '&db=' + query.db;
+                        if ( angular.isDefined(query.as) && query.as !== null ) {
+                            al += '&as=' + query.as;
                         }
                         alink += '<a class="pull-right" href="' +  al + '" target="blank">In detail<i class="glyphicon glyphicon-new-window" style="text-decoration: none; margin-left: 3px"></a></i>';
                     }

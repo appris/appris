@@ -409,7 +409,7 @@ sub fetch_entity_by_region {
 	# Get gene list
 	my ($gene_list);
 	eval {
-		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Ensembl_Gene_Id')->[0];
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Gene_Id')->[0];
 		my (@args);
 		push(@args, {
 			datasource_id=> $datasource->{'datasource_id'}
@@ -589,9 +589,9 @@ sub fetch_entity_by_position {
 	my ($gene_datasource_id);
 	my ($transcript_datasource_id);
 	eval {
-		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Ensembl_Gene_Id')->[0];
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Gene_Id')->[0];
 		$gene_datasource_id = $datasource->{'datasource_id'} if (defined $datasource);
-		my ($datasource2) = $self->dbadaptor->query_datasource(name => 'Ensembl_Transcript_Id')->[0];
+		my ($datasource2) = $self->dbadaptor->query_datasource(name => 'Transcript_Id')->[0];
 		$transcript_datasource_id = $datasource2->{'datasource_id'} if (defined $datasource2);
 	};
 	throw('Wrong datasource') if ($@);
@@ -796,93 +796,117 @@ sub fetch_entity_by_xref_entry {
 	my ($aux_query_entity_list);
 	my ($query_entity_list);
 	eval {
-		if ( $xref_entry =~ /^(\d+)$/) {
-			warning('Argument must be a correct entry');
-		}
-		elsif ( 
-			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){11,13}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){11,13}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){11,13}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){10,13}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){10,13}/ or
-			lc($xref_entry) =~ /^ensgr(\d){10,13}/ or
-			lc($xref_entry) =~ /^enstr(\d){10,13}/ or 
-			lc($xref_entry) =~ /^ccds{6,7}/ or 
-			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){11,13}/ or
-			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){11,13}/ or
-			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){11,13}/ or
-			lc($xref_entry) =~ /^fbgn(\d){7}/ or
-			lc($xref_entry) =~ /^fbtr(\d){7}/ or
-			lc($xref_entry) =~ /^fbpp(\d){7}/ or
-			lc($xref_entry) =~ /^wbgene(\d){8}/
-		) {
-			# Check from the main 'entity' table
-			$aux_query_entity_list = $self->dbadaptor->query_entity(identifier => $xref_entry);
-			$query_entity_list = $aux_query_entity_list;
-		}
-		elsif (
-			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){9,}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){9,}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){9,}/ or 
-			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){9,}/ or
-			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){9,}/ or
-			lc($xref_entry) =~ /^ensgr(\d){9,}/ or
-			lc($xref_entry) =~ /^enstr(\d){9,}/ or
-			lc($xref_entry) =~ /^ccds(.){4,}/ or 
-			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){9,}/ or
-			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){9,}/ or
-			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){9,}/		
-		) {
-			# Check from the main 'entity' table
-			$aux_query_entity_list = $self->dbadaptor->query_entity_like(identifier => $xref_entry);
-			$query_entity_list = $aux_query_entity_list;
-		}		
-		# Query is external name
-		# Check from the 'xref_entity' table
-		# If the external name is short => name has to match exactly
-		else 
+#		if ( $xref_entry =~ /^(\d+)$/) {
+#			warning('Argument must be a correct entry');
+#		}
+#		elsif ( 
+#			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){11,13}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){11,13}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){11,13}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){10,13}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){10,13}/ or
+#			lc($xref_entry) =~ /^ensgr(\d){10,13}/ or
+#			lc($xref_entry) =~ /^enstr(\d){10,13}/ or 
+#			lc($xref_entry) =~ /^ccds{6,7}/ or 
+#			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){11,13}/ or
+#			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){11,13}/ or
+#			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){11,13}/ or
+#			lc($xref_entry) =~ /^fbgn(\d){7}/ or
+#			lc($xref_entry) =~ /^fbtr(\d){7}/ or
+#			lc($xref_entry) =~ /^fbpp(\d){7}/ or
+#			lc($xref_entry) =~ /^wbgene(\d){8}/
+#		) {
+#			# Check from the main 'entity' table
+#			$aux_query_entity_list = $self->dbadaptor->query_entity(identifier => $xref_entry);
+#			$query_entity_list = $aux_query_entity_list;
+#		}
+#		elsif (
+#			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){9,}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){9,}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){9,}/ or 
+#			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){9,}/ or
+#			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){9,}/ or
+#			lc($xref_entry) =~ /^ensgr(\d){9,}/ or
+#			lc($xref_entry) =~ /^enstr(\d){9,}/ or
+#			lc($xref_entry) =~ /^ccds(.){4,}/ or 
+#			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){9,}/ or
+#			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){9,}/ or
+#			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){9,}/		
+#		) {
+#			# Check from the main 'entity' table
+#			$aux_query_entity_list = $self->dbadaptor->query_entity_like(identifier => $xref_entry);
+#			$query_entity_list = $aux_query_entity_list;
+#		}
+#		# Query is external name
+#		# Check from the 'xref_entity' table
+#		# If the external name is short => name has to match exactly
+#		else 
+#		{
+#			if (
+#				(length($xref_entry) <= 2) or
+#				lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){0,}/ or
+#				lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){0,}/ or
+#				lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){0,}/ or
+#				lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){0,}/ or 
+#				lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){0,}/ or
+#				lc($xref_entry) =~ /^ensgr(\d){0,}/ or
+#				lc($xref_entry) =~ /^enstr(\d){0,}/ or 
+#				lc($xref_entry) =~ /([ccds]{3})/ or
+#				lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){0,}/ or
+#				lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){0,}/ or
+#				lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){0,}/				
+#			) {
+#				$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);
+#			}
+#			else {
+#				$aux_query_entity_list = $self->dbadaptor->query_xref_identify_like(identifier => $xref_entry);
+#			}
+#			
+#			foreach my $xref_report (@{$aux_query_entity_list})
+#			{
+#				my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
+#				foreach my $xref_identifier (@{$xref_identifier_list})
+#				{
+#					push(@{$query_entity_list},{
+#										'entity_id'		=> $xref_identifier->{'entity_id'},
+#										'identifier'	=> $xref_identifier->{'identifier'},
+#										'datasource_id'	=> $xref_identifier->{'datasource_id'},
+#										'biotype'		=> $xref_identifier->{'biotype'},
+#										'status'		=> $xref_identifier->{'status'},
+#										'source'		=> $xref_identifier->{'source'},
+#										'level'			=> $xref_identifier->{'level'},
+#										'version'		=> $xref_identifier->{'version'},
+#										'tsl'			=> $xref_identifier->{'tsl'},
+#										'tag'			=> $xref_identifier->{'tag'}
+#					});
+#				}		
+#			}
+#		}
+
+		$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);		
+		foreach my $xref_report (@{$aux_query_entity_list})
 		{
-			if (
-				(length($xref_entry) <= 2) or
-				lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){0,}/ or
-				lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){0,}/ or
-				lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){0,}/ or
-				lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){0,}/ or 
-				lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){0,}/ or
-				lc($xref_entry) =~ /^ensgr(\d){0,}/ or
-				lc($xref_entry) =~ /^enstr(\d){0,}/ or 
-				lc($xref_entry) =~ /([ccds]{3})/ or
-				lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){0,}/ or
-				lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){0,}/ or
-				lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){0,}/				
-			) {
-				$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);
-			}
-			else {
-				$aux_query_entity_list = $self->dbadaptor->query_xref_identify_like(identifier => $xref_entry);
-			}
-			foreach my $xref_report (@{$aux_query_entity_list})
+			my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
+			foreach my $xref_identifier (@{$xref_identifier_list})
 			{
-				my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
-				foreach my $xref_identifier (@{$xref_identifier_list})
-				{
-					push(@{$query_entity_list},{
-										'entity_id'		=> $xref_identifier->{'entity_id'},
-										'identifier'	=> $xref_identifier->{'identifier'},
-										'datasource_id'	=> $xref_identifier->{'datasource_id'},
-										'biotype'		=> $xref_identifier->{'biotype'},
-										'status'		=> $xref_identifier->{'status'},
-										'source'		=> $xref_identifier->{'source'},
-										'level'			=> $xref_identifier->{'level'},
-										'version'		=> $xref_identifier->{'version'},
-										'tsl'			=> $xref_identifier->{'tsl'},
-										'tag'			=> $xref_identifier->{'tag'}
-					});
-				}		
-			}
+				push(@{$query_entity_list},{
+									'entity_id'		=> $xref_identifier->{'entity_id'},
+									'identifier'	=> $xref_identifier->{'identifier'},
+									'datasource_id'	=> $xref_identifier->{'datasource_id'},
+									'biotype'		=> $xref_identifier->{'biotype'},
+									'status'		=> $xref_identifier->{'status'},
+									'source'		=> $xref_identifier->{'source'},
+									'level'			=> $xref_identifier->{'level'},
+									'version'		=> $xref_identifier->{'version'},
+									'tsl'			=> $xref_identifier->{'tsl'},
+									'tag'			=> $xref_identifier->{'tag'}
+				});
+			}		
 		}
+
 	};
-	warning('Argument must be a correct entry') if ($@);		
+	warning('Argument must be a correct entry') if ($@);
+
 	
 	unless ( defined $query_entity_list and (scalar(@{$query_entity_list}) > 0) ) {
 		warning('Argument must be a correct entry');
@@ -946,10 +970,8 @@ sub fetch_entity_by_xref_entry {
 				elsif ((
 						$datasource_name eq 'CCDS' or
 						$datasource_name eq 'UniProtKB_SwissProt' or 
-						$datasource_name eq 'Ensembl_Gene_Id' or
-						$datasource_name eq 'Ensembl_Peptide_Id' or
-						$datasource_name eq 'Havana_Gene_Id' or
-						$datasource_name eq 'Havana_Transcript_Id'
+						$datasource_name eq 'Gene_Id' or
+						$datasource_name eq 'Protein_Id'
 						)
 						and defined $xref_id) {
 					push(@{$xref_identifies},
@@ -962,7 +984,7 @@ sub fetch_entity_by_xref_entry {
 					);
 				}
 				# Xref identifiers
-				elsif (($datasource_name eq 'Ensembl_Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
+				elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 					foreach my $xref (@{$xref_id_list}) {
 						push(@{$trans_id_list}, $xref->{'identifier'});
 					}
@@ -988,14 +1010,12 @@ sub fetch_entity_by_xref_entry {
 		
 		# Create object
 		my ($entity);
-		if ($namespace eq 'Ensembl_Gene_Id' or
-			$namespace eq 'Havana_Gene_Id')
+		if ($namespace eq 'Gene_Id')
 		{
 			$entity = APPRIS::Gene->new();
 			$entity->transcripts($transcripts, $index_transcripts);
 		}
-		elsif ($namespace eq 'Ensembl_Transcript_Id' or
-			$namespace eq 'Havana_Transcript_Id')
+		elsif ($namespace eq 'Transcript_Id')
 		{
 			$entity = APPRIS::Transcript->new();			
 		}
@@ -1067,10 +1087,10 @@ sub fetch_by_gene_stable_id {
 			$entity = $entity_list->[0];
 		}
 		else {
-			throw('Argument must be a correct stable id');
+			warning('Argument must be a correct stable id');
 		}
 	};
-	throw('Argument must be a correct stable id') if ($@);
+	return undef if ( $@ or !(defined $entity) );
 
 	# Get coordinate of entity
 	my ($coordinate);
@@ -1110,9 +1130,7 @@ sub fetch_by_gene_stable_id {
 				$external_name = $xref_id if (defined $xref_id);
 			}
 			# Xref identifiers
-			elsif (($datasource_name eq 'UniProtKB_SwissProt' or
-					$datasource_name eq 'Havana_Gene_Id')
-					and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
+			elsif (($datasource_name eq 'UniProtKB_SwissProt') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 				my ($xref_id) = $xref_id_list->[0]->{'identifier'};
 				if (defined $xref_id) {
 					push(@{$xref_identifies},
@@ -1126,7 +1144,7 @@ sub fetch_by_gene_stable_id {
 				}
 			}
 			# Xref identifiers
-			elsif (($datasource_name eq 'Ensembl_Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
+			elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 				foreach my $xref (@{$xref_id_list}) {
 					push(@{$trans_id_list}, $xref->{'identifier'});
 				}
@@ -1216,10 +1234,10 @@ sub fetch_by_transc_stable_id {
 			$entity = $entity_list->[0];
 		}
 		else {
-			throw('Argument must be a correct stable id');
+			warning('Argument must be a correct stable id');
 		}
 	};
-	throw('Argument must be a correct stable id') if ($@);
+	return undef if ( $@ or !(defined $entity) );
 
 	# Get coordinate of entity
 	my ($coordinate);
@@ -1280,10 +1298,8 @@ sub fetch_by_transc_stable_id {
 			elsif ((
 					$datasource_name eq 'CCDS' or
 					$datasource_name eq 'UniProtKB_SwissProt' or 
-					$datasource_name eq 'Ensembl_Gene_Id' or
-					$datasource_name eq 'Ensembl_Peptide_Id' or
-					$datasource_name eq 'Havana_Gene_Id' or
-					$datasource_name eq 'Havana_Transcript_Id'
+					$datasource_name eq 'Gene_Id' or
+					$datasource_name eq 'Protein_Id'
 					)
 					and defined $xref_id) {
 				push(@{$xref_identifies},
@@ -1427,7 +1443,7 @@ sub fetch_by_transl_stable_id {
 	# Get translate id
 	my ($translate_id);
 	eval {
-		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Ensembl_Peptide_Id')->[0];
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Protein_Id')->[0];
 		if (defined $datasource) {
 			my ($datasource_name) = $datasource->{'name'};
 			my ($datasource_id) = $datasource->{'datasource_id'};

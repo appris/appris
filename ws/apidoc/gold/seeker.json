@@ -70,8 +70,8 @@
                 },
                 "namespace": {
                     "type": "string",
-                    "description": "Namespace of Ensembl gene/transcript id",
-                    "enum": ["Ensembl_Gene_Id","Ensembl_Transcript_Id","External_Id"]
+                    "description": "Namespace of gene/transcript id",
+                    "enum": ["Gene_Id","Transcript_Id","External_Id"]
                 }
             }
         },
@@ -101,8 +101,8 @@
                 },
                 "namespace": {
                     "type": "string",
-                    "description": "Namespace of Ensembl gene/transcript id",
-                    "enum": ["Ensembl_Gene_Id","Ensembl_Transcript_Id","External_Id"]
+                    "description": "Namespace of gene/transcript id",
+                    "enum": ["Gene_Id","Transcript_Id","External_Id"]
                 },
                 "label": {
                     "type": "string",

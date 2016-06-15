@@ -85,7 +85,7 @@ sub get_trans_annotations {
 			my ($main_id) = ''; 
 			if ($feature->xref_identify) {
 				foreach my $xref_identify (@{$feature->xref_identify}) {
-					if (($xref_identify->dbname eq 'Ensembl_Gene_Id') and $xref_identify->id) {
+					if (($xref_identify->dbname eq 'Gene_Id') and $xref_identify->id) {
 						$main_id = $xref_identify->id;
 					}
 				}				

@@ -9,14 +9,15 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use HTTP qw( print_http_response );
 use DBRetriever;
-use WSRetriever;
+#use WSRetriever;
 $|=1; # not use buffering
 
 ###################
 # Global variable #
 ###################
 use vars qw(
-	$CONFIG_INI_FILE
+	$CONFIG_DB_FILE
+	$CONFIG_SERVER_FILE
 	$OPERATION
 	$METHODS
 	$FORMAT
@@ -24,7 +25,8 @@ use vars qw(
 	$ENCODING
 );
 
-$CONFIG_INI_FILE	= $ENV{APPRIS_WSERVER_SCRIPTS_DB_INI};
+$CONFIG_DB_FILE 	= $ENV{APPRIS_WSERVER_CONF_DB_FILE};
+$CONFIG_SERVER_FILE = $ENV{APPRIS_WSERVER_CONF_SR_FILE};
 $OPERATION			= $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE_VIEW};
 $METHODS			= $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE};
 $FORMAT				= '';
@@ -53,15 +55,15 @@ sub main()
 
 	my ($jobid) = undef;
 	my ($type) = $input_parameters[1];
-	my ($specie) = $input_parameters[2];
+	my ($species) = $input_parameters[2];
 	my ($inputs) = $input_parameters[3];
 
-	if ( defined $type and !(defined $specie) and !(defined $inputs) ) {
+	if ( defined $type and !(defined $species) and !(defined $inputs) ) {
 		$jobid = $type; $type = undef;
 	}
 	else {
 		print_http_response(400)
-			unless ( defined $type and defined $specie and defined $inputs );
+			unless ( defined $type and defined $species and defined $inputs );
 
 		print_http_response(405, "The parameter $type is not allowed. The parameter must be: 'id', 'name', or 'position'.")
 			if ( ($type ne 'id') and ($type ne 'name') and ($type ne 'position') );	
@@ -76,7 +78,6 @@ sub main()
 		}
 		elsif ( $operation =~ /genome/ ) { 
 			$OPERATION = $operation;
-			#$FORMAT = 'json';
 			$FORMAT = 'html';
 		}
 		elsif ( $operation =~ /svg/ ) {
@@ -88,33 +89,37 @@ sub main()
 		}
 	}
 	
-	# Ensembl database version is checked
-	my ($db) = $cgi->param('db') || undef ;
+	# Optional paramteres
+	my ($as) = ( $cgi->param('as') ) ? $cgi->param('as') : undef; # assembly
+	my ($sc) = ( $cgi->param('sc') ) ? $cgi->param('sc') : undef; # source name
+	my ($ds) = ( $cgi->param('ds') ) ? $cgi->param('ds') : undef; # dataset version
 	
-	my ($ens) = $cgi->param('ens') || undef ;
-	if ( defined $ens and ($ens ne '') ) {
-		my ($db) = new DBRetriever(
-								-conf   => $CONFIG_INI_FILE,
-								-specie => $specie,
-								-ens	=> $ens
-		);
-		unless ( $db->is_registry($specie,$ens) ) {
-			my ($specie_ens) = '';
-			eval {
-				my (@info_list) = `grep '_DB' $CONFIG_INI_FILE`;
-				if ( scalar(@info_list) > 0 ) {
-					$specie_ens = "The parameter is optional; otherwise it must be: ";
-					foreach my $info (@info_list) {
-						if ( lc($info) =~ /$specie\_ens(\d*)\_db/) {
-							$specie_ens .= $1.',';
-						}
-					}
-					$specie_ens =~ s/\,$//;
-				}
-			};
-			print_http_response(405, "The parameter $ens is not allowed. $specie_ens")
-		}
-	}
+	# Chech if parameters exists
+# TODO!! Fix!!!			
+#	my ($ens) = $cgi->param('ens') || undef ;
+#	if ( defined $ens and ($ens ne '') ) {
+#		my ($db) = new DBRetriever(
+#								-conf   => $CONFIG_INI_FILE,
+#								-specie => $species,
+#								-ens	=> $ens
+#		);
+#		unless ( $db->is_registry($species,$ens) ) {
+#			my ($species_ens) = '';
+#			eval {
+#				my (@info_list) = `grep '_DB' $CONFIG_INI_FILE`;
+#				if ( scalar(@info_list) > 0 ) {
+#					$species_ens = "The parameter is optional; otherwise it must be: ";
+#					foreach my $info (@info_list) {
+#						if ( lc($info) =~ /$species\_ens(\d*)\_db/) {
+#							$species_ens .= $1.',';
+#						}
+#					}
+#					$species_ens =~ s/\,$//;
+#				}
+#			};
+#			print_http_response(405, "The parameter $ens is not allowed. $species_ens")
+#		}
+#	}
 	
 	# Get optional parameters
 	my ($methods) = $cgi->param('methods');# || undef;
@@ -146,19 +151,21 @@ sub main()
 	# Get result from input
 	my ($result);
 	my ($retriever);
-	if ( defined $jobid and !(defined $type) and !(defined $inputs) and !(defined $specie) ) {
+	if ( defined $jobid and !(defined $type) and !(defined $inputs) and !(defined $species) ) {
 		$retriever = new WSRetriever(
 									-jobid	=> $jobid
 		);
 	}
-	elsif ( defined $type and defined $inputs and defined $specie and !(defined $jobid) ) {
+	elsif ( defined $type and defined $inputs and defined $species and !(defined $jobid) ) {
 		$retriever = new DBRetriever(
-									-conf  		=> $CONFIG_INI_FILE,
-									-specie	 	=> $specie,
-									-ens		=> $ens,
-									-assembly	=> $db,
-									-type   	=> $type,
-									-input		=> $inputs
+								-dbconf   	=> $CONFIG_DB_FILE,
+								-srvconf   	=> $CONFIG_SERVER_FILE,
+								-species 	=> $species,
+								-assembly	=> $as,								
+								-source		=> $sc,
+								-dataset	=> $ds,
+								-type   	=> $type,
+								-input		=> $inputs
 		);
 	}
 		

@@ -544,56 +544,39 @@ CREATE TABLE appris (
 --
 -- Insert default value into datasource table
 --
-INSERT INTO datasource SET 
+
+INSERT INTO datasource SET
   datasource_id='1',
-  name='Havana_Gene_Id',
-  description='Havana Gene Identifier',
-  url='http://www.sanger.ac.uk';
+  name='External_Id',
+  description='HGNC name',
+  url='http://www.ensembl.org/index.html';
 
 INSERT INTO datasource SET
   datasource_id='2',
-  name='Havana_Transcript_Id',
-  description='Havana Transcript Identifier',
-  url='http://www.sanger.ac.uk';
+  name='Gene_Id',
+  description='Gene Identifier',
+  url='http://www.ensembl.org/index.html';
 
 INSERT INTO datasource SET
   datasource_id='3',
-  name='Havana_Peptide_Id',
-  description='Havana Peptide Identifier',
-  url='http://www.sanger.ac.uk';
+  name='Transcript_Id',
+  description='Transcript Identifier',
+  url='http://www.ensembl.org/index.html';
 
 INSERT INTO datasource SET
   datasource_id='4',
-  name='External_Id',
-  description='External Identifier',
+  name='Protein_Id',
+  description='Protein Identifier',
   url='http://www.ensembl.org/index.html';
 
 INSERT INTO datasource SET
   datasource_id='5',
-  name='Ensembl_Gene_Id',
-  description='Ensembl Gene Identifier',
-  url='http://www.ensembl.org/index.html';
-
-INSERT INTO datasource SET
-  datasource_id='6',
-  name='Ensembl_Transcript_Id',
-  description='Ensembl Transcript Identifier',
-  url='http://www.ensembl.org/index.html';
-
-INSERT INTO datasource SET
-  datasource_id='7',
-  name='Ensembl_Peptide_Id',
-  description='Ensembl Peptide Identifier',
-  url='http://www.ensembl.org/index.html';
-
-INSERT INTO datasource SET
-  datasource_id='8',
   name='UniProtKB_SwissProt',
   description='UniProtKB/Swiss-Prot Accession',
   url='http://www.uniprot.org';
 
 INSERT INTO datasource SET
-  datasource_id='9',
+  datasource_id='6',
   name='CCDS',
   description='Consensus CDS',
   url='http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';

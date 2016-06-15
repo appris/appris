@@ -1,22 +1,68 @@
+==APPRIS_RELEASE:RELNOTES:2016_06.v17==
+#################################
+# SERVER-RELEASE: 	2016_06.v17	#
+# CODE-RELEASE: 	4.5.2.11	#
+#################################
+
+* HIGHLIGHTS:
+	- New Release of Ensembl (Ensembl85). 
+	
+* APPRIS-SERVER, v4.5
+	- Change in the web services to accepts multiple datasets sources:
+	
+	- Now the search web services retrieves the results for a specific query.
+	
+	- Add TSL annots in the report web page:
+
+* APPRIS-CODE, v2.11
+
+	- The file names of method results have changed.
+	
+	- Add TSL and TAG features in "entity" table.
+	
+	- Change the Namespace of "datasource" table.
+	
+	- Delete HAVANA datasource
+
+	- APPRIS
+		- Fixed bug. No decision when the sequence length is equal, with the same appris score. The list of genes was:
+			ENSG00000070831 ENSG00000103248 ENSG00000132639 ENSG00000163632 ENSG00000265590 ENSG00000267127 ENSG00000268434
+
+==APPRIS_RELEASE:DATAFILES:2016_06.v17==
+DEPRECATED!!!
+
+USE THE SPECIES.JSON FILE!!!!
+
+
+homo_sapiens				GRCh38_hg38				rs107.v17				appris_homo_sapiens_rs107v17
+homo_sapiens				GRCh37_hg19				rs105.v17				appris_homo_sapiens_rs105v17
+homo_sapiens				GRCh38_hg38				ens84.v17				appris_homo_sapiens_e84v17
+homo_sapiens				GRCh37_hg19				gen19.v17				appris_homo_sapiens_g19v17
+homo_sapiens				GRCh38_hg38				uni201509.v17			appris_homo_sapiens_uni201509v17
+homo_sapiens				GRCh38_hg38				ens81.v17				appris_homo_sapiens_e81v17
+homo_sapiens				GRCh38_hg38				ens79.v17				appris_homo_sapiens_e79v17
+
+mus_musculus				GRCm38_hg38				ens84.v17 				appris_mus_musculus_e84v17
+danio_rerio					GRCz10_danRer10			ens84.v17 				appris_danio_rerio_e84v17
+danio_rerio					Zv9_danRer7				ens77.v17		 		appris_danio_rerio_e77v17
+rattus_norvegicus			Rnor_6.0_rn6			ens84.v17				appris_rattus_norvegicus_e84v17
+rattus_norvegicus			Rnor_5.0_rn5			ens77.v17				appris_rattus_norvegicus_e77v17
+sus_scrofa					Sscrofa10.2_susScr3		ens84.v17				appris_sus_scrofa_e84v17
+pan_troglodytes				CHIMP2.1.4_panTro4		ens84.v17				appris_pan_troglodytes_e84v17
+drosophila_melanogaster		BDGP6_dm6				ens84.v17				appris_drosophila_melanogaster_e84v17
+caenorhabditis_elegans		WBcel235_ce10			ens84.v17				appris_caenorhabditis_elegans_e84v17
+
 ==APPRIS_RELEASE:RELNOTES:2016_04.v16==
 #############################
 # A-RELEASE: 	2016_04.v16	#
-# C-RELEASE: 	4.5.2.10	#
+# C-RELEASE: 	4.4.2.10	#
 #############################
 
 * HIGHLIGHTS:
-	- RefSeq has been included in APPRIS!!!
 	- RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively.
 	
-* APPRIS-SERVER, v4.5
-	- Add TSL annots in the report web page. TODO!!!!
-
 * APPRIS-CODE, v2.10
 
-	- Use the "release.dat" file as config file to update the Web Server and Web Databases. TODO!!!!
-	
-	- Fixed bug: BED12 for SPADE method. TODO!!!!
-	
 	- Add "tag" field into database and return its values like "readthought_transcripts"
 	
 	- Script that add extra values into dataset file
@@ -31,21 +77,22 @@
 		- Now TSL annotations is obtained from gene annotation file. The function that extracts the TSL is deprecated.
 		
 ==APPRIS_RELEASE:DATAFILES:2016_04.v16==
-homo_sapiens				rs107.v16	GRCh38		appris_homo_sapiens_rs107v16
-homo_sapiens				rs105.v16	GRCh37		appris_homo_sapiens_rs105v16
-homo_sapiens				ens84.v16	GRCh38		appris_homo_sapiens_e84v16
-homo_sapiens				gen19.v16	GRCh37		appris_homo_sapiens_g19v16
-homo_sapiens				ens81.v16	-		appris_homo_sapiens_e81v16
-homo_sapiens				ens79.v16	-		appris_homo_sapiens_e79v16
-mus_musculus				ens84.v16 	GRCm38		appris_mus_musculus_e84v16
-danio_rerio					ens84.v15 	GRCz10		appris_danio_rerio_e84v15
-danio_rerio					ens77.v7.9Feb2015 	Zv9			appris_danio_rerio_e77
-rattus_norvegicus			ens84.v15	Rnor_6.0	appris_rattus_norvegicus_e84v15
-rattus_norvegicus			ens77.v7.9Feb2015	Rnor_5.0	appris_rattus_norvegicus_e77
-sus_scrofa				ens84.v15	Sscrofa10.2	appris_sus_scrofa_e84v15
-pan_troglodytes				ens84.v15	CHIMP2.1.4	appris_pan_troglodytes_e84v15
-drosophila_melanogaster			ens84.v15	BDGP6		appris_drosophila_melanogaster_e84v15
-caenorhabditis_elegans			ens84.v15	WBcel235	appris_caenorhabditis_elegans_e84v15
+homo_sapiens				GRCh38			rs107.v16				appris_homo_sapiens_rs107v16
+homo_sapiens				GRCh37			rs105.v16				appris_homo_sapiens_rs105v16
+homo_sapiens				GRCh38			ens84.v16				appris_homo_sapiens_e84v16
+homo_sapiens				GRCh37			gen19.v16				appris_homo_sapiens_g19v16
+homo_sapiens				GRCh38			uni201509.v15			appris_homo_sapiens_uni201509v15
+homo_sapiens				GRCh38			ens81.v15				appris_homo_sapiens_e81v15
+homo_sapiens				GRCh38			ens79.v15				appris_homo_sapiens_e79v15
+mus_musculus				GRCm38			ens84.v15 				appris_mus_musculus_e84v15
+danio_rerio					GRCz10			ens84.v15 				appris_danio_rerio_e84v15
+danio_rerio					Zv9				ens77.v7.9Feb2015 		appris_danio_rerio_e77
+rattus_norvegicus			Rnor_6.0		ens84.v15				appris_rattus_norvegicus_e84v15
+rattus_norvegicus			Rnor_5.0		ens77.v7.9Feb2015		appris_rattus_norvegicus_e77
+sus_scrofa					Sscrofa10.2		ens84.v15				appris_sus_scrofa_e84v15
+pan_troglodytes				CHIMP2.1.4		ens84.v15				appris_pan_troglodytes_e84v15
+drosophila_melanogaster		BDGP6			ens84.v15				appris_drosophila_melanogaster_e84v15
+caenorhabditis_elegans		WBcel235		ens84.v15				appris_caenorhabditis_elegans_e84v15
 
 ==APPRIS_RELEASE:RELNOTES:2016_03.v15==
 #############################

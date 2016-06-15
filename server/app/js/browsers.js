@@ -15,7 +15,7 @@ module.controller('BrowsersController', ['$scope', '$routeParams', '$filter', fu
     $scope.tyid     = angular.isDefined($routeParams.tid) ? $routeParams.tid : null;
     $scope.gid      = angular.isDefined($routeParams.id) ? $routeParams.id : null;
     $scope.jobid    = angular.isDefined($routeParams.jobid) ? $routeParams.jobid : null;
-    $scope.db       = angular.isDefined($routeParams.db) ? $routeParams.db : null;
+    $scope.as       = angular.isDefined($routeParams.as) ? $routeParams.as : null;
 
     $scope.submitBrowsers = function(inids, inmethods, inalign) {
         // Create query for the browser.
@@ -39,7 +39,7 @@ module.controller('BrowsersController', ['$scope', '$routeParams', '$filter', fu
                 species: $scope.species,
                 tid:     $scope.tyid,
                 id:      $scope.gid,
-                db:      $scope.db,
+                as:      $scope.as,
                 ids:     ids,
                 methods: methods,
                 align:   inalign,

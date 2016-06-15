@@ -216,15 +216,6 @@ sub parse_infiles($;$;$)
 					)
 			);
 		}
-		if ( exists $gene_features->{'havana_gene'} and defined $gene_features->{'havana_gene'} ) {
-			push(@{$xref_identities},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $gene_features->{'havana_gene'},
-						-dbname			=> 'Havana_Gene_Id'
-					)
-			);
-		}		
 		$gene->xref_identify($xref_identities) if (defined $xref_identities);
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);
@@ -304,15 +295,6 @@ sub parse_gencode($;$;$)
 					)
 			);
 		}
-		if ( exists $gene_features->{'havana_gene'} and defined $gene_features->{'havana_gene'} ) {
-			push(@{$xref_identities},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $gene_features->{'havana_gene'},
-						-dbname			=> 'Havana_Gene_Id'
-					)
-			);
-		}		
 		$gene->xref_identify($xref_identities) if (defined $xref_identities);
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);
@@ -3869,7 +3851,7 @@ sub _fetch_transc_objects($$;$;$)
 					APPRIS::XrefEntry->new
 					(
 						-id				=> $gene_id,
-						-dbname			=> 'Ensembl_Gene_Id'
+						-dbname			=> 'Gene_Id'
 					)
 			);
 		}
@@ -3883,21 +3865,12 @@ sub _fetch_transc_objects($$;$;$)
 					)
 			);
 		}
-		if ( exists $transcript_features->{'havana_transcript'} and defined $transcript_features->{'havana_transcript'} ) {
-			push(@{$xref_identities},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $transcript_features->{'havana_transcript'},
-						-dbname			=> 'Havana_Transcript_Id'
-					)
-			);
-		}
 		if ( exists $transcript_features->{'protein_id'} and defined $transcript_features->{'protein_id'} ) {
 			push(@{$xref_identities},
 					APPRIS::XrefEntry->new
 					(
 						-id				=> $transcript_features->{'protein_id'},
-						-dbname			=> 'Ensembl_Peptide_Id'
+						-dbname			=> 'Protein_Id'
 					)
 			);
 		}

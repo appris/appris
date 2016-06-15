@@ -8,21 +8,24 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use HTTP qw( print_http_response );
 use DBRetriever;
+use WSRetriever;
 $|=1; # not use buffering
 
 ###################
 # Global variable #
 ###################
 use vars qw(
-	$CONFIG_INI_FILE
+	$CONFIG_DB_FILE
+	$CONFIG_SERVER_FILE
 	$FORMAT
 	$TYPE_SEQ
 	$ENCODING
 );
 
-$CONFIG_INI_FILE = $ENV{APPRIS_WSERVER_SCRIPTS_DB_INI};
-$FORMAT = $ENV{APPRIS_WSERVER_OUTPUT_FORMAT};
-$ENCODING = $ENV{APPRIS_WSERVER_OUTPUT_ENCODING};
+$CONFIG_DB_FILE 	= $ENV{APPRIS_WSERVER_CONF_DB_FILE};
+$CONFIG_SERVER_FILE = $ENV{APPRIS_WSERVER_CONF_SR_FILE};
+$FORMAT 			= $ENV{APPRIS_WSERVER_OUTPUT_FORMAT};
+$ENCODING 			= $ENV{APPRIS_WSERVER_OUTPUT_ENCODING};
 
 #####################
 # Method prototypes #
@@ -54,21 +57,26 @@ sub main()
 
 	print_http_response(400)
 		unless ( defined $inputs );
-
-	# Ensembl database version is checked
-	my ($db) = $cgi->param('db') || undef ;
+		
+	# Optional paramteres
+	my ($sp) = ( $cgi->param('sp') ) ? $cgi->param('sp') : undef; # species
+	my ($as) = ( $cgi->param('as') ) ? $cgi->param('as') : undef; # assembly	
+	my ($sc) = ( $cgi->param('sc') ) ? $cgi->param('sc') : undef; # source name
+	my ($ds) = ( $cgi->param('ds') ) ? $cgi->param('ds') : undef; # dataset version
 	
-	my ($ens) = $cgi->param('ens') || undef ;
-	if ( defined $ens and ($ens ne '') ) {
-		my ($db) = new DBRetriever(
-								-conf   => $CONFIG_INI_FILE,
-								-specie => undef,
-								-ens	=> $ens
-		);
-		unless ( $db->is_registry(undef,$ens) ) {
-			print_http_response(405, "The parameter $ens is not allowed.")
-		}
-	} 
+	# Chech if parameters exists
+# TODO!! Fix!!!
+#	if ( (defined $as and ($as ne '')) or (defined $ds and ($ds ne '')) or (defined $db and ($db ne '')) ) {
+#		my ($db) = new DBRetriever(
+#								-conf   => $CONFIG_INI_FILE,
+#								-assembly	=> $as,
+#								-dataset	=> $ds,
+#								-database	=> $db
+#		);
+#		unless ( $db->is_registry(undef,$ds,$db) ) {
+#			print_http_response(405, "The input parameters are not allowed.")
+#		}
+#	} 
 	
 	# Get optional parameters
 	my ($format) = $cgi->param('format') || undef ;
@@ -91,9 +99,12 @@ sub main()
 	# if jobid does not exists means that is database input
 	unless ( defined $retriever and $retriever->transl ) {
 		$retriever = new DBRetriever(
-									-conf   	=> $CONFIG_INI_FILE,
-									-ens		=> $ens,
-									-assembly	=> $db,
+									-dbconf   	=> $CONFIG_DB_FILE,
+									-srvconf   	=> $CONFIG_SERVER_FILE,
+									-species	=> $sp,
+									-assembly	=> $as,
+									-source		=> $sc,
+									-dataset	=> $ds,
 									-input		=> $inputs
 		);		
 	}

@@ -520,7 +520,7 @@ sub feed_gene_by_gencode {
 	# Insert Gene Entity info
 	eval {
 		my (%parameters) = (
-								datasource_id	=> $datasources->{'Ensembl_Gene_Id'},
+								datasource_id	=> $datasources->{'Gene_Id'},
 								identifier		=> $stable_id,
 								source			=> $entity->source,
 								biotype			=> $entity->biotype,
@@ -568,7 +568,7 @@ sub feed_gene_by_gencode {
 			# insert xref transc id
 			eval {			
 				my (%parameters) = (
-								datasource_id	=> $datasources->{'Ensembl_Transcript_Id'},
+								datasource_id	=> $datasources->{'Transcript_Id'},
 								entity_id		=> $entity_id,
 								identifier		=> $transcript->stable_id
 				);
@@ -638,7 +638,7 @@ sub feed_transc_by_gencode {
 	# Insert Entity info
 	eval {
 		my (%parameters) = (
-								datasource_id	=> $datasources->{'Ensembl_Transcript_Id'},
+								datasource_id	=> $datasources->{'Transcript_Id'},
 								identifier		=> $stable_id,
 								source			=> $entity->source,
 								biotype			=> $entity->biotype,
@@ -749,7 +749,7 @@ sub _feed_transl_by_gencode {
 	eval {
 		if ( $stable_id =~ /^ENSP/ ) {
 			my (%parameters) = (
-								datasource_id	=> $datasources->{'Ensembl_Peptide_Id'},
+								datasource_id	=> $datasources->{'Protein_Id'},
 								entity_id		=> $entity_id,
 								identifier		=> $stable_id
 				);
