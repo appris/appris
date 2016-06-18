@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="rattus_norvegicus/e84"
+export APPRIS_WS_NAME="rattus_norvegicus/e85"
 
-export APPRIS_WS_DATE="rattus_norvegicus/ens84.v17"
+export APPRIS_WS_DATE="rattus_norvegicus/ens85.v17"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -46,7 +46,7 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
 
 #export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.84.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.85.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Rattus_norvegicus.Rnor_6.0.cdna.all.fa"
 
@@ -68,7 +68,7 @@ export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 # Setting up the vars for cached dir #
 # -----------------------------------#
 
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/e83"
+export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/rattus_norvegicus/e84"
 
 # ---------------------------------#
 # Setting up the vars for database #
