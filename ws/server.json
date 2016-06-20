@@ -14,40 +14,38 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
-                        "name": "gencode",
-                        "version": "24"
-                    },{
+                    "source": {
                         "name": "ensembl",
+                        "label": "Gencode24/Ensembl84",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "rs107.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "refseq",
                         "version": "107"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_rs107v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 },{
                     "id":   "ens81.v17",
                     "type": "archive",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "81"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_e81v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "ens79.v17",
                     "type": "archive",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "79"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_e79v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 }]
@@ -57,22 +55,20 @@
                 "datasets": [{
                     "id":   "gen19.v17",
                     "type": "current",
-                    "source": [{
-                        "name": "gencode",
-                        "version": "19"
-                    },{
+                    "source": {
                         "name": "ensembl",
+                        "label": "Gencode19/Ensembl74",
                         "version": "74"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_g19v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "rs105.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "refseq",
                         "version": "105"
-                    }],
+                    },
                     "database":   "appris_homo_sapiens_rs105v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -91,13 +87,11 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
-                        "name": "gencode",
-                        "version": "M9"
-                    },{
+                    "source": {
                         "name": "ensembl",
+                        "label": "GencodeM9/Ensembl84",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_mus_musculus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -116,10 +110,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_danio_rerio_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -129,10 +123,10 @@
                 "datasets": [{
                     "id":   "ens77.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "77"
-                    }],
+                    },
                     "database":   "appris_danio_rerio_e77v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -151,10 +145,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_rattus_norvegicus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -164,10 +158,10 @@
                 "datasets": [{
                     "id":   "ens77.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "77"
-                    }],
+                    },
                     "database":   "appris_rattus_norvegicus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -186,10 +180,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_sus_scrofa_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -208,10 +202,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_pan_troglodytes_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -230,10 +224,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_drosophila_melanogaster_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -252,10 +246,10 @@
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }],
+                    },
                     "database":   "appris_caenorhabditis_elegans_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -273,10 +267,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -292,10 +286,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -311,10 +305,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -330,10 +324,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -349,10 +343,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -368,10 +362,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -387,10 +381,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -406,10 +400,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         },
@@ -425,10 +419,10 @@
                 "datasets": [{
                     "id":   "e84",
                     "type": "download",
-                    "source": [{
+                    "source": {
                         "name": "ensembl",
                         "version": "84"
-                    }]
+                    }
                 }]
             }]
         }
