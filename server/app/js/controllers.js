@@ -4,18 +4,20 @@
 
 var apprisControllers = angular.module('apprisControllers', []);
 
-apprisControllers.run(function($rootScope, serverName, serverType, serverHost, serverHostWS, Server, Downloads, Methods) {
+apprisControllers.run(function($rootScope, serverName, serverType, serverHost, serverHostWS, Server, Methods) {
     $rootScope.serverConf = {
         "name":    serverName,
         "type":    serverType,
         "host":    serverHost,
-        "hostWS":  serverHostWS
+        "hostWS":  serverHostWS,
+        "version": ""
     };
     $rootScope.server = Server.get();
     $rootScope.server.$promise.then( function(data) {
+        $rootScope.serverConf.version = data.version;
         $rootScope.species = data.species;
+        $rootScope.downloads = data.datafiles;
     });
-    $rootScope.downloads = Downloads.get(); // TODO!!! CHANGE
     $rootScope.methods = Methods.get();
     $rootScope.isLoadingScreen = false;
 })
@@ -203,13 +205,11 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
 
 
 /* The REST of Controllers */
-apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Downloads',
-    function($rootScope, $scope, Downloads) {
+apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$filter',
+    function($rootScope, $scope, $filter) {
         // init pagination
         $scope.currentPage = 1;
         $scope.pageSize = 4;
-
-        $scope.isArray = angular.isArray;
 
         // load all data files
         $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.txt';
@@ -218,45 +218,51 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
             $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/current_release';
         }
         else {
-            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/releases/' + $rootScope.downloads.version;
+            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/releases/' + $rootScope.serverConf.version;
         }
-        $scope.headers = [];
+        $scope.downloads = [];
         $scope.datafiles = [];
         $scope.species = [];
         $scope.assemblies = [];
         $scope.datasets = [];
         if ( angular.isDefined($rootScope.downloads) ) {
-            $scope.version = $rootScope.downloads.version;
-            if (angular.isDefined($rootScope.downloads.headers) ) {
-                $scope.headers = $rootScope.downloads.headers;
-            }
-            if (angular.isDefined($rootScope.downloads.datafiles) ) {
-                $scope.datafiles = $rootScope.downloads.datafiles;
-                angular.forEach($rootScope.downloads.datafiles, function(val) {
-                    var specie = val['species'];
-                    var assembly = val['assembly'];
-                    var dataset = val['dataset'];
-                    var path = val['path'];
-                    if ( $scope.species.indexOf(specie) == -1 ) {
-                        $scope.species.push(specie);
-                    }
-                    if ( $scope.assemblies.indexOf(assembly) == -1 ) {
-                        $scope.assemblies.push(assembly);
-                    }
-                    if ( $scope.datasets.indexOf(dataset) == -1 ) {
-                        $scope.datasets.push(dataset);
-                    }
+            $scope.downloads = $rootScope.downloads;
+            angular.forEach($rootScope.species, function(species) {
+                angular.forEach(species.assemblies, function(assembly) {
+                    angular.forEach(assembly.datasets, function(dataset) {
+                        if ( angular.isDefined(dataset.datafiles) ) {
+                            var ds = $filter('extractSourceName')(dataset.source).join('/');
+                            if ( $scope.species.indexOf(species.common) == -1 ) {
+                                $scope.species.push(species.common);
+                            }
+                            if ( $scope.assemblies.indexOf(assembly.name) == -1 ) {
+                                $scope.assemblies.push(assembly.name);
+                            }
+                            if ( $scope.datasets.indexOf(ds) == -1 ) {
+                                $scope.datasets.push(ds);
+                            }
+
+                            $scope.datafiles.push({
+                                "species": species.common,
+                                "assembly": assembly.name,
+                                "dataset": ds,
+                                "files": dataset.datafiles
+                            });
+
+                        }
+                    });
                 });
-            }
+            });
         }
-//        Downloads.get().$promise.then( function(data) {
-//            $scope.version = data.version;
-//            if (angular.isDefined(data.headers) ) {
-//                $scope.headers = data.headers;
+console.log($scope.datafiles);
+
+//        if ( angular.isDefined($rootScope.datafiles) ) {
+//            if (angular.isDefined($rootScope.downloads.headers) ) {
+//                $scope.headers = $rootScope.downloads.headers;
 //            }
-//            if (angular.isDefined(data.datafiles) ) {
-//                $scope.datafiles = data.datafiles;
-//                angular.forEach(data.datafiles, function(val) {
+//            if (angular.isDefined($rootScope.downloads.datafiles) ) {
+//                $scope.datafiles = $rootScope.downloads.datafiles;
+//                angular.forEach($rootScope.downloads.datafiles, function(val) {
 //                    var specie = val['species'];
 //                    var assembly = val['assembly'];
 //                    var dataset = val['dataset'];
@@ -272,7 +278,7 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', 'Do
 //                    }
 //                });
 //            }
-//        });
+//        }
     }
 ]);
 

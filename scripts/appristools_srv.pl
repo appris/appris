@@ -93,24 +93,36 @@ sub main()
 	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
 
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+			#foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+			for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
+				my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
 				if ( exists $cfg_dataset->{'database'} ) {
+					my ($as_name) = $cfg_assembly->{'name'};
+					my ($ds_id) = $cfg_dataset->{'id'};
+					my ($ds_dir) = $APPRIS_DATA_DIR.'/'.$species_id.'/'.$ds_id;
+					my ($relspe_dir) = $LOC_RELEASE_DIR.'/datafiles/'.$species_id;
+					my ($reldat_dir) = $relspe_dir.'/'.$ds_id;
+					
 					eval {
-						my ($ds_id) = $cfg_dataset->{'id'};
-						my ($ds_dir) = $APPRIS_DATA_DIR.'/'.$species_id.'/'.$ds_id;
-						my ($loc_reldat_dir) = $LOC_RELEASE_DIR.'/datafiles/'.$species_id;					
-						my ($cmd) = "mkdir -p $loc_reldat_dir && cp -rp $ds_dir $loc_reldat_dir/.";
+						my ($cmd) = "mkdir -p $relspe_dir && cp -rp $ds_dir $relspe_dir/.";
 						info($cmd);
 						system ($cmd);
 					};
-					throw("creating local workspace") if($@);					
+					throw("creating local workspace") if($@);
+					
+					if ( exists $cfg_dataset->{'type'} and ($cfg_dataset->{'type'} eq 'current') and $i == 0 ) { # create assembly link to first current dataset
+						eval {
+							my ($cmd) = "cd $relspe_dir ; ln -s $ds_id $as_name";
+							info($cmd);
+							system ($cmd);
+						};
+						throw("creating assembly link") if($@);						
+					}
 				}
-				
-
 			}			
 		}		
-	}
-	
+	}	
+		
 	# create release note for given release
 	info("create release note for given release...");
 	my ($release_notes) = getTotalStringFromFile($relnotes_file);
@@ -133,7 +145,6 @@ sub main()
 		throw("Printing _get_ccds_stats_content\n") unless(defined $plog);		
 	}
 
-	
 	# upload datafiles to server
 	info("upload datafiles to server...");
 	eval {
@@ -142,35 +153,6 @@ sub main()
 		system ($cmd);
 	};
 	throw("updating datafiles to server") if($@);
-	
-	# create link from assembly to current data
-	info("create link from assembly to current data...");
-	my ($cmd_aux) = "";
-	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
-
-		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
-				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'type'} and ($cfg_dataset->{'type'} eq 'current') ) {
-					my ($as_name) = $cfg_assembly->{'name'};
-					my ($ds_id) = $cfg_dataset->{'id'};
-					my ($ds_db) = $cfg_dataset->{'database'};					
-					my ($srv_relspe_dir) = $SRV_RELEASE_DIR.'/datafiles/'.$species_id;
-					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
-					$cmd_aux .= "cd $cmd_aux && rm $as_name ; ln -s $ds_id $as_name && ";
-					last;
-				}
-			}			
-		}		
-	}
-	if ( $cmd_aux ne '' ) {
-		eval {
-			$cmd_aux =~ s/\s*\&\&\s*$//g;
-			my ($cmd) = "ssh $SRV_NAME '$cmd_aux'";
-			info($cmd);
-			system ($cmd);
-		};
-		throw("creating link from assembly to current data") if($@);		
-	}	
 	
 	# import databases into server
 	info("import databases into server...");

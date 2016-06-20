@@ -9,64 +9,70 @@
             "category":     "houses",
             "official":     "hg38",
             "assemblies":   [{
-                "name":     "GRCh38_hg38",
                 "id":       "hg38",
+                "name":     "GRCh38",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
+                        "name": "gencode",
+                        "version": "24"
+                    },{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "rs107.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "refseq",
                         "version": "107"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_rs107v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 },{
                     "id":   "ens81.v17",
                     "type": "archive",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "81"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_e81v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "ens79.v17",
                     "type": "archive",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "79"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_e79v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 }]
             },{
-                "name":     "GRCh37_hg19",
                 "id":       "hg19",
+                "name":     "GRCh37",
                 "datasets": [{
                     "id":   "gen19.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
+                        "name": "gencode",
+                        "version": "19"
+                    },{
                         "name": "ensembl",
                         "version": "74"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_g19v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
                 },{
                     "id":   "rs105.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "refseq",
                         "version": "105"
-                    },
+                    }],
                     "database":   "appris_homo_sapiens_rs105v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -80,15 +86,18 @@
             "category":     "houses",
             "official":     "mm10",
             "assemblies":   [{
-                "name":     "GRCm38_mm10",
                 "id":       "mm10",
+                "name":     "GRCm38",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
+                        "name": "gencode",
+                        "version": "M9"
+                    },{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_mus_musculus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -102,28 +111,28 @@
             "category":     "houses",
             "official":      "danRer10",
             "assemblies":   [{
-                "name":     "GRCz10_danRer10",
                 "id":       "danRer10",
+                "name":     "GRCz10",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_danio_rerio_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
             },{
-                "name":     "Zv9_danRer7",
                 "id":       "danRer7",
+                "name":     "Zv9",
                 "datasets": [{
                     "id":   "ens77.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "77"
-                    },
+                    }],
                     "database":   "appris_danio_rerio_e77v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -137,28 +146,28 @@
             "category":     "houses",
             "official":     "rn6",
             "assemblies":   [{
-                "name":     "Rnor_6.0_rn6",
                 "id":       "rn6",
+                "name":     "Rnor_6.0",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_rattus_norvegicus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
             },{
-                "name":     "Rnor_5.0_rn5",
                 "id":       "rn5",
+                "name":     "Rnor_5.0",
                 "datasets": [{
                     "id":   "ens77.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "77"
-                    },
+                    }],
                     "database":   "appris_rattus_norvegicus_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -172,15 +181,15 @@
             "category":     "houses",
             "official":     "susScr3",
             "assemblies":   [{
-                "name":     "Sscrofa10.2_susScr3",
                 "id":       "susScr3",
+                "name":     "Sscrofa10.2",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_sus_scrofa_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -194,15 +203,15 @@
             "category":     "houses",
             "official":     "panTro4",
             "assemblies":   [{
-                "name":     "CHIMP2.1.4_panTro4",
                 "id":       "panTro4",
+                "name":     "CHIMP2.1.4",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_pan_troglodytes_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -216,15 +225,15 @@
             "category":     "houses",
             "official":     "dm6",
             "assemblies":   [{
-                "name":     "BDGP6_dm6",
                 "id":       "dm6",
+                "name":     "BDGP6",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_drosophila_melanogaster_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -238,15 +247,15 @@
             "category":     "houses",
             "official":     "ce10",
             "assemblies":   [{
-                "name":     "WBcel235_ce10",
                 "id":       "ce10",
+                "name":     "WBcel235",
                 "datasets": [{
                     "id":   "ens84.v17",
                     "type": "current",
-                    "source": {
+                    "source": [{
                         "name": "ensembl",
                         "version": "84"
-                    },
+                    }],
                     "database":   "appris_caenorhabditis_elegans_e84v17",
                     "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
                 }]
@@ -259,10 +268,15 @@
             "group":       "laurasiatheria",
             "official":     "bosTau8",
             "assemblies":   [{
-                "name":     "UMD3.1_bosTau8",
                 "id":       "bosTau8",
+                "name":     "UMD3.1",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -273,10 +287,15 @@
             "group":        "laurasiatheria",
             "official":     "canFam3",
             "assemblies":   [{
-                "name":     "CanFam3.1_canFam3",
                 "id":       "canFam3",
+                "name":     "CanFam3.1",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -287,10 +306,15 @@
             "group":        "laurasiatheria",
             "official":     "felCat5",
             "assemblies":   [{
-                "name":     "Felis_catus_6.2_felCat5",
                 "id":       "felCat5",
+                "name":     "Felis_catus_6.2",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -301,10 +325,15 @@
             "group":        "mammals",
             "official":     "monDom5",
             "assemblies":   [{
-                "name":     "BROADO5_monDom5",
                 "id":       "monDom5",
+                "name":     "BROADO5",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -315,10 +344,15 @@
             "group":        "birds",
             "official":     "galGal4",
             "assemblies":   [{
-                "name":     "Galgal4_galGal4",
                 "id":       "galGal4",
+                "name":     "Galgal4",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -329,10 +363,15 @@
             "group":        "birds",
             "official":     "taeGut1",
             "assemblies":   [{
-                "name":     "taeGut3.2.4_taeGut1",
                 "id":       "taeGut1",
+                "name":     "taeGut3.2.4",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -343,10 +382,15 @@
             "group":        "reptiles",
             "official":     "anoCar2",
             "assemblies":   [{
-                "name":     "AnoCar2.0_anoCar2",
                 "id":       "anoCar2",
+                "name":     "AnoCar2.0",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -357,10 +401,15 @@
             "group":        "amphibians",
             "official":     "xenTro3",
             "assemblies":   [{
-                "name":     "JGI4.2_xenTro3",
                 "id":       "xenTro3",
+                "name":     "JGI4.2",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         },
@@ -371,85 +420,78 @@
             "group":        "fish",
             "official":     "fr3",
             "assemblies":   [{
-                "name":     "FUGU4_fr3",
                 "id":       "fr3",
+                "name":     "FUGU4",
                 "datasets": [{
-                    "id":   "e84"
+                    "id":   "e84",
+                    "type": "download",
+                    "source": [{
+                        "name": "ensembl",
+                        "version": "84"
+                    }]
                 }]
             }]
         }
     },
-    "datafiles": [
-        {
-            "id":       "species",
-            "label":    "Species",
-            "desc":     "List of species"
-        },
-        {
-            "id":       "assembly",
-            "label":    "Assembly version",
-            "desc":     "Assembly version"
-        },
-        {
-            "id":       "dataset",
-            "label":    "Gene Dataset",
-            "desc":     "Gene Dataset"
-        },
-        {
-            "id":       "principal_isoforms",
-            "label":    "Principal Isoforms",
-            "desc":     "List of Principal Isoforms",
-            "file":     "appris_data.principal",
-            "formats":  ["TXT"]
-        },
-        {
-            "id":       "appris_scores",
-            "label":    "APPRIS scores",
-            "desc":     "Score of APPRIS methods",
-            "file":     "appris_data.appris",
-            "formats":  ["TXT"]
-        },
-        {
-            "id":       "functional_residues",
-            "label":    "Functional residues",
-            "desc":     "No. Functional Residues",
-            "file":     "appris_method.firestar",
-            "formats":  ["GTF","BED"]
-        },
-        {
-            "id":       "tertiary_structure",
-            "label":    "Tertiary structure",
-            "desc":     "Tertiary Structure Score",
-            "file":     "appris_method.matador3d",
-            "formats":  ["GTF","BED"]
-        },
-        {
-            "id":       "vertebrates_conservation",
-            "label":    "Vertebrates conservation",
-            "desc":     "Conservation Score (vertebrates)",
-            "file":     "appris_method.corsair",
-            "formats":  ["GTF","BED"]
-        },
-        {
-            "id":       "whole_domains",
-            "label":    "Whole domains",
-            "desc":     "Whole Domains",
-            "file":     "appris_method.spade",
-            "formats":  ["GTF","BED"]
-        },
-        {
-            "id":       "transmembrane_helices",
-            "label":    "Transmembrane helices",
-            "desc":     "No. Transmembrane Helices",
-            "file":     "appris_method.thump",
-            "formats":  ["GTF","BED"]
-        },
-        {
-            "id":       "peptides",
-            "label":    "Peptides",
-            "desc":     "No. Peptides",
-            "file":     "appris_method.proteo",
-            "formats":  ["GTF","BED"]
-        }
-    ]
+    "datafiles": [{
+        "id":       "species",
+        "label":    "Species",
+        "desc":     "List of species"
+    },{
+        "id":       "assembly",
+        "label":    "Assembly version",
+        "desc":     "Assembly version"
+    },{
+        "id":       "dataset",
+        "label":    "Gene Dataset",
+        "desc":     "Gene Dataset"
+    },{
+        "id":       "principal_isoforms",
+        "label":    "Principal Isoforms",
+        "desc":     "List of Principal Isoforms",
+        "file":     "appris_data.principal",
+        "formats":  ["TXT"]
+    },{
+        "id":       "appris_scores",
+        "label":    "APPRIS scores",
+        "desc":     "Score of APPRIS methods",
+        "file":     "appris_data.appris",
+        "formats":  ["TXT"]
+    },{
+        "id":       "functional_residues",
+        "label":    "Functional residues",
+        "desc":     "No. Functional Residues",
+        "file":     "appris_method.firestar",
+        "formats":  ["GTF","BED"]
+    },{
+        "id":       "tertiary_structure",
+        "label":    "Tertiary structure",
+        "desc":     "Tertiary Structure Score",
+        "file":     "appris_method.matador3d",
+        "formats":  ["GTF","BED"]
+    },{
+        "id":       "vertebrates_conservation",
+        "label":    "Vertebrates conservation",
+        "desc":     "Conservation Score (vertebrates)",
+        "file":     "appris_method.corsair",
+        "formats":  ["GTF","BED"]
+    },{
+        "id":       "whole_domains",
+        "label":    "Whole domains",
+        "desc":     "Whole Domains",
+        "file":     "appris_method.spade",
+        "formats":  ["GTF","BED"]
+    },{
+        "id":       "transmembrane_helices",
+        "label":    "Transmembrane helices",
+        "desc":     "No. Transmembrane Helices",
+        "file":     "appris_method.thump",
+        "formats":  ["GTF","BED"]
+    },{
+        "id":       "peptides",
+        "label":    "Peptides",
+        "desc":     "No. Peptides",
+        "file":     "appris_method.proteo",
+        "formats":  ["GTF","BED"]
+    }]
 }

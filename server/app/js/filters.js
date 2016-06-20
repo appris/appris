@@ -201,6 +201,19 @@ apprisFilters.filter('selectedMethods', function() {
     };
 });
 
+// Extract the list of sources
+apprisFilters.filter('extractSourceName', function(capitalizeFilter) {
+    return function(items) {
+        if (!angular.isObject(items)) return false;
+        var filtered = [];
+        angular.forEach(items, function(item, key) {
+            var dat = capitalizeFilter(item.name) + item.version;
+            filtered.push(dat);
+        });
+        return filtered;
+    };
+});
+
 /* For RESULT REPORT */
 
 //// Creates report from results with genome input

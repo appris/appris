@@ -21,18 +21,25 @@ Gene Dataset:
     <table class="table table-striped table-bordered table-hover table-condensed">
         <tbody>
         <tr>
-            <th data-ng-repeat="head in headers">{{head.label}}</th>
+            <th data-ng-repeat="download in downloads">{{download.label}}</th>
         </tr>
-        <tr dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
-            <td data-ng-repeat="head in headers">
-                <span data-ng-if="!isArray(datafile[head.id])">{{datafile[head.id]}}</span>
-                <span data-ng-repeat="datameth in datafile[head.id] track by $index" data-ng-if="isArray(datafile[head.id])">
-                    <a
-                        ng-href="{{baseUrlDownload}}/{{datafile.path}}/{{datafile.scientific}}/{{datafile.assembly}}/{{datameth.file}}" target="_blank">
-                    {{datameth.format}}</a>
-                </span>
-            </td>
+        <tr
+                dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
+            <td>{{datafile.species}}</td>
+            <td>{{datafile.assembly}}</td>
+            <td>{{datafile.dataset}}</td>
+            <td data-ng-repeat="file in datafile.files">{{file}}</td>
         </tr>
+        <!--<tr dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">-->
+            <!--<td data-ng-repeat="head in headers">-->
+                <!--<span data-ng-if="!isArray(datafile[head.id])">{{datafile[head.id]}}</span>-->
+                <!--<span data-ng-repeat="datameth in datafile[head.id] track by $index" data-ng-if="isArray(datafile[head.id])">-->
+                    <!--<a-->
+                        <!--ng-href="{{baseUrlDownload}}/{{datafile.path}}/{{datafile.scientific}}/{{datafile.assembly}}/{{datameth.file}}" target="_blank">-->
+                    <!--{{datameth.format}}</a>-->
+                <!--</span>-->
+            <!--</td>-->
+        <!--</tr>-->
         </tbody>
     </table>
 </div>

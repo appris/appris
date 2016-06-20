@@ -63,14 +63,14 @@ apprisServices.factory('Server', ['$resource', 'serverHostWS', function($resourc
 }]);
 
 /* CONFIG file of DOWNLOAD files */
-apprisServices.factory('Downloads', ['$resource', 'serverHostWS', function($resource, serverHostWS){
-    return $resource(serverHostWS+'/downloads.json');
-}]);
+//apprisServices.factory('Downloads', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+//    return $resource(serverHostWS+'/downloads.json');
+//}]);
 
 /* CONFIG file of used SPECIES */
-apprisServices.factory('Species', ['$resource', 'serverHostWS', function($resource, serverHostWS){
-    return $resource(serverHostWS+'/species.json');
-}]);
+//apprisServices.factory('Species', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+//    return $resource(serverHostWS+'/species.json');
+//}]);
 
 /* CONFIG file of used METHODS */
 apprisServices.factory('Methods', ['$resource', 'serverHostWS', function($resource, serverHostWS){
