@@ -795,7 +795,39 @@ sub fetch_entity_by_xref_entry {
 	# For this case, you have to give the exact identifier.	
 	my ($aux_query_entity_list);
 	my ($query_entity_list);
+	# Extract "Gene ID" entity
 	eval {
+		$query_entity_list = $self->dbadaptor->query_entity(identifier => $xref_entry);
+	};
+	warning('Argument must be a correct entry') if ($@);
+	# Extract "Gene Name" entity
+	unless ( defined $query_entity_list and (scalar(@{$query_entity_list}) > 0) ) {
+		eval {
+			$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);		
+			foreach my $xref_report (@{$aux_query_entity_list})
+			{
+				my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
+				foreach my $xref_identifier (@{$xref_identifier_list})
+				{
+					push(@{$query_entity_list},{
+										'entity_id'		=> $xref_identifier->{'entity_id'},
+										'identifier'	=> $xref_identifier->{'identifier'},
+										'datasource_id'	=> $xref_identifier->{'datasource_id'},
+										'biotype'		=> $xref_identifier->{'biotype'},
+										'status'		=> $xref_identifier->{'status'},
+										'source'		=> $xref_identifier->{'source'},
+										'level'			=> $xref_identifier->{'level'},
+										'version'		=> $xref_identifier->{'version'},
+										'tsl'			=> $xref_identifier->{'tsl'},
+										'tag'			=> $xref_identifier->{'tag'}
+					});
+				}		
+			}
+		};		
+		warning('Argument must be a correct entry') if ($@);
+	}
+	
+#	eval {
 #		if ( $xref_entry =~ /^(\d+)$/) {
 #			warning('Argument must be a correct entry');
 #		}
@@ -882,30 +914,8 @@ sub fetch_entity_by_xref_entry {
 #				}		
 #			}
 #		}
-
-		$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);		
-		foreach my $xref_report (@{$aux_query_entity_list})
-		{
-			my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
-			foreach my $xref_identifier (@{$xref_identifier_list})
-			{
-				push(@{$query_entity_list},{
-									'entity_id'		=> $xref_identifier->{'entity_id'},
-									'identifier'	=> $xref_identifier->{'identifier'},
-									'datasource_id'	=> $xref_identifier->{'datasource_id'},
-									'biotype'		=> $xref_identifier->{'biotype'},
-									'status'		=> $xref_identifier->{'status'},
-									'source'		=> $xref_identifier->{'source'},
-									'level'			=> $xref_identifier->{'level'},
-									'version'		=> $xref_identifier->{'version'},
-									'tsl'			=> $xref_identifier->{'tsl'},
-									'tag'			=> $xref_identifier->{'tag'}
-				});
-			}		
-		}
-
-	};
-	warning('Argument must be a correct entry') if ($@);
+#	};
+#	warning('Argument must be a correct entry') if ($@);
 
 	
 	unless ( defined $query_entity_list and (scalar(@{$query_entity_list}) > 0) ) {
