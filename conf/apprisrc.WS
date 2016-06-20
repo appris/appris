@@ -22,7 +22,7 @@ export APPRIS_NUM_PARALLEL_PROC=1
 
 export APPRIS_WSERVER_CONF_DB_FILE="${APPRIS_WSERVER_CONF_DIR}/apprisdb.ini"
 
-export APPRIS_WSERVER_CONF_SR_FILE="${APPRIS_WSERVER_CONF_DIR}/species.json"
+export APPRIS_WSERVER_CONF_SR_FILE="${APPRIS_WSERVER_CONF_DIR}/server.json"
 
 export APPRIS_WSERVER_PIPELINE_STRUCTURE="firestar,matador3d,spade,corsair,thump,crash,appris"
 

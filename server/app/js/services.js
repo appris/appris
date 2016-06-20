@@ -9,6 +9,59 @@ apprisServices.factory('Changelogs', ['$resource', 'serverHostWS', function($res
     return $resource(serverHostWS+'/changelogs.json');
 }]);
 
+/* CONFIG file of used SERVER */
+//apprisServices.factory('Server', ['$q', '$resource', 'serverHostWS', function ($q, $resource, serverHostWS) {
+//    var resource = $resource(serverHostWS+'/server.json');
+//
+//    return {
+//        /* method: create */
+//        species: function (data) {
+//            var delay = $q.defer();
+//            resource.get(data, function (resp) {
+//                delay.resolve(resp);
+//            }, function(err) {
+//                delay.reject(err);
+//            });
+//            return delay.promise;
+//        }
+//    }
+//}]);
+//apprisServices.factory('Server', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
+//    return({
+//        get2: getResult
+//    });
+//    function getResult( ) {
+//        var request = $http({
+//            method: "get",
+//            cache: false,
+//            url: serverHostWS+'/server.json'
+//        });
+//        return request.then(handleSuccess, handleError) ;
+//
+//        // PRIVATE METHODS
+//
+//        function handleError(response) {
+//            if ( !(angular.isDefined(response.data))  ) {
+//                return $q.reject( "An unknown error occurred." );
+//            }
+//            return $q.reject(response.data);
+//        }
+//        function handleSuccess( response ) {
+//            if ( angular.isDefined(response.data) ) {
+//                //if ( (angular.isArray(response.data) || angular.isString(response.data) || angular.isObject(response.data) ) && (response.data.length > 0) ) {
+//                if ( angular.isArray(response.data) || angular.isString(response.data) || angular.isObject(response.data) ) {
+//                    return response.data;
+//                }
+//                else { return "The server config was not found" }
+//            }
+//            else { return "Empty response" }
+//        }
+//    }
+//}]);
+apprisServices.factory('Server', ['$resource', 'serverHostWS', function($resource, serverHostWS){
+    return $resource(serverHostWS+'/server.json');
+}]);
+
 /* CONFIG file of DOWNLOAD files */
 apprisServices.factory('Downloads', ['$resource', 'serverHostWS', function($resource, serverHostWS){
     return $resource(serverHostWS+'/downloads.json');

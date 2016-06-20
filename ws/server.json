@@ -1,0 +1,455 @@
+{
+    "version": "2016_06.v17",
+    "species": {
+        "homo_sapiens": {
+            "order":        1,
+            "scientific":   "Homo sapiens",
+            "common":       "Human",
+            "group":        "popular",
+            "category":     "houses",
+            "official":     "hg38",
+            "assemblies":   [{
+                "name":     "GRCh38_hg38",
+                "id":       "hg38",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_homo_sapiens_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                },{
+                    "id":   "rs107.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "version": "107"
+                    },
+                    "database":   "appris_homo_sapiens_rs107v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                },{
+                    "id":   "ens81.v17",
+                    "type": "archive",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "81"
+                    },
+                    "database":   "appris_homo_sapiens_e81v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                },{
+                    "id":   "ens79.v17",
+                    "type": "archive",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "79"
+                    },
+                    "database":   "appris_homo_sapiens_e79v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                }]
+            },{
+                "name":     "GRCh37_hg19",
+                "id":       "hg19",
+                "datasets": [{
+                    "id":   "gen19.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "74"
+                    },
+                    "database":   "appris_homo_sapiens_g19v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                },{
+                    "id":   "rs105.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "version": "105"
+                    },
+                    "database":   "appris_homo_sapiens_rs105v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "mus_musculus": {
+            "order":        2,
+            "scientific":   "Mus musculus",
+            "common":       "Mouse",
+            "group":        "popular",
+            "category":     "houses",
+            "official":     "mm10",
+            "assemblies":   [{
+                "name":     "GRCm38_mm10",
+                "id":       "mm10",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_mus_musculus_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "danio_rerio": {
+            "order":        3,
+            "scientific":   "Danio rerio",
+            "common":       "Zebrafish",
+            "group":        "popular",
+            "category":     "houses",
+            "official":      "danRer10",
+            "assemblies":   [{
+                "name":     "GRCz10_danRer10",
+                "id":       "danRer10",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_danio_rerio_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            },{
+                "name":     "Zv9_danRer7",
+                "id":       "danRer7",
+                "datasets": [{
+                    "id":   "ens77.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "77"
+                    },
+                    "database":   "appris_danio_rerio_e77v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "rattus_norvegicus": {
+            "order":        4,
+            "scientific":   "Rattus norvegicus",
+            "common":       "Rat",
+            "group":        "rodents",
+            "category":     "houses",
+            "official":     "rn6",
+            "assemblies":   [{
+                "name":     "Rnor_6.0_rn6",
+                "id":       "rn6",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_rattus_norvegicus_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            },{
+                "name":     "Rnor_5.0_rn5",
+                "id":       "rn5",
+                "datasets": [{
+                    "id":   "ens77.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "77"
+                    },
+                    "database":   "appris_rattus_norvegicus_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "sus_scrofa": {
+            "order":        5,
+            "scientific":   "Sus scrofa",
+            "common":       "Pig",
+            "group":        "laurasiatheria",
+            "category":     "houses",
+            "official":     "susScr3",
+            "assemblies":   [{
+                "name":     "Sscrofa10.2_susScr3",
+                "id":       "susScr3",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_sus_scrofa_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "pan_troglodytes": {
+            "order":        6,
+            "scientific":   "Pan troglodytes",
+            "common":       "Chimpanzee",
+            "group":        "primates",
+            "category":     "houses",
+            "official":     "panTro4",
+            "assemblies":   [{
+                "name":     "CHIMP2.1.4_panTro4",
+                "id":       "panTro4",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_pan_troglodytes_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "drosophila_melanogaster": {
+            "order":        7,
+            "scientific":   "Drosophila melanogaster",
+            "common":       "Fruitfly",
+            "group":        "invertebrates",
+            "category":     "houses",
+            "official":     "dm6",
+            "assemblies":   [{
+                "name":     "BDGP6_dm6",
+                "id":       "dm6",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_drosophila_melanogaster_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "caenorhabditis_elegans": {
+            "order":        8,
+            "scientific":   "Caenorhabditis elegans",
+            "common":       "C.elegans",
+            "group":        "invertebrates",
+            "category":     "houses",
+            "official":     "ce10",
+            "assemblies":   [{
+                "name":     "WBcel235_ce10",
+                "id":       "ce10",
+                "datasets": [{
+                    "id":   "ens84.v17",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "version": "84"
+                    },
+                    "database":   "appris_caenorhabditis_elegans_e84v17",
+                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                }]
+            }]
+        },
+        "bos_taurus": {
+            "order":        9,
+            "scientific":   "Bos taurus",
+            "common":       "Cow",
+            "group":       "laurasiatheria",
+            "official":     "bosTau8",
+            "assemblies":   [{
+                "name":     "UMD3.1_bosTau8",
+                "id":       "bosTau8",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "canis_familiaris": {
+            "order":        10,
+            "scientific":   "Canis familiaris",
+            "common":       "Dog",
+            "group":        "laurasiatheria",
+            "official":     "canFam3",
+            "assemblies":   [{
+                "name":     "CanFam3.1_canFam3",
+                "id":       "canFam3",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "felis_catus": {
+            "order":        11,
+            "scientific":   "Felis catus",
+            "common":       "Cat",
+            "group":        "laurasiatheria",
+            "official":     "felCat5",
+            "assemblies":   [{
+                "name":     "Felis_catus_6.2_felCat5",
+                "id":       "felCat5",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "monodelphis_domestica": {
+            "order":        12,
+            "scientific":   "Monodelphis domestica",
+            "common":       "Opossum",
+            "group":        "mammals",
+            "official":     "monDom5",
+            "assemblies":   [{
+                "name":     "BROADO5_monDom5",
+                "id":       "monDom5",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "gallus_gallus": {
+            "order":        13,
+            "scientific":   "Gallus gallus",
+            "common":       "Chicken",
+            "group":        "birds",
+            "official":     "galGal4",
+            "assemblies":   [{
+                "name":     "Galgal4_galGal4",
+                "id":       "galGal4",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "taeniopygia_guttata": {
+            "order":        14,
+            "scientific":   "Taeniopygia guttata",
+            "common":       "Zebra Finch",
+            "group":        "birds",
+            "official":     "taeGut1",
+            "assemblies":   [{
+                "name":     "taeGut3.2.4_taeGut1",
+                "id":       "taeGut1",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "anolis_carolinensis": {
+            "order":        15,
+            "scientific":   "Anolis carolinensis",
+            "common":       "Anole lizard",
+            "group":        "reptiles",
+            "official":     "anoCar2",
+            "assemblies":   [{
+                "name":     "AnoCar2.0_anoCar2",
+                "id":       "anoCar2",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "xenopus_tropicalis": {
+            "order":        16,
+            "scientific":   "Xenopus tropicalis",
+            "common":       "Xenopus",
+            "group":        "amphibians",
+            "official":     "xenTro3",
+            "assemblies":   [{
+                "name":     "JGI4.2_xenTro3",
+                "id":       "xenTro3",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        },
+        "takifugu_rubripes": {
+            "order":        17,
+            "scientific":   "Takifugu rubripes",
+            "common":       "Fugu",
+            "group":        "fish",
+            "official":     "fr3",
+            "assemblies":   [{
+                "name":     "FUGU4_fr3",
+                "id":       "fr3",
+                "datasets": [{
+                    "id":   "e84"
+                }]
+            }]
+        }
+    },
+    "datafiles": [
+        {
+            "id":       "species",
+            "label":    "Species",
+            "desc":     "List of species"
+        },
+        {
+            "id":       "assembly",
+            "label":    "Assembly version",
+            "desc":     "Assembly version"
+        },
+        {
+            "id":       "dataset",
+            "label":    "Gene Dataset",
+            "desc":     "Gene Dataset"
+        },
+        {
+            "id":       "principal_isoforms",
+            "label":    "Principal Isoforms",
+            "desc":     "List of Principal Isoforms",
+            "file":     "appris_data.principal",
+            "formats":  ["TXT"]
+        },
+        {
+            "id":       "appris_scores",
+            "label":    "APPRIS scores",
+            "desc":     "Score of APPRIS methods",
+            "file":     "appris_data.appris",
+            "formats":  ["TXT"]
+        },
+        {
+            "id":       "functional_residues",
+            "label":    "Functional residues",
+            "desc":     "No. Functional Residues",
+            "file":     "appris_method.firestar",
+            "formats":  ["GTF","BED"]
+        },
+        {
+            "id":       "tertiary_structure",
+            "label":    "Tertiary structure",
+            "desc":     "Tertiary Structure Score",
+            "file":     "appris_method.matador3d",
+            "formats":  ["GTF","BED"]
+        },
+        {
+            "id":       "vertebrates_conservation",
+            "label":    "Vertebrates conservation",
+            "desc":     "Conservation Score (vertebrates)",
+            "file":     "appris_method.corsair",
+            "formats":  ["GTF","BED"]
+        },
+        {
+            "id":       "whole_domains",
+            "label":    "Whole domains",
+            "desc":     "Whole Domains",
+            "file":     "appris_method.spade",
+            "formats":  ["GTF","BED"]
+        },
+        {
+            "id":       "transmembrane_helices",
+            "label":    "Transmembrane helices",
+            "desc":     "No. Transmembrane Helices",
+            "file":     "appris_method.thump",
+            "formats":  ["GTF","BED"]
+        },
+        {
+            "id":       "peptides",
+            "label":    "Peptides",
+            "desc":     "No. Peptides",
+            "file":     "appris_method.proteo",
+            "formats":  ["GTF","BED"]
+        }
+    ]
+}

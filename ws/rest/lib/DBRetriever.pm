@@ -288,9 +288,9 @@ sub load_registry {
 	# For each species. By default, all species
 	my (@all_species);
 	if ( defined $species ) { push(@all_species, $species) }
-	else { @all_species = keys(%{$server_cfg}) }
+	else { @all_species = keys(%{$server_cfg->{'species'}}) }
 	foreach my $species_id ( @all_species ) {
-		my ($cfg_species) = $server_cfg->{$species_id};
+		my ($cfg_species) = $server_cfg->{'species'}->{$species_id};
 		
 		# For each assembly. By default, all assemblies
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
@@ -326,7 +326,7 @@ sub load_registry {
 												-dbuser	=> $db_cfg->val('APPRIS_DATABASES', 'user'),
 												-dbpass	=> $db_cfg->val('APPRIS_DATABASES', 'pass'),
 												-dbport	=> $db_cfg->val('APPRIS_DATABASES', 'port'),
-												-dbname	=> $cfg_dataset->{'db'}
+												-dbname	=> $cfg_dataset->{'database'}
 						);
 						push(@{$registries}, {
 								'species'	=> $species_id,
@@ -341,7 +341,7 @@ sub load_registry {
 			}				
 		}
 	}
-	
+		
 	return $registries;
 	
 } # end load_registry

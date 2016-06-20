@@ -4,15 +4,18 @@
 
 var apprisControllers = angular.module('apprisControllers', []);
 
-apprisControllers.run(function($rootScope, serverName, serverType, serverHost, serverHostWS, Species, Methods, Downloads) {
+apprisControllers.run(function($rootScope, serverName, serverType, serverHost, serverHostWS, Server, Downloads, Methods) {
     $rootScope.serverConf = {
         "name":    serverName,
         "type":    serverType,
         "host":    serverHost,
         "hostWS":  serverHostWS
     };
-    $rootScope.downloads = Downloads.get();
-    $rootScope.species = Species.get();
+    $rootScope.server = Server.get();
+    $rootScope.server.$promise.then( function(data) {
+        $rootScope.species = data.species;
+    });
+    $rootScope.downloads = Downloads.get(); // TODO!!! CHANGE
     $rootScope.methods = Methods.get();
     $rootScope.isLoadingScreen = false;
 })
@@ -171,7 +174,6 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                 }
                 specieResult[item.species].push(speRst);
             });
-
             // sort by specie
             $scope.seekerResult = [];
             angular.forEach($rootScope.species, function(item, key) {
@@ -184,7 +186,6 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                     $rootScope.isLoadingScreen = false;
                 }
             });
-
         }, function(error) {
             $rootScope.isLoadingScreen = false;
             if ( error.status >= 400 && error.status < 500 ) {

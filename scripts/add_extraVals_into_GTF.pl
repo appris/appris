@@ -24,6 +24,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 my ($is_refseq) = undef;
 my ($xref_file) = undef;
 my ($data_file) = undef;
+my ($seq_file) = undef;
 my ($extra_data_file) = undef;
 my ($out_file) = undef;
 my ($logfile) = undef;
@@ -34,6 +35,7 @@ my ($loglevel) = undef;
 	'ref|r'				=> \$is_refseq,
 	'xref=s'			=> \$xref_file,
 	'data=s'			=> \$data_file,
+	'seq-data=s'		=> \$seq_file,
 	'extra-data=s'		=> \$extra_data_file,
 	'outfile=s'			=> \$out_file,
 	'loglevel=s'		=> \$loglevel,
@@ -80,7 +82,7 @@ sub main()
 	my ($xref_data);
 	my $_extract_dbXref;
 	if ( defined $is_refseq ) {
-		$logger->debug("-- create xref report between RefSeq and Ensembl -------\n");
+		$logger->info("-- create xref report between RefSeq and Ensembl -------\n");
 		$xref_data = create_xref_ensembl($xref_file);
 		$logger->debug(Dumper($xref_data)."\n");
 		
@@ -92,6 +94,10 @@ sub main()
 			}
 			return $match;
 		};
+		
+		$logger->info("-- export CCDS for RefSeq -------\n");
+		my ($seq_report) = common::get_seq_report($seq_file);
+		
 	}	
 
 	$logger->info("-- add extra values into GTF -------\n");	
@@ -103,7 +109,7 @@ sub main()
 			my ($fields) = APPRIS::Parser::_parse_dataline($line);
 			if ( defined $fields ) {
 				
-				# RefSeq
+				# for RefSeq dataset
 				if ( defined $is_refseq ) {
 					my ($source) = $fields->{'source'};
 					my ($type) = $fields->{'type'};
@@ -119,6 +125,14 @@ sub main()
 							if ( exists $xref_data->{$accesion_id} ) {
 								my ($ens_gene_id) = $xref_data->{$accesion_id}->{'gene_id'};
 								my ($ens_transc_id) = $xref_data->{$accesion_id}->{'transc_id'};
+								
+								# add CCDS
+								unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+									if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
+										my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+										$new_values .= "; ccds_id \"$ccds_id\"";
+									}
+								}								
 								# add RT
 								if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ) {
 									my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
@@ -137,7 +151,7 @@ sub main()
 						}
 					}
 				}
-				# Ensembl/GENCODE
+				# for Ensembl/GENCODE dataset
 				else {
 					if ( ($fields->{'type'} eq 'transcript') ) {
 						my ($gene_id) = $fields->{'attrs'}->{'gene_id'};
@@ -283,6 +297,8 @@ perl add_extraVals_into_GTF.pl
 	--xref=rs107/xref.rs107_ensembl.txt
 	
 	--data=rs107/ref_GRCh38.p2_top_level.gff3
+	
+	--seq-data=rs107/protein.fa
 
 	--extra-data=e84_g24/gencode.v24.annotation.gtf
 	

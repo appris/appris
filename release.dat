@@ -1,14 +1,14 @@
 ==APPRIS_RELEASE:RELNOTES:2016_06.v17==
 #################################
-# SERVER-RELEASE: 	2016_06.v17	#
-# CODE-RELEASE: 	4.5.2.11	#
+# SERVER-RELEASE:   2016_06.v17 #
+# CODE-RELEASE:     4.5.2.11    #
 #################################
 
 * HIGHLIGHTS:
-	- New Release of Ensembl (Ensembl85). 
+	- RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively. 
 	
 * APPRIS-SERVER, v4.5
-	- Change in the web services to accepts multiple datasets sources:
+	- Change in the web services to accepts multiple datasets sources.
 	
 	- Now the search web services retrieves the results for a specific query.
 	
@@ -20,37 +20,17 @@
 	
 	- Add TSL and TAG features in "entity" table.
 	
-	- Change the Namespace of "datasource" table.
+	- Change the "namespace" of "datasource" table.
 	
 	- Delete HAVANA datasource
 
 	- APPRIS
 		- Fixed bug. No decision when the sequence length is equal, with the same appris score. The list of genes was:
 			ENSG00000070831 ENSG00000103248 ENSG00000132639 ENSG00000163632 ENSG00000265590 ENSG00000267127 ENSG00000268434
-
-==APPRIS_RELEASE:DATAFILES:2016_06.v17==
-DEPRECATED!!!
-
-USE THE SPECIES.JSON FILE!!!!
-
-
-homo_sapiens				GRCh38_hg38				rs107.v17				appris_homo_sapiens_rs107v17
-homo_sapiens				GRCh37_hg19				rs105.v17				appris_homo_sapiens_rs105v17
-homo_sapiens				GRCh38_hg38				ens84.v17				appris_homo_sapiens_e84v17
-homo_sapiens				GRCh37_hg19				gen19.v17				appris_homo_sapiens_g19v17
-homo_sapiens				GRCh38_hg38				uni201509.v17			appris_homo_sapiens_uni201509v17
-homo_sapiens				GRCh38_hg38				ens81.v17				appris_homo_sapiens_e81v17
-homo_sapiens				GRCh38_hg38				ens79.v17				appris_homo_sapiens_e79v17
-
-mus_musculus				GRCm38_hg38				ens84.v17 				appris_mus_musculus_e84v17
-danio_rerio					GRCz10_danRer10			ens84.v17 				appris_danio_rerio_e84v17
-danio_rerio					Zv9_danRer7				ens77.v17		 		appris_danio_rerio_e77v17
-rattus_norvegicus			Rnor_6.0_rn6			ens84.v17				appris_rattus_norvegicus_e84v17
-rattus_norvegicus			Rnor_5.0_rn5			ens77.v17				appris_rattus_norvegicus_e77v17
-sus_scrofa					Sscrofa10.2_susScr3		ens84.v17				appris_sus_scrofa_e84v17
-pan_troglodytes				CHIMP2.1.4_panTro4		ens84.v17				appris_pan_troglodytes_e84v17
-drosophila_melanogaster		BDGP6_dm6				ens84.v17				appris_drosophila_melanogaster_e84v17
-caenorhabditis_elegans		WBcel235_ce10			ens84.v17				appris_caenorhabditis_elegans_e84v17
+			
+	- Create "server.json" config file for server.
+	
+	- Create script "appristools_srv" to update the APPRIS release
 
 ==APPRIS_RELEASE:RELNOTES:2016_04.v16==
 #############################
