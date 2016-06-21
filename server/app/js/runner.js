@@ -90,7 +90,7 @@ module.controller('RunnerController', ['consPathServerStatus', '$rootScope', '$s
             {
                 postData.species = form.species.scientific;
                 postData.id = form.gene;
-                postData.e_version = form.ensembl.dataset;
+                postData.e_version = form.ensembl.datasets[0].source.version;
                 postData.methods = $filter('selectedMethods')(form.methods).join(',');
                 if ( angular.isDefined(form.email) ) { postData.email = form.email }
             }
