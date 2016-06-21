@@ -829,6 +829,8 @@ sub run_cluster_appris($$$)
 	
 	if ( defined $wserver ) {
 		my ($pid) = $$;
+		$c_wspace =~ s/\/*$//g;
+		$c_logpath =~ s/\/*$//g;		
 		my ($wsrunnerctr) = {
 			'file'		=> $c_wspace.'/wsrunner.ctr',
 			'host'		=> $c_free,
@@ -868,6 +870,7 @@ sub run_appris($$$)
 	my ($pid) = fork();	
 	if ( defined $wserver ) {
 		$c_wspace =~ s/\/*$//g;
+		$c_logpath =~ s/\/*$//g;
 		my ($wsrunnerctr) = {
 			'file'		=> $workspace.'/wsrunner.ctr',
 			'host'		=> 'localhost',

@@ -392,11 +392,11 @@ sub load_control {
 	}
 	
 	# get input files
-	my ($data_file) = grep(/\.annot\.gtf$/, keys %outfiles);	
-	my ($pdata_file) = grep(/\.pannot\.gtf$/, keys %outfiles);
-	my ($transc_file) = grep(/\.transc\.fa$/, keys %outfiles);
-	my ($transl_file) = grep(/\.transl\.fa$/, keys %outfiles);
-	my ($log_file) = grep(/\.log$/, keys %outfiles);
+	my ($data_file) = grep(/annot\.gtf$/, keys %outfiles);	
+	my ($pdata_file) = grep(/pannot\.gtf$/, keys %outfiles);
+	my ($transc_file) = grep(/transc\.fa$/, keys %outfiles);
+	my ($transl_file) = grep(/transl\.fa$/, keys %outfiles);
+	my ($log_file) = grep(/log$/, keys %outfiles);
 	$self->data($data_file) if ( defined $data_file and -e $data_file and (-s $data_file > 0) );	
 	$self->pdata($pdata_file) if ( defined $pdata_file and -e $pdata_file and (-s $pdata_file > 0) );	
 	$self->transc($transc_file) if ( defined $transc_file and -e $transc_file and (-s $transc_file > 0) );	
@@ -406,44 +406,44 @@ sub load_control {
 	# assign file results OF ALL METHODS!!
 	foreach my $method ( split(',', $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE}) ) {
 		if ( $method eq 'firestar' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->firestar(getStringFromFile($metfile));
 			}
 		}
 		if ( $method eq 'matador3d' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->matador3d(getStringFromFile($metfile));
 			}
 		}
 		if ( $method eq 'corsair' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->corsair(getStringFromFile($metfile));
 			}			
 		}
 		if ( $method eq 'spade' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->spade(getStringFromFile($metfile));
 			}			
 		}
 		if ( $method eq 'thump' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->thump(getStringFromFile($metfile));
 			}
 		}
 		if ( $method eq 'crash' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
 				$self->crash(getStringFromFile($metfile));
 			}
 		}
 		if ( $method eq 'appris' ) {
-			my ($metfile) = grep(/\.$method$/, keys %outfiles);
-			my ($metfile2) = grep(/\.$method\.label$/, keys %outfiles);
+			my ($metfile) = grep(/$method$/, keys %outfiles);
+			my ($metfile2) = grep(/$method\.label$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) and defined $metfile2 and -e $metfile2 and (-s $metfile2 > 0) ) {
 				$self->appris(getStringFromFile($metfile));
 				$self->appris_lb(getStringFromFile($metfile2));
