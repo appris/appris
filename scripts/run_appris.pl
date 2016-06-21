@@ -867,6 +867,7 @@ sub run_appris($$$)
 				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
 	my ($pid) = fork();	
 	if ( defined $wserver ) {
+		$c_wspace =~ s/\/*$//g;
 		my ($wsrunnerctr) = {
 			'file'		=> $workspace.'/wsrunner.ctr',
 			'host'		=> 'localhost',
@@ -953,11 +954,11 @@ sub create_wsrunnerctr($)
 	if ( exists $ctr->{'params'}->{'methods'} ) {
 		my (@meths) = split(',', $ctr->{'params'}->{'methods'});
 		foreach my $met (@meths) {
-			push(@outputs, $ctr->{'wspace'}.'/'.$ctr->{'jobid'}.'.'.$met);
+			push(@outputs, $ctr->{'wspace'}.'/'.$met);
 			if ( $met eq 'appris' ) {
-				push(@outputs, $ctr->{'wspace'}.'/'.$ctr->{'jobid'}.'.'.$met);
-				push(@outputs, $ctr->{'wspace'}.'/'.$ctr->{'jobid'}.'.'.$met.'.label');
-				push(@outputs, $ctr->{'wspace'}.'/'.$ctr->{'jobid'}.'.'.$met.'.nscore');
+				push(@outputs, $ctr->{'wspace'}.'/'.$met);
+				push(@outputs, $ctr->{'wspace'}.'/'.$met.'.label');
+				push(@outputs, $ctr->{'wspace'}.'/'.$met.'.nscore');
 			}
 		}		
 	}
