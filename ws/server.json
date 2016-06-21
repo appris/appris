@@ -20,7 +20,16 @@
                         "version": "84"
                     },
                     "database":   "appris_homo_sapiens_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    }
                 },{
                     "id":   "rs107.v17",
                     "type": "current",
@@ -29,7 +38,15 @@
                         "version": "107"
                     },
                     "database":   "appris_homo_sapiens_rs107v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 },{
                     "id":   "ens81.v17",
                     "type": "archive",
@@ -38,7 +55,16 @@
                         "version": "81"
                     },
                     "database":   "appris_homo_sapiens_e81v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    }
                 },{
                     "id":   "ens79.v17",
                     "type": "archive",
@@ -47,7 +73,16 @@
                         "version": "79"
                     },
                     "database":   "appris_homo_sapiens_e79v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    }
                 }]
             },{
                 "id":       "hg19",
@@ -61,7 +96,16 @@
                         "version": "74"
                     },
                     "database":   "appris_homo_sapiens_g19v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices","peptides"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    }
                 },{
                     "id":   "rs105.v17",
                     "type": "current",
@@ -70,7 +114,15 @@
                         "version": "105"
                     },
                     "database":   "appris_homo_sapiens_rs105v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -93,7 +145,15 @@
                         "version": "84"
                     },
                     "database":   "appris_mus_musculus_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -115,7 +175,15 @@
                         "version": "84"
                     },
                     "database":   "appris_danio_rerio_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             },{
                 "id":       "danRer7",
@@ -128,7 +196,15 @@
                         "version": "77"
                     },
                     "database":   "appris_danio_rerio_e77v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -150,7 +226,15 @@
                         "version": "84"
                     },
                     "database":   "appris_rattus_norvegicus_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             },{
                 "id":       "rn5",
@@ -163,7 +247,15 @@
                         "version": "77"
                     },
                     "database":   "appris_rattus_norvegicus_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -185,7 +277,15 @@
                         "version": "84"
                     },
                     "database":   "appris_sus_scrofa_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -207,7 +307,15 @@
                         "version": "84"
                     },
                     "database":   "appris_pan_troglodytes_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -229,7 +337,15 @@
                         "version": "84"
                     },
                     "database":   "appris_drosophila_melanogaster_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -251,7 +367,15 @@
                         "version": "84"
                     },
                     "database":   "appris_caenorhabditis_elegans_e84v17",
-                    "datafiles":   ["principal_isoforms","appris_scores","functional_residues","tertiary_structure","vertebrates_conservation","whole_domains","transmembrane_helices"]
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
                 }]
             }]
         },
@@ -443,49 +567,41 @@
         "id":       "principal_isoforms",
         "label":    "Principal Isoforms",
         "desc":     "List of Principal Isoforms",
-        "file":     "appris_data.principal",
-        "formats":  ["TXT"]
+        "file":     "appris_data.principal"
     },{
         "id":       "appris_scores",
         "label":    "APPRIS scores",
         "desc":     "Score of APPRIS methods",
-        "file":     "appris_data.appris",
-        "formats":  ["TXT"]
+        "file":     "appris_data.appris"
     },{
         "id":       "functional_residues",
         "label":    "Functional residues",
         "desc":     "No. Functional Residues",
-        "file":     "appris_method.firestar",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.firestar"
     },{
         "id":       "tertiary_structure",
         "label":    "Tertiary structure",
         "desc":     "Tertiary Structure Score",
-        "file":     "appris_method.matador3d",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.matador3d"
     },{
         "id":       "vertebrates_conservation",
         "label":    "Vertebrates conservation",
         "desc":     "Conservation Score (vertebrates)",
-        "file":     "appris_method.corsair",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.corsair"
     },{
         "id":       "whole_domains",
         "label":    "Whole domains",
         "desc":     "Whole Domains",
-        "file":     "appris_method.spade",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.spade"
     },{
         "id":       "transmembrane_helices",
         "label":    "Transmembrane helices",
         "desc":     "No. Transmembrane Helices",
-        "file":     "appris_method.thump",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.thump"
     },{
         "id":       "peptides",
         "label":    "Peptides",
         "desc":     "No. Peptides",
-        "file":     "appris_method.proteo",
-        "formats":  ["GTF","BED"]
+        "file":     "appris_method.proteo"
     }]
 }

@@ -7,7 +7,7 @@ var module = angular.module('appris.report', []);
 
 /* CONTROLLERS */
 
-module.controller('ReportController', ['consPageError', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Species', 'Methods', 'ResultTypes', 'Retriever', 'Sequencer', function (consPageError, $rootScope, $scope, $routeParams, $location, $filter, Species, Methods, ResultTypes, Retriever, Sequencer) {
+module.controller('ReportController', ['consPageError', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Methods', 'ResultTypes', 'Retriever', 'Sequencer', function (consPageError, $rootScope, $scope, $routeParams, $location, $filter, Methods, ResultTypes, Retriever, Sequencer) {
 
     // init vars
     $rootScope.isLoadingScreen = true;

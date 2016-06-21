@@ -162,8 +162,8 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                 var speRst = {
                     "species":      item.species,
                     "assembly": {
-                        "id": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].id,
-                        "name": $filter('filter')($rootScope.species[item.species].assemblies, { "name": item.assembly })[0].name
+                        "id": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].id,
+                        "name": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].name
                     },
                     "source":      item.source,
                     "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
@@ -215,23 +215,23 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$f
         $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.txt';
         $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/pub';
         if ( $rootScope.serverConf.type == "gold" ) {
-            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/current_release';
+            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/current_release/datafiles';
         }
         else {
-            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/releases/' + $rootScope.serverConf.version;
+            $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/releases/' + $rootScope.serverConf.version + '/datafiles';
         }
+        $scope.headers = [];
         $scope.downloads = [];
-        $scope.datafiles = [];
         $scope.species = [];
         $scope.assemblies = [];
         $scope.datasets = [];
         if ( angular.isDefined($rootScope.downloads) ) {
-            $scope.downloads = $rootScope.downloads;
-            angular.forEach($rootScope.species, function(species) {
+            $scope.headers = $rootScope.downloads;
+            angular.forEach($rootScope.species, function(species, species_id) {
                 angular.forEach(species.assemblies, function(assembly) {
-                    angular.forEach(assembly.datasets, function(dataset) {
+                    angular.forEach(assembly.datasets, function(dataset, index) {
                         if ( angular.isDefined(dataset.datafiles) ) {
-                            var ds = $filter('extractSourceName')(dataset.source).join('/');
+                            var ds = $filter('extractSourceName')(dataset.source);
                             if ( $scope.species.indexOf(species.common) == -1 ) {
                                 $scope.species.push(species.common);
                             }
@@ -241,20 +241,31 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$f
                             if ( $scope.datasets.indexOf(ds) == -1 ) {
                                 $scope.datasets.push(ds);
                             }
-
-                            $scope.datafiles.push({
+                            var path = species_id;
+                            if ( index === 0 ) {
+                                path += '/' + assembly.name;
+                            }
+                            else {
+                                path += '/' + dataset.id;
+                            }
+                            var data = {
                                 "species": species.common,
                                 "assembly": assembly.name,
                                 "dataset": ds,
-                                "files": dataset.datafiles
+                                "path": path,
+                                "datafiles": []
+                            };
+                            angular.forEach(dataset.datafiles, function(datafile, key) {
+                                data.datafiles[key] = datafile;
                             });
-
+                            $scope.downloads.push(data);
                         }
                     });
                 });
             });
         }
-console.log($scope.datafiles);
+console.log($scope.downloads);
+console.log($scope.downloads);
 
 //        if ( angular.isDefined($rootScope.datafiles) ) {
 //            if (angular.isDefined($rootScope.downloads.headers) ) {

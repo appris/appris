@@ -76,7 +76,7 @@ my ($METHOD_DESC) = $APPRIS::Utils::Constant::METHOD_DESC;
 
 use vars qw(
 	$STATUS_LOGS
-	$SPECIES
+	$SERVER
 	$METHODS
 	$METHOD_IDS
 	$SEQ_PANEL
@@ -91,8 +91,8 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-my ($species_json) = JSON->new(); $SPECIES = $species_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_SR_FILE}) );
-my ($methods_json) = JSON->new(); $METHODS = $methods_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
+my ($server_json) = JSON->new(); $SERVER = $server_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_SR_FILE}) );
+my ($methods_json) = JSON->new(); $METHODS = $methods_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_ME_FILE}) );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 	my ($met_name) = lc($met_report->{'name'});
 	$METHOD_IDS->{$met_name} = $met_id;
@@ -1644,7 +1644,7 @@ sub get_gen_features {
 	# species has to be defined
 	if ( defined $species ) {
 		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
-		my ($cfg_species) = $SPECIES->{$species_id};
+		my ($cfg_species) = $SERVER->{$species_id};
 
 		# If not defined: get the official assembly (the last one), and the first dataset
 		unless ( defined $assembly ) { if ( exists $cfg_species->{'official'} ) { $assembly = $cfg_species->{'official'} } }

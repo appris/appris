@@ -7,8 +7,8 @@ var module = angular.module('appris.runner', []);
 
 /* CONTROLLERS */
 
-module.controller('RunnerController', ['consPathServerStatus', '$rootScope', '$scope', '$location', '$filter', '$cacheFactory', 'Runner', 'Species', 'Methods', 'Examples',
-    function(consPathServerStatus, $rootScope, $scope, $location, $filter, $cacheFactory, Runner, Species, Methods, Examples) {
+module.controller('RunnerController', ['consPathServerStatus', '$rootScope', '$scope', '$location', '$filter', '$cacheFactory', 'Runner', 'Examples',
+    function(consPathServerStatus, $rootScope, $scope, $location, $filter, $cacheFactory, Runner, Examples) {
 
         // init form var
         $rootScope.isLoadingScreen = false;
@@ -18,22 +18,6 @@ module.controller('RunnerController', ['consPathServerStatus', '$rootScope', '$s
         $scope.runnerForm.sequences = null;
         $scope.runnerForm.ensembl = null;
         $scope.runnerForm.gene = null;
-
-//        // load list of species
-//        if ( angular.isUndefined($rootScope.species) ) {
-//            $rootScope.species = null;
-//            Species.get().$promise.then( function(data) {
-//                $rootScope.species = data;
-//            });
-//        }
-//
-//        // load list of methods
-//        if ( angular.isUndefined($rootScope.methods) || (angular.isArray($rootScope.methods) && $rootScope.methods.length == 0 ) ) {
-//            $rootScope.methods = null;
-//            Methods.get().$promise.then( function(data) {
-//                $rootScope.methods = data;
-//            });
-//        }
 
         // load examples
         if ( angular.isUndefined($scope.examples) ) {

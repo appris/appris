@@ -54,7 +54,7 @@ use APPRIS::Exporter;
 ###################
 use vars qw(
 	$STATUS_LOGS
-	$SPECIES
+	$SERVER
 	$METHODS
 	$METHOD_IDS
 );
@@ -68,8 +68,8 @@ $STATUS_LOGS = {
 	'NOT_FOUND'	=> 'The job cannot be found'
 };
 
-$SPECIES = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/species.json') );
-$METHODS = JSON->new()->decode( getStringFromFile($ENV{APPRIS_WSERVER_HOME} . '/methods.json') );
+my ($server_json) = JSON->new(); $SERVER = $server_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_SR_FILE}) );
+my ($methods_json) = JSON->new(); $METHODS = $methods_json->decode( getStringFromFile($ENV{APPRIS_WSERVER_CONF_ME_FILE}) );
 while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 	my ($met_name) = lc($met_report->{'name'});
 	$METHOD_IDS->{$met_name} = $met_id;
@@ -476,7 +476,7 @@ sub _create_param_species
 	my ($param) = @_;
 	my ($result);
 	
-	while ( my ($specie_id, $specie) = each(%{$SPECIES}) ) {
+	while ( my ($specie_id, $specie) = each(%{$SERVER->{'species'}}) ) {
 		if ( 	( lc($param) eq lc($specie_id) ) or
 				( lc($param) eq lc($specie->{'scientific'}) ) or
 				( lc($param) eq lc($specie->{'common'}) ) 

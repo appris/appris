@@ -203,14 +203,25 @@ apprisFilters.filter('selectedMethods', function() {
 
 // Extract the list of sources
 apprisFilters.filter('extractSourceName', function(capitalizeFilter) {
-    return function(items) {
-        if (!angular.isObject(items)) return false;
-        var filtered = [];
-        angular.forEach(items, function(item, key) {
-            var dat = capitalizeFilter(item.name) + item.version;
-            filtered.push(dat);
-        });
+    return function(item) {
+        if (!angular.isObject(item)) return false;
+        var filtered = "";
+        if ( angular.isDefined(item.label) ) {
+            filtered = item.label;
+        }
+        else {
+            filtered = capitalizeFilter(item.name) + item.version;
+        }
         return filtered;
+    };
+});
+
+// Print suffix for datafiles
+apprisFilters.filter('suffixDatafiles', function() {
+    return function(item) {
+        var item = item.toLocaleLowerCase();
+        if ( item === "txt" ) { return item }
+        else if ( item === "bed" || item == "gtf" ) { return item + '.gz' }
     };
 });
 

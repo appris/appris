@@ -21,14 +21,22 @@ Gene Dataset:
     <table class="table table-striped table-bordered table-hover table-condensed">
         <tbody>
         <tr>
-            <th data-ng-repeat="download in downloads">{{download.label}}</th>
+            <th data-ng-repeat="head in headers">{{head.label}}</th>
         </tr>
         <tr
-                dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
-            <td>{{datafile.species}}</td>
-            <td>{{datafile.assembly}}</td>
-            <td>{{datafile.dataset}}</td>
-            <td data-ng-repeat="file in datafile.files">{{file}}</td>
+                dir-paginate="download in downloads | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">
+            <td data-ng-repeat="head in headers">
+                <span data-ng-if="download[head.id]">{{download[head.id]}}</span>
+                <span
+                        data-ng-repeat="datformat in download.datafiles[head.id] track by $index"
+                        data-ng-if="download.datafiles[head.id]">
+                    <a
+                        ng-href="{{baseUrlDownload}}/{{download.path}}/{{head.file}}.{{datformat | suffixDatafiles}}"
+                        target="_blank">
+                    {{datformat}}</a>
+                </span>
+            </td>
+
         </tr>
         <!--<tr dir-paginate="datafile in datafiles | filter: {species:elemSpecie} | filter: {assembly:elemAssembly} | filter: {dataset:elemDataset} | itemsPerPage: pageSize" current-page="currentPage">-->
             <!--<td data-ng-repeat="head in headers">-->
