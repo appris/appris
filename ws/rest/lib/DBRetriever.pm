@@ -484,19 +484,53 @@ sub get_feat_by_stable_id {
 	my ($registry) = $aregistry->{'registry'};
 	my ($feat);
 
-	if ( (lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or lc($id) =~ /^ensgr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
-		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
+#	if ( (lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or lc($id) =~ /^ensgr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
+#		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
+#	}
+#	elsif (	(lc($id) =~ /^(\d+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
+#		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
+#	}
+#	elsif (  (lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or lc($id) =~ /^enstr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
+#		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
+#	}
+#	elsif (  (lc($id) =~ /^xm\_([\d+|\.]+)$/ or lc($id) =~ /^nm\_([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
+#		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
+#	}
+	my ($type);
+	if (
+	(
+		lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or
+		lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or
+		lc($id) =~ /^ensgr([\d+|\.]+)$/ or
+		lc($id) =~ /^fbgn([\d+|\.]+)$/ or
+		lc($id) =~ /^wbgene([\d+|\.]+)$/
+	)
+	and
+		($aregistry->{'source'} eq 'ensembl')
+	) {
+		$type = 'gene';
 	}
 	elsif (	(lc($id) =~ /^(\d+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
-		$feat = $registry->fetch_by_stable_id('gene', $id, $methods);
+		$type = 'gene';
 	}
-	elsif (  (lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or lc($id) =~ /^enstr([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'ensembl') ) {
-		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
+	elsif (
+	(
+		lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or
+		lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or
+		lc($id) =~ /^enstr([\d+|\.]+)$/ or
+		lc($id) =~ /^fbtr([\d+|\.]+)$/
+	)
+	and
+		($aregistry->{'source'} eq 'ensembl')
+	) {
+		$type = 'transcript';
 	}
 	elsif (  (lc($id) =~ /^xm\_([\d+|\.]+)$/ or lc($id) =~ /^nm\_([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
-		$feat = $registry->fetch_by_stable_id('transcript', $id, $methods);
+		$type = 'transcript';
 	}
-	
+	if ( defined $type ) {
+		$feat = $registry->fetch_by_stable_id($type, $id, $methods);
+	}
 	return $feat;	
 }
 
