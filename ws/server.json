@@ -163,7 +163,7 @@
             "common":       "Zebrafish",
             "group":        "popular",
             "category":     "houses",
-            "official":      "danRer10",
+            "official":     "danRer10",
             "assemblies":   [{
                 "id":       "danRer10",
                 "name":     "GRCz10",

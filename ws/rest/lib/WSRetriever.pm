@@ -409,7 +409,7 @@ sub load_control {
 		my ($dataset) = $self->dataset;		
 		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
 		my ($cfg_species) = $SERVER->{$species_id};
-		if ( exists $SERVER->{$species_id} and $SERVER->{$species_id}->{'assemblies'} ) {
+		if ( defined $cfg_species and $cfg_species->{'assemblies'} ) {
 			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 				my ($assembly_id) = $cfg_assembly->{'id'};
 				foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
