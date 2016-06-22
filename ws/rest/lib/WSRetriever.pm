@@ -170,10 +170,20 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 		$self->{'species'} = $arg if defined $arg;
 		return $self->{'species'};
 	}
-	sub ens {
+	sub dataset {
 		my ($self, $arg) = @_;
-		$self->{'ens'} = $arg if defined $arg;
-		return $self->{'ens'};
+		$self->{'dataset'} = $arg if defined $arg;
+		return $self->{'dataset'};
+	}
+	sub assembly {
+		my ($self, $arg) = @_;
+		$self->{'assembly'} = $arg if defined $arg;
+		return $self->{'assembly'};
+	}	
+	sub source {
+		my ($self, $arg) = @_;
+		$self->{'source'} = $arg if defined $arg;
+		return $self->{'source'};
 	}
 	
 	sub transl {
@@ -373,7 +383,7 @@ sub load_control {
 			$self->species($species);					
 		}
 		if ( $wsrunnerctrcont =~ /--e-version=([^\s]*)/ ) {
-			$self->ens($1);					
+			$self->dataset($1);					
 		}
 		if ( $wsrunnerctrcont =~ /RUNNER_HOST\:([^\n]*)\n*RUNNER_PID\:([^\n]*)\n*RUNNER_JOBID\:([^\n]*)\n*RUNNER_WSPACE\:([^\n]*)\n/ ) {
 			$self->host($1);
@@ -389,6 +399,25 @@ sub load_control {
 		if ( $wsrunnerctrcont =~ /RUNNER_EMAIL\:([^\n]*)/ ) {
 			$self->email($1);
 		}
+	}
+	
+	# get assembly and source
+	if ( $self->species and $self->dataset ) {
+		my ($species) = $self->species;
+		my ($dataset) = $self->dataset;		
+		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
+		my ($cfg_species) = $SERVER->{$species_id};
+		if ( exists $SERVER->{$species_id} and $SERVER->{$species_id}->{'assemblies'} ) {
+			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
+				my ($assembly_id) = $cfg_assembly->{'id'};
+				foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+					if ( $dataset  eq $cfg_dataset->{'source'}->{'version'} ) {
+						$self->assembly($cfg_assembly->{'id'});
+						$self->source($cfg_dataset->{'source'}->{'name'});
+					}	
+				}
+			}
+        }		
 	}
 	
 	# get input files
