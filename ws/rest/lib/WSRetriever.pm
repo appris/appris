@@ -408,7 +408,7 @@ sub load_control {
 		my ($species) = $self->species;
 		my ($dataset) = $self->dataset;		
 		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
-		my ($cfg_species) = $SERVER->{$species_id};
+		my ($cfg_species) = $SERVER->{'species'}->{$species_id};
 		if ( defined $cfg_species and $cfg_species->{'assemblies'} ) {
 			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 				my ($assembly_id) = $cfg_assembly->{'id'};
@@ -1675,7 +1675,7 @@ sub get_gen_features {
 	# species has to be defined
 	if ( defined $species ) {
 		my ($species_id) = lc($species); $species_id =~ s/\s/\_/g;
-		my ($cfg_species) = $SERVER->{$species_id};
+		my ($cfg_species) = $SERVER->{'species'}->{$species_id};
 
 		# If not defined: get the official assembly (the last one), and the first dataset
 		unless ( defined $assembly ) { if ( exists $cfg_species->{'official'} ) { $assembly = $cfg_species->{'official'} } }
