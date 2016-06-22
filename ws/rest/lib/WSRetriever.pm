@@ -108,7 +108,9 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 			
 			jobid			=>  undef,
 			species			=>  undef,
-			ens				=>  undef,
+			dataset			=>  undef,
+			assembly		=>  undef,
+			source			=>  undef,
 			
 			data			=>  undef,
 			pdata			=>  undef,
