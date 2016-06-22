@@ -436,7 +436,7 @@ sub prepare_appris_seq_params($$)
 	# input files
 	$logger->info("\t-- create datafile input\n");
 	my ($in_files) = {
-			'transl'		=> $workspace.'/'.$gene_id.'.transl.fa',
+			'transl'		=> $workspace.'/'.'transl.fa',
 	};		
 	my ($create) = appris::create_appris_seqinput($gene, $in_files);
 	if ( defined $create ) {
@@ -1208,11 +1208,11 @@ run_appris
 	
 	--id=ENSG00000160404.13
 
-	--transl={ABSOLUTE_PATH}/ENSG00000160404.13/ENSG00000160404.13.transl.fa
+	--transl={ABSOLUTE_PATH}/ENSG00000160404.13/transl.fa
 
 	--outpath={ABSOLUTE_PATH}/ENSG00000160404.13/
 	
-	--logfile={ABSOLUTE_PATH}/ENSG00000160404.13/ENSG00000160404.13.log
+	--logfile={ABSOLUTE_PATH}/ENSG00000160404.13/log
 	
 	--loglevel=debug
 	
@@ -1229,13 +1229,13 @@ run_appris
 	
 	--id=WSERVER_ENSG00000160404_XXXX
 
-	--transl={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/WSERVER_ENSG00000160404_XXXX.transl.fa
+	--transl={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/transl.fa
 
 	--outpath={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX
 	
 	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
 	
-	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/WSERVER_ENSG00000160404_XXXX.log
+	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/log
 	
 	--loglevel=debug
 	
@@ -1256,7 +1256,7 @@ run_appris
 	
 	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
 	
-	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/ENSG00000160404.13.log
+	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/log
 	
 	--loglevel=debug
 	
@@ -1273,13 +1273,13 @@ run_appris
 	
 	--outpath={ABSOLUTE_PATH}/ENSG00000168556.5/
 	
-	--transl={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.transl.fa
+	--transl={ABSOLUTE_PATH}/ENSG00000168556.5/transl.fa
 	
-	--transc={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.transc.fa
+	--transc={ABSOLUTE_PATH}/ENSG00000168556.5/transc.fa
 	
-	--pdata={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.pannot.gtf
+	--pdata={ABSOLUTE_PATH}/ENSG00000168556.5/pannot.gtf
 	
-	--data={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.annot.gtf
+	--data={ABSOLUTE_PATH}/ENSG00000168556.5/annot.gtf
 	
 	--methods=firestar
 	
@@ -1287,7 +1287,7 @@ run_appris
 	
 	--cached-path={ABSOLUTE_PATH}/appris/code/cached/homo_sapiens/e_70
 	
-	--logfile={ABSOLUTE_PATH}/ENSG00000168556.5/ENSG00000168556.5.log
+	--logfile={ABSOLUTE_PATH}/ENSG00000168556.5/log
 	
 	--loglevel=debug
 	
