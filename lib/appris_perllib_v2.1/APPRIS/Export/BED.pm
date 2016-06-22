@@ -176,7 +176,15 @@ sub get_annotations {
     # Convert position value for BED format
     if ( $position =~ /^([^\:]*):([^\-]*)-([^\$]*)$/ ) {
 		($chromosome, $start, $end) = ($1,$2,$3);
+		if ( $chromosome =~ /^NC_/ ) {
+			$chromosome =~ s/NC_[0]*//g;
+			$chromosome =~ s/\.[0-9]*$//g;
+			if ( $chromosome eq '23' ) { $chromosome = 'X' }
+			if ( $chromosome eq '24' ) { $chromosome = 'Y' }
+			if ( $chromosome eq '12920' ) { $chromosome = 'M' }				
+		}
 		$pos = $chromosome;
+		
 		if ( !($pos =~ /^chr/) ) {
 			$pos = 'chr'.$pos;
 		}
@@ -241,7 +249,8 @@ sub get_annotations {
 				"browser full knownGene"."\n".
 				"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly
 				"browser full ensGene"."\n".
-				"browser full ccdsGene"."\n".
+				"browser full refGene"."\n".
+				"browser full ccdsGene"."\n".				
 				$output;			
 		}
 	}
@@ -567,6 +576,13 @@ sub print_track {
 	my ($block_ascending_notoverlap) = 1;
 
     # Convert position value for BED format
+	if ( $pos =~ /^NC_/ ) {
+		$pos =~ s/NC_[0]*//g;
+		$pos =~ s/\.[0-9]*$//g;
+		if ( $pos eq '23' ) { $pos = 'X' }
+		if ( $pos eq '24' ) { $pos = 'Y' }
+		if ( $pos eq '12920' ) { $pos = 'M' }				
+	}    
     if ( !($pos =~ /^chr/) ) {
     	$pos = 'chr'.$pos;
 	}
