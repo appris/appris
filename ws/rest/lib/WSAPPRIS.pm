@@ -372,7 +372,7 @@ sub _create_param_seq {
 	my ($gtransl_cont) = '';
 	my ($transl_cont) = APPRIS::Parser::_parse_inseq_transl($raw_seqs) if (defined $raw_seqs);
 	if ( defined $transl_cont ) {
-		$gtransl_file = $workspace.'/'.$id.'.transl.fa';
+		$gtransl_file = $workspace.'/'.'transl.fa';
 		while ( my ($transcript_id, $transcript_features) = each(%{$transl_cont}) ) {
 			if ( defined $transl_cont and exists $transl_cont->{$transcript_id} and defined $transl_cont->{$transcript_id} ) {
 				my ($seq) = $transl_cont->{$transcript_id};
@@ -404,9 +404,9 @@ sub _create_param_ensembl {
 		 -e ($transc_file) and (-s $transc_file > 0) and
 		 -e ($transl_file) and (-s $transl_file > 0) 
 	) {
-		$gdata_file = $workspace.'/'.$id.'.annot.gtf';
-		$gtransc_file = $workspace.'/'.$id.'.transc.fa';
-		$gtransl_file = $workspace.'/'.$id.'.transl.fa';
+		$gdata_file = $workspace.'/'.'annot.gtf';
+		$gtransc_file = $workspace.'/'.'transc.fa';
+		$gtransl_file = $workspace.'/'.'transl.fa';
 		if ( defined $id ) {
 			# customize data
 			my ($g_cond) = '';
