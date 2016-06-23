@@ -167,8 +167,8 @@ sub version {
 =head2 get_gtf_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : List of sources
-  Example    : $annot = $exporter->get_gtf_annotations($feature,$sources);
+  Arg [2]    : List of methods
+  Example    : $annot = $exporter->get_gtf_annotations($feature,$methods);
   Description: Retrieves text as GFF format with the annotations.
   Returntype : String or undef
   Exceptions : if we cant get the gene or transcript in given coord system
@@ -178,17 +178,17 @@ sub version {
 =cut
 
 sub get_gtf_annotations {
-    my ($self, $feature, $sources) = @_;
+    my ($self, $feature, $methods) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
     	if ($feature->isa("APPRIS::Gene")) {
 			foreach my $transcript (@{$feature->transcripts}) {
-				$output .= APPRIS::Export::GTF::get_trans_annotations($transcript, $sources);
+				$output .= APPRIS::Export::GTF::get_trans_annotations($transcript, $methods);
 			}
     	}
     	elsif ($feature->isa("APPRIS::Transcript")) {
-    		$output .= APPRIS::Export::GTF::get_trans_annotations($feature, $sources);
+    		$output .= APPRIS::Export::GTF::get_trans_annotations($feature, $methods);
     	}
     	else {
 			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -198,11 +198,11 @@ sub get_gtf_annotations {
     	foreach my $feat (@{$feature}) {
 	    	if ($feat->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feat->transcripts}) {
-					$output .= APPRIS::Export::GTF::get_trans_annotations($transcript, $sources);
+					$output .= APPRIS::Export::GTF::get_trans_annotations($transcript, $methods);
 				}
 	    	}
 	    	elsif ($feat->isa("APPRIS::Transcript")) {
-	    		$output .= APPRIS::Export::GTF::get_trans_annotations($feat, $sources);
+	    		$output .= APPRIS::Export::GTF::get_trans_annotations($feat, $methods);
 	    	}
 	    	else {
 				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -218,8 +218,8 @@ sub get_gtf_annotations {
 =head2 get_gff3_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : List of sources
-  Example    : $annot = $exporter->get_gff3_annotations($feature,$sources);
+  Arg [2]    : List of methods
+  Example    : $annot = $exporter->get_gff3_annotations($feature,$methods);
   Description: Retrieves text as GFF format with the annotations.
   Returntype : String or undef
   Exceptions : if we cant get the gene or transcript in given coord system
@@ -229,17 +229,17 @@ sub get_gtf_annotations {
 =cut
 
 sub get_gff3_annotations {
-    my ($self, $feature, $sources) = @_;
+    my ($self, $feature, $methods) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
     	if ($feature->isa("APPRIS::Gene")) {
 			foreach my $transcript (@{$feature->transcripts}) {
-				$output .= APPRIS::Export::GFF3::get_trans_annotations($transcript, $sources);
+				$output .= APPRIS::Export::GFF3::get_trans_annotations($transcript, $methods);
 			}
     	}
     	elsif ($feature->isa("APPRIS::Transcript")) {
-    		$output .= APPRIS::Export::GFF3::get_trans_annotations($feature, $sources);
+    		$output .= APPRIS::Export::GFF3::get_trans_annotations($feature, $methods);
     	}
     	else {
 			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -249,11 +249,11 @@ sub get_gff3_annotations {
     	foreach my $feat (@{$feature}) {
 	    	if ($feat->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feat->transcripts}) {
-					$output .= APPRIS::Export::GFF3::get_trans_annotations($transcript, $sources);
+					$output .= APPRIS::Export::GFF3::get_trans_annotations($transcript, $methods);
 				}
 	    	}
 	    	elsif ($feat->isa("APPRIS::Transcript")) {
-	    		$output .= APPRIS::Export::GFF3::get_trans_annotations($feat, $sources);
+	    		$output .= APPRIS::Export::GFF3::get_trans_annotations($feat, $methods);
 	    	}
 	    	else {
 				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -269,8 +269,8 @@ sub get_gff3_annotations {
 =head2 get_bed_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or undef
-  Arg [2]    : String - $sources
-               List of sources ('all', ... )
+  Arg [2]    : String - $methods
+               List of methods ('all', ... )
   Arg [3]    : String - $position (optional)
                genome position (chr22:20116979-20137016)
   Example    : $annot = $exporter->get_bed_annotations($feature,'chr22:20116979-20137016','no','appris');
@@ -283,15 +283,9 @@ sub get_gff3_annotations {
 =cut
 
 sub get_bed_annotations {
-    my ($self, $feature, $sources, $position, $format) = @_;
+    my ($self, $source, $feature, $methods, $position, $format) = @_;
     my ($output) = '';
 
-	# IMPORTANT:
-	# If we have a list of objects, BED annotations only for the first transcript.
-	#if ($feature and (ref($feature) eq 'ARRAY') ) { 
-	#	$feature = $feature->[0];
-	#}
-	
 	# Get position if its not defined
 	unless (defined $position) {
 		my ($chr);
@@ -321,7 +315,7 @@ sub get_bed_annotations {
 	    }		
 	}
 	if (defined $position and ($position ne '')) {
-		$output .= APPRIS::Export::BED::get_annotations($feature, $position, $sources, $format);		
+		$output .= APPRIS::Export::BED::get_annotations($source, $feature, $position, $methods, $format);		
 	}
     else {
 		warning('Argument must be define');
@@ -332,8 +326,8 @@ sub get_bed_annotations {
 #=head2 get_bed12_annotations
 #
 #  Arg [1]    : Listref of APPRIS::Gene or undef
-#  Arg [2]    : String - $sources
-#               List of sources ('all', ... )
+#  Arg [2]    : String - $methods
+#               List of methods ('all', ... )
 #  Arg [3]    : String - $position (optional)
 #               genome position (chr22:20116979-20137016)
 #  Example    : $annot = $exporter->get_bed_annotations($feature,'chr22:20116979-20137016','no','appris');
@@ -346,7 +340,7 @@ sub get_bed_annotations {
 #=cut
 #
 #sub get_bed12_annotations {
-#    my ($self, $feature, $sources, $position) = @_;
+#    my ($self, $feature, $methods, $position) = @_;
 #    my ($output) = '';
 #    
 #	# IMPORTANT:
@@ -384,7 +378,7 @@ sub get_bed_annotations {
 #	    }		
 #	}
 #	if (defined $position and ($position ne '')) {
-#		$output .= APPRIS::Export::BED12::get_annotations($feature, $position, $sources);		
+#		$output .= APPRIS::Export::BED12::get_annotations($feature, $position, $methods);		
 #	}
 #    else {
 #		warning('Argument must be define');
@@ -395,8 +389,8 @@ sub get_bed_annotations {
 =head2 get_json_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : List of sources
-  Example    : $annot = $exporter->get_json_annotations($feature,$sources);
+  Arg [2]    : List of methods
+  Example    : $annot = $exporter->get_json_annotations($feature,$methods);
   Description: Retrieves text as JSON format with the annotations.
   Returntype : String or undef
   Exceptions : if we cant get the gene or transcript in given coord system
@@ -406,10 +400,10 @@ sub get_bed_annotations {
 =cut
 
 sub get_json_annotations {
-    my ($self, $feature, $sources) = @_;
+    my ($self, $feature, $methods) = @_;
     my ($output) = '';
 
-	my ($gtf_output) = $self->get_gtf_annotations($feature, $sources);
+	my ($gtf_output) = $self->get_gtf_annotations($feature, $methods);
 	$output .= APPRIS::Export::JSON::get_annotations($gtf_output);
 	
 	return $output;
@@ -418,7 +412,7 @@ sub get_json_annotations {
 =head2 get_tsv_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : List of sources
+  Arg [2]    : List of methods
   Arg [3]    : List of residues positions
   Example    : $annot = $exporter->get_tsv_annotations($feature,$params);
   Description: Retrieves nucleotide o aminoacid sequence.
@@ -427,11 +421,11 @@ sub get_json_annotations {
 =cut
 
 #sub get_tsv_annotations {
-#    my ($self,$feature,$sources) = @_;
+#    my ($self,$feature,$methods) = @_;
 #    my ($output) = '';
 #
 #    if ( defined $feature ) {
-#    	$output .= APPRIS::Export::TXT::get_tsv_annotations($feature,$sources);
+#    	$output .= APPRIS::Export::TXT::get_tsv_annotations($feature,$methods);
 #    }
 #    else {
 #		warning('Argument must be define');
@@ -439,17 +433,17 @@ sub get_json_annotations {
 #	return $output;
 #}
 sub get_tsv_annotations {
-    my ($self, $feature, $sources, $res) = @_;
+    my ($self, $feature, $methods, $res) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
     	if ($feature->isa("APPRIS::Gene")) {
 			foreach my $transcript (@{$feature->transcripts}) {
-				$output .= APPRIS::Export::TXT::get_trans_annotations($transcript, $sources, $res);
+				$output .= APPRIS::Export::TXT::get_trans_annotations($transcript, $methods, $res);
 			}
     	}
     	elsif ($feature->isa("APPRIS::Transcript")) {
-    		$output .= APPRIS::Export::TXT::get_trans_annotations($feature, $sources, $res);
+    		$output .= APPRIS::Export::TXT::get_trans_annotations($feature, $methods, $res);
     	}
     	else {
 			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -459,11 +453,11 @@ sub get_tsv_annotations {
     	foreach my $feat (@{$feature}) {
 	    	if ($feat->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feat->transcripts}) {
-					$output .= APPRIS::Export::TXT::get_trans_annotations($transcript, $sources, $res);
+					$output .= APPRIS::Export::TXT::get_trans_annotations($transcript, $methods, $res);
 				}
 	    	}
 	    	elsif ($feat->isa("APPRIS::Transcript")) {
-	    		$output .= APPRIS::Export::TXT::get_trans_annotations($feat, $sources, $res);
+	    		$output .= APPRIS::Export::TXT::get_trans_annotations($feat, $methods, $res);
 	    	}
 	    	else {
 				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -479,7 +473,7 @@ sub get_tsv_annotations {
 =head2 get_raw_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : List of sources
+  Arg [2]    : List of methods
   Example    : $annot = $exporter->get_raw_annotations($feature,$params);
   Description: Retrieves nucleotide o aminoacid sequence.
   Returntype : String or undef
@@ -487,11 +481,11 @@ sub get_tsv_annotations {
 =cut
 
 sub get_raw_annotations {
-    my ($self,$feature,$sources) = @_;
+    my ($self,$feature,$methods) = @_;
     my ($output) = '';
 
     if ( defined $feature ) {
-    	$output .= APPRIS::Export::TXT::get_raw_annotations($feature,$sources);
+    	$output .= APPRIS::Export::TXT::get_raw_annotations($feature,$methods);
     }
     else {
 		warning('Argument must be define');
@@ -502,7 +496,7 @@ sub get_raw_annotations {
 =head2 get_json_results
 
   Arg [1]    : Hash of Raw result or undef
-  Arg [2]    : List of sources  
+  Arg [2]    : List of methods  
   Example    : $annot = $exporter->get_json_results($feature);
   Description: Retrieves nucleotide o aminoacid sequence.
   Returntype : String or undef
@@ -510,11 +504,11 @@ sub get_raw_annotations {
 =cut
 
 sub get_json_results {
-    my ($self,$report,$sources) = @_;
+    my ($self,$report,$methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
-    	$output .= APPRIS::Export::JSON::create_array($report,$sources);
+    	$output .= APPRIS::Export::JSON::create_array($report,$methods);
     }
     else {
 		warning('Argument must be define');
@@ -525,7 +519,7 @@ sub get_json_results {
 =head2 get_raw_results
 
   Arg [1]    : Hash of Raw result or undef
-  Arg [2]    : List of sources  
+  Arg [2]    : List of methods  
   Example    : $annot = $exporter->get_raw_results($feature);
   Description: Retrieves nucleotide o aminoacid sequence.
   Returntype : String or undef
@@ -533,11 +527,11 @@ sub get_json_results {
 =cut
 
 sub get_raw_results {
-    my ($self,$report,$sources) = @_;
+    my ($self,$report,$methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
-    	$output .= APPRIS::Export::TXT::get_raw_results($report,$sources);
+    	$output .= APPRIS::Export::TXT::get_raw_results($report,$methods);
     }
     else {
 		warning('Argument must be define');
@@ -548,7 +542,7 @@ sub get_raw_results {
 =head2 get_tsv_results
 
   Arg [1]    : Hash of Raw result or undef
-  Arg [2]    : List of sources  
+  Arg [2]    : List of methods  
   Example    : $annot = $exporter->get_tsv_results($feature);
   Description: Retrieves nucleotide o aminoacid sequence.
   Returntype : String or undef
@@ -556,11 +550,11 @@ sub get_raw_results {
 =cut
 
 sub get_tsv_results {
-    my ($self,$report,$sources) = @_;
+    my ($self,$report,$methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
-    	$output .= APPRIS::Export::TXT::get_tsv_results($report,$sources);
+    	$output .= APPRIS::Export::TXT::get_tsv_results($report,$methods);
     }
     else {
 		warning('Argument must be define');
@@ -646,7 +640,7 @@ sub get_seq_annotations {
 =head2 get_res_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : String - $soure List of sources  
+  Arg [2]    : String - $soure List of methods  
   Arg [3]    : Int    - $res Residue position  
   Example    : $annot = $exporter->get_res_annotations($feature,'aa');
   Description: Retrieves residues of methods.
@@ -655,19 +649,19 @@ sub get_seq_annotations {
 =cut
 
 sub get_res_annotations {
-	my ($self, $feature, $sources, $inres) = @_;
+	my ($self, $feature, $methods, $inres) = @_;
 	my ($report);
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
     	if ($feature->isa("APPRIS::Gene")) {
 			foreach my $transcript (@{$feature->transcripts}) {
-				my ($rep) = APPRIS::Export::RES::get_trans_annotations($transcript, $sources, $inres);				
+				my ($rep) = APPRIS::Export::RES::get_trans_annotations($transcript, $methods, $inres);				
 				push(@{$report}, $rep) if ( defined $rep );
 			}
     	}
     	elsif ($feature->isa("APPRIS::Transcript")) {
-    		my ($rep) = APPRIS::Export::RES::get_trans_annotations($feature, $sources, $inres);
+    		my ($rep) = APPRIS::Export::RES::get_trans_annotations($feature, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
     	}
     	else {
@@ -678,12 +672,12 @@ sub get_res_annotations {
     	foreach my $feat (@{$feature}) {
 	    	if ($feat->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feat->transcripts}) {
-					my ($rep) = APPRIS::Export::RES::get_trans_annotations($transcript, $sources, $inres);
+					my ($rep) = APPRIS::Export::RES::get_trans_annotations($transcript, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
 				}
 	    	}
 	    	elsif ($feat->isa("APPRIS::Transcript")) {
-	    		my ($rep) = APPRIS::Export::RES::get_trans_annotations($feat, $sources, $inres);
+	    		my ($rep) = APPRIS::Export::RES::get_trans_annotations($feat, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
 	    	}
 	    	else {
@@ -705,7 +699,7 @@ sub get_res_annotations {
 =head2 get_cds_annotations
 
   Arg [1]    : Listref of APPRIS::Gene or APPRIS::Transcript or undef
-  Arg [2]    : String - $soure List of sources  
+  Arg [2]    : String - $soure List of methods  
   Arg [3]    : Int    - $res Residue position  
   Example    : $annot = $exporter->get_cds_annotations($feature,'aa');
   Description: Retrieves residues of methods.
@@ -714,19 +708,19 @@ sub get_res_annotations {
 =cut
 
 sub get_cds_annotations {
-	my ($self, $feature, $sources, $inres) = @_;
+	my ($self, $feature, $methods, $inres) = @_;
 	my ($report);
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
     	if ($feature->isa("APPRIS::Gene")) {
 			foreach my $transcript (@{$feature->transcripts}) {
-				my ($rep) = APPRIS::Export::CDS::get_trans_annotations($transcript, $sources, $inres);				
+				my ($rep) = APPRIS::Export::CDS::get_trans_annotations($transcript, $methods, $inres);				
 				push(@{$report}, $rep) if ( defined $rep );
 			}
     	}
     	elsif ($feature->isa("APPRIS::Transcript")) {
-    		my ($rep) = APPRIS::Export::CDS::get_trans_annotations($feature, $sources, $inres);
+    		my ($rep) = APPRIS::Export::CDS::get_trans_annotations($feature, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
     	}
     	else {
@@ -737,12 +731,12 @@ sub get_cds_annotations {
     	foreach my $feat (@{$feature}) {
 	    	if ($feat->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feat->transcripts}) {
-					my ($rep) = APPRIS::Export::CDS::get_trans_annotations($transcript, $sources, $inres);
+					my ($rep) = APPRIS::Export::CDS::get_trans_annotations($transcript, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
 				}
 	    	}
 	    	elsif ($feat->isa("APPRIS::Transcript")) {
-	    		my ($rep) = APPRIS::Export::CDS::get_trans_annotations($feat, $sources, $inres);
+	    		my ($rep) = APPRIS::Export::CDS::get_trans_annotations($feat, $methods, $inres);
 				push(@{$report}, $rep) if ( defined $rep );
 	    	}
 	    	else {

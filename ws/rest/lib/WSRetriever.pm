@@ -1729,7 +1729,7 @@ sub get_gen_features {
 		my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
 		my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
 
-#return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
+return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
 
 		$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
 					"<img class='imgTrackUCSC img-responsive' src='".$ucsc_render_track_url."'>".

@@ -206,8 +206,8 @@ apprisServices.factory('Retriever', ['$http', '$q', 'serverHostWS', function($ht
         if ( angular.isDefined(iparams.operation) ) { params.operation = iparams.operation }
         if ( angular.isDefined(iparams.methods) ) { params.methods = iparams.methods }
         if ( angular.isDefined(iparams.ids) ) { params.ids = iparams.ids }
-        if ( angular.isDefined(iparams.ens) ) { params.ens = iparams.ens }
         if ( angular.isDefined(iparams.as) ) { params.as = iparams.as }
+        if ( angular.isDefined(iparams.sc) ) { params.sc = iparams.sc }
         if ( angular.isDefined(iparams.format) ) { params.format = iparams.format }
         return params;
     }
@@ -286,8 +286,8 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($ht
         if ( angular.isDefined(params.operation) ) { qParams.operation = params.operation }
         if ( angular.isDefined(params.methods) && (params.methods != '') ) { qParams.methods = params.methods }
         if ( angular.isDefined(params.ids) ) { qParams.ids = params.ids }
-        if ( angular.isDefined(params.ens) ) { qParams.ens = params.ens }
         if ( angular.isDefined(params.as) ) { qParams.as = params.as }
+        if ( angular.isDefined(params.sc) ) { qParams.sc = params.sc }
         if ( angular.isDefined(params.format) ) { qParams.format = params.format }
         if ( angular.isDefined(params.r) ) { qParams.r = params.r }
         var request = $http({
@@ -370,8 +370,8 @@ apprisServices.factory('Viewer', ['$http', '$q', 'serverHostWS', function($http,
         if ( angular.isDefined(iparams.operation) ) { qParams.operation = iparams.operation }
         if ( angular.isDefined(iparams.methods) ) { qParams.methods = iparams.methods }
         if ( angular.isDefined(iparams.ids) ) { qParams.ids = iparams.ids }
-        if ( angular.isDefined(iparams.ens) ) { qParams.ens = iparams.ens }
         if ( angular.isDefined(iparams.as) ) { qParams.as = iparams.as }
+        if ( angular.isDefined(iparams.sc) ) { qParams.sc = iparams.sc }
         if ( angular.isDefined(iparams.format) ) { qParams.format = iparams.format }
         return qParams;
     }

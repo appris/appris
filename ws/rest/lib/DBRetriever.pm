@@ -63,9 +63,11 @@ use APPRIS::Utils::File qw(getStringFromFile);
 	my %_attr_data = # DEFAULT
 		(
 			conf			=>  undef,
-			specie			=>  undef,
-			ens				=>  '', # emtpy for the last version of ensembl
+			species			=>  undef,
+			dataset			=>  '',
 			assembly		=>  undef,
+			source			=>  undef,
+
 			type			=>  undef,
 			input			=>  undef,
 		);
@@ -602,22 +604,22 @@ sub export_features
 	if ( defined $features ) {
 		my ($exporter) = APPRIS::Exporter->new();
 		if ($format eq 'tsv') {
-			$result = $exporter->get_tsv_annotations($features, $methods, $res);
+			$result = $exporter->get_tsv_annotations($self->source, $features, $methods, $res);
 		}
 		elsif ( ($format eq 'bed') or ($format eq 'bed12') ) {
-			$result = $exporter->get_bed_annotations($features, $methods, undef, $format);
+			$result = $exporter->get_bed_annotations($self->source, $features, $methods, undef, $format);
 	    }
 		elsif ($format eq 'json') {
-			$result = $exporter->get_json_annotations($features, $methods);
+			$result = $exporter->get_json_annotations($self->source, $features, $methods);
 	    }
 		elsif ($format eq 'gtf') {
-			$result = $exporter->get_gtf_annotations($features, $methods);
+			$result = $exporter->get_gtf_annotations($self->source, $features, $methods);
 	    }
 		elsif ($format eq 'gff3') {
-			$result = $exporter->get_gff3_annotations($features, $methods);
+			$result = $exporter->get_gff3_annotations($self->source, $features, $methods);
 	    }
 		elsif ($format eq 'raw') {
-			$result = $exporter->get_raw_annotations($features, $methods);
+			$result = $exporter->get_raw_annotations($self->source, $features, $methods);
 	    }
 	}
 	

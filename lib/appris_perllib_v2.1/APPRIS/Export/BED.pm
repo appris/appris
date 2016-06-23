@@ -66,7 +66,7 @@ $METHOD_LABEL_DESC = $APPRIS::Utils::Constant::METHOD_LABEL_DESC;
   Arg [1]    : Listref of APPRIS::Gene or undef
   Arg [2]    : String - $position
                genome position (chr22:20116979-20137016)
-  Arg [3]    : String - $source
+  Arg [3]    : String - $methods
                List of sources ('all', ... )
   Example    : get_annotations($feature,'chr22:20116979-20137016','no','appris');  
   Description: Retrieves text as BED format with the annotations.
@@ -78,7 +78,7 @@ $METHOD_LABEL_DESC = $APPRIS::Utils::Constant::METHOD_LABEL_DESC;
 =cut
 
 sub get_annotations {
-    my ($feature, $position, $source, $typebed) = @_;
+    my ($source, $feature, $position, $methods, $typebed) = @_;
 	my ($chromosome,$start,$end) = (undef,undef,undef);
 	my ($pos);
     my ($output) = '';
@@ -195,18 +195,18 @@ sub get_annotations {
     }        
 
 	# Get the bed annotations
-    if ( defined $source and ($source ne '') ) {
+    if ( defined $methods and ($methods ne '') ) {
 		if ($feature and (ref($feature) ne 'ARRAY')) {
 	    	if ($feature->isa("APPRIS::Gene")) {
 				foreach my $transcript (@{$feature->transcripts}) {
-					get_trans_annotations($typebed, $track, $transcript, $position, $source);
+					get_trans_annotations($typebed, $track, $transcript, $position, $methods);
 				}
-				#if ( $source =~ /proteo/ ) {
-				#	get_gen_annotations($track, $feature, $position, $source);
+				#if ( $methods =~ /proteo/ ) {
+				#	get_gen_annotations($track, $feature, $position, $methods);
 				#}				
 	    	}
 	    	elsif ($feature->isa("APPRIS::Transcript")) {
-	    		get_trans_annotations($typebed, $track, $feature, $position, $source);
+	    		get_trans_annotations($typebed, $track, $feature, $position, $methods);
 	    	}
 	    	else {
 				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -216,14 +216,14 @@ sub get_annotations {
 	    	foreach my $feat (@{$feature}) {
 		    	if ($feat->isa("APPRIS::Gene")) {
 					foreach my $transcript (@{$feat->transcripts}) {
-			    		get_trans_annotations($typebed, $track, $transcript, $position, $source);
+			    		get_trans_annotations($typebed, $track, $transcript, $position, $methods);
 					}
-					#if ( $source =~ /proteo/ ) {
-					#	get_gen_annotations($track, $feat, $position, $source);
+					#if ( $methods =~ /proteo/ ) {
+					#	get_gen_annotations($track, $feat, $position, $methods);
 					#}					
 		    	}
 		    	elsif ($feat->isa("APPRIS::Transcript")) {
-		    		get_trans_annotations($typebed, $track, $feat, $position, $source);
+		    		get_trans_annotations($typebed, $track, $feat, $position, $methods);
 		    	}
 		    	else {
 					throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
@@ -243,14 +243,29 @@ sub get_annotations {
     # Print output
 	if ( $output ne '' ) {
 		if ( $typebed eq 'bed' ) {
+			my ($ucscGeneTrack) = '';
+			if ( defined $source and $source eq 'ensembl' ) {
+				$ucscGeneTrack =
+					"browser full ensGene"."\n".
+					"browser full ccdsGene"."\n";				
+			}
+			elsif ( defined $source and $source eq 'refseq' ) {
+				$ucscGeneTrack =
+					"browser full refGene"."\n".
+					"browser full ccdsGene"."\n";				
+			}
+			else {
+				$ucscGeneTrack =
+					"browser full ensGene"."\n".
+					"browser full refGene"."\n".
+					"browser full ccdsGene"."\n";	
+			}
 			$output =
 				"browser position $position"."\n".
 				"browser hide all"."\n".
 				"browser full knownGene"."\n".
 				"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly
-				"browser full ensGene"."\n".
-				"browser full refGene"."\n".
-				"browser full ccdsGene"."\n".				
+				$ucscGeneTrack."\n".
 				$output;			
 		}
 	}
@@ -262,7 +277,7 @@ sub get_annotations {
   Arg [1]    : APPRIS::Transcript or undef
   Arg [2]    : String - $position
                genome position (chr22:20116979-20137016)
-  Arg [3]    : String - $source
+  Arg [3]    : String - $methods
                List of sources ('all', ... )
   Example    : get_annotations($feature,'chr22:20116979-20137016','appris');  
   Description: Retrieves bed information of transcript.
@@ -271,10 +286,10 @@ sub get_annotations {
 =cut
 
 sub get_gen_annotations {
-    my ($track, $gene, $position, $source) = @_;
+    my ($track, $gene, $position, $methods) = @_;
     
     if (ref($gene) and $gene->isa("APPRIS::Gene")) {
-		if ( ($source =~ /proteo/) or ($source eq 'all') ) {
+		if ( ($methods =~ /proteo/) or ($methods eq 'all') ) {
 			get_g_proteo_annotations( $gene,
 									 \$track->[8]
 			);
@@ -291,7 +306,7 @@ sub get_gen_annotations {
   Arg [1]    : APPRIS::Transcript or undef
   Arg [2]    : String - $position
                genome position (chr22:20116979-20137016)
-  Arg [3]    : String - $source
+  Arg [3]    : String - $methods
                List of sources ('all', ... )
   Example    : get_annotations($feature,'chr22:20116979-20137016','appris');  
   Description: Retrieves bed information of transcript.
@@ -300,7 +315,7 @@ sub get_gen_annotations {
 =cut
 
 sub get_trans_annotations {
-    my ($typebed, $track, $feature, $position, $source) = @_;
+    my ($typebed, $track, $feature, $position, $methods) = @_;
 
     if (ref($feature) and $feature->isa("APPRIS::Transcript")) {
    	    
@@ -316,30 +331,30 @@ sub get_trans_annotations {
 						}
 					}		
 				}
-				if ( ($source =~ /appris/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /appris/) or ($methods eq 'all') ) {				
 					get_appris_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
 	           								\$track->[0]
 					);
 				}
-				if ( ($source =~ /firestar/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /firestar/) or ($methods eq 'all') ) {				
 					get_firestar_annotations( 	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[1]
 					);
 				}
-				if ( ($source =~ /matador3d/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /matador3d/) or ($methods eq 'all') ) {				
 					get_matador3d_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[2]
 					);
 				}
-				if ( ($source =~ /spade/) or ($source eq 'all') ) {
-					if ( $source =~ /spade\-([^\,\$]*)/ ) {
-						while ( $source =~ /spade\-([^\,\$]*)/mg ) {
+				if ( ($methods =~ /spade/) or ($methods eq 'all') ) {
+					if ( $methods =~ /spade\-([^\,\$]*)/ ) {
+						while ( $methods =~ /spade\-([^\,\$]*)/mg ) {
 							my ($s_name) = $1;
 							if ( $s_name eq 'domain' ) {		
 								get_spade_annotations(	$typebed,
@@ -363,7 +378,7 @@ sub get_trans_annotations {
 												$transcript_id,
 		           								$feature,
 		           								\$track->[3],
-		           								$source
+		           								$methods
 						);
 						get_spade_annotations(	$typebed,
 												$transcript_id,
@@ -379,28 +394,28 @@ sub get_trans_annotations {
 						);
 					}	
 				}
-				if ( ($source =~ /corsair/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /corsair/) or ($methods eq 'all') ) {				
 					get_corsair_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[4]
 					);
 				}
-				if ( ($source =~ /inertia/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /inertia/) or ($methods eq 'all') ) {				
 					get_inertia_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[5]
 					);
 				}
-				if ( ($source =~ /crash/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /crash/) or ($methods eq 'all') ) {				
 					get_crash_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
 	           								\$track->[6]
 					);
 				}
-				if ( ($source =~ /thump/) or ($source eq 'all') ) {				
+				if ( ($methods =~ /thump/) or ($methods eq 'all') ) {				
 					get_thump_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
@@ -408,7 +423,7 @@ sub get_trans_annotations {
 					);
 				}
 				# Now, the tracks of PROTEO are printed per peptide (gene)
-				if ( ($source =~ /proteo/) or ($source eq 'all') ) {
+				if ( ($methods =~ /proteo/) or ($methods eq 'all') ) {
 					get_proteo_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
@@ -1884,7 +1899,7 @@ sub get_matador3d_annotations {
 
 # PRINT the alignments together from Pfam 
 #sub get_spade_annotations {
-#	my ($transcript_id, $feature, $ref_output, $source) = @_;
+#	my ($transcript_id, $feature, $ref_output, $methods) = @_;
 #
 #	# Get annotations
 # 	if ( $feature->analysis ) {
@@ -1913,14 +1928,14 @@ sub get_matador3d_annotations {
 #						push(@{$res_damaged_domains}, $res);
 #					}
 #				}
-#				if ( $source eq 'domain' ) {
+#				if ( $methods eq 'domain' ) {
 #					_aux_get_spade_annotations('domain',
 #												$transcript_id,
 #												$feature,
 #												$res_domains,
 #												$ref_output);
 #				}
-#				elsif ( $source eq 'damaged_domain' ) {
+#				elsif ( $methods eq 'damaged_domain' ) {
 #					_aux_get_spade_annotations('damaged_domain',
 #												$transcript_id,
 #												$feature,
@@ -1945,7 +1960,7 @@ sub get_matador3d_annotations {
 #}
 # PRINT the alignments from Pfam separetly
 sub get_spade_annotations {
-	my ($typebed, $transcript_id, $feature, $ref_output, $source) = @_;
+	my ($typebed, $transcript_id, $feature, $ref_output, $methods) = @_;
 
 	# Get annotations
  	if ( $feature->analysis ) {
@@ -1973,7 +1988,7 @@ sub get_spade_annotations {
 						push(@{$res_damaged_domains}, $res);
 					}
 					my ($data_domain);
-					if ( ($source eq 'domain') or ($source eq 'spade') ) {
+					if ( ($methods eq 'domain') or ($methods eq 'spade') ) {
 						$data_domain = extract_track_region( $transcript_id,
 															$feature,
 															$res_domains,
@@ -1983,7 +1998,7 @@ sub get_spade_annotations {
 															}]);						
 					}
 					my ($data_damg_domain);
-					if ( ($source eq 'damaged_domain') or ($source eq 'spade') ) {
+					if ( ($methods eq 'damaged_domain') or ($methods eq 'spade') ) {
 						$data_damg_domain = extract_track_region( $transcript_id,
 															$feature,
 															$res_damaged_domains,
