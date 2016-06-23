@@ -403,7 +403,7 @@ sub get_json_annotations {
     my ($self, $source, $feature, $methods) = @_;
     my ($output) = '';
 
-	my ($gtf_output) = $self->get_gtf_annotations($feature, $methods);
+	my ($gtf_output) = $self->get_gtf_annotations($source, $feature, $methods);
 	$output .= APPRIS::Export::JSON::get_annotations($gtf_output);
 	
 	return $output;
