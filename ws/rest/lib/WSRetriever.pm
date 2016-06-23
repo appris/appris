@@ -804,16 +804,13 @@ sub export_features
 		elsif ( defined $self->transl and -e $self->transl and (-s $self->transl > 0) ) {
 			if ($format eq 'tsv') {
 				$result = $exporter->get_tsv_annotations($features, $methods, $res);
-				#$result = $exporter->get_tsv_results($features, $methods);
 			}
 			elsif ($format eq 'json') {
-				#$result = $exporter->get_json_annotations($features, $methods);
 				$features = undef; $features = $self->get_results($methods, $ids); # IMPORTANT, OVERWRTITE FEATURES TO PRINT RESULTS
 				$result = $exporter->get_json_results($features, $methods);
 		    }
 			elsif ($format eq 'raw') {
 				$result = $exporter->get_raw_annotations($features, $methods);
-				#$result = $exporter->get_raw_results($features, $methods);
 		    }
 			else {
 				$result = "The format is not available for this job";
@@ -1730,7 +1727,7 @@ sub get_gen_features {
 		my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
 		my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
 
-#return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
+return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
 
 		$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
 					"<img class='imgTrackUCSC img-responsive' src='".$ucsc_render_track_url."'>".

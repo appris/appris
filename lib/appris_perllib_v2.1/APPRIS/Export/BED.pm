@@ -246,6 +246,8 @@ sub get_annotations {
 			my ($ucscGeneTrack) = '';
 			if ( defined $source and $source eq 'ensembl' ) {
 				$ucscGeneTrack =
+					"browser full knownGene"."\n".
+					"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly					
 					"browser full ensGene"."\n".
 					"browser full ccdsGene"."\n";				
 			}
@@ -256,6 +258,7 @@ sub get_annotations {
 			}
 			else {
 				$ucscGeneTrack =
+					"browser full knownGene"."\n".
 					"browser full ensGene"."\n".
 					"browser full refGene"."\n".
 					"browser full ccdsGene"."\n";	
@@ -263,8 +266,6 @@ sub get_annotations {
 			$output =
 				"browser position $position"."\n".
 				"browser hide all"."\n".
-				"browser full knownGene"."\n".
-				"browser full wgEncodeGencodeVM4"."\n". # HARD-CORE!!! due UCSC does not update correctly
 				$ucscGeneTrack."\n".
 				$output;			
 		}
