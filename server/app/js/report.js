@@ -24,9 +24,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
     $scope.resultDetailAnnotHeads = [];
     $scope.resultMainAnnotHeads = [];
     $scope.resultMainResidues = [];
-    //$scope.browserDataMethods = [];
-    //$scope.browserDataAlign = false;
-    //$scope.browserDataSeqs = null;
 
     // get route parameters from type of mode
     // EXPORTER mode
@@ -43,35 +40,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
     // APPRIS annots
 
     // load result types (method results). BY DEFAULT: retrieves all
-//    ResultTypes.query({ jobid: $scope.runnerid }).$promise.then( function(data) {
-//        if ( $filter('isSeqRunner')(data) ) {
-//            $scope.isSeqRunner = true;
-//        }
-//        // Add seq. id and methods
-//        $scope.resultDetailAnnotHeads.push({
-//            id: "transcript_id",
-//            label: "Seq. id"
-//        },{
-//            id: "length_aa",
-//            label: "Length (aa)"
-//        });
-//        angular.forEach(data, function(item) {
-//            // discard methods for detailed panel!!!
-//            if ( item.id !== 'principal_isoform' ) {
-//                $scope.resultDetailAnnotHeads.push({
-//                    id: item.id,
-//                    label: item.label
-//                });
-//            }
-//            // discard methods for browser panel !!!
-//            $scope.currentMethods.push({
-//                id: item.id,
-//                name: item.name,
-//                label: item.label,
-//                desc: item.desc
-//            });
-//        });
-//    });
     ResultTypes.query({ jobid: $scope.runnerid, species: $routeParams.species }).then( function(data) {
         $scope.isSeqRunner = data.isSeqRunner;
         $scope.resultDetailAnnotHeads = data.resultDetailAnnotHeads;
@@ -79,8 +47,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
     });
 
     // create annotation table depending on mode (EXPORTER or RUNNER) at the moment we have already the resultHeadLbs
-    //$scope.$watch('resultDetailAnnotHeads', function (value) {
-    //if ( angular.isDefined(value) && value !== null ) {
     $scope.$watchCollection('[resultDetailAnnotHeads, currentMethods]', function(newValues) { // For AngularJS 1.1.4
         if ( angular.isDefined(newValues[0]) && angular.isDefined(newValues[1]) ) {
             if ( angular.isArray(newValues[0]) && newValues[0].length > 0 && angular.isArray(newValues[1]) && newValues[1].length > 0 ) {
@@ -91,6 +57,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                     species: $routeParams.species,
                     id: $routeParams.id,
                     as: $routeParams.as,
+                    sc: $routeParams.sc,
                     methods: 'appris'
                 };
             }
@@ -121,12 +88,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         },{
                             id: "ccds_id",
                             label: "CCDS"
-//                        },{
-//                            id: "no_codons",
-//                            label: "Codons not found"
-//                        },{
-//                            id: "tsl",
-//                            label: "TSL"
                         },{
                             id: "flags",
                             label: "Flags"
@@ -173,13 +134,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         $scope.resultAnnots = resultData[1];
                         $scope.browserDataMethods = angular.copy($scope.currentMethods);
                         $scope.addBrowserDatalSeqs();
-
-
-                        //var inputs = $scope.resultAnnots;
-                        //var methods = 'appris';
-                        //if ( angular.isDefined($scope.browserDataMethods) ) { methods = $scope.browserDataMethods; }
-                        //var align = $scope.browserDataAlign;
-                        //$scope.submitBrowserData($scope.resultAnnots, $scope.currentMethods, $scope.browserDataAlign);
                     }
                 }, function(error) {
                     $rootScope.isLoadingScreen = false;
@@ -189,7 +143,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         $scope.alert.message = error.data;
                     }
                     else if ( error.status >= 500 ) {
-                        //$location.path(consPageError);
                         $location.url(consPageError);
                     }
                 });
@@ -258,8 +211,8 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                 tid: $routeParams.tid,
                 species: $routeParams.species,
                 id: $routeParams.id,
-                //ens: $routeParams.ens
-                as: $routeParams.as
+                as: $routeParams.as,
+                sc: $routeParams.sc
             };
         }
         else if ( $scope.runnerid ) {
@@ -280,9 +233,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
             mets += item.name+',';
         });
         mets = mets.replace(/,$/g,'');
-        //if ( ids !== '' ) browserData.ids = ids;
-        //if ( mets !== '' ) browserData.methods = mets;
-        //if ( format !== '' ) browserData.format = format;
         browserData.ids = ids;
         browserData.format = format;
         browserData.methods = mets;
@@ -390,18 +340,6 @@ apprisFilters.filter('convertTransScoreObj', function() {
                 }
                 if ( sLabel == "principal_isoform") {
                     var sAnnot = '-';
-//                    if ( angular.isDefined(item.annotation) ) {
-//                        if ( item.annotation == "Principal Isoform" ) {
-//                            sAnnot = principal_label;
-//                        }
-//                        else if ( item.annotation == "Possible Principal Isoform" ) {
-//                            sAnnot = candidate_label;
-//                        }
-//                        else if ( item.annotation == "No Principal Isoform" ) {
-//                            sAnnot = alternative_label;
-//                        }
-//                        filtered[iTrans][sLabel] = sAnnot;
-//                    }
                     if ( angular.isDefined(item.reliability) ) {
                         sAnnot = item.reliability;
                     }
@@ -442,24 +380,11 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
                         filtered['transcript_id'] = key;
                         if ( angular.isDefined(item.principal_isoform_signal) ) {
                             var sAnnot = '-';
-//                            var item2 = item.principal_isoform_signal;
-//                            if ( item2 == "YES" ) {
-//                                sAnnot = principal_label;
-//                            }
-//                            else if ( item2 == "UNKNOWN" ) {
-//                                sAnnot = candidate_label;
-//                            }
-//                            else if ( item2 == "NO" ) {
-//                                sAnnot = alternative_label;
-//                            }
                             if ( angular.isDefined(item.reliability) ) {
                                 sAnnot = item.reliability;
                             }
                             filtered['principal_isoform'] = sAnnot;
                         }
-                        //if ( angular.isDefined(item.reliability) ) {
-                        //    filtered['reliability'] = item.reliability;
-                        //}
                         if ( angular.isDefined(item.functional_residues_score) ) {
                             filtered['functional_residue'] = item.functional_residues_score;
                         }
@@ -481,48 +406,6 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
                         if ( angular.isDefined(item.mitochondrial_signal) ) {
                             filtered['signal_peptide_mitochondrial'] += '/'+item.mitochondrial_signal;
                         }
-
-//                        angular.forEach(item, function(item2, key2) {
-//                            if ( key2 == "principal_isoform_signal") {
-//                                var sAnnot = '-';
-//                                if ( item2 == "YES" ) {
-//                                    sAnnot = principal_label;
-//                                }
-//                                else if ( item2 == "UNKNOWN" ) {
-//                                    sAnnot = candidate_label;
-//                                }
-//                                else if ( item2 == "NO" ) {
-//                                    sAnnot = alternative_label;
-//                                }
-//                                filtered['principal_isoform'] = sAnnot;
-//                            }
-//                            else if ( key2 == "reliability") {
-//                                filtered['reliability'] = item2;
-//                            }
-//                            else if ( key2 == "functional_residues_score") {
-//                                filtered['functional_residue'] = item2;
-//                            }
-//                            else if ( key2 == "homologous_structure_score") {
-//                                filtered['homologous_structure'] = item2;
-//                            }
-//                            else if ( key2 == "vertebrate_conservation_score") {
-//                                filtered['vertebrate_conservation'] = item2;
-//                            }
-//                            else if ( key2 == "domain_score") {
-//                                filtered['functional_domain'] = item2;
-//                            }
-//                            else if ( key2 == "transmembrane_helices_score") {
-//                                filtered['transmembrane_signal'] = item2;
-//                            }
-//                            else if ( key2 == "peptide_signal" || key2 == "mitochondrial_signal" ) {
-//                                if ( angular.isUndefined(filtered.signal_peptide_mitochondrial) ) {
-//                                    filtered['signal_peptide_mitochondrial'] = item2;
-//                                }
-//                                else {
-//                                    filtered['signal_peptide_mitochondrial'] += '/'+item2;
-//                                }
-//                            }
-//                        });
                         selected.push(filtered);
                     }
                 });

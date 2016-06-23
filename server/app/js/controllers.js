@@ -134,7 +134,6 @@ apprisControllers.controller('SeekerController', ['consPathSeeker', '$scope', '$
                 return;
             }
             // Redirect URL
-            //$location.path(consPathSeeker+form.inQuery);
             $location.url(consPathSeeker+form.inQuery);
         };
     }
@@ -146,8 +145,6 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
         // init vars
         $rootScope.isLoadingScreen = true;
         var id = $routeParams.id;
-
-        // load results
 
         // create search summary
         var specieResult = {};
@@ -191,11 +188,9 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
         }, function(error) {
             $rootScope.isLoadingScreen = false;
             if ( error.status >= 400 && error.status < 500 ) {
-                //$location.path(consQueryNotMatch);
                 $location.url(consQueryNotMatch);
             }
             else if ( error.status >= 500 ) {
-                //$location.path(consQueryNotMatch);
                 $location.url(consQueryNotMatch);
             }
         });
@@ -264,32 +259,6 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$f
                 });
             });
         }
-console.log($scope.downloads);
-console.log($scope.downloads);
-
-//        if ( angular.isDefined($rootScope.datafiles) ) {
-//            if (angular.isDefined($rootScope.downloads.headers) ) {
-//                $scope.headers = $rootScope.downloads.headers;
-//            }
-//            if (angular.isDefined($rootScope.downloads.datafiles) ) {
-//                $scope.datafiles = $rootScope.downloads.datafiles;
-//                angular.forEach($rootScope.downloads.datafiles, function(val) {
-//                    var specie = val['species'];
-//                    var assembly = val['assembly'];
-//                    var dataset = val['dataset'];
-//                    var path = val['path'];
-//                    if ( $scope.species.indexOf(specie) == -1 ) {
-//                        $scope.species.push(specie);
-//                    }
-//                    if ( $scope.assemblies.indexOf(assembly) == -1 ) {
-//                        $scope.assemblies.push(assembly);
-//                    }
-//                    if ( $scope.datasets.indexOf(dataset) == -1 ) {
-//                        $scope.datasets.push(dataset);
-//                    }
-//                });
-//            }
-//        }
     }
 ]);
 
