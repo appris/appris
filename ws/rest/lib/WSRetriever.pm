@@ -865,27 +865,27 @@ sub export_seq_features
 	if ( defined $features ) {
 		my ($exporter) = APPRIS::Exporter->new();
 		if ( $operation eq 'sequences' ) {
-			$result = $exporter->get_seq_annotations($features, $type, $format);
+			$result = $exporter->get_seq_annotations($self->source, $features, $type, $format);
 		}
 		elsif ( $operation eq 'align' ) { # "A minimum of 2 sequences is required\n"
-			my ($seq_result) = $exporter->get_seq_annotations($features, $type, 'fasta');
+			my ($seq_result) = $exporter->get_seq_annotations($self->source, $features, $type, 'fasta');
 			my ($num_seq) = $seq_result =~ tr/\>//;
 			if ( $num_seq >= 2 ) {
 				my ($wsretriever) = new WSRetriever();
 				$result = $wsretriever->get_aln_annotations($seq_result, $format, $ids);
 			}
 			else {
-				$result = $exporter->get_seq_annotations($features, $type, 'json');				
+				$result = $exporter->get_seq_annotations($self->source, $features, $type, 'json');				
 			}			
 		}		
 		elsif ($operation eq 'residues') {
-			$result = $exporter->get_res_annotations($features, $methods, $res);
+			$result = $exporter->get_res_annotations($self->source, $features, $methods, $res);
 	    }
 		elsif ($operation eq 'cds') {
-			$result = $exporter->get_cds_annotations($features, $methods, $res);
+			$result = $exporter->get_cds_annotations($self->source, $features, $methods, $res);
 	    }
 		elsif ($operation eq 'genome') {
-			$result = $self->get_gen_annotations($methods, $ids);
+			$result = $self->get_gen_annotations($self->source, $methods, $ids);
 	    }
 	}
 	
@@ -988,13 +988,14 @@ sub get_aln_annotations
 sub get_gen_annotations
 {
 	my ($self) = shift;
+	my ($source) = shift if (@_);
 	my ($methods) = shift if (@_);
 	my ($ids) = shift if (@_);
 	my ($result) = '';
 	
 	# retrieve images from UCSC
 	my ($query_id) = 'runner/result/' . $self->jobid;		
-	$result = $self->get_gen_features($query_id, $self->species, $self->assembly, $self->source, $self->dataset, $methods, $ids);		
+	$result = $self->get_gen_features($query_id, $self->species, $self->assembly, $source, $self->dataset, $methods, $ids);		
 	unless ( defined $result ) {
 		$result = "Job query needs genome information\n";
 	}
@@ -1729,7 +1730,7 @@ sub get_gen_features {
 		my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
 		my ($ucsc_query_link) = $ENV{APPRIS_WSERVER_UCSC_URL} . '?' . $params;
 
-return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
+#return $query."<br><br>"."<br><br>".$ucsc_query_link."<br><br>"."<br><br>".$ucsc_render_track_url;
 
 		$result = "<a class='imgUCSC' target='_blank' title='Click to alter the display of original UCSC Genome Browser' href='".$ucsc_query_link."'>".
 					"<img class='imgTrackUCSC img-responsive' src='".$ucsc_render_track_url."'>".

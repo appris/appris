@@ -178,7 +178,7 @@ sub version {
 =cut
 
 sub get_gtf_annotations {
-    my ($self, $feature, $methods) = @_;
+    my ($self, $source, $feature, $methods) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
@@ -229,7 +229,7 @@ sub get_gtf_annotations {
 =cut
 
 sub get_gff3_annotations {
-    my ($self, $feature, $methods) = @_;
+    my ($self, $source, $feature, $methods) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
@@ -400,7 +400,7 @@ sub get_bed_annotations {
 =cut
 
 sub get_json_annotations {
-    my ($self, $feature, $methods) = @_;
+    my ($self, $source, $feature, $methods) = @_;
     my ($output) = '';
 
 	my ($gtf_output) = $self->get_gtf_annotations($feature, $methods);
@@ -433,7 +433,7 @@ sub get_json_annotations {
 #	return $output;
 #}
 sub get_tsv_annotations {
-    my ($self, $feature, $methods, $res) = @_;
+    my ($self, $source, $feature, $methods, $res) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {
@@ -481,7 +481,7 @@ sub get_tsv_annotations {
 =cut
 
 sub get_raw_annotations {
-    my ($self,$feature,$methods) = @_;
+    my ($self, $source, $feature, $methods) = @_;
     my ($output) = '';
 
     if ( defined $feature ) {
@@ -504,7 +504,7 @@ sub get_raw_annotations {
 =cut
 
 sub get_json_results {
-    my ($self,$report,$methods) = @_;
+    my ($self, $source, $report, $methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
@@ -527,7 +527,7 @@ sub get_json_results {
 =cut
 
 sub get_raw_results {
-    my ($self,$report,$methods) = @_;
+    my ($self, $source, $report, $methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
@@ -550,7 +550,7 @@ sub get_raw_results {
 =cut
 
 sub get_tsv_results {
-    my ($self,$report,$methods) = @_;
+    my ($self, $source, $report, $methods) = @_;
     my ($output) = '';
 
     if (defined $report) {
@@ -576,7 +576,7 @@ sub get_tsv_results {
 =cut
 
 sub get_seq_annotations {
-	my ($self, $feature, $type, $format) = @_;
+	my ($self, $source, $feature, $type, $format) = @_;
     my ($string) = '';
     my ($output) = '';
 
@@ -649,7 +649,7 @@ sub get_seq_annotations {
 =cut
 
 sub get_res_annotations {
-	my ($self, $feature, $methods, $inres) = @_;
+	my ($self, $source, $feature, $methods, $inres) = @_;
 	my ($report);
     my ($output) = '';
 
@@ -708,7 +708,7 @@ sub get_res_annotations {
 =cut
 
 sub get_cds_annotations {
-	my ($self, $feature, $methods, $inres) = @_;
+	my ($self, $source, $feature, $methods, $inres) = @_;
 	my ($report);
     my ($output) = '';
 
@@ -765,7 +765,7 @@ sub get_cds_annotations {
 =cut
 
 sub get_img_seq_annotations {
-	my ($self, $feature) = @_;
+	my ($self, $source, $feature) = @_;
     my ($output) = '';
 
 	if ($feature and (ref($feature) ne 'ARRAY')) {

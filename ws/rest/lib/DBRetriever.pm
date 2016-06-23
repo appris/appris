@@ -668,7 +668,7 @@ sub export_seq_features
 	if ( defined $features ) {
 		my ($exporter) = APPRIS::Exporter->new();
 		if ( $operation eq 'sequences' ) {
-			$result = $exporter->get_seq_annotations($features, $type, $format);
+			$result = $exporter->get_seq_annotations($self->source, $features, $type, $format);
 		}
 		elsif ( $operation eq 'align' ) { # "A minimum of 2 sequences is required\n"
 			my ($seq_result) = $exporter->get_seq_annotations($features, $type, 'fasta');
@@ -679,17 +679,17 @@ sub export_seq_features
 				$result = $wsretriever->get_aln_annotations($seq_result, $format, $ids);
 			}
 			else {
-				$result = $exporter->get_seq_annotations($features, $type, 'json');				
+				$result = $exporter->get_seq_annotations($self->source, $features, $type, 'json');				
 			}			
 		}
 		elsif ($operation eq 'residues') {
-			$result = $exporter->get_res_annotations($features, $methods, $res);
+			$result = $exporter->get_res_annotations($self->source, $features, $methods, $res);
 	    }
 		elsif ($operation eq 'cds') {
-			$result = $exporter->get_cds_annotations($features, $methods, $res);
+			$result = $exporter->get_cds_annotations($self->source, $features, $methods, $res);
 	    }	    
 		elsif ($operation eq 'genome') {
-			$result = $self->get_gen_annotations($methods, $ids);
+			$result = $self->get_gen_annotations($self->source, $methods, $ids);
 	    }
 	}
 	
@@ -772,6 +772,7 @@ sub export_seq_features
 sub get_gen_annotations
 {
 	my ($self) = shift;
+	my ($source) = shift if (@_);
 	my ($methods) = shift if (@_);
 	my ($ids) = shift if (@_);
 	my ($result) = '';
@@ -779,7 +780,7 @@ sub get_gen_annotations
 	require WSRetriever;
 	my ($wsretriever) = new WSRetriever();
 	my ($query_id) = 'exporter/' . $self->type . '/' . $self->species . '/' . $self->input;
-	$result = $wsretriever->get_gen_features($query_id, $self->species, $self->assembly, $self->source, $self->dataset, $methods, $ids);
+	$result = $wsretriever->get_gen_features($query_id, $self->species, $self->assembly, $source, $self->dataset, $methods, $ids);
 	unless ( defined $result ) {
 		$result = "Job query needs genome information\n";
 	}
