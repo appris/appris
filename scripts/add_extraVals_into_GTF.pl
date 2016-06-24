@@ -129,7 +129,7 @@ sub main()
 								# add CCDS
 								unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
 									if ( exists $extra_genedata->{$ens_gene_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ) {
-										my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+										my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
 										$new_values .= "; ccds_id \"$ccds_id\"";
 									}
 								}								
