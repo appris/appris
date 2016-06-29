@@ -224,12 +224,12 @@ fi
 # print trace
 echo "================="
 echo "perl ${SCRIPT_2}"
-echo "	--input-main=${ANNOT_RST_MAIN_FILE}"
-echo "	--input-label=${ANNOT_RST_LABEL_FILE}"
-echo "	--input-seq=${ANNOT_RST_TRANSL_FILE}"
-echo "	--input-data=${ANNOT_RST_ANNOT_FILE}"
-echo "	--output=${OUTPUT_DATA_PRINCIPAL_RESULTFILE}"
-echo "	--output-ens=${OUTPUT_DATA_PRINCIPAL_ENS_RESULTFILE}"
+echo "	--input-main=${ANNOT_RST_MAIN_FILE} \"
+echo "	--input-label=${ANNOT_RST_LABEL_FILE} \"
+echo "	--input-seq=${ANNOT_RST_TRANSL_FILE} \"
+echo "	--input-data=${ANNOT_RST_ANNOT_FILE} \"
+echo "	--output=${OUTPUT_DATA_PRINCIPAL_RESULTFILE} \"
+echo "	--output-ens=${OUTPUT_DATA_PRINCIPAL_ENS_RESULTFILE} \"
 echo " ${LOG_PARAMETERS}"
 
 # run method: retrive main data of appris
@@ -246,12 +246,12 @@ echo "================="
 # print trace
 echo "================="
 echo "perl ${SCRIPT_1}"
-echo "	--input-main=${ANNOT_RST_MAIN_FILE}"
-echo "	--input-label=${ANNOT_RST_LABEL_FILE}"
-echo "	--input-prin=${OUTPUT_DATA_PRINCIPAL_RESULTFILE}"
-echo "	--input-seq=${ANNOT_RST_TRANSL_FILE}"
-echo "	--output=${OUTPUT_STATS_CCDS_RESULTFILE}"
-echo "	--out-gdisa=${OUTPUT_STATS_CCDS_G_RESULTFILE}"
+echo "	--input-main=${ANNOT_RST_MAIN_FILE} \"
+echo "	--input-label=${ANNOT_RST_LABEL_FILE} \"
+echo "	--input-prin=${OUTPUT_DATA_PRINCIPAL_RESULTFILE} \"
+echo "	--input-seq=${ANNOT_RST_TRANSL_FILE} \"
+echo "	--output=${OUTPUT_STATS_CCDS_RESULTFILE} \"
+echo "	--out-gdisa=${OUTPUT_STATS_CCDS_G_RESULTFILE} \"
 echo " ${LOG_PARAMETERS}"
 
 # run method: retrieve method data
