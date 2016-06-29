@@ -178,7 +178,9 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 		cat ${ANNOT_DIR}/appris >> ${ANNOT_RST_MAIN_FILE}
 		cat ${ANNOT_DIR}/appris.label >> ${ANNOT_RST_LABEL_FILE}
 		cat ${ANNOT_DIR}/transl.fa >> ${ANNOT_RST_TRANSL_FILE}
-		cat ${ANNOT_DIR}/annot.gtf >> ${ANNOT_RST_ANNOT_FILE}
+		if [[ -e "${ANNOT_DIR}/annot.gtf" ]]; then
+			cat ${ANNOT_DIR}/annot.gtf >> ${ANNOT_RST_ANNOT_FILE}
+		fi
 	done
 	echo "================="
 	
