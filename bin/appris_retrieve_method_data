@@ -196,7 +196,7 @@ OUTPUT_PREFIX="${APPRIS_DATA_DIR}/appris_method"
 SCRIPT_2="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT_2}.pl"
 
 # from a given list of genes
-if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
+if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 
 	# local parameters
 	LOG_PARAMETERS=""

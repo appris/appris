@@ -183,7 +183,7 @@ fi
 SCRIPT="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT}.pl"
 
 # from a given list of genes
-if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
+if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 
 		# print trace
 		echo "================="
