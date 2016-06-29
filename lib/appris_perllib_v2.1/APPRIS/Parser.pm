@@ -374,7 +374,8 @@ sub parse_transl_data($)
 		(
 			-stable_id	=> $gene_id,
 			-source		=> $gene_features->{'source'}
-		);
+		);		
+		$gene->external_name($gene_features->{'name'}) if ( exists $gene_features->{'name'});
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);		
 	}
@@ -3774,12 +3775,11 @@ sub _parse_seq_data($)
 	if (-e $file and (-s $file > 0) ) {
 		
 		# get main id from file
-		my ($dirname,$basename) = parse_file($file, '.transl.fa');
+		my ($dirname,$basename) = parse_file($file, 'transl.fa');
 		if ( defined $basename ) {
-			my ($main_id) = $basename;
-			$data->{$main_id}->{'source'} = $source;
-			$data->{$main_id}->{'transcripts'} = undef;
-
+			my (@dirs) = split('/',$dirname);
+			my ($main_id) = $dirs[scalar(@dirs)-1];
+			
 			# get data from sequence file
 			my ($in) = Bio::SeqIO->new(
 								-file => $file,
@@ -3789,6 +3789,25 @@ sub _parse_seq_data($)
 			{
 				if ( $seq->id=~/([^|]*)/ )
 				{
+					my ($transc_id, $transl_id, $gene_id, $gene_name) = (undef,undef,undef,undef);						
+
+					my (@ids) = split('\|', $seq->id);
+					if ( scalar(@ids) > 4 ) {
+						$transc_id = $ids[0];
+						$transl_id = $ids[1];
+						$gene_id = $ids[2];
+						$gene_name = $ids[3];
+						
+						$main_id = $gene_id;
+						$source = 'sequence';
+					}
+					
+					unless ( exists $data->{$main_id} ) {
+						$data->{$main_id}->{'source'} = $source;
+						$data->{$main_id}->{'transcripts'} = undef;
+						if ( defined $gene_name ) { $data->{$main_id}->{'name'} = $gene_name }
+					}
+					
 					my ($sequence_id) = $1;
 					if(exists $data->{$main_id}->{'transcripts'}->{$sequence_id}) {
 						throw("Duplicated sequence: $sequence_id");
@@ -3803,7 +3822,7 @@ sub _parse_seq_data($)
 						else {
 							warning("Short sequence: $sequence_id");
 						}
-					}
+					}						
 				}
 			}
 		}
