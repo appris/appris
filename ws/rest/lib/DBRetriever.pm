@@ -671,7 +671,7 @@ sub export_seq_features
 			$result = $exporter->get_seq_annotations($self->source, $features, $type, $format);
 		}
 		elsif ( $operation eq 'align' ) { # "A minimum of 2 sequences is required\n"
-			my ($seq_result) = $exporter->get_seq_annotations($features, $type, 'fasta');
+			my ($seq_result) = $exporter->get_seq_annotations($self->source, $features, $type, 'fasta');
 			my ($num_seq) = $seq_result =~ tr/\>//;
 			if ( $num_seq >= 2 ) {
 				require WSRetriever;
