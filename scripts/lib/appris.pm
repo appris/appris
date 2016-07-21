@@ -613,9 +613,10 @@ sub create_appris_seqinput($$)
 		foreach my $isof_id (sort( keys(%{$gene->{'varsplic'}}) ) ) {
 			my ($isof) = $gene->{'varsplic'}->{$isof_id};
 			if ( exists $isof->{'seq'} ) {
+				my ($ccds_id) = ( exists $isof->{'ccds'} ) ? $isof->{'ccds'} : '-';
 				my ($seq) = $isof->{'seq'};
 				my ($len) = length($seq);
-				$transl_cont .= ">$isof_id|$isof_id|$gene_id|$gene_name|$len\n";
+				$transl_cont .= ">$isof_id|$isof_id|$gene_id|$gene_name|$ccds_id|$len\n";
 				$transl_cont .= $seq."\n";				
 			}
 		}
@@ -800,6 +801,7 @@ sub create_seqdata($)
 			my ($s_seq) = $seq->seq;
 			my ($isof_id);
 			my ($gene_name);
+			my ($ccds_id);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
@@ -808,6 +810,13 @@ sub create_seqdata($)
 				if ( scalar(@desc) >= 2 ) {
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
+			}
+			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
+				$isof_id = $2;
+				my ($name) = $3;
+				$ccds_id = $4;
+				$gene_name = $5;
+				my ($len) = $6;
 			}
 			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
 				$isof_id = $1;
@@ -821,13 +830,18 @@ sub create_seqdata($)
 				unless ( exists $data->{$gene_id} ) {
 					$data->{$gene_id} = {
 						'id'		=> $gene_id,
-						'name'		=> $gene_name,
 						'varsplic'	=> {}
-					};
+					};													
+					if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
+						$data->{$gene_id}->{'name'} = $gene_name;
+					}
 				}
 				$data->{$gene_id}->{'varsplic'}->{$isof_id} = {
 					'desc'		=> $s_desc,
 					'seq' 		=> $s_seq
+				};
+				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'ccds'} = $ccds_id;
 				}
 			}
 		}		

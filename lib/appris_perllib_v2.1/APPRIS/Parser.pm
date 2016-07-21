@@ -335,13 +335,15 @@ sub parse_transl_data($)
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
+		my ($xref_identities);
 		my ($transcripts);
 		my ($index_transcripts);
 		my ($t_index) = 0;	
 		
 		# Scan transcripts
 		if ( exists $gene_features->{'transcripts'} ) {
-			while (my ($transcript_id, $translation_seq) = each(%{$gene_features->{'transcripts'}}) )
+			#while (my ($transcript_id, $translation_seq) = each(%{$gene_features->{'transcripts'}}) )
+			while (my ($transcript_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
 			{
 				# Create transcript object
 				my ($transcript) = APPRIS::Transcript->new
@@ -350,10 +352,23 @@ sub parse_transl_data($)
 					-source		=> $gene_features->{'source'}
 				);
 				
+				# add Xref
+				if ( exists $transcript_features->{'ccdsid'} and defined $transcript_features->{'ccdsid'} ) {
+					push(@{$xref_identities},
+							APPRIS::XrefEntry->new
+							(
+								-id				=> $transcript_features->{'ccdsid'},
+								-dbname			=> 'CCDS'
+							)
+					);
+				}
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
+				
 				# Add translation
 				my ($translate);
-				if ( defined $translation_seq ) {
-									
+				if ( exists $transcript_features->{'seq'} and defined $transcript_features->{'seq'} ) {
+					my ($translation_seq) = $transcript_features->{'seq'};
+					
 					# Create translation object
 					$translate = APPRIS::Translation->new
 					(
@@ -3789,7 +3804,7 @@ sub _parse_seq_data($)
 			{
 				if ( $seq->id=~/([^|]*)/ )
 				{
-					my ($transc_id, $transl_id, $gene_id, $gene_name) = (undef,undef,undef,undef);						
+					my ($transc_id, $transl_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);						
 
 					my (@ids) = split('\|', $seq->id);
 					if ( scalar(@ids) > 4 ) {
@@ -3797,6 +3812,7 @@ sub _parse_seq_data($)
 						$transl_id = $ids[1];
 						$gene_id = $ids[2];
 						$gene_name = $ids[3];
+						$ccds_id = $ids[4];
 						
 						$main_id = $gene_id;
 						$source = 'sequence';
@@ -3817,7 +3833,11 @@ sub _parse_seq_data($)
 						my ($seq_len) = length($sequence);
 
 						if ( $seq_len > 2 ) { # control short sequences
-							$data->{$main_id}->{'transcripts'}->{$sequence_id} = $sequence;
+							#$data->{$main_id}->{'transcripts'}->{$sequence_id} = $sequence;
+							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'seq'} = $sequence;
+							if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
+								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'ccdsid'} = $ccds_id
+							}
 						}
 						else {
 							warning("Short sequence: $sequence_id");
