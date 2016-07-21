@@ -335,7 +335,6 @@ sub parse_transl_data($)
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
-		my ($xref_identities);
 		my ($transcripts);
 		my ($index_transcripts);
 		my ($t_index) = 0;	
@@ -345,6 +344,8 @@ sub parse_transl_data($)
 			#while (my ($transcript_id, $translation_seq) = each(%{$gene_features->{'transcripts'}}) )
 			while (my ($transcript_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
 			{
+				my ($xref_identities);				
+				
 				# Create transcript object
 				my ($transcript) = APPRIS::Transcript->new
 				(
