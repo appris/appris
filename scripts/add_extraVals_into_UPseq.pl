@@ -99,9 +99,9 @@ sub main()
 				$isof_id = $2;
 				$name = $3;
 				$id = $isof_id; $id =~ s/\-[0-9]*$//g;
-				$ccds_id = $xref->{'gene'}->{$id} if ( exists $xref->{'gene'}->{$id} );
-				$gene_name = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
-				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
+				$gene_name = $xref->{'gene'}->{$id} if ( exists $xref->{'gene'}->{$id} );
+				$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
+				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$ccds_id.'|'.$gene_name.'|'.$s_len.' '.$s_desc."\n".
 							$s_seq."\n";
 			}
 		}
@@ -169,6 +169,7 @@ sub create_xreference($$$) {
 			}
 		}
 		if ( defined $gene_name and $gene_name ne '' ) {
+			$gene_name =~ s/\s*//g;
 			$report->{'gene'}->{$id} = $gene_name;
 		}
 	}
