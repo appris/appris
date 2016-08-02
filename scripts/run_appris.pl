@@ -376,13 +376,14 @@ sub run_pipeline($$;$;$)
 		$logger->info("\t-- prepare workspace\n");
 		my ($g_workspace) = $workspace;
 		if ( $gene_id ne '' ) {
-			# split id to avoid a directory with a lot of subdirectories (UniProt case)
-			my ($len) = length($gene_id);
-			my ($half) = int($len / 2);
-			my ($g1) = substr($gene_id, 0, $half);
-			my ($g2) = substr($gene_id, $half, $len);
-			my ($split_id) = "$g1/$g2";
-			$g_workspace .= $split_id;
+			$g_workspace .= $gene_id;
+#			# split id to avoid a directory with a lot of subdirectories (UniProt case)
+#			my ($len) = length($gene_id);
+#			my ($half) = int($len / 2);
+#			my ($g1) = substr($gene_id, 0, $half);
+#			my ($g2) = substr($gene_id, $half, $len);
+#			my ($split_id) = "$g1/$g2";
+#			$g_workspace .= $split_id;
 		}
 		$g_workspace = prepare_workspace($g_workspace);
 		$params->{'outpath'} = $g_workspace;
@@ -871,15 +872,15 @@ sub run_appris($$$)
 	my ($c_id) = $id; if ( defined $wserver and $type_of_input =~ /sequence/ ) { $c_id = $wserver }
 	my ($c_wspace) = $workspace.'/'.$id;
 	my ($c_logpath) = $c_wspace;
-	# split id to avoid a directory with a lot of subdirectories (UniProt case)	
-	if ( $type_of_input =~ /sequence/ ) {
-		my ($len) = length($id);
-		my ($half) = int($len / 2);
-		my ($g1) = substr($id, 0, $half);
-		my ($g2) = substr($id, $half, $len);
-		my ($split_id) = "$g1/$g2";
-		$c_logpath = $workspace.'/'.$split_id;
-	}	
+#	# split id to avoid a directory with a lot of subdirectories (UniProt case)	
+#	if ( $type_of_input =~ /sequence/ ) {
+#		my ($len) = length($id);
+#		my ($half) = int($len / 2);
+#		my ($g1) = substr($id, 0, $half);
+#		my ($g2) = substr($id, $half, $len);
+#		my ($split_id) = "$g1/$g2";
+#		$c_logpath = $workspace.'/'.$split_id;
+#	}	
 	my ($c_logfile) = 'log';
 	my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/appris.pl ".
 				" $parameters ".
