@@ -65,6 +65,7 @@ use vars qw(@ISA @EXPORT);
 	printStringIntoTmpFile
 	printStringIntoFile
 	updateStringIntoFile
+	printStringIntoLockFile
 	updateStringIntoLockFile
 	getStringFromFile
 	getTotalStringFromFile
@@ -161,6 +162,31 @@ sub updateStringIntoFile($$)
 	local(*HANDLE);
 	open(HANDLE,">>$file") or return undef;
 	print HANDLE $string;
+	close(HANDLE);
+	return $file;
+}
+
+=head2 printStringIntoLockFile
+
+  Arg [1]    : string $msg
+               string to insert into file
+  Arg [2]    : string $file
+               file path
+  Example    : use APPRIS::Utils::File qw(printStringIntoLockFile);
+               updateStringIntoLockFile("text to file",$file);
+  Description: Modify file with given text but locking the file.
+  Returntype : string $file or undef
+  Exceptions : none
+
+=cut
+
+sub printStringIntoLockFile($$)
+{
+	my ($string,$file) = @_;
+	local(*HANDLE);
+	open(HANDLE,">$file") or return undef;
+	flock(HANDLE, 2);
+	print HANDLE $string;		
 	close(HANDLE);
 	return $file;
 }
