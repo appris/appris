@@ -173,15 +173,19 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 	# concatenate annotations ------------------
 	echo "================="
 	echo "concatenate annotations"
-	for ANNOT_DIR in $(find ${APPRIS_ANNOT_DIR}/* -maxdepth 0 -type d)
-	do
-		cat ${ANNOT_DIR}/appris >> ${ANNOT_RST_MAIN_FILE}
-		cat ${ANNOT_DIR}/appris.label >> ${ANNOT_RST_LABEL_FILE}
-		cat ${ANNOT_DIR}/transl.fa >> ${ANNOT_RST_TRANSL_FILE}
-		if [[ -e "${ANNOT_DIR}/annot.gtf" ]]; then
-			cat ${ANNOT_DIR}/annot.gtf >> ${ANNOT_RST_ANNOT_FILE}
-		fi
-	done
+	#for ANNOT_DIR in $(find ${APPRIS_ANNOT_DIR}/* -maxdepth 0 -type d)
+	#do
+	#	cat ${ANNOT_DIR}/appris >> ${ANNOT_RST_MAIN_FILE}
+	#	cat ${ANNOT_DIR}/appris.label >> ${ANNOT_RST_LABEL_FILE}
+	#	cat ${ANNOT_DIR}/transl.fa >> ${ANNOT_RST_TRANSL_FILE}
+	#	if [[ -e "${ANNOT_DIR}/annot.gtf" ]]; then
+	#		cat ${ANNOT_DIR}/annot.gtf >> ${ANNOT_RST_ANNOT_FILE}
+	#	fi
+	#done
+	find ${APPRIS_ANNOT_DIR} -type f -name "appris" -exec cat {} \; >> ${ANNOT_RST_MAIN_FILE}
+	find ${APPRIS_ANNOT_DIR} -type f -name "appris.label" -exec cat {} \; >> ${ANNOT_RST_LABEL_FILE}
+	find ${APPRIS_ANNOT_DIR} -type f -name "transl.fa" -exec cat {} \; >> ${ANNOT_RST_TRANSL_FILE}
+	find ${APPRIS_ANNOT_DIR} -type f -name "annot.gtf" -exec cat {} \; >> ${ANNOT_RST_ANNOT_FILE}	
 	echo "================="
 	
 # for the whole genome chromsome by chromosome
