@@ -534,17 +534,19 @@ sub feed_gene_by_gencode {
 	throw('Inserting gene entity') if ($@);
 
 	# Insert Gene Coordinate
-	eval {
-		my (%parameters) = (
-								entity_id		=> $entity_id,
-								chromosome		=> $entity->chromosome,
-								start			=> $entity->start,
-								end				=> $entity->end,
-								strand			=> $entity->strand
-		);
-		$self->dbadaptor->insert_coordinate(%parameters);
-	};
-	throw('Inserting gene coordinates') if ($@);
+	if ( $entity->chromosome and $entity->start and $entity->end and $entity->strand ) {
+		eval {
+			my (%parameters) = (
+									entity_id		=> $entity_id,
+									chromosome		=> $entity->chromosome,
+									start			=> $entity->start,
+									end				=> $entity->end,
+									strand			=> $entity->strand
+			);
+			$self->dbadaptor->insert_coordinate(%parameters);
+		};
+		throw('Inserting gene coordinates') if ($@);		
+	}
 		
 	# Insert Xrefs
 	eval {
@@ -630,7 +632,7 @@ sub feed_transc_by_gencode {
 	
 	# Check if exits => ERROR
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id	=> $datasources->{'Transcript_Id'});
 		throw('Transcript stable id already exists') if(defined $entity_list and scalar(@{$entity_list})>0);
 	};
 	throw('Transcript stable id already exists') if ($@);
@@ -654,17 +656,19 @@ sub feed_transc_by_gencode {
 	throw('Inserting transcript entity') if ($@);
 	
 	# Insert Coordinate
-	eval {
-		my (%parameters) = (
-								entity_id		=> $entity_id,
-								chromosome		=> $entity->chromosome,
-								start			=> $entity->start,
-								end				=> $entity->end,
-								strand			=> $entity->strand
-		);
-		$self->dbadaptor->insert_coordinate(%parameters);
-	};
-	throw('Inserting transcript coordinates') if ($@);
+	if ( $entity->chromosome and $entity->start and $entity->end and $entity->strand ) {
+		eval {
+			my (%parameters) = (
+									entity_id		=> $entity_id,
+									chromosome		=> $entity->chromosome,
+									start			=> $entity->start,
+									end				=> $entity->end,
+									strand			=> $entity->strand
+			);
+			$self->dbadaptor->insert_coordinate(%parameters);
+		};
+		throw('Inserting transcript coordinates') if ($@);
+	}
 		
 	# Insert Xrefs
 	eval {
@@ -866,12 +870,15 @@ sub feed_gene_by_analysis {
 		);
 		$self->dbadaptor($dbadaptor);	
 	}
-		
+	
+	# Get datasource ids
+	my ($datasources) = $self->_fetch_datasources();
+	
 	# Get Gene Entity info
 	my ($entity_id) = $entity->stable_id;		
 	my($internal_entity_id);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id, datasource_id	=> $datasources->{'Gene_Id'});		
 		unless (defined $entity_list and (scalar(@{$entity_list}) > 0) ) {
 			throw('Argument must be a correct stable id');
 		}			
@@ -1184,12 +1191,15 @@ sub feed_transc_by_analysis {
 		);
 		$self->dbadaptor($dbadaptor);	
 	}
+	
+	# Get datasource ids
+	my ($datasources) = $self->_fetch_datasources();	
 		
 	# Get Transcript Entity info
 	my ($entity_id) = $entity->stable_id;
 	my($internal_entity_id);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id, datasource_id	=> $datasources->{'Transcript_Id'});		
 		unless (defined $entity_list and (scalar(@{$entity_list}) > 0) ) {
 			throw('Argument must be a correct stable id');
 		}			
@@ -1228,16 +1238,16 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->residues ) {
 				foreach my $region (@{$method->residues}) {
-					if ( defined $region->residue and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->residue ) {
 						eval {
 							my (%parameters) = (
 											firestar_id			=> $global_id,
-											peptide_position	=> $region->residue,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											peptide_position	=> $region->residue
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
 							$parameters{domain} = $region->domain if ( $region->domain );
 							$parameters{ligands} = $region->ligands if ( $region->ligands );
 							my ($method_residues_id) = $self->dbadaptor->insert_firestar_residues(%parameters);
@@ -1275,19 +1285,19 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->alignments ) {
 				foreach my $region (@{$method->alignments}) {
-					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score ) {
 						eval {
 							my (%parameters) = (
 											matador3d_id		=> $global_id,
 											cds_id				=> $region->cds_id,
 											start				=> $region->pstart,
 											end					=> $region->pend,
-											score				=> $region->score,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											score				=> $region->score
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
+							
 							$parameters{type} = $region->type if ( $region->type );
 							$parameters{alignment_start} = $region->alignment_start if ( $region->alignment_start );
 							$parameters{alignment_end} = $region->alignment_end if ( $region->alignment_end );
@@ -1340,8 +1350,7 @@ sub feed_transc_by_analysis {
 						 defined $region->envelope_start and defined $region->envelope_end and
 						 defined $region->hmm_start and defined $region->hmm_end and defined $region->hmm_length and
 						 defined $region->hmm_acc and defined $region->hmm_name and defined $region->hmm_type and
-						 defined $region->bit_score and defined $region->evalue and
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+						 defined $region->bit_score and defined $region->evalue ) {						 	
 						eval {
 							my (%parameters) = (
 											spade_id			=> $global_id,
@@ -1357,11 +1366,12 @@ sub feed_transc_by_analysis {
 											hmm_name			=> $region->hmm_name,
 											hmm_type			=> $region->hmm_type,
 											bit_score			=> $region->bit_score,
-											evalue				=> $region->evalue,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											evalue				=> $region->evalue
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
 							$parameters{significance} = $region->significance if ( $region->significance );
 							$parameters{clan} = $region->clan if ( $region->clan );
 							$parameters{predicted_active_site_residues} = $region->predicted_active_site_residues if ( $region->predicted_active_site_residues );
@@ -1456,7 +1466,7 @@ sub feed_transc_by_analysis {
 				};
 				throw("No inertia-omega $type analysis") if ($@);
 						
-				if ( defined $alignment->result and defined $alignment->unusual_evolution ) { #if ( $alignment->average and $alignment->st_desviation and $alignment->result and $alignment->unusual_evolution )
+				if ( defined $alignment->result and defined $alignment->unusual_evolution ) {
 					my($global_id2);
 					eval {
 						$global_id2 = $self->dbadaptor->insert_omega(
@@ -1536,8 +1546,7 @@ sub feed_transc_by_analysis {
 					if ( defined $region->s_mean and defined $region->s_prob and 
 						 defined $region->d_score and defined $region->c_max and
 						 defined $region->reliability and defined $region->localization and
-						 defined $region->pstart and defined $region->pend and
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+						 defined $region->pstart and defined $region->pend ) {
 						eval {
 							my (%parameters) = (
 											crash_id			=> $global_id,
@@ -1548,11 +1557,12 @@ sub feed_transc_by_analysis {
 											reliability			=> $region->reliability,
 											localization		=> $region->localization,
 											start				=> $region->pstart,
-											end					=> $region->pend,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											end					=> $region->pend
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
 							my ($method_residues_id) = $self->dbadaptor->insert_crash_residues(%parameters);
 						};
 						throw('No crash residue analysis') if ($@);					
@@ -1590,17 +1600,17 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->regions ) {
 				foreach my $region (@{$method->regions}) {
-					if ( defined $region->pstart and defined $region->pend and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->pstart and defined $region->pend ) {
 						eval {
 							my (%parameters) = (
 											thump_id			=> $global_id,
 											start				=> $region->pstart,
-											end					=> $region->pend,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											end					=> $region->pend
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
+							
 							$parameters{damaged} = $region->damaged if ( $region->damaged );
 
 							my ($method_residues_id) = $self->dbadaptor->insert_thump_helixes(%parameters);
@@ -1638,19 +1648,19 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->alignments ) {
 				foreach my $region (@{$method->alignments}) {
-					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score ) {
 						eval {
 							my (%parameters) = (
 											corsair_id			=> $global_id,
 											cds_id				=> $region->cds_id,
 											start				=> $region->pstart,
 											end					=> $region->pend,
-											score				=> $region->score,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											score				=> $region->score
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
 							$parameters{type} = $region->type if ( $region->type );
 							$parameters{maxscore} = $region->maxscore if ( $region->maxscore );
 							$parameters{sp_report} = $region->sp_report if ( $region->sp_report );
@@ -1689,9 +1699,7 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->peptides ) {
 				foreach my $region (@{$method->peptides}) {
-					if ( defined $region->sequence and defined $region->num_experiments and 
-						 defined $region->pstart and defined $region->pend and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend ) {
 						eval {
 							my (%parameters) = (
 											proteo_id			=> $global_id,
@@ -1700,11 +1708,12 @@ sub feed_transc_by_analysis {
 											num_experiments		=> $region->num_experiments,
 											experiments			=> $region->experiments,
 											start				=> $region->pstart,
-											end					=> $region->pend,
-											trans_start			=> $region->start,
-											trans_end			=> $region->end,
-											trans_strand		=> $region->strand						
+											end					=> $region->pend
 							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
 							my ($method_peptides_id) = $self->dbadaptor->insert_proteo_peptides(%parameters);
 						};
 						throw('No proteo residue analysis') if ($@);					

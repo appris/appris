@@ -39,6 +39,7 @@ my ($id) = undef;
 my ($position) = undef;
 my ($gene_list_file) = undef;
 my ($data_file) = undef;
+my ($translations_file) = undef;
 my ($species) = undef;
 my ($e_version) = undef;
 my ($inpath) = undef;
@@ -52,11 +53,12 @@ my ($logappend) = undef;
 my ($loglevel) = undef;
 
 &GetOptions(
+	'species=s'			=> \$species,
 	'id=s'				=> \$id,
 	'position=s'		=> \$position,
 	'gene-list=s'		=> \$gene_list_file,
 	'data=s'			=> \$data_file,
-	'species=s'			=> \$species,
+	'transl=s'			=> \$translations_file,
 	'e-version=s'		=> \$e_version,
 	'inpath=s'			=> \$inpath,
 	'methods=s'			=> \$methods,
@@ -69,13 +71,20 @@ my ($loglevel) = undef;
 );
 
 # Get the type of input (the order of conditions is important)
-if ( defined $species and defined $data_file and defined $inpath ) { # required argument for GENCODE choice
+# GENCODE mode
+if ( defined $species and defined $data_file and defined $inpath ) {
 	$type_of_input = 'datafile';
 	if		( defined $gene_list_file ) { $type_of_input = 'datafile-list'; }
 	elsif	( defined $position ) { $type_of_input = 'datafile-position'; }
 	$inpath .= '/';
 }
-elsif ( defined $species and defined $e_version and defined $inpath ) { # required argument for ENSEMBL choice
+# SEQUENCE mode
+elsif ( defined $translations_file and defined $species and defined $inpath ) {
+	$type_of_input = 'sequence';
+	$inpath .= '/';	
+}
+# ENSEMBL mode
+elsif ( defined $species and defined $e_version and defined $inpath ) {
 	$type_of_input = 'ensembl';
 	if		( defined $id ) { $type_of_input = 'ensembl-id'; }
 	elsif	( defined $gene_list_file ) { $type_of_input = 'ensembl-list'; }
@@ -139,7 +148,6 @@ sub main()
 		
 		$logger->info("-- run gencode data files\n");
 		my ($runtimes) = insert_gencode($gencode_data, $inpath, $gene_list);
-						
 	}
 	elsif ( $type_of_input =~ /ensembl/ ) {
 		$logger->info(" $type_of_input type\n");	
@@ -157,9 +165,21 @@ sub main()
 		);
 		
 		$logger->info("-- insert ensembl ids\n");
-		my ($runtimes) = insert_ensembl($gene_list, $inpath);		
-				
+		my ($runtimes) = insert_ensembl($gene_list, $inpath);
 	}
+	elsif ( $type_of_input =~ /sequence/ ) {
+		$logger->info(" $type_of_input type\n");
+		
+		# create gene list
+		$logger->info("-- create gene list\n");
+		my ($gene_list,$gene_data) = appris::create_gene_list(
+											-type		=> $type_of_input,
+											-gtransl	=> $translations_file,
+		);
+				
+		$logger->info("-- insert sequence\n");
+		my ($runtimes) = insert_sequence($gene_data, $inpath);	
+	}	
 	else {
 		$logger->error("analying input parameters");
 	}	
@@ -210,6 +230,21 @@ sub insert_gencode($$;$)
 	
 } # end insert_gencode
 
+sub insert_sequence($$)
+{
+	my ($data, $inpath) = @_;
+	my ($runtimes) = undef;
+	
+	if ( defined $data ) {
+		while ( my ($gene_id,$gene) = each(%{$data}) ) {
+			my ($runtime) = insert_pipeline($gene_id, $inpath, $gene);
+			push(@{$runtimes}, $runtime);
+		}		
+	}
+				
+	return $runtimes;
+} # end insert_sequence
+
 sub insert_pipeline($$;$)
 {
 	my ($gene_id, $workspace, $gene) = @_;
@@ -237,8 +272,8 @@ sub insert_pipeline($$;$)
 			'inpath'			=> $workspace,
 		};
 	}
-	# data from ensembl type
-	elsif ( $type_of_input =~ /ensembl/ ) {
+	# data from ensembl type || sequence type
+	elsif ( $type_of_input =~ /ensembl/ or $type_of_input =~ /sequence/ ) {
 		$logger->info("from $type_of_input\n");
 		$workspace .= $gene_id;
 
@@ -289,7 +324,7 @@ sub insert_appris($$$)
 					" $parameters ".
 					" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
 		$logger->info("\n** script: $cmd\n");
-		my (@cmd_out) = `$cmd`;
+		#my (@cmd_out) = `$cmd`;
 	};
 	$logger->error("running appris") if($@);
 

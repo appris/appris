@@ -11,6 +11,7 @@ use Data::Dumper;
 
 use APPRIS::Parser qw(
 	parse_infiles
+	parse_transl_data
 	parse_firestar
 	parse_matador3d
 	parse_spade
@@ -82,10 +83,26 @@ unless (
 	exit 1;
 }
 
-# Get method's pipeline
-#unless ( defined $methods ) {
-#	$methods = join( ',',keys(%{$APPRIS_METHODS}) );
-#}
+# Type of input mode:
+my ($type_of_input) = undef;
+my ($inputs) = {
+	'data'		=> $inpath.'/'.'annot.gtf',
+	'pdata'		=> $inpath.'/'.'pannot.gtf',
+	'transc'	=> $inpath.'/'.'transc.fa',
+	'transl'	=> $inpath.'/'.'transl.fa',
+};
+# GENCODE/ENSEMBL (DATAFILE) mode
+if ( -e $inputs->{'data'} and (-s $inputs->{'data'} > 0) and
+		-e $inputs->{'pdata'} and (-s $inputs->{'pdata'} > 0) and
+		-e $inputs->{'transc'} and (-s $inputs->{'transc'} > 0) and
+		-e $inputs->{'transl'} and (-s $inputs->{'transl'} > 0) 
+) {
+	$type_of_input = 'datafile';
+}
+# SEQUENCE mode
+elsif ( -e $inputs->{'transl'} and (-s $inputs->{'transl'} > 0) ) {
+	$type_of_input = 'sequence';	
+}
 
 # Optional arguments
 # get vars of appris db
@@ -163,12 +180,8 @@ sub create_entity($$)
 		'pdata'		=> $inpath.'/'.'pannot.gtf',
 		'transc'	=> $inpath.'/'.'transc.fa',
 		'transl'	=> $inpath.'/'.'transl.fa',
-	};
-	if ( -e $inputs->{'data'} and (-s $inputs->{'data'} > 0) and
-			-e $inputs->{'pdata'} and (-s $inputs->{'pdata'} > 0) and
-			-e $inputs->{'transc'} and (-s $inputs->{'transc'} > 0) and
-			-e $inputs->{'transl'} and (-s $inputs->{'transl'} > 0) 
-	) {
+	};	
+	if ( $type_of_input =~ /datafile/ ) { # GENCODE/ENSEMBL mode
 		# get inputs
 		my ($data_file) = $inputs->{'data'};
 		my ($pdata_file) = $inputs->{'pdata'};
@@ -182,6 +195,18 @@ sub create_entity($$)
 		} else {
 			$logger->error("parsing gencode-ensembl entity: $!\n");
 		}
+	}	
+	elsif ( $type_of_input =~ /sequence/ ) { # SEQUENCE mode
+		# get inputs
+		my ($transl_file) = $inputs->{'transl'};
+		
+		# get entity (important, conserve parentesis embedding variable)
+		my ($entities) = parse_transl_data($transl_file);
+		if ( scalar($entities) > 0 ) {
+			$entity = $entities->[0];
+		} else {
+			$logger->error("parsing sequence entity: $!\n");
+		}		
 	}
 	
 	return $entity;
