@@ -324,7 +324,7 @@ sub insert_appris($$$)
 					" $parameters ".
 					" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
 		$logger->info("\n** script: $cmd\n");
-		#my (@cmd_out) = `$cmd`;
+		my (@cmd_out) = `$cmd`;
 	};
 	$logger->error("running appris") if($@);
 
