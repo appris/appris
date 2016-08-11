@@ -3484,7 +3484,7 @@ sub _parse_indata_refseq($)
 	my $_extract_dbXref = sub {
 		my ($data,$patt) = @_;
 		my ($match);
-		if ( $data =~ /$patt\:([^\,]*)/ ) {
+		if ( defined $data and $data =~ /$patt\:([^\,]*)/ ) {
 			$match = $1;
 		}
 		return $match;
@@ -3508,7 +3508,7 @@ sub _parse_indata_refseq($)
 		);
 
 		# Only BestRefSeq features
-		next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) );
+		#next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) );
 		
 		# Always we have Gene Id
 		if(	exists $attribs->{'ID'} and defined $attribs->{'ID'} )
@@ -3521,113 +3521,115 @@ sub _parse_indata_refseq($)
 			my ($gene_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'GeneID');
 			my ($accesion_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'Genbank');
 			my ($ccds_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'CCDS');
-
-			if (defined $gene_id and ($type eq 'gene') ) # Gene Information
-			{
-				$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
-				$data->{$gene_id}->{'start'} = $start if(defined $start);
-				$data->{$gene_id}->{'end'} = $end if(defined $end);
-				$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
-				
-				if (defined $source)
+			
+			if ( defined $gene_id ) {
+				if ( $type eq 'gene' ) # Gene Information
 				{
-					$data->{$gene_id}->{'source'} = $source; 					
-					if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) { $data->{$gene_id}->{'level'} = '1' }
-					elsif ( $source eq 'Gnomon' ) { $data->{$gene_id}->{'level'} = '3' }
-				}
-				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
-				{
-					$data->{$gene_id}->{'external_id'} = $attribs->{'Name'};	
-				}
-			}
-			elsif (defined $gene_id and defined $accesion_id and ($type eq 'exon') ) # Exon Information
-			{
-				my ($exon);
-				$exon->{'start'} = $start if(defined $start);
-				$exon->{'end'} = $end if(defined $end);
-				$exon->{'strand'} = $strand if(defined $strand);
-				
-				$exon->{'exon_id'} = $ID;			
-								
-				push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'exons'}},$exon);
-			}			
-			elsif (defined $gene_id and defined $accesion_id and ($type eq 'CDS') ) # CDS Information
-			{
-				my ($cds);
-				$cds->{'start'} = $start if(defined $start);
-				$cds->{'end'} = $end if(defined $end);
-				$cds->{'strand'} = $strand if(defined $strand);
-				$cds->{'phase'} = $phase if(defined $phase);
-								
-				$cds->{'cds_id'} = $ID;
-				
-				if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) {
-					my ($transc_id) = $cache_transcId->{$Parent};
-					$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
-					$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
+					$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
+					$data->{$gene_id}->{'start'} = $start if(defined $start);
+					$data->{$gene_id}->{'end'} = $end if(defined $end);
+					$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
 					
-					push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);				
-				}				
-			}
-			elsif (defined $gene_id and defined $accesion_id ) # Any type of molecule: mRNA, transcript, ncRNA, etc.
-			{				
-				my ($transcript);
-				$transcript->{'chr'} = $chr if(defined $chr);
-				$transcript->{'start'} = $start if(defined $start);
-				$transcript->{'end'} = $end if(defined $end);
-				$transcript->{'strand'} = $strand if(defined $strand);					
-
-				if (defined $source)
+					if (defined $source)
+					{
+						$data->{$gene_id}->{'source'} = $source; 					
+						if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) { $data->{$gene_id}->{'level'} = '1' }
+						elsif ( $source eq 'Gnomon' ) { $data->{$gene_id}->{'level'} = '3' }
+					}
+					if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
+					{
+						$data->{$gene_id}->{'external_id'} = $attribs->{'Name'};	
+					}
+				}
+				elsif ( defined $accesion_id and ($type eq 'exon') ) # Exon Information
 				{
-					$transcript->{'source'} = $source;
-					if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) { $transcript->{'level'} = '1' }
-					elsif ( $source eq 'Gnomon' ) { $transcript->{'level'} = '3' }
-				}
-				if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
-				{
-					$transcript->{'external_id'} = $attribs->{'Name'};	
-				}
-				if(exists $attribs->{'tag'} and defined $attribs->{'tag'})
-				{
-					$transcript->{'tag'} = $attribs->{'tag'};
-				}
-				if(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
-				{
-					$transcript->{'tsl'} = $attribs->{'tsl'};
-				}				
-				
-				# cache transc Ids
-				$cache_transcId->{$ID} = $accesion_id;
-								
-				# HARD-CORE attrs!!
-				#if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
-				if ( ($accesion_id =~ /^NM\_/) or ($accesion_id =~ /^XM\_/) ) {
-					$transcript->{'status'} = 'KNOWN';
-				}
-				else {
-					$transcript->{'status'} = 'UNKNOWN';
-				}
-				$transcript->{'biotype'} = $type;
-								
-				# NOTE: HARD-CORE!!! We have decided the all mRNA from RefSeq have start/stop codons
-				for my $type ('start','stop') {
-					my ($codon);
-					$codon->{'type'}=$type;
-					#$codon->{'start'} = $start if(defined $start);
-					#$codon->{'end'} = $end if(defined $end);
-					#$codon->{'strand'} = $strand if(defined $strand);
-					#$codon->{'phase'} = $phase if(defined $phase);
-					$codon->{'start'} = $transcript->{'start'};
-					$codon->{'end'} = $transcript->{'end'};
-					$codon->{'strand'} = $transcript->{'strand'};
-					$codon->{'phase'} = 0;
-					push(@{$transcript->{'codons'}},$codon) if(defined $codon);
-				}
-				
-				$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);				
-			}
+					my ($exon);
+					$exon->{'start'} = $start if(defined $start);
+					$exon->{'end'} = $end if(defined $end);
+					$exon->{'strand'} = $strand if(defined $strand);
 					
-			$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
+					$exon->{'exon_id'} = $ID;			
+									
+					push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'exons'}},$exon);
+				}			
+				elsif ( defined $accesion_id and ($type eq 'CDS') ) # CDS Information
+				{
+					my ($cds);
+					$cds->{'start'} = $start if(defined $start);
+					$cds->{'end'} = $end if(defined $end);
+					$cds->{'strand'} = $strand if(defined $strand);
+					$cds->{'phase'} = $phase if(defined $phase);
+									
+					$cds->{'cds_id'} = $ID;
+					
+					if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) {
+						my ($transc_id) = $cache_transcId->{$Parent};
+						$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
+						$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
+						
+						push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);				
+					}				
+				}
+				elsif ( defined $accesion_id ) # Any type of molecule: mRNA, transcript, ncRNA, etc.
+				{				
+					my ($transcript);
+					$transcript->{'chr'} = $chr if(defined $chr);
+					$transcript->{'start'} = $start if(defined $start);
+					$transcript->{'end'} = $end if(defined $end);
+					$transcript->{'strand'} = $strand if(defined $strand);					
+	
+					if (defined $source)
+					{
+						$transcript->{'source'} = $source;
+						if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) { $transcript->{'level'} = '1' }
+						elsif ( $source eq 'Gnomon' ) { $transcript->{'level'} = '3' }
+					}
+					if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
+					{
+						$transcript->{'external_id'} = $attribs->{'Name'};	
+					}
+					if(exists $attribs->{'tag'} and defined $attribs->{'tag'})
+					{
+						$transcript->{'tag'} = $attribs->{'tag'};
+					}
+					if(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
+					{
+						$transcript->{'tsl'} = $attribs->{'tsl'};
+					}				
+					
+					# cache transc Ids
+					$cache_transcId->{$ID} = $accesion_id;
+									
+					# HARD-CORE attrs!!
+					#if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
+					if ( ($accesion_id =~ /^NM\_/) or ($accesion_id =~ /^XM\_/) ) {
+						$transcript->{'status'} = 'KNOWN';
+					}
+					else {
+						$transcript->{'status'} = 'UNKNOWN';
+					}
+					$transcript->{'biotype'} = $type;
+									
+					# NOTE: HARD-CORE!!! We have decided the all mRNA from RefSeq have start/stop codons
+					for my $type ('start','stop') {
+						my ($codon);
+						$codon->{'type'}=$type;
+						#$codon->{'start'} = $start if(defined $start);
+						#$codon->{'end'} = $end if(defined $end);
+						#$codon->{'strand'} = $strand if(defined $strand);
+						#$codon->{'phase'} = $phase if(defined $phase);
+						$codon->{'start'} = $transcript->{'start'};
+						$codon->{'end'} = $transcript->{'end'};
+						$codon->{'strand'} = $transcript->{'strand'};
+						$codon->{'phase'} = 0;
+						push(@{$transcript->{'codons'}},$codon) if(defined $codon);
+					}
+					
+					$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);				
+				}
+						
+				$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
+			}
 		}
 		else
 		{
