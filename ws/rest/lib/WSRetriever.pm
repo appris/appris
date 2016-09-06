@@ -1826,22 +1826,20 @@ sub create_seeker_report($)
 				'source'	=> $source,
 				'dataset'	=> $dataset,
 				'id'		=> $entity->stable_id,
-				'version'	=> $entity->version,
 				'label'		=> $entity->stable_id,
 				'chr'		=> $entity->chromosome,
 				'start'		=> $entity->start,
-				'end'		=> $entity->end,
-				'biotype'	=> $entity->biotype,
-				'status'	=> $entity->status,
+				'end'		=> $entity->end
 			};
-			if ( $entity->chromosome and $entity->start and $entity->end ) {
-				if ( $entity->isa("APPRIS::Gene") ) {
-					$match->{'namespace'} = 'Gene_Id';	
-				}
-				elsif ( $entity->isa("APPRIS::Transcript") ) {
-					$match->{'namespace'} = 'Transcript_Id';
-				}					
+			$match->{'biotype'} = $entity->biotype if ( $entity->biotype );
+			$match->{'status'}  = $entity->status  if ( $entity->status );
+			$match->{'version'} = $entity->version if ( $entity->version );
+			if ( $entity->isa("APPRIS::Gene") ) {
+				$match->{'namespace'} = 'Gene_Id';	
 			}
+			elsif ( $entity->isa("APPRIS::Transcript") ) {
+				$match->{'namespace'} = 'Transcript_Id';
+			}					
 			if ( $entity->external_name ) {
 				my ($dblink) = {
 					'id'		=> $entity->external_name,

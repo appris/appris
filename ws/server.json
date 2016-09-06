@@ -48,6 +48,23 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
+                    "id":   "up201606.v18",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "version": "2016_06"
+                    },
+                    "database":   "appris_homo_sapiens_up201606v18",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
                     "id":   "ens81.v17",
                     "type": "archive",
                     "source": {

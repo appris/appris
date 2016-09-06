@@ -107,8 +107,9 @@ use vars qw(@ISA @EXPORT);
 );
 
 sub parse_infiles($;$;$);
-sub _parse_indata($);
 sub _parse_dataline($);
+sub _parse_indata($);
+sub _parse_refseq_gbk($);
 sub _parse_inseq_transc($);
 sub _parse_inseq_transl($);
 sub parse_gencode($;$;$);
@@ -232,6 +233,85 @@ sub parse_infiles($;$;$)
 	return ($entity_list, $index_genes, $raw_data_list);
 }
 
+=head2 parse_refseq
+
+  Arg [1]    : string $data_file
+               File of refseq data as GenBank format
+  Arg [2]    : string $transc_file (optional)
+               File of refseq transcript sequence as Fasta format
+  Arg [3]    : string $transl_file (optional)
+               File of refseq translation sequence as Fasta format
+  Example    : use APPRIS::Parser qw(parse_refseq);
+               parse_refseq($data_file, $transc_file, $transl_file);
+  Description: Parse data of refseq.
+  Returntype : Listref of APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : generally on error
+
+=cut
+
+sub parse_refseq($)
+{
+	my ($data_file, $transc_file, $transl_file) = @_;
+	my ($entity_list, $raw_data_list);
+	my ($data_cont);
+	my ($transc_cont);
+	my ($transl_cont);
+	my ($index_genes);
+	my ($index) = 0;	
+		
+	# Parse data/sequences
+	$data_cont = _parse_refseq_gbk($data_file);
+	$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
+	$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
+
+	# Scan genes
+	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
+	{
+		my ($xref_identities);
+		my ($transcripts, $index_transcripts) = _fetch_transc_objects($gene_id, $gene_features->{'transcripts'}, $transc_cont, $transl_cont);
+		
+		# Create gene object
+		my ($gene) = APPRIS::Gene->new
+		(
+			-stable_id	=> $gene_id,
+			-chr		=> $gene_features->{'chr'},
+			-start		=> $gene_features->{'start'},
+			-end		=> $gene_features->{'end'},
+			-strand		=> $gene_features->{'strand'},
+			-biotype	=> $gene_features->{'biotype'},
+			-status		=> $gene_features->{'status'},
+			-source		=> $gene_features->{'source'},
+			-level		=> $gene_features->{'level'},
+			-version	=> $gene_features->{'version'}
+		);
+
+		# Xref identifiers
+		if ( exists $gene_features->{'external_id'} and defined $gene_features->{'external_id'} ) {
+			push(@{$xref_identities},
+					APPRIS::XrefEntry->new
+					(
+						-id				=> $gene_features->{'external_id'},
+						-dbname			=> 'External_Id'
+					)
+			);
+		}
+		$gene->xref_identify($xref_identities) if (defined $xref_identities);
+		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
+		push(@{$entity_list},$gene) if (defined $gene);
+		
+		# Get raw data
+		if ( exists $gene_features->{'raw'} and ($gene_features->{'raw'} ne '') ) {
+			$raw_data_list->{$gene_id} =  $gene_features->{'raw'};					
+		}
+		
+		# Get index genes
+		$index_genes->{$gene_id} = $index; $index++; # Index the list of transcripts
+	}
+		
+	return ($entity_list, $index_genes, $raw_data_list);
+}
+
 =head2 parse_gencode
 
   Arg [1]    : string $data_file
@@ -331,7 +411,7 @@ sub parse_transl_data($)
 		
 	# Parse data/sequences
 	my ($data_cont) = _parse_seq_data($transl_file) if (defined $transl_file);
-
+	
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
@@ -341,7 +421,6 @@ sub parse_transl_data($)
 		
 		# Scan transcripts
 		if ( exists $gene_features->{'transcripts'} ) {
-			#while (my ($transcript_id, $translation_seq) = each(%{$gene_features->{'transcripts'}}) )
 			while (my ($transcript_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
 			{
 				my ($xref_identities);				
@@ -353,7 +432,30 @@ sub parse_transl_data($)
 					-source		=> $gene_features->{'source'}
 				);
 				
+				# add gene id
+				if ( defined $gene_id ) {
+					push(@{$xref_identities},
+							APPRIS::XrefEntry->new
+							(
+								-id				=> $gene_id,
+								-dbname			=> 'Gene_Id'
+							)
+					);
+				}
+				
 				# add Xref
+				if ( exists $transcript_features->{'name'} and defined $transcript_features->{'name'} ) {
+					push(@{$xref_identities},
+							APPRIS::XrefEntry->new
+							(
+								-id				=> $transcript_features->{'name'},
+								-dbname			=> 'External_Id'
+							)
+					);
+				}
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
+				
+				# add Name
 				if ( exists $transcript_features->{'ccdsid'} and defined $transcript_features->{'ccdsid'} ) {
 					push(@{$xref_identities},
 							APPRIS::XrefEntry->new
@@ -364,7 +466,7 @@ sub parse_transl_data($)
 					);
 				}
 				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
-				
+
 				# Add translation
 				my ($translate);
 				if ( exists $transcript_features->{'seq'} and defined $transcript_features->{'seq'} ) {
@@ -392,6 +494,20 @@ sub parse_transl_data($)
 			-source		=> $gene_features->{'source'}
 		);		
 		$gene->external_name($gene_features->{'name'}) if ( exists $gene_features->{'name'});
+
+		# add Xref
+		my ($xref_identities);
+		if ( exists $gene_features->{'name'} and defined $gene_features->{'name'} ) {
+			push(@{$xref_identities},
+					APPRIS::XrefEntry->new
+					(
+						-id				=> $gene_features->{'name'},
+						-dbname			=> 'External_Id'
+					)
+			);
+		}
+		$gene->xref_identify($xref_identities) if (defined $xref_identities);		
+		
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);		
 	}
@@ -3168,7 +3284,7 @@ sub _is_refseq($)
 		}
 		else {
 			my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-			if ( ($source =~ /RefSeq/) or ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) ) { $is_refseq = 1 }
+			if ( (lc($source) =~ /refseq/) or (lc($source) =~ /bestrefseq/) or (lc($source) =~ /curated genomic/) or (lc($source) =~ /gnomon/) ) { $is_refseq = 1 }
 			else { last; }
 		}
 	}
@@ -3475,7 +3591,7 @@ sub _parse_indata($)
 sub _parse_indata_refseq($)
 {
 	my ($file) = @_;
-	my ($data);	
+	my ($data);
 	my ($cache_transcId);
 	return $data unless (-e $file and (-s $file > 0) );
 	
@@ -3641,6 +3757,11 @@ sub _parse_indata_refseq($)
 	return $data;
 	
 } # End _parse_indata_refseq
+
+sub _parse_refseq_gbk($)
+{
+	
+} # End _parse_refseq_gbk
 
 sub _parse_inseq_transc($)
 {
@@ -3818,6 +3939,9 @@ sub _parse_seq_data($)
 						$ccds_id = $ids[4];
 						
 						$main_id = $gene_id;
+						$source = 'UNIPROT';
+					}
+					else {
 						$source = 'sequence';
 					}
 					
@@ -3836,10 +3960,12 @@ sub _parse_seq_data($)
 						my ($seq_len) = length($sequence);
 
 						if ( $seq_len > 2 ) { # control short sequences
-							#$data->{$main_id}->{'transcripts'}->{$sequence_id} = $sequence;
 							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'seq'} = $sequence;
 							if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
 								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'ccdsid'} = $ccds_id
+							}
+							if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
+								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'name'} = $gene_name;
 							}
 						}
 						else {

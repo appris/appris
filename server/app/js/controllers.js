@@ -156,6 +156,10 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                 if (  angular.isUndefined(specieResult[item.species]) ) {
                     specieResult[item.species] = [];
                 }
+                var position = '-';
+                if ( item.chr !== null && item.start !== null && item.end !== null ) {
+                    position = item.chr+':'+item.start+'-'+item.end;
+                }
                 var speRst = {
                     "species":      item.species,
                     "assembly": {
@@ -169,7 +173,7 @@ apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$r
                     "id":           item.id,
                     "biotype":      item.biotype,
                     "dblink":       item.dblink,
-                    "position":     item.chr+':'+item.start+'-'+item.end
+                    "position":     position
                 }
                 specieResult[item.species].push(speRst);
             });

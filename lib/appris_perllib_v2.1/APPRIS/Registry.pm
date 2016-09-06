@@ -825,99 +825,7 @@ sub fetch_entity_by_xref_entry {
 			}
 		};		
 		warning('Argument must be a correct entry') if ($@);
-	}
-	
-#	eval {
-#		if ( $xref_entry =~ /^(\d+)$/) {
-#			warning('Argument must be a correct entry');
-#		}
-#		elsif ( 
-#			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){11,13}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){11,13}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){11,13}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){10,13}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){10,13}/ or
-#			lc($xref_entry) =~ /^ensgr(\d){10,13}/ or
-#			lc($xref_entry) =~ /^enstr(\d){10,13}/ or 
-#			lc($xref_entry) =~ /^ccds{6,7}/ or 
-#			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){11,13}/ or
-#			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){11,13}/ or
-#			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){11,13}/ or
-#			lc($xref_entry) =~ /^fbgn(\d){7}/ or
-#			lc($xref_entry) =~ /^fbtr(\d){7}/ or
-#			lc($xref_entry) =~ /^fbpp(\d){7}/ or
-#			lc($xref_entry) =~ /^wbgene(\d){8}/
-#		) {
-#			# Check from the main 'entity' table
-#			$aux_query_entity_list = $self->dbadaptor->query_entity(identifier => $xref_entry);
-#			$query_entity_list = $aux_query_entity_list;
-#		}
-#		elsif (
-#			lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){9,}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){9,}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){9,}/ or 
-#			lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){9,}/ or
-#			lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){9,}/ or
-#			lc($xref_entry) =~ /^ensgr(\d){9,}/ or
-#			lc($xref_entry) =~ /^enstr(\d){9,}/ or
-#			lc($xref_entry) =~ /^ccds(.){4,}/ or 
-#			lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){9,}/ or
-#			lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){9,}/ or
-#			lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){9,}/		
-#		) {
-#			# Check from the main 'entity' table
-#			$aux_query_entity_list = $self->dbadaptor->query_entity_like(identifier => $xref_entry);
-#			$query_entity_list = $aux_query_entity_list;
-#		}
-#		# Query is external name
-#		# Check from the 'xref_entity' table
-#		# If the external name is short => name has to match exactly
-#		else 
-#		{
-#			if (
-#				(length($xref_entry) <= 2) or
-#				lc($xref_entry) =~ /^ens(\w\w\w)?g(\d){0,}/ or
-#				lc($xref_entry) =~ /^ens(\w\w\w)?t(\d){0,}/ or
-#				lc($xref_entry) =~ /^ens(\w\w\w)?p(\d){0,}/ or
-#				lc($xref_entry) =~ /^ens(\w\w\w)?gr(\d){0,}/ or 
-#				lc($xref_entry) =~ /^ens(\w\w\w)?tr(\d){0,}/ or
-#				lc($xref_entry) =~ /^ensgr(\d){0,}/ or
-#				lc($xref_entry) =~ /^enstr(\d){0,}/ or 
-#				lc($xref_entry) =~ /([ccds]{3})/ or
-#				lc($xref_entry) =~ /^ott(\w\w\w)?g(\d){0,}/ or
-#				lc($xref_entry) =~ /^ott(\w\w\w)?t(\d){0,}/ or
-#				lc($xref_entry) =~ /^ott(\w\w\w)?p(\d){0,}/				
-#			) {
-#				$aux_query_entity_list = $self->dbadaptor->query_xref_identify(identifier => $xref_entry);
-#			}
-#			else {
-#				$aux_query_entity_list = $self->dbadaptor->query_xref_identify_like(identifier => $xref_entry);
-#			}
-#			
-#			foreach my $xref_report (@{$aux_query_entity_list})
-#			{
-#				my ($xref_identifier_list) = $self->dbadaptor->query_entity(entity_id => $xref_report->{'entity_id'});
-#				foreach my $xref_identifier (@{$xref_identifier_list})
-#				{
-#					push(@{$query_entity_list},{
-#										'entity_id'		=> $xref_identifier->{'entity_id'},
-#										'identifier'	=> $xref_identifier->{'identifier'},
-#										'datasource_id'	=> $xref_identifier->{'datasource_id'},
-#										'biotype'		=> $xref_identifier->{'biotype'},
-#										'status'		=> $xref_identifier->{'status'},
-#										'source'		=> $xref_identifier->{'source'},
-#										'level'			=> $xref_identifier->{'level'},
-#										'version'		=> $xref_identifier->{'version'},
-#										'tsl'			=> $xref_identifier->{'tsl'},
-#										'tag'			=> $xref_identifier->{'tag'}
-#					});
-#				}		
-#			}
-#		}
-#	};
-#	warning('Argument must be a correct entry') if ($@);
-
-	
+	}	
 	unless ( defined $query_entity_list and (scalar(@{$query_entity_list}) > 0) ) {
 		warning('Argument must be a correct entry');
 	}
@@ -948,7 +856,8 @@ sub fetch_entity_by_xref_entry {
 				$coordinate = $coordinate_list->[0];
 			}
 			else {
-				throw('Wrong coordinate');
+				#throw('Wrong coordinate');
+				warning('No coordinate');
 			}
 		};
 		throw('Wrong coordinate') if ($@);
@@ -1044,7 +953,6 @@ sub fetch_entity_by_xref_entry {
 		$entity->tag($entity_report->{'tag'}) if (defined $entity_report->{'tag'});
 		$entity->external_name($external_name) if (defined $external_name);
 		$entity->xref_identify($xref_identifies) if (defined $xref_identifies);
-		
 		
 		push(@{$entity_list}, $entity) if (defined $entity);
 	}	
@@ -1257,7 +1165,8 @@ sub fetch_by_transc_stable_id {
 			$coordinate = $coordinate_list->[0];
 		}
 		else {
-			throw('Wrong coordinate');
+			#throw('Wrong coordinate');
+			warning('No coordinate');
 		}
 	};
 	throw('Wrong coordinate') if ($@);
