@@ -296,12 +296,21 @@ sub create_appris_input($$)
 	my ($g_strand) = $gene->strand;
 	my ($g_phase) = '.';
 	my ($gene_name) = $gene->external_name ? $gene->external_name : $gene_id;
+	my ($g_source) = '';
+	if ( defined $gene->source ) {
+		if ( (lc($gene->source) =~ /ensembl/) or (lc($gene->source) =~ /havana/) or (lc($gene->source) =~ /gencode/) ) {
+			$g_source = 'GENCODE';
+		}
+		elsif ( (lc($gene->source) =~ /refseq/) or (lc($gene->source) =~ /bestrefseq/) or (lc($gene->source) =~ /curated genomic/) or (lc($gene->source) =~ /gnomon/) ) {
+			$g_source = 'REFSEQ';
+		}			
+	}
 	
 	# get gene annots
 	my ($data_gene_attrs) = "gene_id \"$gene_id\"; gene_name \"$gene_name\"";
-	if ( $gene->biotype ) { $data_gene_attrs .= '; gene_type "'.$gene->biotype.'"' }	
+	if ( $gene->biotype ) { $data_gene_attrs .= '; gene_type "'.$gene->biotype.'"' }
 	$data_cont .=	$chr."\t".
-					'GENCODE'."\t".
+					$g_source."\t".
 					'gene'."\t".
 					$g_start."\t".
 					$g_end."\t".
@@ -335,7 +344,7 @@ sub create_appris_input($$)
 			if ( $transcript->tsl ) { $data_transc_attrs .= '; tsl "'.$transcript->tsl.'"' }
 			if ( $transcript->tag ) { $data_transc_attrs .= '; tag "'.$transcript->tag.'"' }
 			$data_cont .=	$chr."\t".
-							'GENCODE'."\t".
+							$g_source."\t".
 							'transcript'."\t".
 							$t_start."\t".
 							$t_end."\t".
@@ -348,8 +357,8 @@ sub create_appris_input($$)
 			if ( $transcript->sequence ) {
 				my ($seq) = $transcript->sequence;
 				my ($len) = length($transcript->sequence);
-				$transc_cont .= ">$transcript_eid|$gene_id|$transcript_name|$len\n";
-				$transc_cont .= $seq."\n";				
+				$transc_cont .= ">$transcript_eid|$gene_id|$gene_name|$len\n";
+				$transc_cont .= $seq."\n";
 				if ( $transcript->exons ) {
 					foreach my $exon (@{$transcript->exons}) {
 						my ($exon_start) = $exon->start;
@@ -358,7 +367,7 @@ sub create_appris_input($$)
 						my ($exon_phase) = '.';
 						my ($exon_id) = defined $exon->stable_id ? $exon->stable_id : '-';						
 						$data_cont .=	$chr."\t".
-										'GENCODE'."\t".
+										$g_source."\t".
 										'exon'."\t".
 										$exon_start."\t".
 										$exon_end."\t".
@@ -379,7 +388,7 @@ sub create_appris_input($$)
 					$translate_id = $translate->protein_id if ( defined $translate->protein_id );
 					# mask short sequences
 					#if ( $len <= 2 ) { $seq .= 'X'; }
-					$transl_cont .= ">$transcript_eid|$translate_id|$gene_id|$transcript_name|$len\n";
+					$transl_cont .= ">$transcript_eid|$translate_id|$gene_id|$gene_name|$ccds_id|$len\n";
 					$transl_cont .= $seq."\n";					
 				}
 				if ( $translate->cds and $translate->cds_sequence ) {
@@ -404,12 +413,12 @@ sub create_appris_input($$)
 							
 						if (defined $pro_cds_seq and $pro_cds_seq ne '') {
 							my ($len) = length($pro_cds_seq);
-							$cdsseq_cont .= ">$transcript_eid|$gene_id|$transcript_name|$len|$exon_id|$chr|$cds_start|$cds_end|$cds_strand|$cds_phase\n";
+							$cdsseq_cont .= ">$transcript_eid|$gene_id|$gene_name|$len|$exon_id|$chr|$cds_start|$cds_end|$cds_strand|$cds_phase\n";
 							$cdsseq_cont .= $pro_cds_seq."\n";							
 						}													
 						if (defined $cds_start and defined $cds_end) {					
 							$data_cont .=	$chr."\t".
-											'GENCODE'."\t".
+											$g_source."\t".
 											'CDS'."\t".
 											$cds_start."\t".
 											$cds_end."\t".
@@ -420,14 +429,14 @@ sub create_appris_input($$)
 						}						
 						if (defined $pro_cds_start and defined $pro_cds_end) {
 							$pdata_cont .=	'SEQ'."\t".
-														'Ensembl'."\t".
-														'Protein'."\t".
-														$pro_cds_start."\t".
-														$pro_cds_end."\t".
-														'.'."\t".
-														'.'."\t".
-														$pro_cds_end_phase."\t".
-														"ID=$exon_id;Parent=$transcript_eid;Gene=$gene_id;Note=cds_coord>$cds_start-$cds_end:$cds_strand\n";					
+											$g_source."\t".
+											'Protein'."\t".
+											$pro_cds_start."\t".
+											$pro_cds_end."\t".
+											'.'."\t".
+											'.'."\t".
+											$pro_cds_end_phase."\t".
+											"ID=$exon_id;Parent=$transcript_eid;Gene=$gene_id;Note=cds_coord>$cds_start-$cds_end:$cds_strand\n";					
 						}
 					}
 				}
@@ -439,7 +448,7 @@ sub create_appris_input($$)
 						my ($codon_strand) = $codon->strand;
 						my ($codon_phase) = $codon->phase;
 						$data_cont .=	$chr."\t".
-										'GENCODE'."\t".
+										$g_source."\t".
 										$codon_type."\t".
 										$codon_start."\t".
 										$codon_end."\t".

@@ -2265,15 +2265,12 @@ sub insert_entity {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into entity (datasource_id, identifier, source, biotype, status, level, version, tsl, tag) values (?,?,?,?,?,?,?,?,?)},
+	$dbh->do(q{insert into entity (datasource_id, identifier, source, biotype, tsl, tag) values (?,?,?,?,?,?)},
 			undef,(
 				$args{'datasource_id'},
 				$args{'identifier'},
 				$args{'source'},
 				$args{'biotype'},
-				$args{'status'},
-				$args{'level'},
-				$args{'version'},
 				$args{'tsl'},
 				$args{'tag'}	));
 	};
