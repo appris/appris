@@ -31,9 +31,9 @@ my ($logpath) = undef;
 my ($logappend) = undef;
 my ($loglevel) = undef;
 &GetOptions(
-	'fasta|f=s'			=> \$fasta_file,
+	'faa|f=s'			=> \$fasta_file,
 	'tab|t=s'			=> \$tab_file,
-	'data|s=s'			=> \$data_file,
+	'dat|d=s'			=> \$data_file,
 	'out|o=s'			=> \$out_file,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -228,11 +228,11 @@ add_extraVals_into_UPseq
 
 =head2 Required arguments:
 
-	-f,--fasta=  <UniProt FASTA sequence>
+	-f,--faa=  <UniProt FASTA sequence>
 	
 	-t,--tab=    <Extra MetaData from UniProt>
 	
-	-d,--data=   <UniProt data report>
+	-d,--dat=   <UniProt data report>
 	
 	-o,--out=    <Output FASTA file with extra values>	
 	
@@ -250,7 +250,7 @@ add_extraVals_into_UPseq
 
 perl add_extraVals_into_UPseq.pl
 	
-	-f,--fasta=uniprot-proteome.fasta
+	-f,--faa=uniprot-proteome.fasta
 	
 	-t,--tab=uniprot-proteome.tab
 	
