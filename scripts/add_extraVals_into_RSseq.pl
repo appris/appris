@@ -132,23 +132,22 @@ sub create_xreference($$) {
 
 		my ($isof_id) = $seq->accession_number().'.'.$seq->version();
 		
-#
-#		my $ann = $seq->annotation();
-#		foreach my $ref ( $ann->get_Annotations('dblink') ) {
-#			my ($transc_id) = $ref->primary_id();
-#			if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
-#			else { $report->{'var'}->{$isof_id} = $transc_id }
-#		}
-#		    
+		my $ann = $seq->annotation();
+		foreach my $ref ( $ann->get_Annotations('dblink') ) {
+			my ($transc_id) = $ref->primary_id();
+			if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
+			else { $report->{'var'}->{$isof_id} = $transc_id }
+		}
+		    
 		for my $feat_object ($seq->get_SeqFeatures('CDS')) {
 			for my $tag ($feat_object->get_all_tags) {
 				if ( $tag eq 'coded_by' ) {
-			        for my $value ($feat_object->get_tag_values($tag)) {
-			        	my (@vals) = split(':', $value);
-			        	my ($transc_id) = $vals[0];
-						if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
-						else { $report->{'var'}->{$isof_id} = $transc_id }	        	
-			        }			
+#			        for my $value ($feat_object->get_tag_values($tag)) {
+#			        	my (@vals) = split(':', $value);
+#			        	my ($transc_id) = $vals[0];
+#						if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
+#						else { $report->{'var'}->{$isof_id} = $transc_id }	        	
+#			        }			
 				}
 				elsif ( $tag eq 'db_xref' ) {
 			        for my $value ($feat_object->get_tag_values($tag)) {
