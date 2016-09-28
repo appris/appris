@@ -1,7 +1,6 @@
 package appris;
 
 use strict;
-use FindBin;
 use Data::Dumper;
 
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
