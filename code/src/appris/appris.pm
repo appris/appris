@@ -254,6 +254,167 @@ sub get_method_scores($$)
 } # End get_method_scores
 
 # get the main functional isoform from methods of appris
+sub get_method_scores_from_appris_rst($$)
+{
+	my ($gene, $reports) = @_;
+	my ($stable_id) = $gene->stable_id;
+	my ($scores, $s_scores);
+	
+	# get annotations for each method (or group of method) -------------------
+	foreach my $transcript (@{$gene->transcripts}) {	
+		my ($transcript_id) = $transcript->stable_id;
+		if ( $transcript->translate and $transcript->translate->sequence ) {
+			my ($index) = $reports->{'_index_transcripts'}->{$transcript_id};
+			my ($result) = $reports->transcripts->[$index];
+			my ($aa_length) = length($transcript->translate->sequence);
+			if ( !exists $s_scores->{'aa_length'} ) {
+				$s_scores->{'aa_length'}->{'max'} = $aa_length;
+				$s_scores->{'aa_length'}->{'min'} = $aa_length;
+			}
+			elsif ( $aa_length > $s_scores->{'aa_length'}->{'max'} ) {
+				$s_scores->{'aa_length'}->{'max'} = $aa_length;
+			}
+			elsif ( $aa_length < $s_scores->{'aa_length'}->{'min'} ) {
+				$s_scores->{'aa_length'}->{'min'} = $aa_length;
+			}
+			
+			my ($m) = 'firestar';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->functional_residues_score ) {				
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->functional_residues_score;
+				if ( !exists $s_scores->{$m} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+				$scores->{$transcript_id}->{$annot_sc} = $sc;
+			}
+			$m = 'matador3d';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->homologous_structure_score ) {				
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->homologous_structure_score;
+				if ( !exists $s_scores->{$m} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+				$scores->{$transcript_id}->{$annot_sc} = $sc;					
+			}
+			$m = 'corsair';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->vertebrate_conservation_score ) {
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->vertebrate_conservation_score;
+				if ( !exists $s_scores->{$m} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+				$scores->{$transcript_id}->{$annot_sc} = $sc;
+			}
+			$m = 'spade';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->domain_score ) {				
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->domain_score;
+				if ( !exists $s_scores->{$m} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+				$scores->{$transcript_id}->{$annot_sc} = $sc;						
+			}
+			$m = 'thump';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->transmembrane_helices_score ) {
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->transmembrane_helices_score;
+				if ( !exists $s_scores->{$m} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+					$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+					$s_scores->{$m}->{'min'} = $sc;
+				}
+				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+				$scores->{$transcript_id}->{$annot_sc} = $sc;					
+			}
+			# crash: signalp + targetp
+			$m = 'crash';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
+				my ($annot_sc_sp) = $METHOD_LABELS->{$m}->[1];
+				my ($annot_sc_tp) = $METHOD_LABELS->{$m}->[3];
+				my ($sc_sp) = $result->analysis->appris->peptide_score;
+				my ($sc_tp) = $result->analysis->appris->mitochondrial_score;
+				if ( $sc_sp ne '-' and $sc_tp ne '-' ) {
+					my ($sc) = $sc_sp.','.$sc_tp;					
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc_sp} = $sc_sp;
+					$scores->{$transcript_id}->{$annot_sc_tp} = $sc_tp;
+				}
+			}
+			#$m = 'inertia';
+			#if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
+			#	my ($annot_sc) = $METHOD_LABELS->{$m}->[1];				
+			#	my ($analysis) = $result->analysis->inertia;
+			#	if ( defined $analysis->regions ) {
+			#		 my ($sc) = get_num_unusual_exons($analysis);
+			#		 push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+			#		 $scores->{$transcript_id}->{$annot_sc} = $sc;
+			#	}
+			#}
+			# (WE DON'T USE PROTEO FOR APPRIS DECISION)
+			$m = 'proteo';
+			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_evidence_score ) {				
+				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+				my ($sc) = $result->analysis->appris->peptide_evidence_score;
+				if ( $sc ne '-' ) {
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc} = $sc;					
+				}
+			}
+		}
+	}
+	
+	return ($scores, $s_scores);
+	
+} # End get_method_scores_from_appris_rst
+
+# get the main functional isoform from methods of appris
 sub get_method_annots($$)
 {
 	my ($gene, $scores) = @_;	

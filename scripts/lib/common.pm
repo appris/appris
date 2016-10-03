@@ -1,13 +1,19 @@
 package common;
 
 use strict;
-use warnings;
+
+use FindBin;
 use File::Temp;
 use Bio::SeqIO;
+use Config::IniFiles;
+use Data::Dumper;
 
 use APPRIS::Parser;
 use APPRIS::Utils::File qw( getTotalStringFromFile );
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
+
+use lib "$ENV{APPRIS_PROGRAMS_SRC_DIR}/appris";
+use appris;
 
 use Exporter;
 
@@ -20,7 +26,17 @@ use vars qw(@ISA @EXPORT);
 	get_main_report
 	get_label_report
 	get_prin_report
+	src_appris_decision
 );
+
+###################
+# Global variable #
+###################
+use vars qw(
+	$CONFIG_FILE
+);
+
+$CONFIG_FILE = $ENV{APPRIS_CODE_CONF_DIR}."/pipeline.ini";
 
 =head2 get_seq_report
 
@@ -450,5 +466,147 @@ sub get_prin_report($)
 	return $report;
 	
 } # end get_prin_report
+
+=head2 src_appris_decision
+
+  Arg[1]      : (optional) String $text - notification text to present to user
+  Example     : # run a code snipped conditionally
+                if ($support->user_proceed("Run the next code snipped?")) {
+                    # run some code
+                }
+
+                # exit if requested by user
+                exit unless ($support->user_proceed("Want to continue?"));
+  Description : If running interactively, the user is asked if he wants to
+                perform a script action. If he doesn't, this section is skipped
+                and the script proceeds with the code. When running
+                non-interactively, the section is run by default.
+  Return type : TRUE to proceed, FALSE to skip.
+  Exceptions  : none
+  Caller      : general
+
+=cut
+
+sub src_appris_decision($$$$$;$)
+{
+	my ($name, $ids, $seq_file, $main_file, $label_file, $ext_data_ccds) = @_;
+	
+	# Declare appris cutoffs	
+	my ($cfg) = new Config::IniFiles( -file =>  $CONFIG_FILE );
+	$main::APPRIS_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'cutoff');
+	$main::FIRESTAR_MINRES			= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
+	$main::FIRESTAR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
+	$main::MATADOR3D_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
+	$main::SPADE_CUTOFF				= $cfg->val( 'APPRIS_VARS', 'spade_cutoff');
+	$main::CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
+	$main::CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
+	$main::THUMP_CUTOFF				= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
+	
+	# create temporal sequence file for the given ids
+	my ($seq_content) = '';
+	my ($seq_tmpfile) = File::Temp->new( UNLINK => 1, SUFFIX => '.appris.seq' );
+	my ($seq_tmpfilename) = $seq_tmpfile->filename;
+	my ($seq_found);
+	my (%exist_ids) = map { $_ => 1 } @{$ids};
+	my ($in) = Bio::SeqIO->new(
+						-file => $seq_file,
+						-format => 'Fasta'
+	);
+	while ( my $seq = $in->next_seq() ) {
+		if ( $seq->id=~/([^|]*)/ ) {
+			my ($transc_id, $transl_id, $gene_id, $gene_name, $ccds_id, $len, $s) = (undef,undef,undef,undef,undef,undef);						
+
+			my (@ids) = split('\|', $seq->id);
+			if ( scalar(@ids) > 4 ) {
+				$transc_id = $ids[0];
+				$transl_id = $ids[1];
+				$gene_id = $ids[2];
+				$gene_name = $ids[3];
+				$ccds_id = $ids[4];
+				$len = $ids[5];
+				$s = $seq->seq;
+				
+				# if not exists CCDS, add from external
+				if ( $ccds_id eq '-' ) {
+					if ( defined $ext_data_ccds and exists $ext_data_ccds->{$s} and defined $ext_data_ccds->{$s} ) {
+						$ccds_id = $ext_data_ccds->{$s};
+					}
+				}
+				
+				if ( exists $exist_ids{$gene_id} ) {
+					$seq_content .= ">".$transc_id."|".$transl_id."|".$name."|".$gene_name."|".$ccds_id."|".$len."\n".$s."\n";
+					$seq_found->{$gene_id} = 1;
+				}				
+			}
+		}
+	}
+	if ( scalar(keys(%{$seq_found})) != scalar(keys(%exist_ids)) ) {
+		die("NOT_FOUND\n".Dumper(%exist_ids)."\n");
+	}
+	if ( $seq_content ne '' ) {
+		my ($p) = APPRIS::Utils::File::printStringIntoFile($seq_content, $seq_tmpfilename);		
+	}
+		
+	# get sequence data
+	my ($gene);
+	if ( -e $seq_tmpfilename ) {
+		my ($gencode_data) = APPRIS::Parser::parse_transl_data($seq_tmpfilename);
+		if ( defined $gencode_data and UNIVERSAL::isa($gencode_data, 'ARRAY') and (scalar(@{$gencode_data}) > 0) ) {
+				$gene = $gencode_data->[0];
+		}		
+	}
+#	print STDERR "GENE:\n".Dumper($gene)."\n";
+	
+	# get object of reports from the given ids
+	my ($ids_str) = join("\\|^", @{$ids});
+	$ids_str = '^'.$ids_str;
+	my ($main_result);
+	eval {
+		my ($cmd) = "grep \"$ids_str\" $main_file";
+		#info("** script: $cmd\n");
+		my (@cmd_out) = `$cmd`;
+		$main_result = join('', @cmd_out);
+	};
+	my ($label_result);
+	eval {
+		my ($cmd) = "grep \"$ids_str\" $label_file";
+		#info("** script: $cmd\n");
+		my (@cmd_out) = `$cmd`;
+		$label_result = join('', @cmd_out);
+	};
+#print STDERR "MAIN_RST:\n$main_result\n";
+#print STDERR "LABEL_RST:$label_result\n";	
+	my ($reports) = parse_appris_methods($gene, undef, undef, undef, undef, undef, undef, undef, undef,$main_result, $label_result);
+#	print STDERR "REPORTS:\n".Dumper($reports)."\n";
+		
+	# get scores of methods for each transcript
+	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports);
+#	print STDERR "PRE_SCORES:\n".Dumper($scores)."\n";
+#	print STDERR "PRE_S_SCORES:\n".Dumper($s_scores)."\n";
+	
+	# get annots of methods for each transcript
+	my ($annots) = appris::get_method_annots($gene, $s_scores);
+#	print STDERR "PRE_ANNOTS:\n".Dumper($annots)."\n";
+	
+	# get scores/annots of appris for each transcript
+	my ($nscores) = appris::get_final_scores($gene, $annots, $scores, $s_scores);
+#	print STDERR "PRE2_SCORES:\n".Dumper($scores)."\n";
+#	print STDERR "PRE2_S_SCORES:\n".Dumper($s_scores)."\n";
+#	print STDERR "PRE2_NSCORES:\n".Dumper($nscores)."\n";
+
+	# get annotations indexing each transcript
+	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots);
+#	print STDERR "ANNOTS:\n".Dumper($annots)."\n";
+	
+	# print outputs
+	my ($score_content) = appris::get_score_output($gene, $scores, $annots);
+	my ($nscore_content) = appris::get_nscore_output($gene, $nscores);
+	my ($label_content) = appris::get_label_output($gene, $annots);
+#	print STDERR "APPRIS_SCORE:$score_content\n";
+#	print STDERR "APPRIS_NSCORE:$nscore_content\n";
+#	print STDERR "APPRIS_LABEL:$label_content\n";
+
+	return ($seq_content, $score_content, $nscore_content, $label_content);
+}
 
 1;
