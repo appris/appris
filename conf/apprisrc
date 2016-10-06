@@ -8,8 +8,13 @@
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
+# DEPRECATED
 export APPRIS_PROGRAMS_TMP_DIR="${APPRIS_HOME}/cache"
 #export APPRIS_PROGRAMS_TMP_DIR="/home/jmrodriguez/projects/APPRIS/appriscache"
+# DEPRECATED
+
+export APPRIS_PROGRAMS_CACHE_DIR="${APPRIS_HOME}/cache"
+#export APPRIS_PROGRAMS_CACHE_DIR="/home/jmrodriguez/projects/APPRIS/appriscache"
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"
 
