@@ -168,18 +168,12 @@ sub main()
 			$cont =~ s/$old/$new/g;		
 			return $cont;		
 		};
-		#my ($ws) = $seq_idx.'/'.$NAME_DIR;
 		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
 		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
-		my ($firePredText_file) = $ws_cache.'/'.'firestar';
 		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
-				
-print STDERR "\nCONFIG_FILE:$firestar_config_file\n";
-print STDERR "\nOUT_FILE:$firePredText_file\n";
-print STDERR "\nLOG_FILE:$firePredText_log\n";
-print STDERR "\n".$firestar_config_cont."\n";
+		my ($firePredText_file) = $ws_cache.'/'.$varname.'.firestar';				
 		prepare_workspace($ws_tmp);
 		prepare_workspace($ws_cache);
 		
