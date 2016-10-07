@@ -7,8 +7,9 @@ use Bio::SeqIO;
 use Config::IniFiles;
 use Data::Dumper;
 
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_workspace );
 
 ###################
 # Global variable #
@@ -17,8 +18,10 @@ use vars qw(
 	$LOCAL_PWD	
 	$DEFAULT_CONFIG_FILE
 	$DEFALULT_FIRESTAR_CONFIG_FILE
-	$WSPACE_BASE
+	$WSPACE_TMP
 	$WSPACE_CACHE
+	$NAME_DIR
+	$NAME_CACHE	
 	$PROG_EVALUE
 	$PROG_CUTOFF
 	$PROG_CSA
@@ -58,11 +61,14 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 
 # Get conf vars
 my ($cfg) = new Config::IniFiles( -file =>  $config_file );
-$LOCAL_PWD			= $FindBin::Bin;
-#$DEFALULT_FIRESTAR_CONFIG_FILE = $LOCAL_PWD.'/firestar.ini';
+$LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
-$WSPACE_BASE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('FIRESTAR_VARS', 'name').'/';
-$WSPACE_CACHE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
+#$WSPACE_BASE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('FIRESTAR_VARS', 'name').'/';
+#$WSPACE_CACHE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
+$WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$NAME_DIR				= $cfg->val('FIRESTAR_VARS', 'name');
+$NAME_CACHE				= $cfg->val('CACHE_VARS', 'name');
 $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');
 $PROG_CUTOFF			= $cfg->val('FIRESTAR_VARS', 'cutoff');
 $PROG_CSA				= $cfg->val('FIRESTAR_VARS', 'csa');
@@ -110,18 +116,6 @@ sub main()
 	my (@winners);
 	my (@loosers);
 		
-	# Setup configure file of firestar
-	my ($firestar_config_file) = $WSPACE_BASE.'/firestar.ini';
-	my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
-	my $subs_template = sub {
-		my ($cont, $old, $new) = @_;	
-		$cont =~ s/$old/$new/g;		
-		return $cont;		
-	};
-	$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $WSPACE_CACHE);
-	my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
-	$logger->error("-- printing firestar config annot") unless ( defined $print_log );
-		
 	# Declare and init the local variables
 	$logger->info("-- declare and init the local variables\n");
 		
@@ -163,11 +157,39 @@ sub main()
 	{
 		$logger->info("\t-- $varname");
 		my $seq = $gene_vars{$varname};
-		my ($firePredText_file) = $WSPACE_BASE.'/'.$varname.'.out'; # tmp file
+		
+		# create cache obj
+		my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq );
+		my ($seq_idx) = $cache->idx;
+		my ($seq_idir) = $cache->idir;
+		
+		# Setup configure file of firestar
+		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
+		my $subs_template = sub {
+			my ($cont, $old, $new) = @_;	
+			$cont =~ s/$old/$new/g;		
+			return $cont;		
+		};
+		#my ($ws) = $seq_idx.'/'.$NAME_DIR;
+		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idir;
+		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
+		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
+		my ($firePredText_file) = $ws_cache.'/'.'firestar';
+		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
+				
+print STDERR "\nCONFIG_FILE:$firestar_config_file\n";
+print STDERR "\nOUT_FILE:$firePredText_file\n";
+print STDERR "\nLOG_FILE:$firePredText_log\n";
+print STDERR "\n".$firestar_config_cont."\n";
+		prepare_workspace($ws_tmp);
+		prepare_workspace($ws_cache);
+		
+		my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
+		$logger->error("-- printing firestar config annot") unless ( defined $print_log );
 		
 		# If output is not cached
 		unless ( -e $firePredText_file and (-s $firePredText_file > 0) ) {
-			my ($firePredText_log) = $WSPACE_BASE.'/'.$varname.'.log'; # tmp file
 			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q $varname -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
 			$logger->debug("\n** script: $cmd\n");			
 			my (@firePredText_out) = `$cmd`;
