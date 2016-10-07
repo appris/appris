@@ -60,7 +60,7 @@ use Data::Dumper;
 		(
 			data			=>  undef,
 			idx				=>  undef,			
-			idir			=>  undef,
+			ws				=>  undef,
 			md5_len			=>  32,
 			subdir_len		=>  8,
 		);
@@ -89,10 +89,10 @@ use Data::Dumper;
 		return $self->{idx};
 	}
 
-	sub idir {
+	sub ws {
 		my ($self, $arg) = @_;
-		$self->{idir} = $arg if defined $arg;
-		return $self->{idir};
+		$self->{ws} = $arg if defined $arg;
+		return $self->{ws};
 	}
 
 }
@@ -134,6 +134,10 @@ sub new {
 	}
 	else { return undef; }
 	
+	# optional parameters
+	my ($d) = ( defined $ws ) ? $ws.'/'.$self->idx_s : $self->idx_s;
+	$self->ws($d);
+	
 	return $self;
 }
 
@@ -160,26 +164,42 @@ sub md5
 			$ctx->add($seq);
 			my ($md5) = $ctx->hexdigest;
 			if ( defined $md5 ) {
-				# create idx
 				$idx = $md5.'_'.length($seq);
 				$self->idx($idx);
-				# divide the idx (idir)
-				my ($idir) = '';
-				my ($md5_len) = $self->{md5_len};
-				my ($subdir_len) = $self->{subdir_len};			
-				for ( my $i=0; $i <= $md5_len-1; $i+=$subdir_len ) {
-					my ($prefix_idx) = substr($idx, $i, $subdir_len);
-					$idir .= $prefix_idx.'/';
-				}
-				my ($len) = $idx =~ /\_([^\$]*)/;
-				$idir =~ s/\/$/\/$len/;
-				$self->idir($idir);		
 			}
 		};
 		throw('Creating md5') if ($@);
 	}
 	
 	return $idx;
+}
+
+=head2 idx_s
+
+  Arg [1]    : string $seq
+               string to get MD5 value 
+  Example    : use APPRIS::Utils::CacheMD5;
+               $id = $ticket->idx();
+  Description: Create idx
+  Returntype : boolean 
+  Exceptions : thrown every time
+
+=cut
+
+sub idx_s
+{
+	my ($self) = @_;
+	my ($idx) = $self->idx;
+	my ($idx_s) = '';	
+	my ($md5_len) = $self->{md5_len};
+	my ($subdir_len) = $self->{subdir_len};			
+	for ( my $i=0; $i <= $md5_len-1; $i+=$subdir_len ) {
+		my ($prefix_idx) = substr($idx, $i, $subdir_len);
+		$idx_s .= $prefix_idx.'/';
+	}
+	my ($len) = $idx =~ /\_([^\$]*)/;
+	$idx_s =~ s/\/$/\/$len/;	
+	return $idx_s;
 }
 
 =head2 cdir
@@ -198,37 +218,32 @@ sub md5
 
 sub cdir
 {
-	my ($self, $ws) = @_;
-	my ($idir);
-	my ($dat);
+	my ($self) = @_;
+	my ($ws) = $self->ws;
+	my ($dat) = $self->data;
 	
-	if ( defined $ws ) {
 		# init control
-		$idir = $self->idir();
-		$dat = $self->data();
-		if ( ! -d $idir ) { # first time we create idx
-			$self->mkidir($idir);
-			if ( $self->add_data() ) {
-				
-			}
-		}
-		#elsif ( ! $self->same_data($dat) ) { # idx exist with diffent data
-		elsif ( $self->same_data($dat) ) { # idx exist with diffent data
+	if ( ! -d $ws ) { # first time we create idx
+		$self->mkidir($ws);
+		$self->add_data($dat,'seq');
+	}
+	else {
+		if ( ! $self->same_data($dat,'seq') ) { # idx exist with diffent data
 			# create new idx
 			eval {
-				my ($cmd) = "ls -1d $idir\_*";
+				my ($cmd) = "ls -1d $ws\_*";
 				my (@dirs) = `$cmd`;
 				my ($inc) = scalar(@dirs) + 1;
-				my ($idx) = $self->idx; 
-				$self->idx($idx.'_'.$inc);
+				my ($idx) = $self->idx.'_'.$inc;
+				$self->idx($idx);
+				my ($idx_s) 
 			};
 			throw('Increasing idx') if ($@);
 			
-			 
-		}
-	}	
+		}		
+	}
 	
-	return $idir;
+	return $ws;
 }
 
 =head2 mkidir
@@ -271,41 +286,13 @@ sub mkidir
 
 =cut
 
-sub add_data
-{
-	my ($self) = @_;
-	
-	if ( defined $self->data and defined $self->idir ) {
-		my ($data) = $self->data;
-		my ($file) = $self->idir.'/seq';
-		my ($p) = APPRIS::Utils::File::printStringIntoLockFile($data, $file);
-		throw('Add data') unless ( defined $p );
-	}
-}
-
-=head2 same_data
-
-  Arg [1]    : string $dat
-               data
-  Example    : use APPRIS::Utils::WSpace;
-               $id = $ticket->add_idx();
-  Description: Insert the filename and ticket_id into index file.
-  Returntype : boolean 
-  Exceptions : thrown every time
-
-=cut
-
-sub same_data
-{
-	my ($self, $data) = @_;
-	
-	my ($file) = $self->cdir.'/seq';
-	my ($local_dat) = APPRIS::Utils::File::getStringFromFile($file);
-	if ( $local_dat eq $data ) { return 1 }
-	else { return undef }
-	
-}
-
+#sub add_data
+#{
+#	my ($self, $dat, $fname) = @_;
+#	my ($file) = $self->ws.'/'.$fname;
+#	my ($p) = APPRIS::Utils::File::updateStringIntoLockFile($dat, $file);
+#	throw('Add data') unless ( defined $p );
+#}
 
 =head2 add_idx
 
@@ -323,23 +310,77 @@ sub same_data
 
 =cut
 
-sub add_idx
+sub add_data
 {
-	my ($self, $idx, $id, $path) = @_;
-	my ($added) = undef;
-	
-	if ( defined $idx and defined $id and defined $path ) {
-		my ($exists) = $self->exist_idx($idx, $id, $path);
-		unless ( defined $exists ) {
-			my ($findex) = $path.'/cached.txt';
-			my ($idx_cont) = $idx."\t".$id."\n";
-			my ($p) = APPRIS::Utils::File::updateStringIntoLockFile($idx_cont, $findex);
-			throw('Updating index file') unless ( defined $p );
+	my ($self, $dat, $fname) = @_;
+	my ($file) = $self->ws.'/'.$fname;
+	if ( -e $file and -s $file > 0 ) {
+		my ($rep) = $self->ext_meta($dat);
+		my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
+		my ($loc_rep) = $self->ext_meta($loc_dat);
+		while ( my ($k,$v) = each(%{$rep}) ) {
+			if ( !exists $loc_rep->{$k} ) {
+				my ($p) = APPRIS::Utils::File::updateStringIntoLockFile($dat, $file);
+				throw('Add data') unless ( defined $p );				
+			}
 		}
-		$added = 1;
 	}
-	
-	return $added;
+	else {
+		my ($p) = APPRIS::Utils::File::updateStringIntoLockFile($dat, $file);
+		throw('Add data') unless ( defined $p );		
+	}
+}
+
+=head2 ext_meta
+
+  Arg [1]    : string $file
+               Cached file
+  Example    : use APPRIS::Utils::WSpace;
+               $id = $ticket->ext_meta();
+  Description: Says if ticket ext_meta
+  Returntype : boolean 
+  Exceptions : thrown every time
+
+=cut
+
+sub ext_meta
+{
+	my ($self, $dat) = @_;
+	my ($report) = undef;
+	foreach my $line (split("\n", $dat)) {
+		my (@cols) = split("\t", $line);
+		if ( scalar(@cols) > 1 ) {
+			my ($ds) = $cols[0]; $ds =~ s/\s*//mg;
+			my ($ids) = $cols[1]; $ids =~ s/\s*//mg;
+			my ($id) = ( $ids =~ /([^\|]*)/ ) ? $1 : $ids; 
+			$report->{$id} = {
+				'ds'  => $ds,
+				'ids' => $ids
+			};
+		}
+	}	
+	return $report;
+}
+
+=head2 same_data
+
+  Arg [1]    : string $dat
+               data
+  Example    : use APPRIS::Utils::WSpace;
+               $id = $ticket->add_idx();
+  Description: Insert the filename and ticket_id into index file.
+  Returntype : boolean 
+  Exceptions : thrown every time
+
+=cut
+
+sub same_data
+{
+	my ($self, $dat, $fname) = @_;	
+	my ($file) = $self->ws.'/'.$fname;
+	my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
+	if ( defined $loc_dat and $loc_dat eq $dat ) { return 1 }
+	else { return undef }
 }
 
 sub DESTROY {}

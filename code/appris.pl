@@ -16,6 +16,7 @@ use Data::Dumper;
 
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::WSpace;
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile getStringFromFile );
 
 ###################
@@ -152,10 +153,10 @@ $LOGGER_CONF .= " --logappend " if ( defined $logappend );
 #####################
 # Method prototypes #
 #####################
-sub create_workspace($$;$);
+sub create_workspace($);
 sub run_getgtf($$$$);
-sub create_ini($$);
-sub create_inputs($$);
+sub create_ini($);
+sub create_inputs($);
 sub run_getmafucsc($$$$);
 sub run_getecompara($$$$$);
 sub run_pipeline($$$);
@@ -176,15 +177,6 @@ sub main()
 	$outpath = prepare_workspace($outpath);
 	if ( ($type_of_input eq 'gencode') or ($type_of_input eq 'sequence') ) {
 		my ($name, $inpath, $suffix) = fileparse($transl_file, qr/\.[^.]+/);
-#		unless ( defined $id ) {
-#			if ( defined $name and $name =~ /^([^\.]+\.[\d]+)/ ) {
-#				$id = $1;
-#			}
-#			elsif ( defined $name and $name =~ /^([^\.]+)/ ) {
-#				$id = $1;
-#			}
-#			else { $logger->error("id not defined"); }
-#		}
 		my (@inpath_n) = split('/', $inpath);
 		if ( scalar(@inpath_n) > 0 ) {
 			my ($num) = scalar(@inpath_n);
@@ -207,33 +199,27 @@ sub main()
 	
 	# Create workspace for pipeline taking into account if results are cached.
 	$logger->info("-- get ticket id and prepare workspace\n");
-	my ($wspace) = create_workspace($id, $methods, $data_file);
-	$logger->error("getting id and preparing workspace") unless ( defined $wspace );
-			
-	if ( defined $wspace ) {
-		# Create ini file
-		$logger->info("-- create ini files for appris pipeline\n");
-		my ($config_file) = create_ini($wspace, $methods);
-		unless ( defined $config_file ) {
-			$logger->error("create ini files for appris pipeline");
-		}
-		$CFG = new Config::IniFiles( -file =>  $config_file );
-		
-		# Create inputs for pipeline
-		$logger->info("-- create input files for appris pipeline\n");
-		my ($input_files) = create_inputs($wspace, $id);
-		unless ( defined $input_files ) {
-			$logger->error("creating input files for appris pipeline");
-		}
-			
-		# Run methods
-		$logger->info("-- run pipeline\n");
-		my ($output) = run_pipeline($config_file, $id, $input_files);
+	create_workspace($methods);
+
+	# Create ini file
+	$logger->info("-- create ini files for appris pipeline\n");
+	my ($config_file) = create_ini($methods);
+	unless ( defined $config_file ) {
+		$logger->error("create ini files for appris pipeline");
 	}
-	else
-	{
-		$logger->error("obtain inputs for pipeline: ".$!) if($@);
+	$CFG = new Config::IniFiles( -file =>  $config_file );
+	
+	# Create inputs for pipeline
+	$logger->info("-- create input files for appris pipeline\n");
+	my ($input_files) = create_inputs($id);
+	unless ( defined $input_files ) {
+		$logger->error("creating input files for appris pipeline");
 	}
+
+	# Run methods
+	$logger->info("-- run pipeline\n");
+	my ($output) = run_pipeline($config_file, $input_files, $methods);
+
 		
 	$logger->finish_log();
 	
@@ -294,189 +280,52 @@ sub _cp_files($$)
 	return $ok;
 }
 
-sub create_workspace($$;$)
+sub create_workspace($)
 {
-	my ($id, $methods, $data_file) = @_;
-	my ($wspace);
-	my ($cached_wspace);	
-	my ($cached_all) = undef;
-	
+	my ($methods) = @_;
+		
 	# create identifier path
 	my ($ws_specie) = lc($species); $ws_specie =~ s/\s/\_/g;
-	my ($ws_base);
-	if ( defined $ENV{APPRIS_WS_NAME} ) {
-		$ws_base = $ENV{APPRIS_WS_NAME};
-		if ( $ws_base eq "wserver" ) {
-			$ws_base = $ws_base.'/'.$ws_specie;
-			if ( defined $e_version ) {
-				$ws_base .= '_'."e$e_version";
-			}
-		}
+	my ($ws_base) = '';
+	if ( defined $ENV{APPRIS_WS_NAME} and $ENV{APPRIS_WS_NAME} eq "wserver" ) {
+		$ws_base = '/'.$ENV{APPRIS_WS_NAME};
 	}
-	elsif ( defined $e_version ) {
-		$ws_base = $ws_specie.'/'."e_$e_version";		
-	}	
-	else {
-		$ws_base = $ws_specie;		
-	}
-	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_TMP_DIR}.'/'.$ws_base;
-			
-	# create workspace
-	my ($ws_obj) = new APPRIS::Utils::WSpace(
-											-id		=> $id,
-											-file	=> $transl_file,											
-											-path	=> $ws_base,
+	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
+	
+print STDERR "SPECIE: $ws_specie\n";
+print STDERR "ID: $id\n";
+print STDERR "TFILE: $transl_file\n";
+print STDERR "WS_BASE: $ws_base\n";
+print STDERR "WS: $ws_base_g\n";
+	
+	# create workspace for each variant
+	my ($in) = Bio::SeqIO->new(
+						-file => $transl_file,
+						-format => 'Fasta'
 	);
-	
-	# create main dir
-	my ($ws) = $ws_obj->ws;
-	$wspace = $ENV{APPRIS_PROGRAMS_TMP_DIR}.'/'.$ws;
-	unless ( defined $ws_obj->cdir($wspace) ) {
-		$logger->error("creating workspace: $wspace");
-		return (undef,undef);
-	}
+	while ( my $seq = $in->next_seq() )
+	{
+		my ($seq_id) = $seq->id;
+		my ($seq_s) = $seq->seq;
+		my ($cache) = APPRIS::Utils::CacheMD5->new(
+			-dat => $seq_s,
+			-ws  => $ws_base_g
+		);
+		
+		my ($idx) = $cache->idx;
+		my ($idx_s) = $cache->idx_s;
+		my ($idx_dir) = $cache->cdir();
+		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
+		my ($add_meta) = $cache->add_data($metadata,'meta');
+		
+print STDERR "CACHE: \n".Dumper($cache)."\n";
+print STDERR "IDX: $idx\n";
+print STDERR "IDX_DIR: $idx_s\n";
+print STDERR "CDIR: $idx_dir\n";
+print STDERR "METADATA: $metadata\n";
 
-	# create index from id or sequences file
-	$logger->info("-- create index id\n");
-	my ($idx);
-	if ( defined $data_file and (-e $data_file ) and (-s $data_file > 0) ) {
-		$idx = $ws_obj->idx($id, $data_file);
-	}
-	elsif ( defined $transl_file and (-e $transl_file ) and (-s $transl_file > 0) ) {
-		$idx = $ws_obj->seq_idx($transl_file);
-	}
-	else { $logger->error("creating index") }
-	unless ( defined $ws_obj->add_idx($idx, $id, $ws_base_g) ) {
-		$logger->error("indexing execution");
-		return (undef,undef);
-	}		
-	
-	# if we have cached path, check if all sequences are cached (gene - all CDS_coords - )
-	if ( defined $cached_path ) {
-		$logger->info("-- use cached path\n");
-		my ($cached_id) = $ws_obj->exist_idx($idx, $id, $cached_path);
-		if ( defined $cached_id ) {
-			$cached_wspace = $cached_path.'/'.$cached_id;
-			if ( -d $cached_wspace ) {
-				eval {
-					$logger->info("-- copy cached dir\n");
-					my ($cmd) = "cd $cached_wspace && tar -cf - * | (cd $wspace && tar -xf - )";
-					$logger->info("\n** script: $cmd\n");
-					system($cmd);
-					$cached_all = 1;
-				};
-				$logger->error("copying cached path") if($@);
-			}
-		}
 	}
 		
-	# create input dir
-	my ($i_name) = $DEFAULT_CFG->val('INPUT_VARS', 'name');
-	my ($a) = $ws_obj->cdir([$i_name], $wspace);
-	unless ( defined $a ) {
-		$logger->error("creating workspace: $i_name");
-		return (undef,undef);
-	}
-	
-	# create cache dir
-	my ($c_name) = $DEFAULT_CFG->val('CACHE_VARS', 'name');
-	my ($b) = $ws_obj->cdir([$c_name], $wspace);
-	unless ( defined $b ) {
-		$logger->error("creating workspace: $c_name");
-		return (undef,undef);
-	}
-			
-	# crete method dir
-	foreach my $method ( split(',',$methods) ) {
-		
-		next if ( ($method eq 'none') or ($method eq 'indata') or ($method eq 'compara') or ($method eq 'ucsc') );
-		
-		# create the workspace for each method
-		my ($a) = $ws_obj->cdir([$method], $wspace);
-		unless ( defined $a ) {
-			$logger->error("creating workspace: $method");
-			return (undef,undef);
-		}
-		my ($wspace_method) = $wspace.'/'.$method.'/';
-		
-		# create dirs for individual methods
-		my ($ws_list);
-		if ( $method eq 'firestar') {
-			$ws_list = $DEFAULT_CFG->val('FIRESTAR_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'matador3d') {
-			$ws_list = $DEFAULT_CFG->val('MATADOR3D_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'spade') {
-			$ws_list = $DEFAULT_CFG->val('SPADE_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'corsair') {
-			$ws_list = $DEFAULT_CFG->val('CORSAIR_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'thump') {
-			$ws_list = $DEFAULT_CFG->val('THUMP_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'crash') {
-			$ws_list = $DEFAULT_CFG->val('CRASH_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'inertia') {
-			$ws_list = $DEFAULT_CFG->val('INERTIA_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'proteo') {
-			$ws_list = $DEFAULT_CFG->val('PROTEO_VARS', 'workspaces');
-		}
-		elsif ( $method eq 'appris') {
-			$ws_list = $DEFAULT_CFG->val('APPRIS_VARS', 'workspaces');
-		}
-		else {
-			$logger->error("methods parameter is wrong: $method");
-			return (undef,undef);
-		}
-		if ( defined $ws_list and $ws_list ne '' ) {
-			my (@ws) = split(',',$ws_list);
-			my ($b) = $ws_obj->cdir(\@ws, $wspace_method);
-			unless ( defined $b ) {
-				$logger->error("creating workspace: $wspace_method");
-				return (undef,undef);
-			}
-		}		
-	}
-	
-	# check if some sequences are cached (transcripts - CDS coords-)
-	if ( defined $data_file and (-e $data_file ) and (-s $data_file > 0) ) {
-		
-		# For each seq, add tidx and copy cached files
-		$logger->info("-- create index id for each seq\n");
-		my ($t_idxs) = $ws_obj->t_idxs($id, $data_file);			
-		while (my ($tidx, $tid) = each(%{$t_idxs}) ) {
-			unless ( defined $ws_obj->add_idx($tidx, $tid, $wspace) ) {
-				$logger->error("indexing execution");
-				return (undef,undef);
-			}
-				
-			# if we have cached path and all sequences are not cached, copy cached files of equal seqs
-			# how the gene id is different, to check every sequences we suppose the id is equal
-			if ( defined $cached_path and !(defined $cached_all) ) {
-				my ($cached_wspace_for_tid) = $cached_path.'/'.$id;  # we suppose the id is equal
-				if ( $ws_obj->exist_idx($tidx, $tid, $cached_wspace_for_tid) ) {
-					my ($cached_wspace_c) = $cached_wspace_for_tid.'/cache';
-					my ($wspace_c) = $wspace.'/cache';
-					if ( -d $cached_wspace_c and -d $wspace_c ) {
-						eval {
-							$logger->info("-- copy cached files\n");
-							my ($cmd) = "cd $cached_wspace_c && tar -cf - $tid.* FAA_LOG.txt | (cd $wspace_c && tar -xf - )";
-							$logger->info("\n** script: $cmd\n");
-							system($cmd);
-						};
-						$logger->error("copying cached path") if($@);
-					}
-				}
-			}
-						
-		}
-	}
-	
-	return $wspace;		
 }
 
 sub run_getgtf($$$$)
@@ -617,28 +466,26 @@ sub run_getecompara($$$$$)
 	return $outpath;
 }
 
-sub create_ini($$)
+sub create_ini($)
 {
-	my ($wspace, $methods) = @_;
+	my ($methods) = @_;
 	
 	my ($config_cont) = getStringFromFile($DEFAULT_CONFIG_FILE);
-	$config_cont = _subs_template($config_cont, 'APPRIS__PIPELINE__WORKSPACE', $wspace);
 	$config_cont = _subs_template($config_cont, 'APPRIS__PIPELINE__METHODS', $methods);
 	$config_cont = _subs_template($config_cont, 'APPRIS__SPECIES', $species);
 	
-	my ($config_file) = $wspace.'/pipeline.ini';
+	my ($config_file) = $outpath.'/pipeline.ini';
 	my ($a) = printStringIntoFile($config_cont, $config_file);
 	$logger->error("-- printing config annot") unless ( defined $a );
 	
 	return ($config_file);
 }
 
-sub create_inputs($$)
+sub create_inputs($)
 {
-	my ($wspace, $id) = @_;
+	my ($id) = @_;
 	my ($input_files);
-	#my ($datadir) =  $ENV{APPRIS_PROGRAMS_TMP_DIR}.'/'.$wspace.'/'.$CFG->val( 'INPUT_VARS', 'name');
-	my ($datadir) =  $wspace.'/'.$CFG->val( 'INPUT_VARS', 'name');
+	#my ($datadir) =  $wspace.'/'.$CFG->val( 'INPUT_VARS', 'name');
 		
 	# Obtain inputs for pipeline
 	$logger->info("-- obtain gene annotations, transcript seq, and translate seq...");
@@ -669,14 +516,7 @@ sub create_inputs($$)
 			'pannot'		=> $pdata_file,
 			'transc'		=> $transc_file,
 			'transl'		=> $transl_file,
-		};
-		
-		# copy inputs into cache for pipeline
-		$logger->info("-- copy inputs for pipeline\n");
-			my ($a) = _cp_files([$data_file,$pdata_file,$transc_file,$transl_file], $datadir);
-			unless ( defined $a ) {
-			$logger->error("copying input files for appris pipeline");
-		}
+		};		
 	}	
 	elsif ( $type_of_input eq 'sequence' ) {
 		$logger->info("from $type_of_input\n");
@@ -684,29 +524,12 @@ sub create_inputs($$)
 			'id'			=> $id,
 			'species'		=> "'$species'",
 			'transl'		=> $transl_file,
-		};
-		
-		# copy inputs into cache for pipeline
-		$logger->info("-- copy inputs for pipeline\n");
-			my ($a) = _cp_files([$transl_file], $datadir);
-			unless ( defined $a ) {
-			$logger->error("copying input files for appris pipeline");
-		}
+		};		
 	}	
 	elsif ( $type_of_input eq 'ensembl' ) {
 		$logger->info("from $type_of_input\n");
-		$input_files = run_getgtf($id, $species, $e_version, $datadir);
-		if ( defined $input_files ) {
-			# copy inputs into outpath
-			$logger->info("-- copy inputs for pipeline\n");
-			my ($a) = _cp_files(["$datadir/*.gtf","$datadir/*.fa"], $outpath);
-			unless ( defined $a ) {
-				$logger->error("copying input files for appris pipeline");
-			}
-		}
-		else {			
-			$logger->error("creating input files for appris pipeline");
-		}		
+		$input_files = run_getgtf($id, $species, $e_version, $outpath);
+		$logger->error("creating input files for appris pipeline") unless ( defined $input_files );
 	}
 	else {
 		$logger->error("analying input parameter");
@@ -717,18 +540,8 @@ sub create_inputs($$)
 		if ( $type_of_align eq 'ucsc' ) {
 			my ($t_align) = 'ucsc';
 			$logger->info("-- create alignments...from $t_align\n");
-			#my ($alignpath) = run_getmafucsc($species, $t_align, $input_files, $datadir);
-			#if ( defined $alignpath ) {				
-				# copy inputs into outpath
-				$logger->info("-- copy inputs for pipeline\n");
-				my ($a) = _cp_files(["$datadir/*.$t_align.faa","$datadir/*.$t_align.nh"], $outpath);
-				unless ( defined $a ) {
-					$logger->error("copying input files for appris pipeline");
-				}
-			#}
-			#else {
-			#	$logger->error("creating alignments for appris pipeline");
-			#}
+			#my ($alignpath) = run_getmafucsc($species, $t_align, $input_files, $outpath);
+			#$logger->error("creating alignments for appris pipeline") unless ( defined $alignpath );
 		}
 		#if ( $type_of_align =~ /^compara(\d*)/ ) {
 		if ( ($type_of_align eq 'compara') and defined $e_version ) {
@@ -736,23 +549,13 @@ sub create_inputs($$)
 			#my ($c_version) = $1;
 			my ($t_align) = $type_of_align;			
 			$logger->info("-- create alignments...from $t_align\n");
-			my ($alignpath) = run_getecompara($species, $t_align, $e_version, $input_files, $datadir);
-			if ( defined $alignpath ) {				
-				# copy inputs into outpath
-				$logger->info("-- copy inputs for pipeline\n");
-				my ($a) = _cp_files(["$datadir/*.$t_align.faa","$datadir/*.$t_align.nh"], $outpath);
-				unless ( defined $a ) {
-					$logger->error("copying input files for appris pipeline");
-				}
-			}
-			else {
-				$logger->error("creating alignments for appris pipeline");
-			}
+			my ($alignpath) = run_getecompara($species, $t_align, $e_version, $input_files, $outpath);
+			$logger->error("creating alignments for appris pipeline") unless ( defined $alignpath );
 		}
-		$input_files->{'alignpath'} = $datadir;
+		$input_files->{'alignpath'} = $outpath;
 	}
 	# TEMPORAL: For the moment we include always the alignpath
-	$input_files->{'alignpath'} = $datadir;
+	$input_files->{'alignpath'} = $outpath;
 	# TEMPORAL: For the moment we include always the alignpath
 		
 	return $input_files;
@@ -760,10 +563,13 @@ sub create_inputs($$)
 
 sub run_pipeline($$$)
 {
-	my ($config_file, $id, $files) = @_;
+	my ($config_file, $files, $methods_list) = @_;
 	
+print STDERR "$config_file: $config_file\n";
+print STDERR "FILES: \n".Dumper($files)."\n";
+print STDERR "MET: \n".Dumper($methods_list)."\n";
+
 	# acquire the outputs for each method
-	my ($methods_list) = $CFG->val('APPRIS_PIPELINE', 'methods');
 	foreach my $method ( split(',',$methods_list) ) {		
 		if ( $method eq 'appris' ) {
 			foreach my $met ( @{$METHOD_STRUCT} ) {
@@ -780,7 +586,6 @@ sub run_pipeline($$$)
 		my ($m) = 'firestar';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/firestar/firestar.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--input=".$files->{'transl'}." ".
 							"--output=".$files->{$m}." ".
@@ -794,7 +599,6 @@ sub run_pipeline($$$)
 		my ($m) = 'matador3d';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--gff=".$files->{'annot'}." ".
 							"--input=".$files->{'transl'}." ".
@@ -809,7 +613,6 @@ sub run_pipeline($$$)
 		my ($m) = 'spade';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/spade/spade.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--input=".$files->{'transl'}." ".
 							"--output=".$files->{$m}." ".
@@ -823,7 +626,6 @@ sub run_pipeline($$$)
 		my ($m) = 'corsair';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/corsair/corsair.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--input=".$files->{'transl'}." ".
 							"--gff=".$files->{'pannot'}." ".
@@ -841,7 +643,6 @@ sub run_pipeline($$$)
 		my ($m) = 'thump';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/thump/thump.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--input=".$files->{'transl'}." ".
 							"--output=".$files->{$m}." ".
@@ -855,7 +656,6 @@ sub run_pipeline($$$)
 		my ($m) = 'crash';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/crash/crash.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--input=".$files->{'transl'}." ".
 							"--output=".$files->{$m}." ".
@@ -869,7 +669,6 @@ sub run_pipeline($$$)
 		my ($m) = 'inertia';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/inertia/inertia.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--gff=".$files->{'annot'}." ".
 							"--inpath=".$files->{'alignpath'}." ".
@@ -884,7 +683,6 @@ sub run_pipeline($$$)
 		my ($m) = 'proteo';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/proteo/proteo.pl ".
-							"--appris ".
 							"--conf=".$config_file." ".
 							"--data=".$files->{'annot'}." ".
 							"--output=".$files->{$m}." ".

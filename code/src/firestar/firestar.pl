@@ -63,8 +63,6 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 my ($cfg) = new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
-#$WSPACE_BASE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('FIRESTAR_VARS', 'name').'/';
-#$WSPACE_CACHE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $NAME_DIR				= $cfg->val('FIRESTAR_VARS', 'name');
@@ -161,7 +159,7 @@ sub main()
 		# create cache obj
 		my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq );
 		my ($seq_idx) = $cache->idx;
-		my ($seq_idir) = $cache->idir;
+		my ($seq_idx_s) = $cache->idx_s;
 		
 		# Setup configure file of firestar
 		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
@@ -172,7 +170,7 @@ sub main()
 		};
 		#my ($ws) = $seq_idx.'/'.$NAME_DIR;
 		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
-		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idir;
+		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
 		my ($firePredText_file) = $ws_cache.'/'.'firestar';
