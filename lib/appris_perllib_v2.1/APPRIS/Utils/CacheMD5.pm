@@ -220,15 +220,13 @@ sub cdir
 {
 	my ($self) = @_;
 	my ($ws) = $self->ws;
-	my ($dat) = $self->data;
-	
-		# init control
+	my ($dat) = $self->data;	
 	if ( ! -d $ws ) { # first time we create idx
 		$self->mkidir($ws);
 		$self->add_data($dat,'seq');
 	}
 	else {
-		if ( $self->same_data($dat,'seq') ) {
+		if ( $self->same_data($dat,'seq') == 1 ) {
 			$self->add_data($dat,'seq')
 		}
 		# idx exist with diffent data
@@ -244,8 +242,7 @@ sub cdir
 			};
 			throw('Increasing idx') if ($@);			
 		}		
-	}
-	
+	}	
 	return $ws;
 }
 
