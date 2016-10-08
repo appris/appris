@@ -189,7 +189,7 @@ sub main()
 		}
 			
 		my ($firePredText_cont) = getStringFromFile($firePredText_file);
-		$firePredText_cont =~ s/^\>\>\>seq/\>\>\>$varname/g; # changet the 'seq' identifier from firestar to the current identifier 
+		$firePredText_cont =~ s/^>>>seq/>>>$varname/mg; # changet the 'seq' identifier from firestar to the current identifier 
 		my (@firePredText_cont2) = split(/\n/,$firePredText_cont);
 		foreach my $line (@firePredText_cont2)
 		{
