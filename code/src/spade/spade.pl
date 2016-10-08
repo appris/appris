@@ -7,20 +7,19 @@ use Bio::SeqIO;
 use Config::IniFiles;
 use Data::Dumper;
 
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_workspace );
 
 ###################
 # Global variable #
 ###################
 use vars qw(
 	$LOCAL_PWD
-	$WSPACE_BASE
+	$WSPACE_TMP
 	$WSPACE_CACHE
 	$RUN_PROGRAM
 	$PROG_DB_DIR
-	$PROG_IN_SUFFIX
-	$PROG_OUT_SUFFIX
 	$PROG_EVALUE
 	$APPRIS_CUTOFF
 );
@@ -57,12 +56,10 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 # Get conf vars
 my ($cfg) = new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
-$WSPACE_BASE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('SPADE_VARS', 'name').'/';
-$WSPACE_CACHE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
+$WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $RUN_PROGRAM		= $cfg->val( 'SPADE_VARS', 'program');
 $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR};
-$PROG_IN_SUFFIX		= 'faa';
-$PROG_OUT_SUFFIX	= 'pfam';
 $PROG_EVALUE		= $cfg->val( 'SPADE_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val( 'SPADE_VARS', 'cutoff');
 
@@ -389,12 +386,22 @@ sub _get_best_domain($$$)
 sub _run_pfamscan($$)
 {
 	my ($sequence_id, $sequence) = @_;
+	
+	# Create cache obj
+	my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $sequence );
+	my ($seq_idx) = $cache->idx;
+	my ($seq_idx_s) = $cache->idx_s;
+	
+	my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+	my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
+	prepare_workspace($ws_tmp);
+	prepare_workspace($ws_cache);
 
 	# Create temporal file
-	my ($fasta_sequence_file) = $WSPACE_BASE.'/'.$sequence_id.'.'.$PROG_IN_SUFFIX;
+	my ($fasta_sequence_file) = $ws_cache.'/seq.faa';
 	unless(-e $fasta_sequence_file and (-s $fasta_sequence_file > 0) ) # Cached fasta
 	{
-		my ($fasta_sequence_content_file) = ">$sequence_id\n$sequence";
+		my ($fasta_sequence_content_file) = ">Query\n$sequence";
 		my ($print_fasta) = printStringIntoFile($fasta_sequence_content_file, $fasta_sequence_file);
 		unless( defined $print_fasta ) {
 			$logger->error("Can not create temporal file: $!\n");
@@ -403,8 +410,7 @@ sub _run_pfamscan($$)
 	
 
 	# Run pfamscan
-	my ($pfamscan_sequence_file) = $WSPACE_CACHE.'/'.$sequence_id.'.'.$PROG_OUT_SUFFIX;
-	my ($pfamscan_err_file) = $WSPACE_BASE.'/'.$sequence_id.'.'.$PROG_OUT_SUFFIX.'.err';              
+	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';;
 	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) ) # Cached pfamscan
 	{
 		eval {
