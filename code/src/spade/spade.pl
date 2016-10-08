@@ -54,7 +54,7 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 }
 
 # Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
+my ($cfg) 			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
@@ -413,7 +413,7 @@ sub _run_pfamscan($$)
 	
 
 	# Run pfamscan
-	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';;
+	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
 	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) ) # Cached pfamscan
 	{
 		eval {
