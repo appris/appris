@@ -450,16 +450,17 @@ sub _parse_pfamscan($$)
 
 	# Get pfamscan output
 	my ($result) = getStringFromFile($pfamscan_sequence_file);
+	$result =~ s/^Query/$seq_id/mg; # changet the 'Query' identifier from firestar to the current identifier
 	unless( defined $result ) {
 		$logger->error("Can not open pfamscan result: $!\n");
 	}
-	my (@results) = split(/(Query[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
+	my (@results) = split(/($seq_id[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
 	
 	foreach my $line (@results)
 	{
 		my ($alignment_report);
 
-		if ( $line =~ /^(Query[^\n]*)/ )
+		if ( $line =~ /^($seq_id[^\n]*)/ )
 		{
 			$transcript_result .= '>'.$line;
 				
