@@ -107,14 +107,17 @@ sub main()
 			# Run blast
 			$logger->info("\n##Running Pfamscan ---------------\n");
 			my ($pfamscan_sequence_file) = _run_pfamscan($sequence_id, $sequence);
-								                    			                
+								  
+print STDERR "TRANS:\n".Dumper($pfamscan_sequence_file)."\n";
+
 			# Parse blast
 			$logger->info("\n##Parsing Pfamscan ---------------\n");                
 			my ($pfam_report) = _parse_pfamscan($pfamscan_sequence_file, $sequence_id);
 			$transcript_report->{$sequence_id} = $pfam_report if (defined $pfam_report);
 		}
     }
-#	$logger->debug("##CDS coordenates ---------------\n".Dumper($transcript_report));
+    print STDERR "TRANS:\n".Dumper($transcript_report)."\n";
+	$logger->debug("##CDS coordenates ---------------\n".Dumper($transcript_report));
 	
 	# If a transcript has not domains, we check if other transcript has the same sequence with domain (external domains)
 	# But rememeber, we only accept the external domains that do not align with any region domain from the current transcript.
@@ -450,13 +453,13 @@ sub _parse_pfamscan($$)
 	unless( defined $result ) {
 		$logger->error("Can not open pfamscan result: $!\n");
 	}
-	my (@results) = split(/($seq_id[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
+	my (@results) = split(/(Query[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
 	
 	foreach my $line (@results)
 	{
 		my ($alignment_report);
 
-		if ( $line =~ /^($seq_id[^\n]*)/ )
+		if ( $line =~ /^(Query[^\n]*)/ )
 		{
 			$transcript_result .= '>'.$line;
 				
