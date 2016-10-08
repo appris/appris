@@ -226,11 +226,8 @@ sub cdir
 		$self->add_data($dat,'seq');
 	}
 	else {
-		if ( $self->same_data($dat,'seq') == 1 ) {
-			$self->add_data($dat,'seq')
-		}
 		# idx exist with diffent data
-		else {
+		if ( ! $self->same_data($dat,'seq') ) {
 			# create new idx
 			eval {
 				my ($cmd) = "ls -1d $ws\_*";
@@ -238,10 +235,10 @@ sub cdir
 				my ($inc) = scalar(@dirs) + 1;
 				my ($idx) = $self->idx.'_'.$inc;
 				$self->idx($idx);
-				my ($idx_s) 
 			};
 			throw('Increasing idx') if ($@);			
-		}		
+		}
+		else { $self->add_data($dat,'seq') }	
 	}	
 	return $ws;
 }
