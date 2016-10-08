@@ -373,11 +373,14 @@ sub ext_meta
 
 sub same_data
 {
-	my ($self, $dat, $fname) = @_;	
+	my ($self, $dat, $fname) = @_;
 	my ($file) = $self->ws.'/'.$fname;
-	my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
-	if ( defined $loc_dat and $loc_dat eq $dat ) { return 1 }
-	else { return undef }
+	if ( -e $file and -s $file > 0 ) {
+		my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
+		if ( defined $loc_dat and $loc_dat eq $dat ) { return 1 }
+		else { return undef }		
+	}
+	else { return 1 }
 }
 
 sub DESTROY {}
