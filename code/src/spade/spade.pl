@@ -108,15 +108,12 @@ sub main()
 			$logger->info("\n##Running Pfamscan ---------------\n");
 			my ($pfamscan_sequence_file) = _run_pfamscan($sequence_id, $sequence);
 								  
-print STDERR "TRANS:\n".Dumper($pfamscan_sequence_file)."\n";
-
 			# Parse blast
 			$logger->info("\n##Parsing Pfamscan ---------------\n");                
 			my ($pfam_report) = _parse_pfamscan($pfamscan_sequence_file, $sequence_id);
 			$transcript_report->{$sequence_id} = $pfam_report if (defined $pfam_report);
 		}
     }
-    print STDERR "TRANS:\n".Dumper($transcript_report)."\n";
 	$logger->debug("##CDS coordenates ---------------\n".Dumper($transcript_report));
 	
 	# If a transcript has not domains, we check if other transcript has the same sequence with domain (external domains)
