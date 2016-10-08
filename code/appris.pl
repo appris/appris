@@ -17,7 +17,7 @@ use Data::Dumper;
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::WSpace;
 use APPRIS::Utils::CacheMD5;
-use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( prepare_workspace rm_dir printStringIntoFile getStringFromFile );
 
 ###################
 # Global variable #
@@ -153,7 +153,7 @@ $LOGGER_CONF .= " --logappend " if ( defined $logappend );
 #####################
 # Method prototypes #
 #####################
-sub create_workspace($);
+sub create_workspace();
 sub run_getgtf($$$$);
 sub create_ini($);
 sub create_inputs($);
@@ -199,8 +199,8 @@ sub main()
 	
 	# Create workspace for pipeline taking into account if results are cached.
 	$logger->info("-- get ticket id and prepare workspace\n");
-	create_workspace($methods);
-
+	create_workspace();
+	
 	# Create ini file
 	$logger->info("-- create ini files for appris pipeline\n");
 	my ($config_file) = create_ini($methods);
@@ -220,6 +220,10 @@ sub main()
 	$logger->info("-- run pipeline\n");
 	my ($output) = run_pipeline($config_file, $input_files, $methods);
 
+	# Delete tmp dir.
+	$logger->info("-- delete workspace (tmp dir)\n");
+	delete_workspace();
+	
 		
 	$logger->finish_log();
 	
@@ -280,52 +284,72 @@ sub _cp_files($$)
 	return $ok;
 }
 
-sub create_workspace($)
+sub create_workspace()
 {
-	my ($methods) = @_;
-		
 	# create identifier path
-	my ($ws_specie) = lc($species); $ws_specie =~ s/\s/\_/g;
 	my ($ws_base) = '';
 	if ( defined $ENV{APPRIS_WS_NAME} and $ENV{APPRIS_WS_NAME} eq "wserver" ) {
 		$ws_base = '/'.$ENV{APPRIS_WS_NAME};
 	}
 	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
 	
-print STDERR "SPECIE: $ws_specie\n";
-print STDERR "ID: $id\n";
-print STDERR "TFILE: $transl_file\n";
-print STDERR "WS_BASE: $ws_base\n";
-print STDERR "WS: $ws_base_g\n";
-	
 	# create workspace for each variant
+	# create tmp dir for each variant
 	my ($in) = Bio::SeqIO->new(
 						-file => $transl_file,
 						-format => 'Fasta'
 	);
 	while ( my $seq = $in->next_seq() )
 	{
+		# get idx for seq
 		my ($seq_id) = $seq->id;
 		my ($seq_s) = $seq->seq;
 		my ($cache) = APPRIS::Utils::CacheMD5->new(
 			-dat => $seq_s,
 			-ws  => $ws_base_g
-		);
+		);		
+		my ($seq_idx) = $cache->idx;
+		my ($seq_idx_s) = $cache->idx_s;
+		# prepare cache dir and tmp dir
+		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
+		my ($ws_cache) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.'/'.$seq_idx_s;		
+		prepare_workspace($ws_tmp);
+		prepare_workspace($ws_cache);
 		
-		my ($idx) = $cache->idx;
-		my ($idx_s) = $cache->idx_s;
-		my ($idx_dir) = $cache->cdir();
+		# create metadata and seq
+		my ($idx_dir) = $cache->cdir();		
 		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
 		my ($add_meta) = $cache->add_data($metadata,'meta');
-		
-print STDERR "CACHE: \n".Dumper($cache)."\n";
-print STDERR "IDX: $idx\n";
-print STDERR "IDX_DIR: $idx_s\n";
-print STDERR "CDIR: $idx_dir\n";
-print STDERR "METADATA: $metadata\n";
+	}		
+}
 
+sub delete_workspace()
+{		
+	# create identifier path
+	my ($ws_base) = '';
+	if ( defined $ENV{APPRIS_WS_NAME} and $ENV{APPRIS_WS_NAME} eq "wserver" ) {
+		$ws_base = '/'.$ENV{APPRIS_WS_NAME};
 	}
-		
+	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
+	
+	# delete tmp dir for each variant
+	my ($in) = Bio::SeqIO->new(
+						-file => $transl_file,
+						-format => 'Fasta'
+	);
+	while ( my $seq = $in->next_seq() )
+	{
+		# get idx for seq
+		my ($seq_id) = $seq->id;
+		my ($seq_s) = $seq->seq;
+		my ($cache) = APPRIS::Utils::CacheMD5->new(
+			-dat => $seq_s,
+			-ws  => $ws_base_g
+		);		
+		my ($seq_idx) = $cache->idx;
+		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
+		rm_dir($ws_tmp);
+	}		
 }
 
 sub run_getgtf($$$$)
@@ -565,10 +589,6 @@ sub run_pipeline($$$)
 {
 	my ($config_file, $files, $methods_list) = @_;
 	
-print STDERR "$config_file: $config_file\n";
-print STDERR "FILES: \n".Dumper($files)."\n";
-print STDERR "MET: \n".Dumper($methods_list)."\n";
-
 	# acquire the outputs for each method
 	foreach my $method ( split(',',$methods_list) ) {		
 		if ( $method eq 'appris' ) {

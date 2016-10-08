@@ -60,7 +60,7 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 }
 
 # Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
+my ($cfg) 				= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
@@ -170,12 +170,12 @@ sub main()
 		};
 		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
 		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
+		prepare_workspace($ws_tmp);
+		prepare_workspace($ws_cache);
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
 		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
 		my ($firePredText_file) = $ws_cache.'/'.'firestar';				
-		prepare_workspace($ws_tmp);
-		prepare_workspace($ws_cache);
 		
 		my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
 		$logger->error("-- printing firestar config annot") unless ( defined $print_log );
