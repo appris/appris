@@ -395,7 +395,7 @@ sub run_prodiv($$$)
 		eval {
 			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP &>> $logfilename";
 			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl seq $ws_cache $ws_cache $ws_cache 1> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl seq $ws_cache $ws_tmp 1> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
 		};

@@ -10,15 +10,14 @@ if ( $#ARGV != 3 ) {
 }
 
 my ($name) = $ARGV[0];
-my ($seqdir) = $ARGV[1]."/";
-my ($outdir) = $ARGV[2]."/";
-my ($tmpdir) = $ARGV[3]."/";
+my ($cachedir) = $ARGV[1]."/";
+my ($tmpdir) = $ARGV[2]."/";
 my ($progdir) = $FindBin::Bin.'/';
 
 my ($seqnamefile) = $tmpdir."/$name.seqname.tmp";
 my ($hmmnamefile) = $tmpdir."/$name.hmm.tmp";
 my ($hmg_prodiv_file) = $tmpdir."/$name.prodiv";
-my ($hmg_prodiv_res_file) = $outdir."/$name.prodiv.res";
+my ($hmg_prodiv_res_file) = $tmpdir."/$name.prodiv.res";
 
 # if exist prodiv result, we exist
 if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
@@ -27,7 +26,7 @@ if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
 
 # list all modfiles to modfile-file
 eval {
-	my ($modfile) = $seqdir."/$name.mod";	
+	my ($modfile) = $tmpdir."/$name.mod";	
 	my $seqfiles = `ls $modfile`;
 	open (SEQNAMEFILE, ">$seqnamefile") or die "Could not open temporary seqnamefile\n";
 	print SEQNAMEFILE "$seqfiles";
@@ -63,7 +62,7 @@ close(HMG_FILE2);
 
 # run prodiv
 eval {
-	my ($cmd) = "$progdir/modhmm0.92b/modhmms -m $hmmnamefile -s $seqnamefile -f msa -o $outdir/ -r $progdir/util/replacement_letter_multi.rpl -M GM -L -c 1 --max_d";
+	my ($cmd) = "$progdir/modhmm0.92b/modhmms -m $hmmnamefile -s $seqnamefile -f msa -o $tmpdir/ -r $progdir/util/replacement_letter_multi.rpl -M GM -L -c 1 --max_d";
 	print $cmd."\n";
 	system ($cmd);		
 };
