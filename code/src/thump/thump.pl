@@ -14,6 +14,7 @@ use Bio::SeqIO;
 use Config::IniFiles;
 use Data::Dumper;
 
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
 
