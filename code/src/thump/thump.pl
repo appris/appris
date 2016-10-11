@@ -217,6 +217,12 @@ sub main()
 			my ($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);		
 			eval {
 				($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp);
+				$logger->debug("PHOBIUS:\n".Dumper($phobius)."\n");
+				$logger->debug("PRODIV:\n".Dumper($prodiv)."\n");
+				$logger->debug("MEMSAT:\n".Dumper($memsat)."\n");
+				$logger->debug("PHOBIUS2:\n".Dumper($phobius2)."\n");
+				$logger->debug("PRODIV2:\n".Dumper($prodiv2)."\n");
+				$logger->debug("MEMSAT2:\n".Dumper($memsat2)."\n");
 			};
 			$logger->error("parsing consensus") if($@);
 			
@@ -307,6 +313,7 @@ sub run_memsat($$$)
 								" --out-blast=$out_blast ".
 								" --out-align=$out_align ".
 								" --tmp-dir=$ws_tmp ".
+								" --cache-dir=$ws_cache ".
 								" $LOGGER_CONF ";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;

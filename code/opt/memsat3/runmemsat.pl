@@ -24,6 +24,7 @@ my ($out_memsat) = undef;
 my ($out_chk) = undef;
 my ($out_blast) = undef;
 my ($tmp_dir) = undef;
+my ($cache_dir) = undef;
 
 &GetOptions(
 	'db=s'			=> \$db_file,
@@ -33,6 +34,7 @@ my ($tmp_dir) = undef;
 	'out-chk=s'		=> \$out_chk,
 	'out-blast=s'	=> \$out_blast,
 	'tmp-dir=s'		=> \$tmp_dir,
+	'cache-dir=s'	=> \$cache_dir,
 );
 
 ###################
@@ -48,7 +50,7 @@ my ($weight_file) = $weights_dir."/weights.dat";
 
 my ($pn_file) = $tmp_dir."/$name.pn";
 my ($sn_file) = $tmp_dir."/$name.sn";
-my ($mtx_file) = $tmp_dir."/$name.mtx";
+my ($mtx_file) = $cache_dir."/seq.mtx";
 my ($globmem_file) = $tmp_dir."/$name.globmem";
 my ($nn_file) = $tmp_dir."/$name.nn";
 my ($memsat_file) = $tmp_dir."/$name.memsat";

@@ -18,6 +18,7 @@ my ($out_chk) = undef;
 my ($out_blast) = undef;
 my ($out_align) = undef;
 my ($tmp_dir) = undef;
+my ($cache_dir) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
 my ($logappend) = undef;
@@ -32,6 +33,7 @@ my ($loglevel) = undef;
 	'out-blast=s'		=> \$out_blast,
 	'out-align=s'		=> \$out_align,
 	'tmp-dir=s'			=> \$tmp_dir,
+	'cache-dir=s'		=> \$cache_dir,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
 	'logpath=s'			=> \$logpath,
@@ -69,6 +71,7 @@ if ( -e $input && (-s $input > 0) ) {
 									" --out-chk=$out_chk ".
 									" --out-blast=$out_blast ".
 									" --tmp-dir=$tmp_dir ".
+									" --cache-dir=$cache_dir ".
 									" 2>&1 1>> $logfilename ";
 		$logger->debug("\t-- script: $cmd\n");
 		my (@out) = `$cmd`;	
