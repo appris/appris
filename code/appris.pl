@@ -221,7 +221,7 @@ sub main()
 	my ($output) = run_pipeline($config_file, $input_files, $methods);
 
 	# Delete tmp dir if ...
-	if ( !defined $loglevel or (defined $loglevel and $loglevel ne 'info') ) {	
+	if ( !defined $loglevel or (defined $loglevel and $loglevel ne 'debug') ) {	
 		$logger->info("-- delete workspace (tmp dir)\n");
 		delete_workspace();
 	}
