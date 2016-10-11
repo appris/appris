@@ -182,14 +182,14 @@ sub main()
 		
 		# If output is not cached
 		unless ( -e $firePredText_file and (-s $firePredText_file > 0) ) {
-			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q seq -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
+			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q Query -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
 			$logger->debug("\n** script: $cmd\n");			
 			my (@firePredText_out) = `$cmd`;
 			$logger->error("Empty output of firestar: $varname") unless (-e $firePredText_file and (-s $firePredText_file > 0) );			
 		}
 			
 		my ($firePredText_cont) = getStringFromFile($firePredText_file);
-		$firePredText_cont =~ s/^>>>seq/>>>$varname/mg; # changet the 'seq' identifier from firestar to the current identifier 
+		$firePredText_cont =~ s/^>>>Query/>>>$varname/mg; # changet the 'Query' identifier from firestar to the current identifier 
 		my (@firePredText_cont2) = split(/\n/,$firePredText_cont);
 		foreach my $line (@firePredText_cont2)
 		{

@@ -26,21 +26,16 @@ use vars qw(
 	$MEMSAT3_DIR
 	$PHOBIUS_DIR
 	$PRODIV_DIR
-
-	$WSPACE_BASE
+	
+	$WSPACE_TMP
 	$WSPACE_CACHE
-	$WS_SEQUENCE
-	$WS_PREDICTION
-	$WS_MOD
-	$WS_PSIBLAST
-	$WS_ALIGN
-	$WS_TMP
 	$PROG_DB
-	$LOGGER_CONF
 	
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
+	
+	$LOGGER_CONF
 );
 
 # Input parameters
@@ -73,25 +68,21 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 }
 
 # Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
+my ($cfg)			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $BIN_DIR			= $LOCAL_PWD.'/bin/';
 $MEMSAT3_DIR		= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/memsat3/';
 $PHOBIUS_DIR		= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/phobius/';
 $PRODIV_DIR			= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/prodiv/';
-$WSPACE_BASE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('THUMP_VARS', 'name').'/';
-$WSPACE_CACHE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
-$WS_SEQUENCE		= $WSPACE_BASE.'/sequences/';
-$WS_PREDICTION		= $WSPACE_BASE.'/predictions/';
-$WS_MOD				= $WSPACE_BASE.'/mod/';
-$WS_PSIBLAST		= $WSPACE_BASE.'/psiblast/';
-$WS_ALIGN			= $WSPACE_BASE.'/aligns/';
-$WS_TMP				= $WSPACE_BASE.'/tmp/';
+$WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('THUMP_VARS', 'db');
-$LOGGER_CONF		= '';
+
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
+
+$LOGGER_CONF		= '';
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -110,11 +101,14 @@ my ($logfilename) = $logger->logpath().'/'.$logger->logfile();
 #####################
 # Method prototypes #
 #####################
-sub run_phobius($$);
-sub run_memsat($$);
-sub run_kalign($$);
-sub convert_mod($$);
-sub run_prodiv($$);
+sub run_phobius($$$);
+sub run_memsat($$$);
+sub run_kalign($$$);
+sub convert_mod($$$);
+sub run_prodiv($$$);
+sub park_consensus($$$$$$);
+sub park_consensus2($$$$$$$$$$$);
+sub filter_length($$$);
 sub _get_appris_annotations($);
 sub _delete_tmp_dir($);
 
@@ -138,28 +132,42 @@ sub main()
 				my ($seq_id) = $1;
 				if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }	
 				my ($seq) = $seqObj->seq;
-				my ($seq_file) = $WS_SEQUENCE."/$seq_id.fst";
-				my ($seq_cont) = ">$seq_id\n$seq\n";			
-				open (SEQ_FILE,">$seq_file");
-				print SEQ_FILE $seq_cont;
-				close (SEQ_FILE);
-				$logger->info("-- $seq_id\n");
+				$logger->info("-- $seq_id\n");				
+				
+				# Create cache obj
+				my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq );
+				my ($seq_idx) = $cache->idx;
+				my ($seq_idx_s) = $cache->idx_s;
+				
+				my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+				my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
+				prepare_workspace($ws_tmp);
+				prepare_workspace($ws_cache);
+				
+				# Cached fasta
+				my ($seq_file) = $ws_cache.'/seq.faa';
+				unless(-e $seq_file and (-s $seq_file > 0) ) {				
+					my ($seq_cont) = ">Query\n$seq\n";			
+					open (SEQ_FILE,">$seq_file");
+					print SEQ_FILE $seq_cont;
+					close (SEQ_FILE);
+				}
 			
 				# Run methods
 				$logger->info("-- run phobius\n");
-				my ($output_phobius) = run_phobius($seq_id, $seq_file);
+				my ($output_phobius) = run_phobius($seq_file, $ws_cache, $ws_tmp);
 				
 				$logger->info("-- run memsat (with psiblast)\n");
-				my ($output_memsat, $output_blast, $output_align) = run_memsat($seq_id, $seq_file);
+				my ($output_memsat, $output_blast, $output_align) = run_memsat($seq_file, $ws_cache, $ws_tmp);
 				
 				$logger->info("-- run kalign\n");
-				my ($output_kalign) = run_kalign($seq_id, $output_align);
+				my ($output_kalign) = run_kalign($output_align, $ws_cache, $ws_tmp);
 	
 				$logger->info("-- convert mod\n");
-				my ($output_mod) = convert_mod($seq_id,$output_kalign);
+				my ($output_mod) = convert_mod($output_kalign, $ws_cache, $ws_tmp);
 			
 				$logger->info("-- run prodiv\n");
-				my ($output_prodiv) = run_prodiv($seq_id,$output_mod);
+				my ($output_prodiv) = run_prodiv($output_mod, $ws_cache, $ws_tmp);
 			}
 		}
 	};
@@ -177,16 +185,37 @@ sub main()
 		{			
 			my ($seq_id) = $1;
 			if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }
-			my ($seq_file) = $WS_SEQUENCE."/$seq_id.fst";
-			my ($phobius_file) = $WSPACE_CACHE."/$seq_id.phobius";
-			my ($memsat_file) = $WSPACE_CACHE."/$seq_id.memsat";
-			my ($prodiv_file) = $WSPACE_CACHE."/$seq_id.prodiv";
-			$logger->info("-- $seq_id\n");
+			my ($seq) = $seqObj->seq;
+			$logger->info("-- $seq_id\n");			
+			
+			# Create cache obj
+			my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq );
+			my ($seq_idx) = $cache->idx;
+			my ($seq_idx_s) = $cache->idx_s;
+			
+			my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+			my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
+			prepare_workspace($ws_tmp);
+			prepare_workspace($ws_cache);
+			
+			# Cached fasta
+			my ($seq_file) = $ws_cache.'/seq.faa';
+			unless(-e $seq_file and (-s $seq_file > 0) ) {				
+				my ($seq_cont) = ">Query\n$seq\n";			
+				open (SEQ_FILE,">$seq_file");
+				print SEQ_FILE $seq_cont;
+				close (SEQ_FILE);
+			}
+			
+			# Output files
+			my ($phobius_file) = $ws_cache."/seq.phobius";
+			my ($memsat_file) = $ws_cache."/seq.memsat";
+			my ($prodiv_file) = $ws_cache."/seq.prodiv";
 
 			$logger->info("-- parse consensus\n");
 			my ($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);		
 			eval {
-				($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file);
+				($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp);
 			};
 			$logger->error("parsing consensus") if($@);
 			
@@ -202,7 +231,7 @@ sub main()
 				defined $memsat2 )
 			{
 				eval {
-					$aux_consensus_file = park_consensus2($seq_id, $park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);
+					$aux_consensus_file = park_consensus2($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2, $ws_cache, $ws_tmp);
 				};
 				$logger->error("parsing consensus2") if($@);					
 			}
@@ -210,7 +239,7 @@ sub main()
 			if ( defined $aux_consensus_file )
 			{		
 				eval {
-					($num_helices_file, $consensus_file, $thump_file) = filter_length($aux_consensus_file);			
+					($num_helices_file, $consensus_file, $thump_file) = filter_length($aux_consensus_file, $ws_cache, $ws_tmp);			
 				};
 				$logger->error("running filter_length") if($@);
 			}
@@ -235,20 +264,15 @@ sub main()
 		$logger->error("Can not create output file: $!\n");
 	}
 	
-	# Delete tmp directory ---------------
-	$logger->info("-- delete tmp dir\n");
-	_delete_tmp_dir($WS_TMP);
-	
 	$logger->finish_log();
 	
 	exit 0;
 }
 
-sub run_phobius($$)
+sub run_phobius($$$)
 {
-	my ($id, $input) = @_;
-	my ($output) = $WSPACE_CACHE."/$id.phobius";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($output) = $ws_cache.'/seq.phobius';	
 	unless ( -e $output and (-s $output > 0) )
 	{
 		eval {
@@ -261,13 +285,13 @@ sub run_phobius($$)
 	return $output;
 }
 
-sub run_memsat($$)
+sub run_memsat($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_memsat) = $WSPACE_CACHE."/$id.memsat";
-	my ($out_blast) = $WS_PSIBLAST."/$id.blast";
-	my ($out_align) = $WS_ALIGN."/$id.align";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_memsat) = $ws_cache.'/seq.memsat';
+	my ($out_chk) = $ws_cache."/seq.chk_swtr90";
+	my ($out_blast) = $ws_cache."/seq.swtr90";
+	my ($out_align) = $ws_cache."/seq.memsat_aln";	
 	unless ( -e $out_memsat and (-s $out_memsat > 0) and 
 			 -e $out_blast and (-s $out_blast > 0) and
 			 -e $out_align and (-s $out_align > 0) )
@@ -275,12 +299,13 @@ sub run_memsat($$)
 		eval {
 			my ($cmd) = "perl $BIN_DIR/memsatvX.pl ".
 								" --db=$PROG_DB ".
-								" --name=$id ".
+								" --name=Query ".
 								" --input=$input ".
 								" --out-memsat=$out_memsat ".
+								" --out-chk=$out_chk ".
 								" --out-blast=$out_blast ".
 								" --out-align=$out_align ".
-								" --tmp-dir=$WS_TMP ".
+								" --tmp-dir=$ws_tmp ".
 								" $LOGGER_CONF ";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
@@ -290,12 +315,10 @@ sub run_memsat($$)
 	return ($out_memsat, $out_blast, $out_align);
 }
 
-sub run_kalign($$)
+sub run_kalign($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_align) = $WS_ALIGN."/$id.aln";
-	#my ($log) = $WS_TMP."/$id.aln.log";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;	
+	my ($out_align) = $ws_cache.'/seq.kalign';
 	unless ( -e $out_align and (-s $out_align > 0) )
 	{
 		eval {
@@ -308,11 +331,10 @@ sub run_kalign($$)
 	return ($out_align);
 }
 
-sub convert_mod($$)
+sub convert_mod($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_mod) = $WS_MOD."/$id.mod";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_mod) = $ws_cache.'/seq.mod';
 	eval {
 		my (%seen);
 		my (@trash);
@@ -355,23 +377,21 @@ sub convert_mod($$)
 	return ($out_mod);
 }
 
-sub run_prodiv($$)
+sub run_prodiv($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_align) = $WSPACE_CACHE."/$id.prodiv";
-	my ($in_tmp_prodiv) = $WS_PREDICTION."/$id.prodiv.res";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_align) = $ws_cache.'/seq.prodiv';
+	my ($in_tmp_prodiv) = $ws_tmp.'/seq.prodiv.res';	
 	unless ( -e $out_align and (-s $out_align > 0) )
-	{
-		
+	{		
 		eval {
 			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP &>> $logfilename";
 			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp $ws_tmp $ws_tmp 1> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
 		};
-		$logger->error("run_kalign") if($@);
+		$logger->error("run_prodiv") if($@);
 
 		$logger->debug("PASE_PRODIV\n");	
 		eval {
@@ -470,9 +490,9 @@ sub parse_prodiv($$)
 	}
 }
 
-sub park_consensus($$$$$) 
+sub park_consensus($$$$$$) 
 {
-	my ($id, $seq_file, $phobius_file, $memsat_file, $prodiv_file) = @_;
+	my ($id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp) = @_;
 	
 	my ($phobius);
 	my ($prodiv);
@@ -493,9 +513,9 @@ sub park_consensus($$$$$)
 	my (@parking) = <SEQ_FILE>;
 	close(SEQ_FILE);
 
-	my ($park_phobius_file) = $WS_TMP."/parking.phobius";
-	my ($park_prodiv_file) = $WS_TMP."/parking.prodiv";
-	my ($park_memsat_file) = $WS_TMP."/parking.memsat";
+	my ($park_phobius_file) = $ws_tmp."/parking.phobius";
+	my ($park_prodiv_file) = $ws_tmp."/parking.prodiv";
+	my ($park_memsat_file) = $ws_tmp."/parking.memsat";
 	
 	local(*PARKPH);
 	open (PARKPH, ">>$park_phobius_file");
@@ -657,12 +677,12 @@ sub park_consensus($$$$$)
 	return ($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);
 }
 
-sub park_consensus2($$$$$$$)
+sub park_consensus2($$$$$$$$$$$)
 {
-	my ($id, $park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = @_;
+	my ($id, $park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2, $ws_tmp) = @_;
 	
-	my ($consensus_file) = $WS_TMP."/consensus.txt";
-	my ($no_predict_file) = $WS_TMP."/no_predict.txt";
+	my ($consensus_file) = $ws_tmp."/consensus.txt";
+	my ($no_predict_file) = $ws_tmp."/no_predict.txt";
 	
 	local(*RESUL);
 	open (RESUL, ">>$consensus_file");
@@ -736,9 +756,9 @@ sub park_consensus2($$$$$$$)
 }
 
 #filtrado por numero minimo de  9 a.a. en la helice
-sub filter_length($)
+sub filter_length($$$)
 {
-	my ($tmp_consensus_file) = @_;
+	my ($tmp_consensus_file, $ws_cache, $ws_tmp) = @_;
 	
 	local(*RESUL);
 	open (RESUL, $tmp_consensus_file);
@@ -748,9 +768,9 @@ sub filter_length($)
 	my ($longitud) = 0;
 	my ($presencia);
 	
-	my ($num_helices_file) = $WS_PREDICTION."/num_helices.txt";	
-	my ($consensus_file) = $WS_PREDICTION."/consensus.txt";
-	my ($thump_file) = $WS_PREDICTION."/thump.txt";
+	my ($num_helices_file) = $ws_tmp."/num_helices.txt";	
+	my ($consensus_file) = $ws_tmp."/consensus.txt";
+	my ($thump_file) = $ws_tmp."/thump.txt";
 	
 	open (RE,">$consensus_file");
 	open (COORD,">$thump_file");

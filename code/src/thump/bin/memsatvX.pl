@@ -14,6 +14,7 @@ my ($db_file) = undef;
 my ($name) = undef;
 my ($input) = undef;
 my ($out_memsat) = undef;
+my ($out_chk) = undef;
 my ($out_blast) = undef;
 my ($out_align) = undef;
 my ($tmp_dir) = undef;
@@ -27,6 +28,7 @@ my ($loglevel) = undef;
 	'name=s'			=> \$name,
 	'input=s'			=> \$input,
 	'out-memsat=s'		=> \$out_memsat,
+	'out-chk=s'			=> \$out_chk,
 	'out-blast=s'		=> \$out_blast,
 	'out-align=s'		=> \$out_align,
 	'tmp-dir=s'			=> \$tmp_dir,
@@ -64,11 +66,11 @@ if ( -e $input && (-s $input > 0) ) {
 									" --name=$name ".
 									" --input=$input ".
 									" --out-memsat=$out_memsat ".
+									" --out-chk=$out_chk ".
 									" --out-blast=$out_blast ".
 									" --tmp-dir=$tmp_dir ".
 									" 2>&1 1>> $logfilename ";
 		$logger->debug("\t-- script: $cmd\n");
-		#system ($cmd);
 		my (@out) = `$cmd`;	
 	};
 	$logger->debug("running runmemsat.pl\n") if($@);
@@ -76,7 +78,6 @@ if ( -e $input && (-s $input > 0) ) {
 	eval {
 		my ($cmd) = "perl $local_pwd/Seq_parservX.pl --db=$db_file --in-seq=$input --in-psiblast=$out_blast --output=$out_align";
 		$logger->debug("\t-- script: $cmd\n");		
-		#system ($cmd);
 		my (@out) = `$cmd`;
 	};
 	$logger->debug("running Seq_parservX\n") if($@);

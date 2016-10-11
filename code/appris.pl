@@ -333,23 +333,25 @@ sub delete_workspace()
 	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
 	
 	# delete tmp dir for each variant
-	my ($in) = Bio::SeqIO->new(
-						-file => $transl_file,
-						-format => 'Fasta'
-	);
-	while ( my $seq = $in->next_seq() )
-	{
-		# get idx for seq
-		my ($seq_id) = $seq->id;
-		my ($seq_s) = $seq->seq;
-		my ($cache) = APPRIS::Utils::CacheMD5->new(
-			-dat => $seq_s,
-			-ws  => $ws_base_g
-		);		
-		my ($seq_idx) = $cache->idx;
-		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
-		rm_dir($ws_tmp);
-	}		
+	if ( !defined $logfile or (defined $logfile and $logfile ne 'info') ) {
+		my ($in) = Bio::SeqIO->new(
+							-file => $transl_file,
+							-format => 'Fasta'
+		);
+		while ( my $seq = $in->next_seq() )
+		{
+			# get idx for seq
+			my ($seq_id) = $seq->id;
+			my ($seq_s) = $seq->seq;
+			my ($cache) = APPRIS::Utils::CacheMD5->new(
+				-dat => $seq_s,
+				-ws  => $ws_base_g
+			);		
+			my ($seq_idx) = $cache->idx;
+			my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
+			rm_dir($ws_tmp);
+		}		
+	}
 }
 
 sub run_getgtf($$$$)
