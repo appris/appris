@@ -16,7 +16,7 @@ use Data::Dumper;
 
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_workspace );
 
 ###################
 # Global variable #

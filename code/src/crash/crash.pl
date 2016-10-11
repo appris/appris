@@ -9,7 +9,7 @@ use Data::Dumper;
 
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile );
+use APPRIS::Utils::File qw( printStringIntoFile prepare_workspace );
 
 ####################
 # Global variables #
