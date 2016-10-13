@@ -673,10 +673,10 @@ sub filter_damaged_length($)
 				if ( $x_len > 9 ) { # helix bigger than 9 aa.
 					$num_helix++;
 					if ( $x_len > 14 ) {
-						$output .= "helix number $num_helix start: ".($i-1)."\tend: ".($i+$x_len)."\n";
+						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\n";
 					}
 					else { # damaged is smaller than 14 aa.
-						$output .= "helix number $num_helix start: ".($i-1)."\tend: ".($i+$x_len)."\tdamaged\n";
+						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\tdamaged\n";
 					}
 				}
 				$i = $i + $x_len;
