@@ -4,7 +4,7 @@ use strict;
 use FindBin;
 
 # inparameters are <program to run (s, pro, prodiv)> <prodiv-tmhmm directory> <modfile/seqfile directory> <ouput directory>
-if ( $#ARGV != 3 ) {
+if ( $#ARGV != 2 ) {
   printf "Usage: all_tmhmm_runner.pl <tmpName> <tmpDir> <outputFile>\n";
   exit;
 }
