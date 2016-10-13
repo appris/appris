@@ -393,15 +393,12 @@ sub run_prodiv($$$)
 	unless ( -e $out_align and (-s $out_align > 0) )
 	{		
 		eval {
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp 1> /dev/null 2> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp $in_tmp_prodiv 1> /dev/null 2> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
 		};
-		$logger->error("run_prodiv") if($@);
-
-		$logger->debug("PASE_PRODIV\n");	
+		$logger->error("run_prodiv") if($@);		
 		eval {
-
 			my ($output_prodiv) = parse_prodiv($in_tmp_prodiv,$out_align);		
 		};
 		$logger->error("parse_prodiv") if($@);

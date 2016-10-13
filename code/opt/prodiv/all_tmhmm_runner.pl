@@ -5,23 +5,20 @@ use FindBin;
 
 # inparameters are <program to run (s, pro, prodiv)> <prodiv-tmhmm directory> <modfile/seqfile directory> <ouput directory>
 if ( $#ARGV != 3 ) {
-  printf "Usage: all_tmhmm_runner.pl <prog> <modfiledir/seqfiledir> <outputdir> <tmpdir>\n";
+  printf "Usage: all_tmhmm_runner.pl <tmpName> <tmpDir> <outputFile>\n";
   exit;
 }
 
-#my ($cachename) = $ARGV[0];
-#my ($cachedir) = $ARGV[1]."/";
-#my ($tmpname) = $ARGV[2];
-#my ($tmpdir) = $ARGV[3]."/";
-my ($tmpname) = $ARGV[1];
-my ($tmpdir) = $ARGV[2]."/";
+my ($tmpname) = $ARGV[0];
+my ($tmpdir) = $ARGV[1]."/";
+my ($hmg_prodiv_res_file) = $ARGV[2]."/";
 my ($progdir) = $FindBin::Bin.'/';
 
 my ($modfile) = $tmpdir."/$tmpname.mod";	
 my ($seqnamefile) = $tmpdir."/parking.prodiv.seqname.tmp";
 my ($hmmnamefile) = $tmpdir."/parking.prodiv.hmm.tmp";
 my ($hmg_prodiv_file) = $tmpdir."/$tmpname.prodiv";
-my ($hmg_prodiv_res_file) = $tmpdir."/$tmpname.prodiv.res";
+#my ($hmg_prodiv_res_file) = $tmpdir."/$tmpname.prodiv.res";
 
 # if exist prodiv result, we exist
 if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
