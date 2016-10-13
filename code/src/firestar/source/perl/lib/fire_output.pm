@@ -49,7 +49,8 @@ sub no_results{
 	$OUTPUT = \*STDOUT  unless(open($OUTPUT,'>',$fire->{outfile}));
 	if ($fire->{output} eq 'appris'){
 		print $OUTPUT "######\n";
-		print $OUTPUT ">>>$fire->{queryname}\t0 predicted residues\n";
+		#print $OUTPUT ">>>$fire->{queryname}\t0 predicted residues\n";
+		print $OUTPUT ">>>Query\t0 predicted residues\n";
 		close($OUTPUT);
 		return 0;
 	}
