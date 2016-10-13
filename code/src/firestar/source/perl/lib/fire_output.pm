@@ -211,9 +211,13 @@ sub APPRIS_printer{
 			else {$resumen=$_;}
 			print $OUTPUT "$_\t$aa_totales{$_}[0]\t$aa_totales{$_}[1]\n";
 		}
-		print $OUTPUT ">>>$fire->{queryname}\t",scalar(keys%aa_totales),"\t$resumen\n";
+		#print $OUTPUT ">>>$fire->{queryname}\t",scalar(keys%aa_totales),"\t$resumen\n";
+		print $OUTPUT ">>>Query\t",scalar(keys%aa_totales),"\t$resumen\n";
 	}
-	else{	print $OUTPUT ">>>$fire->{queryname}\t0 predicted residues\n";}
+	else{
+		#print $OUTPUT ">>>$fire->{queryname}\t0 predicted residues\n";
+		print $OUTPUT ">>>Query\t0 predicted residues\n";
+	}
 	
 	close($OUTPUT);
 	return 0;
