@@ -342,7 +342,7 @@ sub run_kalign($$$)
 sub convert_mod($$$)
 {
 	my ($input, $ws_cache, $ws_tmp) = @_;
-	my ($out_mod) = $ws_cache.'/seq.mod';
+	my ($out_mod) = $ws_tmp.'/Query.mod';
 	eval {
 		my (%seen);
 		my (@trash);
@@ -389,13 +389,11 @@ sub run_prodiv($$$)
 {
 	my ($input, $ws_cache, $ws_tmp) = @_;
 	my ($out_align) = $ws_cache.'/seq.prodiv';
-	my ($in_tmp_prodiv) = $ws_tmp.'/seq.prodiv.res';	
+	my ($in_tmp_prodiv) = $ws_tmp.'/Query.prodiv.res';	
 	unless ( -e $out_align and (-s $out_align > 0) )
 	{		
 		eval {
-			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP &>> $logfilename";
-			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl seq $ws_cache $ws_tmp 1> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp 1> /dev/null 2> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
 		};

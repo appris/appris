@@ -9,15 +9,19 @@ if ( $#ARGV != 3 ) {
   exit;
 }
 
-my ($name) = $ARGV[0];
-my ($cachedir) = $ARGV[1]."/";
+#my ($cachename) = $ARGV[0];
+#my ($cachedir) = $ARGV[1]."/";
+#my ($tmpname) = $ARGV[2];
+#my ($tmpdir) = $ARGV[3]."/";
+my ($tmpname) = $ARGV[1];
 my ($tmpdir) = $ARGV[2]."/";
 my ($progdir) = $FindBin::Bin.'/';
 
-my ($seqnamefile) = $tmpdir."/$name.seqname.tmp";
-my ($hmmnamefile) = $tmpdir."/$name.hmm.tmp";
-my ($hmg_prodiv_file) = $tmpdir."/$name.prodiv";
-my ($hmg_prodiv_res_file) = $tmpdir."/$name.prodiv.res";
+my ($modfile) = $tmpdir."/$tmpname.mod";	
+my ($seqnamefile) = $tmpdir."/parking.prodiv.seqname.tmp";
+my ($hmmnamefile) = $tmpdir."/parking.prodiv.hmm.tmp";
+my ($hmg_prodiv_file) = $tmpdir."/$tmpname.prodiv";
+my ($hmg_prodiv_res_file) = $tmpdir."/$tmpname.prodiv.res";
 
 # if exist prodiv result, we exist
 if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
@@ -26,7 +30,6 @@ if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
 
 # list all modfiles to modfile-file
 eval {
-	my ($modfile) = $tmpdir."/$name.mod";	
 	my $seqfiles = `ls $modfile`;
 	open (SEQNAMEFILE, ">$seqnamefile") or die "Could not open temporary seqnamefile\n";
 	print SEQNAMEFILE "$seqfiles";
@@ -67,9 +70,3 @@ eval {
 	system ($cmd);		
 };
 exit 1 if($@);
-
-
-#remove modile-file
-#`rm $outdir/seqnamefile.tmp`;
-#remove protnamefile
-#`rm $outdir/protnamefile.tmp`;
