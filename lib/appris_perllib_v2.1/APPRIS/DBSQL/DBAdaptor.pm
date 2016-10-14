@@ -1622,8 +1622,7 @@ sub query_spade {
 		num_domains,
 		num_possibly_damaged_domains,
 		num_damaged_domains,
-		num_wrong_domains,
-		domain_signal
+		num_wrong_domains
   
 		from spade ";
 
@@ -1674,7 +1673,6 @@ sub query_spade_alignments {
 		s.num_possibly_damaged_domains,
 		s.num_damaged_domains,
 		s.num_wrong_domains,
-		s.domain_signal,
 		a.alignment_start,
 		a.alignment_end,
 		a.envelope_start,
@@ -2555,15 +2553,14 @@ sub insert_spade {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into spade (entity_id, result, num_domains, num_possibly_damaged_domains, num_damaged_domains, num_wrong_domains, domain_signal) values (?,?,?,?,?,?,?)},
+	$dbh->do(q{insert into spade (entity_id, result, num_domains, num_possibly_damaged_domains, num_damaged_domains, num_wrong_domains) values (?,?,?,?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
 				$args{'num_domains'},
 				$args{'num_possibly_damaged_domains'},
 				$args{'num_damaged_domains'},
-				$args{'num_wrong_domains'},
-				$args{'domain_signal'} ));
+				$args{'num_wrong_domains'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	

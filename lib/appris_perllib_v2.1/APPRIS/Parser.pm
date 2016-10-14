@@ -1059,23 +1059,15 @@ sub parse_spade_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000356093        571.9   4       2       0       0
+		#domain  5       81      5       81      PF09379.3       FERM_N  Domain  1       80      80      74.3    4.7e-21 1       CL0072  [ext:ENST00000373800]
+		#domain_possibly_damaged 83      192     83      192     PF00373.11      FERM_M  Domain  1       117     117     74.7    4.9e-21 1       No_clan [ext:ENST00000373800]
+		#domain_possibly_damaged 198     281     196     285     PF09380.3       FERM_C  Domain  3       85      90      81.9    2.2e-23 1       CL0266  [ext:ENST00000373800]
+		#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
+		#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
+		#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
+        if ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($domain_signal) = $2;
-
-			$cutoffs->{$id}->{'domain_signal'} = $domain_signal;
-		}
-        elsif ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000356093        571.9   4       2       0       0
-			#domain  5       81      5       81      PF09379.3       FERM_N  Domain  1       80      80      74.3    4.7e-21 1       CL0072  [ext:ENST00000373800]
-			#domain_possibly_damaged 83      192     83      192     PF00373.11      FERM_M  Domain  1       117     117     74.7    4.9e-21 1       No_clan [ext:ENST00000373800]
-			#domain_possibly_damaged 198     281     196     285     PF09380.3       FERM_C  Domain  3       85      90      81.9    2.2e-23 1       CL0266  [ext:ENST00000373800]
-			#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
-			#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
-			#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
 			my ($id) = $1;
 			my ($bitscore) = $2;
 			my ($num_domains) = $3;
@@ -1232,7 +1224,7 @@ sub parse_spade($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'domain_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
 			if ( $transcript->translate ) {				
@@ -1306,7 +1298,6 @@ sub parse_spade($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::SPADE->new (
 							-result							=> $report->{'result'},
-							-domain_signal					=> $report->{'domain_signal'},
 							-num_domains					=> $report->{'num_domains'},
 							-num_possibly_damaged_domains	=> $report->{'num_possibly_damaged_domains'},
 							-num_damaged_domains			=> $report->{'num_damaged_domains'},

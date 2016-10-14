@@ -1266,11 +1266,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->conservation_structure and defined $method->score and defined $method->result ) {
+			if ( defined $method->score and defined $method->result ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_matador3d(
 									entity_id				=> $internal_entity_id,
-									conservation_structure	=> $method->conservation_structure,
 									score					=> $method->score,
 									result					=> $method->result
 					);
@@ -1320,13 +1319,12 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->domain_signal and defined $method->result and 
+			if ( defined $method->result and 
 				 defined $method->num_domains and defined $method->num_possibly_damaged_domains and
 				 defined $method->num_damaged_domains and defined $method->num_wrong_domains ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_spade(
 									entity_id						=> $internal_entity_id,
-									domain_signal					=> $method->domain_signal,
 									result							=> $method->result,
 									num_domains						=> $method->num_domains,
 									num_possibly_damaged_domains	=> $method->num_possibly_damaged_domains,
