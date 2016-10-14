@@ -77,7 +77,7 @@ sub new {
 	);
 
  	$self->result($result);
- 	$self->functional_residue($functional_residue);
+ 	$self->functional_residue($functional_residue) if(defined $functional_residue);
 	$self->num_residues($num_residues) if(defined $num_residues);
 	$self->residues($residues) if(defined $residues);
 		

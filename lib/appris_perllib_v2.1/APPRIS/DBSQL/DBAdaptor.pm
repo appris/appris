@@ -1546,8 +1546,7 @@ sub query_firestar {
         firestar_id,
         entity_id,
 		num_residues,
-		result,
-		functional_residue
+		result
   
 		from firestar ";
 
@@ -2438,12 +2437,11 @@ sub insert_firestar {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into firestar (entity_id, num_residues, result, functional_residue) values (?,?,?,?)},
+	$dbh->do(q{insert into firestar (entity_id, num_residues, result) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'num_residues'},
-				$args{'result'},
-				$args{'functional_residue'} ));
+				$args{'result'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};

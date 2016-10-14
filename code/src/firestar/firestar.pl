@@ -432,8 +432,8 @@ sub main()
 	
 	
 	# Select rejected and accepted sequences ----------------
-	if ( defined $appris )
-	{
+	#if ( defined $appris )
+	#{
 		# get consensus residues
 		$logger->info("-- print consensus residues\n");	
 		
@@ -542,10 +542,8 @@ sub main()
 			my @vars = split(/ /, $line);
 			foreach my $varname (@vars)
 			{
-				# BEGIN: DEPRECATED
-				#$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\t$res_count{$varname}{seis}\t$res_count{$varname}{cinco}\t$res_count{$varname}{cuatro}\t$res_count{$varname}{tres}\n";
-				# END: DEPRECATED
-				$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				#$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				$output_content .= "F>>\t$varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
 			}
 		}
 		
@@ -554,13 +552,11 @@ sub main()
 			my @vars = split(/ /, $line);
 			foreach my $varname (@vars)
 			{
-				# BEGIN: DEPRECATED
-				#$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\t$res_count{$varname}{seis}\t$res_count{$varname}{cinco}\t$res_count{$varname}{cuatro}\t$res_count{$varname}{tres}\n";
-				# END: DEPRECATED
-				$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				#$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				$output_content .= "F>>\t$varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
 			}
 		}	
-	}	
+	#}	
 
 	# Print output ----------------	
 	my ($print_out) = printStringIntoFile($output_content, $output_file);

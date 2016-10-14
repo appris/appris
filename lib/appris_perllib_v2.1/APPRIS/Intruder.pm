@@ -1220,11 +1220,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->functional_residue ) {
+			if ( defined $method->result ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_firestar(
 									entity_id				=> $internal_entity_id,
-									functional_residue		=> $method->functional_residue,
 									num_residues			=> $method->num_residues,
 									result					=> $method->result
 					);

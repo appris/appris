@@ -629,27 +629,19 @@ sub parse_firestar_rst($)
 		
 		#ACCEPT: ID\tTOTAL_SCORE\tTOTAL_MOTIFS\n
 		# BEGIN: DEPRECATED
-		#if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\t]*)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		#if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		if ( $line =~ /^F>>\t+([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
 		# END: DEPRECATED
 		{
 			my ($id) = $1;
 			my ($total_score) = $2;
 			my ($total_residues) = $3;
-			# BEGIN: DEPRECATED
-			#my ($num_residues_6) = $4;
-			#my ($num_residues_5) = $5;
-			#my ($num_residues_4) = $6;
-			#my ($num_residues_3) = $7;
-			# END: DEPRECATED
 
 			if ( defined $id and ($id ne '') )
 			{
 				unless ( defined $total_residues and $total_residues ne '' )
-					{ $total_residues = 0; }
-					
+					{ $total_residues = 0; }					
 				$cutoffs->{$id}->{'num_residues'} = $total_residues;
-				$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_ACCEPT_LABEL;
 
 				# Save result for each transcript
 				my ($trans_result) = '';
@@ -661,38 +653,29 @@ sub parse_firestar_rst($)
 			}
 		}
 		#REJECT: ID\tTOTAL_SCORE\tTOTAL_MOTIFS\n
-		# BEGIN: DEPRECATED
-		#if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\t]*)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		# END: DEPRECATED
-		{
-			my ($id) = $1;
-			my ($total_score) = $2;
-			my ($total_residues) = $3;
-			# BEGIN: DEPRECATED
-			#my ($num_residues_6) = $4;
-			#my ($num_residues_5) = $5;
-			#my ($num_residues_4) = $6;
-			#my ($num_residues_3) = $7;
-			# END: DEPRECATED
-
-			if ( defined $id and ($id ne '') )
-			{
-				unless ( defined $total_residues and $total_residues ne '' )
-					{ $total_residues = 0; }
-					
-				$cutoffs->{$id}->{'num_residues'} = $total_residues;
-				$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_REJECT_LABEL;
-				
-				# Save result for each transcript
-				my ($trans_result) = '';
-				if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
-					$trans_result .= $cutoffs->{$id}->{'result'};
-					$trans_result .= "----------------------------------------------------------------------\n";					
-				}				
-				$cutoffs->{$id}->{'result'} = $trans_result . $line;				
-			}
-		}
+		#if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		#{
+		#	my ($id) = $1;
+		#	my ($total_score) = $2;
+		#	my ($total_residues) = $3;
+		#
+		#	if ( defined $id and ($id ne '') )
+		#	{
+		#		unless ( defined $total_residues and $total_residues ne '' )
+		#			{ $total_residues = 0; }
+		#			
+		#		$cutoffs->{$id}->{'num_residues'} = $total_residues;
+		#		$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_REJECT_LABEL;
+		#		
+		#		# Save result for each transcript
+		#		my ($trans_result) = '';
+		#		if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
+		#			$trans_result .= $cutoffs->{$id}->{'result'};
+		#			$trans_result .= "----------------------------------------------------------------------\n";					
+		#		}				
+		#		$cutoffs->{$id}->{'result'} = $trans_result . $line;				
+		#	}
+		#}
 	}
 	$cutoffs->{'result'} = $result;
 	
@@ -738,7 +721,8 @@ sub parse_firestar($$)
 		my ($analysis);
 				
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'functional_residue'} ) {
+		#if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'functional_residue'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -771,8 +755,6 @@ sub parse_firestar($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::Firestar->new (
 							-result					=> $report->{'result'},
-							-score					=> $report->{'score'},
-							-functional_residue		=> $report->{'functional_residue'},
 							-num_residues			=> $report->{'num_residues'},
 			);
 			$method->residues($regions) if (defined $regions); 
