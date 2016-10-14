@@ -810,20 +810,11 @@ sub parse_matador3d_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000308249        3.65
+		#- 196:262[3]    1.33
+        #	196:242[190:240] 0.33[0.33*1*1]	 1Q33_A[35.9]
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($conservation_structure) = $2;
-
-			$cutoffs->{$id}->{'conservation_structure'} = $conservation_structure;
-		}
-        elsif ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000308249        3.65
-			#- 196:262[3]    1.33
-	        #	196:242[190:240] 0.33[0.33*1*1]	 1Q33_A[35.9]
-
 			my ($id) = $1;
 			my ($structure_score) = $2;
 			$cutoffs->{$id}->{'score'} = $structure_score;
@@ -949,7 +940,7 @@ sub parse_matador3d($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'conservation_structure'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -1009,8 +1000,7 @@ sub parse_matador3d($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::Matador3D->new (
 							-result					=> $report->{'result'},
-							-score					=> $report->{'score'},
-							-conservation_structure	=> $report->{'conservation_structure'},
+							-score					=> $report->{'score'}
 			);
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);

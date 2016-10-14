@@ -1746,8 +1746,7 @@ sub query_matador3d {
         my $statement = "select
         entity_id,
 		result,
-		score,
-		conservation_structure
+		score
   
 		from matador3d ";
   
@@ -1789,7 +1788,6 @@ sub query_matador3d_alignments {
         m.matador3d_id,
         m.result,
         m.score,
-        m.conservation_structure,
         a.matador3d_alignments_id,
 		a.cds_id,
 		a.start,
@@ -2480,12 +2478,11 @@ sub insert_matador3d {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into matador3d (entity_id, result, score, conservation_structure) values (?,?,?,?)},
+	$dbh->do(q{insert into matador3d (entity_id, result, score) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
-				$args{'score'},
-				$args{'conservation_structure'} ));
+				$args{'score'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};

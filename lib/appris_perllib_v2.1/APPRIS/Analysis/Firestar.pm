@@ -66,18 +66,17 @@ sub new {
 	my ($self) = bless {}, $class;
 
 	my (
-		$result,			$functional_residue,
+		$result,			
 		$num_residues,		$residues
 	)
 	= rearrange( [
-		'result',			'functional_residue',
+		'result',			
 		'num_residues',		'residues'
 	],
 	@_
 	);
 
  	$self->result($result);
- 	$self->functional_residue($functional_residue) if(defined $functional_residue);
 	$self->num_residues($num_residues) if(defined $num_residues);
 	$self->residues($residues) if(defined $residues);
 		
@@ -100,24 +99,6 @@ sub result {
 	my ($self) = shift;
 	$self->{'result'} = shift if(@_);
 	return $self->{'result'};
-}
-
-=head2 functional_residue
-
-  Arg [1]    : (optional) String - the analysed functional_residue to set
-  Example    : $analysis->functional_residue(123);
-  Description: Getter/setter for the analysed functional_residue
-  Returntype : String
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub functional_residue {
-	my ($self) = shift;
-	$self->{'functional_residue'} = shift if(@_);
-	return $self->{'functional_residue'};
 }
 
 =head2 num_residues
