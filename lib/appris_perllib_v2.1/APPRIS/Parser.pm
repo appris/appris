@@ -1536,24 +1536,16 @@ sub parse_corsair_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000518498.1      0.5
+		#Homo sapiens    100.00  0.5
+		#        -43735403:43735526[1:42]        0.5
+		#                -Homo sapiens   100.00  0.5
+		#        -43733595:43733741[43:91]       0.5 {1-ENST00000291525.10}
+		#                -Homo sapiens   100.00  0.5
+		#        -43732369:43732379[92:94]       0.5 {1-ENST00000291525.10}
+		#                -Homo sapiens   100.00  0.5
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($vertebrate_signal) = $2;
-
-			$cutoffs->{$id}->{'vertebrate_signal'} = $vertebrate_signal;
-		}
-        elsif ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000518498.1      0.5
-			#Homo sapiens    100.00  0.5
-			#        -43735403:43735526[1:42]        0.5
-			#                -Homo sapiens   100.00  0.5
-			#        -43733595:43733741[43:91]       0.5 {1-ENST00000291525.10}
-			#                -Homo sapiens   100.00  0.5
-			#        -43732369:43732379[92:94]       0.5 {1-ENST00000291525.10}
-			#                -Homo sapiens   100.00  0.5
 			my ($id) = $1;
 			my ($score) = $2;
 			$cutoffs->{$id}->{'score'} = $score;
@@ -1659,7 +1651,7 @@ sub parse_corsair($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'vertebrate_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};			
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -1701,8 +1693,7 @@ sub parse_corsair($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::CORSAIR->new (
 							-result							=> $report->{'result'},
-							-vertebrate_signal				=> $report->{'vertebrate_signal'},
-							-score							=> $report->{'score'},							
+							-score							=> $report->{'score'}							
 			);
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);

@@ -1627,11 +1627,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->vertebrate_signal and defined $method->result and defined $method->score ) {
+			if ( defined $method->result and defined $method->score ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_corsair(
 									entity_id						=> $internal_entity_id,
-									vertebrate_signal				=> $method->vertebrate_signal,
 									result							=> $method->result,
 									score							=> $method->score,
 					);

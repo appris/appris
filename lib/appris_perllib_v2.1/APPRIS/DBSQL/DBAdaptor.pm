@@ -1718,9 +1718,8 @@ sub query_corsair {
         my $statement = "select
         corsair_id,
         entity_id,
-		result,        
-		score,
-		vertebrate_signal
+		result,
+		score
   
 		from corsair ";
 
@@ -2610,12 +2609,11 @@ sub insert_corsair {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into corsair (entity_id, result, score, vertebrate_signal) values (?,?,?,?)},
+	$dbh->do(q{insert into corsair (entity_id, result, score) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
-				$args{'score'},
-				$args{'vertebrate_signal'} ));
+				$args{'score'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	

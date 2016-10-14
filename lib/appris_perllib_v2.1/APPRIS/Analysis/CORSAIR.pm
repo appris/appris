@@ -66,20 +66,17 @@ sub new {
 	my ($self) = bless {}, $class;
 
 	my (
-		$result,		$vertebrate_signal,
-		$score,			$num_alignments,
-		$alignments
+		$result,			$score,
+		$num_alignments,	$alignments
 	)
 	= rearrange( [
-		'result',		'vertebrate_signal',
-		'score', 'num_alignments',
-		'alignments'
+		'result',			'score',
+		'num_alignments',	'alignments'
 	],
 	@_
 	);
 	
 	$self->result($result);
- 	$self->vertebrate_signal($vertebrate_signal);
  	$self->score($score) if(defined $score);
 	$self->num_alignments($num_alignments) if(defined $num_alignments);
 	$self->alignments($alignments) if(defined $alignments); 	
@@ -103,24 +100,6 @@ sub result {
 	my ($self) = shift;
 	$self->{'result'} = shift if(@_);
 	return $self->{'result'};
-}
-
-=head2 vertebrate_signal
-
-  Arg [1]    : (optional) String - the analysed vertebrate_signal to set
-  Example    : $analysis->vertebrate_signal($method);
-  Description: Getter/setter for the analysed vertebrate_signal
-  Returntype : String
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub vertebrate_signal {
-	my ($self) = shift;
-	$self->{'vertebrate_signal'} = shift if(@_);
-	return $self->{'vertebrate_signal'};
 }
 
 =head2 score

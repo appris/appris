@@ -345,7 +345,6 @@ CREATE TABLE corsair (
   entity_id INT(11) unsigned NOT NULL,
   result LONGTEXT DEFAULT NULL,  
   score  FLOAT DEFAULT NULL,  
-  vertebrate_signal ENUM('NO','YES','UNKNOWN') DEFAULT NULL,
   CONSTRAINT fk_corsair_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (corsair_id),
   UNIQUE KEY unique_key_corsair_corsair_id (corsair_id),
