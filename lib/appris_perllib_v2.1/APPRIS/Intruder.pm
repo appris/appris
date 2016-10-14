@@ -1518,8 +1518,7 @@ sub feed_transc_by_analysis {
 			# insert annotation
 			my($global_id);
 			if ( defined $method->result and 
-				 defined $method->sp_score and defined $method->tp_score and
-				 defined $method->peptide_signal and defined $method->mitochondrial_signal ) {
+				 defined $method->sp_score and defined $method->tp_score ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_crash(
 									entity_id					=> $internal_entity_id,
@@ -1577,12 +1576,11 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->transmembrane_signal and defined $method->result and 
+			if ( defined $method->result and 
 				 defined $method->num_tmh and defined $method->num_damaged_tmh ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_thump(
 									entity_id						=> $internal_entity_id,
-									transmembrane_signal			=> $method->transmembrane_signal,
 									result							=> $method->result,
 									num_tmh							=> $method->num_tmh,
 									num_damaged_tmh					=> $method->num_damaged_tmh

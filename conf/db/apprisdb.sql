@@ -259,7 +259,6 @@ CREATE TABLE thump (
   result LONGTEXT DEFAULT NULL,
   num_tmh INT(5) DEFAULT NULL,
   num_damaged_tmh INT(5) DEFAULT NULL,
-  transmembrane_signal ENUM('NO','YES','UNKNOWN') DEFAULT NULL,
   CONSTRAINT fk_thump_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (thump_id),
   UNIQUE KEY unique_key_thump_thump_id (thump_id),

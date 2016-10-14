@@ -1823,8 +1823,7 @@ sub query_thump {
         entity_id,
 		result,
 		num_tmh,
-		num_damaged_tmh,
-		transmembrane_signal
+		num_damaged_tmh
   
 		from thump ";
   
@@ -1867,7 +1866,6 @@ sub query_thump_helixes {
         t.result,
         t.num_tmh,
         t.num_damaged_tmh,
-        t.transmembrane_signal,
         h.thump_helixes_id,
 		h.start,
 		h.end,
@@ -2516,13 +2514,12 @@ sub insert_thump {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into thump (entity_id, result, num_tmh, num_damaged_tmh, transmembrane_signal) values (?,?,?,?,?)},
+	$dbh->do(q{insert into thump (entity_id, result, num_tmh, num_damaged_tmh) values (?,?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
 				$args{'num_tmh'},
-				$args{'num_damaged_tmh'},
-				$args{'transmembrane_signal'} ));
+				$args{'num_damaged_tmh'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	

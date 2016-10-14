@@ -1942,14 +1942,6 @@ sub parse_thump_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
-		{
-			my ($id) = $1;
-			my ($transmembrane_signal) = $2;
-
-			$cutoffs->{$id}->{'transmembrane_signal'} = $transmembrane_signal;
-		}
 		#>ENST00000300482    length 1503 a.a.
 		#helix number 1 start: 798       end: 818
 		#helix number 2 start: 829       end: 841        damaged
@@ -1957,7 +1949,7 @@ sub parse_thump_rst($)
 		#helix number 4 start: 895       end: 908        damaged
 		#helix number 5 start: 935       end: 955
 		#helix number 6 start: 1024      end: 1041		
-        elsif ( $transcript_result =~ /^([^\t]+)\t+length\s+([^\s]+)\s+a\.a\.\n+/ )
+        if ( $transcript_result =~ /^([^\t]+)\t+length\s+([^\s]+)\s+a\.a\.\n+/ )
 		{
 			# get the helix coordinates
 			my ($id) = $1;
@@ -2034,7 +2026,7 @@ sub parse_thump($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'transmembrane_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
 			if ( $transcript->translate ) {				
@@ -2077,7 +2069,6 @@ sub parse_thump($$)
 			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation 			
 			my ($method) = APPRIS::Analysis::THUMP->new (
 							-result							=> $report->{'result'},
-							-transmembrane_signal			=> $report->{'transmembrane_signal'},
 							-num_tmh						=> $report->{'num_tmh'},
 							-num_damaged_tmh				=> $report->{'num_damaged_tmh'}
 			);
