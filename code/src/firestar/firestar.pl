@@ -534,9 +534,9 @@ sub main()
 		
 		# print rejected and accepted sequences ----------------
 		$output_content .= "\n";
-		$output_content .= "# ================================ #\n";
-		$output_content .= "# Potential main variants -APPRIS- #\n";
-		$output_content .= "# ================================ #\n";
+		$output_content .= "# ========================================== #\n";
+		$output_content .= "# Final annotations: no. functional residues #\n";
+		$output_content .= "# ========================================== #\n";
 		foreach my $line (@winners)
 		{
 			my @vars = split(/ /, $line);
