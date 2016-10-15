@@ -324,7 +324,7 @@ sub create_workspace()
 		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
 		my ($add_meta) = $cache->add_data($metadata,'meta');
 		
-		$logger->info("-- CACHE: $seq_id > $seq_idx > $seq_sidx\n");
+		$logger->info("-- cache: $seq_id > $seq_sidx\n");
 	}
 }
 
