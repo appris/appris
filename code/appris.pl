@@ -305,23 +305,46 @@ sub create_workspace()
 	{
 		# get idx for seq
 		my ($seq_id) = $seq->id;
-		my ($seq_s) = $seq->seq;
+		my ($seq_s) = $seq->seq;		
 		my ($cache) = APPRIS::Utils::CacheMD5->new(
 			-dat => $seq_s,
-			-ws  => $ws_base_g
+			-ws  => $ws_base_g			
 		);		
 		my ($seq_idx) = $cache->idx;
-		my ($seq_idx_s) = $cache->idx_s;
-		# prepare cache dir and tmp dir
+		my ($seq_sidx) = $cache->sidx;
+		my ($seq_dir) = $cache->dir;
+				
+		# prepare cache dir
+		my ($ws_cache) = $cache->c_dir();
+		# prepare tmp dir
 		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
-		my ($ws_cache) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.'/'.$seq_idx_s;		
-		prepare_workspace($ws_tmp);
-		prepare_workspace($ws_cache);
+		prepare_workspace($ws_tmp);		
 		
 		# create metadata and seq
-		my ($idx_dir) = $cache->cdir();		
 		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
 		my ($add_meta) = $cache->add_data($metadata,'meta');
+
+#
+#		
+#		# get idx for seq
+#		my ($seq_id) = $seq->id;
+#		my ($seq_s) = $seq->seq;
+#		my ($cache) = APPRIS::Utils::CacheMD5->new(
+#			-dat => $seq_s,
+#			-ws  => $ws_base_g
+#		);		
+#		my ($seq_idx) = $cache->idx;
+#		my ($seq_idx_s) = $cache->idx_s;
+#		# prepare cache dir and tmp dir
+#		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
+#		my ($ws_cache) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.'/'.$seq_idx_s;		
+#		prepare_workspace($ws_tmp);
+#		prepare_workspace($ws_cache);
+#		
+#		# create metadata and seq
+#		my ($idx_dir) = $cache->cdir();		
+#		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
+#		my ($add_meta) = $cache->add_data($metadata,'meta');
 	}		
 }
 
