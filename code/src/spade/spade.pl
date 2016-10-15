@@ -388,15 +388,20 @@ sub _run_pfamscan($$)
 	my ($sequence_id, $sequence) = @_;
 	
 	# Create cache obj
-	my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $sequence );
+	my ($cache) = APPRIS::Utils::CacheMD5->new(
+		-dat => $sequence,
+		-ws  => $WSPACE_CACHE			
+	);		
 	my ($seq_idx) = $cache->idx;
-	my ($seq_idx_s) = $cache->idx_s;
-	
+	my ($seq_sidx) = $cache->sidx;
+	my ($seq_dir) = $cache->dir;
+			
+	# prepare cache dir
+	my ($ws_cache) = $cache->c_dir();
+	# prepare tmp dir
 	my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
-	my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
 	prepare_workspace($ws_tmp);
-	prepare_workspace($ws_cache);
-
+	
 	# Create temporal file
 	my ($fasta_sequence_file) = $ws_cache.'/seq.faa';
 	unless(-e $fasta_sequence_file and (-s $fasta_sequence_file > 0) ) # Cached fasta

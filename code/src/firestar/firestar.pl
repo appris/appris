@@ -153,9 +153,9 @@ sub main()
 	$output_content .= "# ============================================ #\n";
 	foreach my $varname (keys %gene_vars)
 	{
-		$logger->info("\t-- $varname");
+		$logger->info("\t-- $varname ");
 		my $seq = $gene_vars{$varname};
-		
+				
 		# create cache obj
 		my ($cache) = APPRIS::Utils::CacheMD5->new(
 			-dat => $seq,
