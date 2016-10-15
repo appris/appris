@@ -157,9 +157,19 @@ sub main()
 		my $seq = $gene_vars{$varname};
 		
 		# create cache obj
-		my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq );
+		my ($cache) = APPRIS::Utils::CacheMD5->new(
+			-dat => $seq,
+			-ws  => $WSPACE_CACHE			
+		);		
 		my ($seq_idx) = $cache->idx;
-		my ($seq_idx_s) = $cache->idx_s;
+		my ($seq_sidx) = $cache->sidx;
+		my ($seq_dir) = $cache->dir;
+				
+		# prepare cache dir
+		my ($ws_cache) = $cache->c_dir();
+		# prepare tmp dir
+		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+		prepare_workspace($ws_tmp);		
 		
 		# Setup configure file of firestar
 		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
@@ -168,14 +178,11 @@ sub main()
 			$cont =~ s/$old/$new/g;		
 			return $cont;		
 		};
-		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
-		my ($ws_cache) = $WSPACE_CACHE.'/'.$seq_idx_s;
-		prepare_workspace($ws_tmp);
-		prepare_workspace($ws_cache);
+
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
 		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
-		my ($firePredText_file) = $ws_cache.'/'.'firestar';				
+		my ($firePredText_file) = $ws_cache.'/'.'seq.firestar';				
 		
 		my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
 		$logger->error("-- printing firestar config annot") unless ( defined $print_log );

@@ -59,8 +59,9 @@ use Data::Dumper;
     my %_attr_data =
 		(
 			data			=>  undef,
-			idx				=>  undef,			
-			ws				=>  undef,
+			idx				=>  undef,
+			sidx			=>  undef,			
+			dir				=>  undef,
 			md5_len			=>  32,
 			subdir_len		=>  8,
 		);
@@ -89,10 +90,16 @@ use Data::Dumper;
 		return $self->{idx};
 	}
 
-	sub ws {
+	sub sidx {
 		my ($self, $arg) = @_;
-		$self->{ws} = $arg if defined $arg;
-		return $self->{ws};
+		$self->{sidx} = $arg if defined $arg;
+		return $self->{sidx};
+	}
+
+	sub dir {
+		my ($self, $arg) = @_;
+		$self->{dir} = $arg if defined $arg;
+		return $self->{dir};
 	}
 
 }
@@ -130,14 +137,13 @@ sub new {
 	# require paramaters
 	if ( defined $dat ) {
 		$self->data($dat);
-		$self->md5($dat);
 	}
 	else { return undef; }
-	
-	# optional parameters
-	my ($d) = ( defined $ws ) ? $ws.'/'.$self->idx_s : $self->idx_s;
-	$self->ws($d);
-	
+
+	# create idx
+	# 'dir' optional parameter 
+	$self->c_idx($dat, $ws);
+		
 	return $self;
 }
 
@@ -156,21 +162,16 @@ sub new {
 sub md5
 {
 	my ($self, $seq) = @_;
-	my ($idx) = undef;
-	
+	my ($idx) = undef;	
 	if ( defined $seq ) {
 		eval {
 			my ($ctx) = Digest::MD5->new;
 			$ctx->add($seq);
 			my ($md5) = $ctx->hexdigest;
-			if ( defined $md5 ) {
-				$idx = $md5.'_'.length($seq);
-				$self->idx($idx);
-			}
+			$idx = $md5.'_'.length($seq);
 		};
 		throw('Creating md5') if ($@);
-	}
-	
+	}	
 	return $idx;
 }
 
@@ -186,23 +187,25 @@ sub md5
 
 =cut
 
-sub idx_s
+sub c_sidx
 {
-	my ($self) = @_;
-	my ($idx) = $self->idx;
-	my ($idx_s) = '';	
-	my ($md5_len) = $self->{md5_len};
-	my ($subdir_len) = $self->{subdir_len};			
-	for ( my $i=0; $i <= $md5_len-1; $i+=$subdir_len ) {
-		my ($prefix_idx) = substr($idx, $i, $subdir_len);
-		$idx_s .= $prefix_idx.'/';
+	my ($self, $idx) = @_;
+	my ($idx_s) = undef;	
+	if ( defined $idx ) {
+		$idx_s = '';
+		my ($md5_len) = $self->{md5_len};
+		my ($subdir_len) = $self->{subdir_len};			
+		for ( my $i=0; $i <= $md5_len-1; $i+=$subdir_len ) {
+			my ($prefix_idx) = substr($idx, $i, $subdir_len);
+			$idx_s .= $prefix_idx.'/';
+		}
+		my ($len) = $idx =~ /\_([^\$]*)/;
+		$idx_s =~ s/\/$/\/$len/;		
 	}
-	my ($len) = $idx =~ /\_([^\$]*)/;
-	$idx_s =~ s/\/$/\/$len/;	
 	return $idx_s;
 }
 
-=head2 cdir
+=head2 c_idx
 
   Arg [1]    : (optional) tring $dir
                starting dir where to create cache
@@ -216,31 +219,76 @@ sub idx_s
 
 =cut
 
-sub cdir
+sub c_idx
+{
+	my ($self, $dat, $ws) = @_;
+	my ($idx) = $self->md5($dat);
+	my ($sidx) = $self->c_sidx($idx);	
+	my ($dir) = ( defined $ws ) ? $ws.'/'.$sidx : $sidx;
+		
+	if ( -d $dir ) {
+		if ( ! $self->same_data($dat, $dir.'/seq') ) {
+			# if the idx is equal but the 'sequence' is different, then 
+			# retrieve another identifier based on the rest
+			eval {
+				my ($cd) = ( defined $ws ) ? "cd $ws && " : "";
+				my ($cmd) = "$cd ls -1d $sidx\_*";
+print STDERR "CMD: $cmd\n";
+				my (@sidxs) = `$cmd`;
+				# check if another idx was created
+				my ($found_idx) = 0;
+				foreach my $si ( @sidxs ) {
+					my ($d) = ( defined $ws ) ? $ws.'/'.$si : $si;
+					if ( $self->same_data($dat, $d.'/seq') ) {
+						$si =~ s/\///mg;
+						$found_idx = $si;
+						last;
+					}
+				}
+				if ( ! defined $found_idx ) {
+					my ($inc) = scalar(@sidxs) + 1;
+					$found_idx = $idx.'_'.$inc;					
+				} 
+				$idx = $found_idx;
+				$sidx = $self->c_sidx($found_idx);	
+				$dir = ( defined $ws ) ? $ws.'/'.$found_idx : $found_idx;
+			};
+			throw('checking another idx') if ($@);			
+			
+		}		
+	}
+	$self->idx($idx);
+	$self->sidx($sidx);
+	$self->dir($dir);
+	
+	return $dir;
+}
+
+=head2 c_dir
+
+  Arg [1]    : (optional) tring $dir
+               starting dir where to create cache
+  Arg [2]    : (optional) string $ix
+               MD5 value
+  Example    : use APPRIS::Utils::CacheMD5;
+               $id = $ticket->cdir();
+  Description: Create workspace from ticketid and paths.
+  Returntype : base path or undef 
+  Exceptions : thrown every time
+
+=cut
+
+sub c_dir
 {
 	my ($self) = @_;
-	my ($ws) = $self->ws;
-	my ($dat) = $self->data;	
-	if ( ! -d $ws ) { # first time we create idx
-		$self->mkidir($ws);
-		$self->add_data($dat,'seq');
+	my ($dir) = $self->dir;
+	my ($dat) = $self->data;
+	# first time we create idx
+	if ( ! -d $dir ) {
+		$self->mkidir($dir);
 	}
-	else {
-		# idx exist with diffent data
-		if ( ! $self->same_data($dat,'seq') ) {
-			# create new idx
-			eval {
-				my ($cmd) = "ls -1d $ws\_*";
-				my (@dirs) = `$cmd`;
-				my ($inc) = scalar(@dirs) + 1;
-				my ($idx) = $self->idx.'_'.$inc;
-				$self->idx($idx);
-			};
-			throw('Increasing idx') if ($@);			
-		}
-		else { $self->add_data($dat,'seq') }	
-	}	
-	return $ws;
+	$self->add_data($dat,'seq');	
+	return $dir;
 }
 
 =head2 mkidir
@@ -273,26 +321,6 @@ sub mkidir
 
 =head2 add_data
 
-  Arg [1]    : string $dat
-               data
-  Example    : use APPRIS::Utils::WSpace;
-               $id = $ticket->add_idx();
-  Description: Insert the filename and ticket_id into index file.
-  Returntype : boolean 
-  Exceptions : thrown every time
-
-=cut
-
-#sub add_data
-#{
-#	my ($self, $dat, $fname) = @_;
-#	my ($file) = $self->ws.'/'.$fname;
-#	my ($p) = APPRIS::Utils::File::updateStringIntoLockFile($dat, $file);
-#	throw('Add data') unless ( defined $p );
-#}
-
-=head2 add_idx
-
   Arg [1]    : string $idx
                Index data
   Arg [2]    : string $id
@@ -310,7 +338,7 @@ sub mkidir
 sub add_data
 {
 	my ($self, $dat, $fname) = @_;
-	my ($file) = $self->ws.'/'.$fname;
+	my ($file) = $self->dir.'/'.$fname;
 	if ( -e $file and -s $file > 0 ) {
 		my ($rep) = $self->ext_meta($dat);
 		my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
@@ -373,8 +401,7 @@ sub ext_meta
 
 sub same_data
 {
-	my ($self, $dat, $fname) = @_;
-	my ($file) = $self->ws.'/'.$fname;
+	my ($self, $dat, $file) = @_;
 	if ( -e $file and -s $file > 0 ) {
 		my ($loc_dat) = APPRIS::Utils::File::getStringFromFile($file);
 		if ( defined $loc_dat and $loc_dat eq $dat ) { return 1 }
