@@ -18,34 +18,34 @@ my ($ALL_FILES) = [{
 	'transl'	=> $fasta_dir.'homo_sapiens/gen19.v17/appris_data.transl.fa',
 	'species'	=> 'homo_sapiens',
 	'ds'		=> 'gencode19'
-#},{
-#	'transl'	=> $fasta_dir.'homo_sapiens/ens84.v17/appris_data.transl.fa',
-#	'species'	=> 'homo_sapiens',
-#	'ds'		=> 'e84_g24'	
+},{
+	'transl'	=> $fasta_dir.'homo_sapiens/ens84.v17/appris_data.transl.fa',
+	'species'	=> 'homo_sapiens',
+	'ds'		=> 'e84_g24'	
 },{
 	'transl'	=> $fasta_dir.'homo_sapiens/rs105.v17/appris_data.transl.fa',
 	'species'	=> 'homo_sapiens',
 	'ds'		=> 'rs105'	
-#},{
-#	'transl'	=> $fasta_dir.'homo_sapiens/rs107.v17/appris_data.transl.fa',
-#	'species'	=> 'homo_sapiens',
-#	'ds'		=> 'rs107'	
+},{
+	'transl'	=> $fasta_dir.'homo_sapiens/rs107.v17/appris_data.transl.fa',
+	'species'	=> 'homo_sapiens',
+	'ds'		=> 'rs107'	
 },{
 	'transl'	=> $fasta_dir.'homo_sapiens/up201606.v18/appris_data.transl.fa',
 	'species'	=> 'homo_sapiens',
 	'ds'		=> 'up201606'
-#},{
-#	'transl'	=> $fasta_dir.'mus_musculus/ens84.v17/appris_data.transl.fa',
-#	'species'	=> 'mus_musculus',
-#	'ds'		=> 'e84_gM9'
-#},{
-#	'transl'	=> $fasta_dir.'danio_rerio/ens84.v17/appris_data.transl.fa',
-#	'species'	=> 'danio_rerio',
-#	'ds'		=> 'e84'
-#},{
-#	'transl'	=> $fasta_dir.'danio_rerio/ens77.v17/appris_data.transl.fa',
-#	'species'	=> 'danio_rerio',
-#	'ds'		=> 'e84'
+},{
+	'transl'	=> $fasta_dir.'mus_musculus/ens84.v17/appris_data.transl.fa',
+	'species'	=> 'mus_musculus',
+	'ds'		=> 'e84_gM9'
+},{
+	'transl'	=> $fasta_dir.'danio_rerio/ens84.v17/appris_data.transl.fa',
+	'species'	=> 'danio_rerio',
+	'ds'		=> 'e84'
+},{
+	'transl'	=> $fasta_dir.'danio_rerio/ens77.v17/appris_data.transl.fa',
+	'species'	=> 'danio_rerio',
+	'ds'		=> 'e84'
 }];
 
 my ($OLDCACHEDIR) = '/home/jmrodriguez/projects/APPRIS/appriscache';
@@ -78,11 +78,6 @@ print STDERR "-- $species:$ds\n";
 				
 		# prepare cache dir
 		my ($idx_dir) = $cache->c_dir();
-		
-#print STDERR "CACHE: \n".Dumper($cache)."\n";
-#print STDERR "IDX: $seq_idx\n";
-#print STDERR "SIDX: $seq_sidx\n";
-#print STDERR "IDX_DIR: $idx_dir\n";
 		
 		# create metadata and seq
 		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
@@ -152,12 +147,5 @@ print STDERR "-- $species:$ds\n";
 		};
 		throw('replacing the id') if ($@);
 		
-		
-
-last;
-			
-#			my ($output) = $idx."\t".$species."\t".$ds."\t".$seq_id."\n";
-#			updateStringIntoLockFile($output, $outfile);
-#			push( @{$report->{$idx}}, $species."\t".$ds."\t".$seq_id );			
 	}	
 }
