@@ -155,7 +155,6 @@ sub get_method_scores($$)
 						}
 						unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $sc = 0 } 
 					}
-					print STDERR "CODON:$transcript_id:$sc:\n".Dumper($transcript->translate->codons)."\n";
 					if ( !exists $s_scores->{$m} ) {
 						$s_scores->{$m}->{'max'} = $sc;
 						$s_scores->{$m}->{'min'} = $sc;
