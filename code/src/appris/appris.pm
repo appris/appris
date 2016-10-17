@@ -147,6 +147,15 @@ sub get_method_scores($$)
 				my ($analysis) = $result->analysis->corsair;
 				if ( defined $analysis->score ) {
 					my ($sc) = $analysis->score;
+					# if variant has 'start/stop codon not found', the score is 0
+					if ( $transcript->translate->codons ) {
+						my ($codons) = '';
+						foreach my $codon (@{$transcript->translate->codons}) {
+							if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) { $codons .= $codon->type.',' }
+						}
+						unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $sc = 0 } 
+					}
+					print STDERR "CODON:$transcript_id:$sc:\n".Dumper($transcript->translate->codons)."\n";
 					if ( !exists $s_scores->{$m} ) {
 						$s_scores->{$m}->{'max'} = $sc;
 						$s_scores->{$m}->{'min'} = $sc;
