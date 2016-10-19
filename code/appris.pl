@@ -320,10 +320,6 @@ sub create_workspace()
 		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
 		prepare_workspace($ws_tmp);		
 		
-		# create metadata and seq
-		my ($metadata) = $ENV{APPRIS_WS_NAME}."\t".$seq_id."\n";
-		my ($add_meta) = $cache->add_data($metadata,'meta');
-		
 		$logger->info("-- cache: $seq_id > $seq_sidx\n");
 	}
 }
