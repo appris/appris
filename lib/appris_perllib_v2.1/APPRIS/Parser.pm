@@ -3229,7 +3229,7 @@ sub _is_refseq($)
 		}
 		else {
 			my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-			if ( (lc($source) =~ /refseq/) or (lc($source) =~ /bestrefseq/) or (lc($source) =~ /curated genomic/) or (lc($source) =~ /gnomon/) ) { $is_refseq = 1 }
+			if ( (lc($source) =~ /refseq/) or (lc($source) =~ /bestrefseq/) or (lc($source) =~ /curated genomic/) or (lc($source) =~ /gnomon/) ) { if ( $attributes =~ /ID\=/ ) { $is_refseq = 1 } }
 			else { last; }
 		}
 	}
