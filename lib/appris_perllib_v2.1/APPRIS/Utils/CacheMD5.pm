@@ -375,8 +375,9 @@ sub ext_meta
 	foreach my $line (split("\n", $dat)) {
 		my (@cols) = split("\t", $line);
 		if ( scalar(@cols) > 1 ) {
-			my ($ds) = $cols[0]; $ds =~ s/\s*//mg;
-			my ($ids) = $cols[1]; $ids =~ s/\s*//mg;
+			my ($idx) = $cols[0]; $idx =~ s/\s*//mg;
+			my ($ds) = $cols[1];  $ds =~ s/\s*//mg;
+			my ($ids) = $cols[2]; $ids =~ s/\s*//mg;
 			my ($id) = ( $ids =~ /([^\|]*)/ ) ? $1 : $ids; 
 			$report->{$id} = {
 				'ds'  => $ds,
