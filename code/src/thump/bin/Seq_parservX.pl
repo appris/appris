@@ -194,15 +194,15 @@ close(DATA);
 
 
 @temporary="";
-@temporary=split('',$aminoacids);
+@temporary=split('',$aminoacids) if ( defined $aminoacids );
 $aminoacids=undef;
-$length=undef;
+$length=0;
 foreach $i (@temporary){
 	if ($i=~/[A-Z]/i){$aminoacids=$aminoacids.$i;$length++;}
 }
 chomp($fichero[$#fichero]);
 $fichero[$#fichero]=$fichero[$#fichero]."\t$length\n";
-push(@fichero,$aminoacids."\n");	
+push(@fichero,$aminoacids."\n") if ( defined $aminoacids );
 
 
 

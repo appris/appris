@@ -1,3 +1,13 @@
+==APPRIS_RELEASE:RELNOTES:2016_07.v17==
+#################################
+# SERVER-RELEASE:   2016_07.v17 #
+# CODE-RELEASE:     4.5.2.11    #
+#################################
+
+* HIGHLIGHTS:
+	- New release of Ensembl (Ensembl 85) for human, mouse, and rat.   
+	
+
 ==APPRIS_RELEASE:RELNOTES:2016_06.v17==
 #################################
 # SERVER-RELEASE:   2016_06.v17 #

@@ -68,12 +68,12 @@ sub new {
 	my ($self) = bless {}, $class;
 
 	my (
-		$result,		$transmembrane_signal,
+		$result,		
 		$num_tmh,		$num_damaged_tmh,
 		$regions
 	)
 	= rearrange( [
-		'result',		'transmembrane_signal',
+		'result',		
 		'num_tmh',		'num_damaged_tmh',
 		'regions'
 	],
@@ -81,7 +81,6 @@ sub new {
 	);
 
  	$self->result($result);
- 	$self->transmembrane_signal($transmembrane_signal);
 	$self->num_tmh($num_tmh) if(defined $num_tmh);
 	$self->num_damaged_tmh($num_damaged_tmh) if(defined $num_damaged_tmh);
 	$self->regions($regions) if(defined $regions);
@@ -105,24 +104,6 @@ sub result {
 	my ($self) = shift;
 	$self->{'result'} = shift if(@_);
 	return $self->{'result'};
-}
-
-=head2 transmembrane_signal
-
-  Arg [1]    : (optional) String - the analysed transmembrane_signal to set
-  Example    : $analysis->transmembrane_signal(123);
-  Description: Getter/setter for the analysed transmembrane_signal
-  Returntype : String
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub transmembrane_signal {
-	my ($self) = shift;
-	$self->{'transmembrane_signal'} = shift if(@_);
-	return $self->{'transmembrane_signal'};
 }
 
 =head2 num_tmh

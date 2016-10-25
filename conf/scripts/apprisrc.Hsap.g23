@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/e81_g23"
 
-export APPRIS_WS_DATE="homo_sapiens/ens81.v17"
+export APPRIS_WS_DATE="homo_sapiens/ens81.v19"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -60,12 +60,6 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v23.pc_translati
 export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg38.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# -----------------------------------#
-# Setting up the vars for cached dir #
-# -----------------------------------#
-
-#export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/homo_sapiens/e76_g20"
 
 # ---------------------------------#
 # Setting up the vars for database #

@@ -1220,11 +1220,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->functional_residue ) {
+			if ( defined $method->result ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_firestar(
 									entity_id				=> $internal_entity_id,
-									functional_residue		=> $method->functional_residue,
 									num_residues			=> $method->num_residues,
 									result					=> $method->result
 					);
@@ -1267,11 +1266,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->conservation_structure and defined $method->score and defined $method->result ) {
+			if ( defined $method->score and defined $method->result ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_matador3d(
 									entity_id				=> $internal_entity_id,
-									conservation_structure	=> $method->conservation_structure,
 									score					=> $method->score,
 									result					=> $method->result
 					);
@@ -1321,13 +1319,12 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->domain_signal and defined $method->result and 
+			if ( defined $method->result and 
 				 defined $method->num_domains and defined $method->num_possibly_damaged_domains and
 				 defined $method->num_damaged_domains and defined $method->num_wrong_domains ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_spade(
 									entity_id						=> $internal_entity_id,
-									domain_signal					=> $method->domain_signal,
 									result							=> $method->result,
 									num_domains						=> $method->num_domains,
 									num_possibly_damaged_domains	=> $method->num_possibly_damaged_domains,
@@ -1521,8 +1518,7 @@ sub feed_transc_by_analysis {
 			# insert annotation
 			my($global_id);
 			if ( defined $method->result and 
-				 defined $method->sp_score and defined $method->tp_score and
-				 defined $method->peptide_signal and defined $method->mitochondrial_signal ) {
+				 defined $method->sp_score and defined $method->tp_score ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_crash(
 									entity_id					=> $internal_entity_id,
@@ -1580,12 +1576,11 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->transmembrane_signal and defined $method->result and 
+			if ( defined $method->result and 
 				 defined $method->num_tmh and defined $method->num_damaged_tmh ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_thump(
 									entity_id						=> $internal_entity_id,
-									transmembrane_signal			=> $method->transmembrane_signal,
 									result							=> $method->result,
 									num_tmh							=> $method->num_tmh,
 									num_damaged_tmh					=> $method->num_damaged_tmh
@@ -1630,11 +1625,10 @@ sub feed_transc_by_analysis {
 
 			# insert annotation
 			my($global_id);
-			if ( defined $method->vertebrate_signal and defined $method->result and defined $method->score ) {
+			if ( defined $method->result and defined $method->score ) {
 				eval {
 					$global_id = $self->dbadaptor->insert_corsair(
 									entity_id						=> $internal_entity_id,
-									vertebrate_signal				=> $method->vertebrate_signal,
 									result							=> $method->result,
 									score							=> $method->score,
 					);

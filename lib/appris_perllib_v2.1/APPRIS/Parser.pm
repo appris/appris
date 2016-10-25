@@ -629,27 +629,19 @@ sub parse_firestar_rst($)
 		
 		#ACCEPT: ID\tTOTAL_SCORE\tTOTAL_MOTIFS\n
 		# BEGIN: DEPRECATED
-		#if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\t]*)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		#if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		if ( $line =~ /^F>>\t+([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
 		# END: DEPRECATED
 		{
 			my ($id) = $1;
 			my ($total_score) = $2;
 			my ($total_residues) = $3;
-			# BEGIN: DEPRECATED
-			#my ($num_residues_6) = $4;
-			#my ($num_residues_5) = $5;
-			#my ($num_residues_4) = $6;
-			#my ($num_residues_3) = $7;
-			# END: DEPRECATED
 
 			if ( defined $id and ($id ne '') )
 			{
 				unless ( defined $total_residues and $total_residues ne '' )
-					{ $total_residues = 0; }
-					
+					{ $total_residues = 0; }					
 				$cutoffs->{$id}->{'num_residues'} = $total_residues;
-				$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_ACCEPT_LABEL;
 
 				# Save result for each transcript
 				my ($trans_result) = '';
@@ -661,38 +653,29 @@ sub parse_firestar_rst($)
 			}
 		}
 		#REJECT: ID\tTOTAL_SCORE\tTOTAL_MOTIFS\n
-		# BEGIN: DEPRECATED
-		#if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\t]*)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
-		# END: DEPRECATED
-		{
-			my ($id) = $1;
-			my ($total_score) = $2;
-			my ($total_residues) = $3;
-			# BEGIN: DEPRECATED
-			#my ($num_residues_6) = $4;
-			#my ($num_residues_5) = $5;
-			#my ($num_residues_4) = $6;
-			#my ($num_residues_3) = $7;
-			# END: DEPRECATED
-
-			if ( defined $id and ($id ne '') )
-			{
-				unless ( defined $total_residues and $total_residues ne '' )
-					{ $total_residues = 0; }
-					
-				$cutoffs->{$id}->{'num_residues'} = $total_residues;
-				$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_REJECT_LABEL;
-				
-				# Save result for each transcript
-				my ($trans_result) = '';
-				if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
-					$trans_result .= $cutoffs->{$id}->{'result'};
-					$trans_result .= "----------------------------------------------------------------------\n";					
-				}				
-				$cutoffs->{$id}->{'result'} = $trans_result . $line;				
-			}
-		}
+		#if ( $line =~ /^REJECT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
+		#{
+		#	my ($id) = $1;
+		#	my ($total_score) = $2;
+		#	my ($total_residues) = $3;
+		#
+		#	if ( defined $id and ($id ne '') )
+		#	{
+		#		unless ( defined $total_residues and $total_residues ne '' )
+		#			{ $total_residues = 0; }
+		#			
+		#		$cutoffs->{$id}->{'num_residues'} = $total_residues;
+		#		$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_REJECT_LABEL;
+		#		
+		#		# Save result for each transcript
+		#		my ($trans_result) = '';
+		#		if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
+		#			$trans_result .= $cutoffs->{$id}->{'result'};
+		#			$trans_result .= "----------------------------------------------------------------------\n";					
+		#		}				
+		#		$cutoffs->{$id}->{'result'} = $trans_result . $line;				
+		#	}
+		#}
 	}
 	$cutoffs->{'result'} = $result;
 	
@@ -738,7 +721,8 @@ sub parse_firestar($$)
 		my ($analysis);
 				
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'functional_residue'} ) {
+		#if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'functional_residue'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -771,8 +755,6 @@ sub parse_firestar($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::Firestar->new (
 							-result					=> $report->{'result'},
-							-score					=> $report->{'score'},
-							-functional_residue		=> $report->{'functional_residue'},
 							-num_residues			=> $report->{'num_residues'},
 			);
 			$method->residues($regions) if (defined $regions); 
@@ -828,20 +810,11 @@ sub parse_matador3d_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000308249        3.65
+		#- 196:262[3]    1.33
+        #	196:242[190:240] 0.33[0.33*1*1]	 1Q33_A[35.9]
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($conservation_structure) = $2;
-
-			$cutoffs->{$id}->{'conservation_structure'} = $conservation_structure;
-		}
-        elsif ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000308249        3.65
-			#- 196:262[3]    1.33
-	        #	196:242[190:240] 0.33[0.33*1*1]	 1Q33_A[35.9]
-
 			my ($id) = $1;
 			my ($structure_score) = $2;
 			$cutoffs->{$id}->{'score'} = $structure_score;
@@ -967,7 +940,7 @@ sub parse_matador3d($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'conservation_structure'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -1027,8 +1000,7 @@ sub parse_matador3d($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::Matador3D->new (
 							-result					=> $report->{'result'},
-							-score					=> $report->{'score'},
-							-conservation_structure	=> $report->{'conservation_structure'},
+							-score					=> $report->{'score'}
 			);
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);
@@ -1087,23 +1059,15 @@ sub parse_spade_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000356093        571.9   4       2       0       0
+		#domain  5       81      5       81      PF09379.3       FERM_N  Domain  1       80      80      74.3    4.7e-21 1       CL0072  [ext:ENST00000373800]
+		#domain_possibly_damaged 83      192     83      192     PF00373.11      FERM_M  Domain  1       117     117     74.7    4.9e-21 1       No_clan [ext:ENST00000373800]
+		#domain_possibly_damaged 198     281     196     285     PF09380.3       FERM_C  Domain  3       85      90      81.9    2.2e-23 1       CL0266  [ext:ENST00000373800]
+		#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
+		#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
+		#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
+        if ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($domain_signal) = $2;
-
-			$cutoffs->{$id}->{'domain_signal'} = $domain_signal;
-		}
-        elsif ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000356093        571.9   4       2       0       0
-			#domain  5       81      5       81      PF09379.3       FERM_N  Domain  1       80      80      74.3    4.7e-21 1       CL0072  [ext:ENST00000373800]
-			#domain_possibly_damaged 83      192     83      192     PF00373.11      FERM_M  Domain  1       117     117     74.7    4.9e-21 1       No_clan [ext:ENST00000373800]
-			#domain_possibly_damaged 198     281     196     285     PF09380.3       FERM_C  Domain  3       85      90      81.9    2.2e-23 1       CL0266  [ext:ENST00000373800]
-			#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
-			#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
-			#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
 			my ($id) = $1;
 			my ($bitscore) = $2;
 			my ($num_domains) = $3;
@@ -1260,7 +1224,7 @@ sub parse_spade($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'domain_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
 			if ( $transcript->translate ) {				
@@ -1334,7 +1298,6 @@ sub parse_spade($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::SPADE->new (
 							-result							=> $report->{'result'},
-							-domain_signal					=> $report->{'domain_signal'},
 							-num_domains					=> $report->{'num_domains'},
 							-num_possibly_damaged_domains	=> $report->{'num_possibly_damaged_domains'},
 							-num_damaged_domains			=> $report->{'num_damaged_domains'},
@@ -1573,24 +1536,16 @@ sub parse_corsair_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+		#>ENST00000518498.1      0.5
+		#Homo sapiens    100.00  0.5
+		#        -43735403:43735526[1:42]        0.5
+		#                -Homo sapiens   100.00  0.5
+		#        -43733595:43733741[43:91]       0.5 {1-ENST00000291525.10}
+		#                -Homo sapiens   100.00  0.5
+		#        -43732369:43732379[92:94]       0.5 {1-ENST00000291525.10}
+		#                -Homo sapiens   100.00  0.5
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
 		{
-			my ($id) = $1;
-			my ($vertebrate_signal) = $2;
-
-			$cutoffs->{$id}->{'vertebrate_signal'} = $vertebrate_signal;
-		}
-        elsif ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
-		{
-			#>ENST00000518498.1      0.5
-			#Homo sapiens    100.00  0.5
-			#        -43735403:43735526[1:42]        0.5
-			#                -Homo sapiens   100.00  0.5
-			#        -43733595:43733741[43:91]       0.5 {1-ENST00000291525.10}
-			#                -Homo sapiens   100.00  0.5
-			#        -43732369:43732379[92:94]       0.5 {1-ENST00000291525.10}
-			#                -Homo sapiens   100.00  0.5
 			my ($id) = $1;
 			my ($score) = $2;
 			$cutoffs->{$id}->{'score'} = $score;
@@ -1696,7 +1651,7 @@ sub parse_corsair($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'vertebrate_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};			
 			my ($regions);			
 			if ( $transcript->translate ) {
@@ -1738,8 +1693,7 @@ sub parse_corsair($$)
 			# create Analysis object (for trans)			
 			my ($method) = APPRIS::Analysis::CORSAIR->new (
 							-result							=> $report->{'result'},
-							-vertebrate_signal				=> $report->{'vertebrate_signal'},
-							-score							=> $report->{'score'},							
+							-score							=> $report->{'score'}							
 			);
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);
@@ -1988,14 +1942,6 @@ sub parse_thump_rst($)
 	my (@results) = split('>',$result);	
 	foreach my $transcript_result (@results)
 	{
-        #>ENST00000381318        UNKNOWN
-        if ( $transcript_result =~ /^([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
-		{
-			my ($id) = $1;
-			my ($transmembrane_signal) = $2;
-
-			$cutoffs->{$id}->{'transmembrane_signal'} = $transmembrane_signal;
-		}
 		#>ENST00000300482    length 1503 a.a.
 		#helix number 1 start: 798       end: 818
 		#helix number 2 start: 829       end: 841        damaged
@@ -2003,7 +1949,7 @@ sub parse_thump_rst($)
 		#helix number 4 start: 895       end: 908        damaged
 		#helix number 5 start: 935       end: 955
 		#helix number 6 start: 1024      end: 1041		
-        elsif ( $transcript_result =~ /^([^\t]+)\t+length\s+([^\s]+)\s+a\.a\.\n+/ )
+        if ( $transcript_result =~ /^([^\t]+)\t+length\s+([^\s]+)\s+a\.a\.\n+/ )
 		{
 			# get the helix coordinates
 			my ($id) = $1;
@@ -2080,7 +2026,7 @@ sub parse_thump($$)
 		my ($analysis);
 		
 		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'transmembrane_signal'} ) {
+		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
 			if ( $transcript->translate ) {				
@@ -2123,7 +2069,6 @@ sub parse_thump($$)
 			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation 			
 			my ($method) = APPRIS::Analysis::THUMP->new (
 							-result							=> $report->{'result'},
-							-transmembrane_signal			=> $report->{'transmembrane_signal'},
 							-num_tmh						=> $report->{'num_tmh'},
 							-num_damaged_tmh				=> $report->{'num_damaged_tmh'}
 			);
@@ -3284,7 +3229,7 @@ sub _is_refseq($)
 		}
 		else {
 			my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-			if ( (lc($source) =~ /refseq/) or (lc($source) =~ /bestrefseq/) or (lc($source) =~ /curated genomic/) or (lc($source) =~ /gnomon/) ) { $is_refseq = 1 }
+			if ( (lc($source) =~ /refseq/) or (lc($source) =~ /bestrefseq/) or (lc($source) =~ /curated genomic/) or (lc($source) =~ /gnomon/) ) { if ( $attributes =~ /ID\=/ ) { $is_refseq = 1 } }
 			else { last; }
 		}
 	}

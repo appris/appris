@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="caenorhabditis_elegans/e84"
+export APPRIS_WS_NAME="caenorhabditis_elegans/e86"
 
-export APPRIS_WS_DATE="caenorhabditis_elegans/ens84.v17"
+export APPRIS_WS_DATE="caenorhabditis_elegans/ens86.v19"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -46,7 +46,7 @@ export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
 
 #export APPRIS_E_VERSION=82
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.84.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.86.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.WBcel235.cdna.all.fa"
 
@@ -61,12 +61,6 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Caenorhabditis_elegans.W
 export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/ce10.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# -----------------------------------#
-# Setting up the vars for cached dir #
-# -----------------------------------#
-
-export APPRIS_CACHED_PATH="${APPRIS_PROGRAMS_TMP_DIR}/caenorhabditis_elegans/e82"
 
 # ---------------------------------#
 # Setting up the vars for database #

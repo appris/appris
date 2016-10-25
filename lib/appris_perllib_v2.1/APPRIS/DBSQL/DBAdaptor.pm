@@ -1546,8 +1546,7 @@ sub query_firestar {
         firestar_id,
         entity_id,
 		num_residues,
-		result,
-		functional_residue
+		result
   
 		from firestar ";
 
@@ -1623,8 +1622,7 @@ sub query_spade {
 		num_domains,
 		num_possibly_damaged_domains,
 		num_damaged_domains,
-		num_wrong_domains,
-		domain_signal
+		num_wrong_domains
   
 		from spade ";
 
@@ -1675,7 +1673,6 @@ sub query_spade_alignments {
 		s.num_possibly_damaged_domains,
 		s.num_damaged_domains,
 		s.num_wrong_domains,
-		s.domain_signal,
 		a.alignment_start,
 		a.alignment_end,
 		a.envelope_start,
@@ -1721,9 +1718,8 @@ sub query_corsair {
         my $statement = "select
         corsair_id,
         entity_id,
-		result,        
-		score,
-		vertebrate_signal
+		result,
+		score
   
 		from corsair ";
 
@@ -1747,8 +1743,7 @@ sub query_matador3d {
         my $statement = "select
         entity_id,
 		result,
-		score,
-		conservation_structure
+		score
   
 		from matador3d ";
   
@@ -1790,7 +1785,6 @@ sub query_matador3d_alignments {
         m.matador3d_id,
         m.result,
         m.score,
-        m.conservation_structure,
         a.matador3d_alignments_id,
 		a.cds_id,
 		a.start,
@@ -1829,8 +1823,7 @@ sub query_thump {
         entity_id,
 		result,
 		num_tmh,
-		num_damaged_tmh,
-		transmembrane_signal
+		num_damaged_tmh
   
 		from thump ";
   
@@ -1873,7 +1866,6 @@ sub query_thump_helixes {
         t.result,
         t.num_tmh,
         t.num_damaged_tmh,
-        t.transmembrane_signal,
         h.thump_helixes_id,
 		h.start,
 		h.end,
@@ -2438,12 +2430,11 @@ sub insert_firestar {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into firestar (entity_id, num_residues, result, functional_residue) values (?,?,?,?)},
+	$dbh->do(q{insert into firestar (entity_id, num_residues, result) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'num_residues'},
-				$args{'result'},
-				$args{'functional_residue'} ));
+				$args{'result'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};
@@ -2482,12 +2473,11 @@ sub insert_matador3d {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into matador3d (entity_id, result, score, conservation_structure) values (?,?,?,?)},
+	$dbh->do(q{insert into matador3d (entity_id, result, score) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
-				$args{'score'},
-				$args{'conservation_structure'} ));
+				$args{'score'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};
@@ -2524,13 +2514,12 @@ sub insert_thump {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into thump (entity_id, result, num_tmh, num_damaged_tmh, transmembrane_signal) values (?,?,?,?,?)},
+	$dbh->do(q{insert into thump (entity_id, result, num_tmh, num_damaged_tmh) values (?,?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
 				$args{'num_tmh'},
-				$args{'num_damaged_tmh'},
-				$args{'transmembrane_signal'} ));
+				$args{'num_damaged_tmh'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	
@@ -2560,15 +2549,14 @@ sub insert_spade {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into spade (entity_id, result, num_domains, num_possibly_damaged_domains, num_damaged_domains, num_wrong_domains, domain_signal) values (?,?,?,?,?,?,?)},
+	$dbh->do(q{insert into spade (entity_id, result, num_domains, num_possibly_damaged_domains, num_damaged_domains, num_wrong_domains) values (?,?,?,?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
 				$args{'num_domains'},
 				$args{'num_possibly_damaged_domains'},
 				$args{'num_damaged_domains'},
-				$args{'num_wrong_domains'},
-				$args{'domain_signal'} ));
+				$args{'num_wrong_domains'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	
@@ -2618,12 +2606,11 @@ sub insert_corsair {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into corsair (entity_id, result, score, vertebrate_signal) values (?,?,?,?)},
+	$dbh->do(q{insert into corsair (entity_id, result, score) values (?,?,?)},
 			undef,(
 				$args{'entity_id'},
 				$args{'result'},
-				$args{'score'},
-				$args{'vertebrate_signal'} ));
+				$args{'score'} ));
 	};
 	die("\nERROR: $!\n") if $@;
 	return $dbh->{'mysql_insertid'};	
