@@ -111,14 +111,13 @@ Steps you have to do to acquire APPRIS system
 		```
 		ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
 		```
-	
-		
+				
 6. Take into account the temporal files coming for "code/opt" programs SignalP and TargetP:
-		```
-		cd signalp-3.0/tmp and targetp-1.1/tmp
-		chmod -R +t tmp
-		chmod -R 777 tmp
-		```
+	```
+	cd signalp-3.0/tmp and targetp-1.1/tmp
+	chmod -R +t tmp
+	chmod -R 777 tmp
+	```
 		
 
 Requirements
@@ -127,6 +126,7 @@ Requirements
 - Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
 
   * for global scripts of appris:
+	```
 	- FindBin
 	- Getopt::Long
 	- Config::IniFiles
@@ -135,15 +135,21 @@ Requirements
 	- File::Temp
 	- File::Basename
 	- Data::Dumper
+	```
 
   * for firestar scripts:
+  	```
 	- DBI
 	- POSIX
+	```
 
   * for inertia scripts:
+  	```
 	- Statistics::Descriptive
+	```
 
   * for spade scripts:
+  	```
 	- Moose
 	- Class::Load
 	- Data::OptList
@@ -152,15 +158,20 @@ Requirements
 	- MRO::Compat
 	- Data::Printer
 	- IPC::Run
+	```
 	
   * for web services:
+  	```
 	- CGI
 	- HTTP::Status
 	- Email::Valid
 	- MIME::Lite
+	```
 	
   * for ensembl scripts:
+  	```
 	- Parse::RecDescent
+	```
 
 - [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
 
@@ -169,5 +180,9 @@ Requirements
 - Softwares:
 
   * for crash scripts:
+  	```
 	- gawk
+	```
+	
+	
 		
