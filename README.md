@@ -34,73 +34,10 @@ The methods in APPRIS are the following:
 ![Image of APPRIS pipeline] (http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
 
 
-Installing APPRIS
-=================
-
-Steps you have to do to acquire APPRIS system
-
-1. Clone APPRIS code:
-	```
-	git clone https://github.com/appris/appris.git
-	```
-	
-2. Download databases for APPRIS code:
-	```
-	TODO: Think where locate 70Gb of data.
-	```
-	
-3. Setting up the environment variables:
-
-	1. Add in your bash profile the following lines:
-		```  
-		export APPRIS_HOME="APPRIS HOME"
-		source ${APPRIS_HOME}/conf/apprisrc
-		source ${APPRIS_HOME}/conf/apprisrc.WS
-		```
-				
-	2. Setting up the environment variables for each execution in the sample configuration file "conf/scripts/apprisrc.*"
-  
-
-4. Setting up environment vars for "firestar" ("conf/code/fire_var.ini"):
-
-	1. Change the env vars:
-		```
-		[PATHS]
-			home
-			DB
-			tmp
-			AFM
-		[CLUSTER_PATHS]
-			home
-			root
-			dir
-			DB
-		```
-		
-	2. Add FireDB database:
-		```
-		database: FireDB
-		user: firedb
-		pwd:
-		```
-					
-5. Setting up the variables for Ensembl database:
-
-	5.1 Modify variables of config file that sets up Ensembl database, "conf/code/ensembldb.ini":
-		```
-		ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
-		```
-				
-6. Take into account the temporal files coming for "code/opt" programs SignalP and TargetP:
-	```
-	cd signalp-3.0/tmp and targetp-1.1/tmp
-	chmod -R +t tmp
-	chmod -R 777 tmp
-	```
-
-
 Requirements
 ============
+
+- Linux x86_64 machine
 
 - Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
 
@@ -152,6 +89,8 @@ Requirements
 	- Parse::RecDescent
 	```
 
+- [MySQL Client] (http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
+
 - [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
 
 - [Ensembl API] (http://www.ensembl.org/info/docs/api/api_installation.html)
@@ -161,6 +100,83 @@ Requirements
   * for crash scripts:  	
   	```
 	- gawk
+	```
+	
+	
+Installation
+=================
+
+Steps you have to do to acquire APPRIS system
+
+1. Clone APPRIS code:
+	```
+	git clone https://github.com/appris/appris.git
+	```
+	
+2. Download databases for APPRIS code:
+	```
+	TODO: Think where locate 70Gb of data.
+	```
+	
+3. Setting up the environment variables:
+
+	1. Add in your bash profile the following lines:
+		```  
+		export APPRIS_HOME="APPRIS HOME"
+		source ${APPRIS_HOME}/conf/apprisrc
+		source ${APPRIS_HOME}/conf/apprisrc.WS
+		```
+				
+	2. Setting up the environment variables for each execution in the sample configuration file "${APPRIS_HOME}/conf/scripts/apprisrc.*"
+  
+
+4. Setting up 'firestar' method:
+
+	1. Create FireDB database:
+		```
+		mysql> create user 'firedb'@'localhost';
+		mysql> grant all on FireDB.* to 'firedb'@'localhost';
+		mysql> create database FireDB;
+		```
+		
+	2. Import FireDB database:
+		```
+		mysql FireDB -h localhost -u firedb < ${APPRIS_HOME}/db/FireDB_*.sql		
+		```
+		
+	3. Setting up the environment variables in the file "${APPRIS_HOME}/conf/code/fire_var.ini":
+
+		1. Include database variables:
+			```
+			database: FireDB
+			user: firedb
+			pwd:
+			```
+			
+		2. Change the env vars:
+			```
+			[PATHS]
+				home
+				DB
+				tmp
+				AFM
+			[CLUSTER_PATHS]
+				home
+				root
+				dir
+				DB
+			```
+						
+5. Setting up the variables for Ensembl database in the "${APPRIS_HOME}/conf/code/ensembldb.ini":
+	```
+	ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
+	```
+				
+6. Take into account the temporal files coming for "${APPRIS_HOME}/code/opt" programs SignalP and TargetP:
+	```
+	cd signalp-3.0/tmp and targetp-1.1/tmp
+	chmod -R +t tmp
+	chmod -R 777 tmp
 	```
 
 

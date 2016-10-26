@@ -223,7 +223,7 @@ Executes all APPRIS 'steps
 
 	appristools_srv \
 		-r 2016_06.v17 \
-		-n release.dat \
+		-n changelog.md \
 		-s ws/server.json
 
 =head1 AUTHOR
