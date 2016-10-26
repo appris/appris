@@ -129,7 +129,7 @@ sub main()
 	my ($find) = 0;
 	my ($rel_notes) = "";
 	foreach my $nline (@{$release_notes}) {		
-		if ( $nline =~ /^```\n*SERVER-RELEASE:\s*$release / ) {
+		if ( $nline =~ /^## $release/ ) {
 			$find = 1;
 		}
 		elsif ( $nline =~ /^___/ ) {
