@@ -23,6 +23,8 @@ The methods in APPRIS are the following:
   * Prediction of signal peptide and sub-cellular location, CRASH
   * Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
 
+![Image of APPRIS pipeline] (http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
+
 Data access
 ===========
 The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.
@@ -59,42 +61,47 @@ Installing APPRIS
 Steps you have to do to acquire APPRIS system
 
 1. Clone APPRIS code:
-
+	```
 	git clone https://github.com/appris/appris.git
+	```
 	
 2. Download databases for APPRIS code:
-
+	```
 	TODO: Think where locate 70Gb of data.
-
+	```
+	
 3. Setting up the environment variables:
 
 	1. Add in your bash profile the following lines:
-  
+		```  
 		export APPRIS_HOME="APPRIS HOME"
 		source ${APPRIS_HOME}/conf/apprisrc
 		source ${APPRIS_HOME}/conf/apprisrc.WS
-		
+		```
 	2 Setting up the environment variables for each execution in the sample configuration file "conf/scripts/apprisrc.*"
   
 
 4. Setting up environment vars for "firestar" ("conf/code/fire_var.ini"):
 
 	1. Change the env vars:
-		> [PATHS]
-		>	home
-		>	DB
-		>	tmp
-		>	AFM
-		> [CLUSTER_PATHS]
-		>	home
-		>	root
-		>	dir
-		>	DB
-			
+		```
+		[PATHS]
+			home
+			DB
+			tmp
+			AFM
+		[CLUSTER_PATHS]
+			home
+			root
+			dir
+			DB
+		```
 	2. Add FireDB database:
-		> database: FireDB
-		> user: firedb
-		> pwd:
+		```
+		database: FireDB
+		user: firedb
+		pwd:
+		```
 					
 5. Setting up the variables for Ensembl database:
 
