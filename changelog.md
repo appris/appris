@@ -6,9 +6,9 @@
  #################################
 ```
 
-#### Highlights
+### Highlights
 	
-#### Code (2.11)
+### Code (2.11)
 - CORSAIR:
 A variant with "start/stop codons not found" can not to win.
 
@@ -22,10 +22,10 @@ __
  #################################
 ```
 
-#### Highlights
+### Highlights
 - New release of Ensembl (Ensembl 85) for human, mouse, and rat.
 	
-#### Code (2.11)
+### Code (2.11)
 - Matador3D v2: Has been reported to UniProt.
 	
 __
@@ -36,7 +36,7 @@ SERVER-RELEASE:   2016_07.v17
 CODE-RELEASE:     4.5.2.11
 ```
 
-#### Highlights
+### Highlights
 - New release of Ensembl (Ensembl 85) for human, mouse, and rat.
 - Freeze the code. [4.4.2.9] (https://github.com/appris/appris/tree/freeze_4.4.2.9)
 
@@ -48,17 +48,17 @@ SERVER-RELEASE:   2016_06.v17
 CODE-RELEASE:     4.5.2.11
 ```
 
-#### Highlights
+### Highlights
 - RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively. 
 	
-#### APPRIS-SERVER, v4.5
+### APPRIS-SERVER, v4.5
 - Change in the web services to accepts multiple datasets sources.
 
 - Now the search web services retrieves the results for a specific query.
 
 - Add TSL annots in the report web page:
 
-#### APPRIS-CODE, v2.11
+### APPRIS-CODE, v2.11
 - The file names of method results have changed.
 
 - Add TSL and TAG features in "entity" table.
@@ -81,10 +81,10 @@ A-RELEASE: 	2016_04.v16
 C-RELEASE: 	4.4.2.10
 ```
 
-#### Highlights
+### Highlights
 - RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively.
 	
-#### APPRIS-CODE, v2.10
+### APPRIS-CODE, v2.10
 
 - Add "tag" field into database and return its values like "readthought_transcripts"
 
@@ -123,11 +123,11 @@ A-RELEASE: 	2016_03.v15
 C-RELEASE: 	4.4.2.9
 ```
 
-#### Highlights
+### Highlights
 - New name for each release... Forget the date
 - New algorithm for SPADE: SPADE2
 	
-#### APPRIS-CODE, v2.9
+### APPRIS-CODE, v2.9
 
 - APPRIS
 	- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1),
