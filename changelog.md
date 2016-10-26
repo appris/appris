@@ -1,8 +1,8 @@
 ==APPRIS_RELEASE:RELNOTES:2016_11.v19==
-#################################
-# SERVER-RELEASE:   2016_11.v19 #
-# CODE-RELEASE:     4.5.2.12    #
-#################################
+```
+SERVER-RELEASE:   2016_11.v19
+CODE-RELEASE:     4.5.2.12
+```
 
 ### Highlights
 	
@@ -13,10 +13,10 @@ A variant with "start/stop codons not found" can not to win.
 
 
 ==APPRIS_RELEASE:RELNOTES:2016_07.v18==
-#################################
-# SERVER-RELEASE:   2016_07.v18 #
-# CODE-RELEASE:     4.4.2.10    #
-#################################
+```
+SERVER-RELEASE:   2016_07.v18
+CODE-RELEASE:     4.4.2.10
+```
 
 ### Highlights
 	- New release of Ensembl (Ensembl 85) for human, mouse, and rat.
@@ -25,33 +25,33 @@ A variant with "start/stop codons not found" can not to win.
 - Matador3D v2: Has been reported to UniProt.
 	
 ==APPRIS_RELEASE:RELNOTES:2016_07.v17==
-#################################
-# SERVER-RELEASE:   2016_07.v17 #
-# CODE-RELEASE:     4.5.2.11    #
-#################################
+```
+SERVER-RELEASE:   2016_07.v17
+CODE-RELEASE:     4.5.2.11
+```
 
-* HIGHLIGHTS:
+### Highlights
 	- New release of Ensembl (Ensembl 85) for human, mouse, and rat.
 	- Freeze the code. [4.4.2.9] (https://github.com/appris/appris/tree/freeze_4.4.2.9)   
 	
 
 ==APPRIS_RELEASE:RELNOTES:2016_06.v17==
-#################################
-# SERVER-RELEASE:   2016_06.v17 #
-# CODE-RELEASE:     4.5.2.11    #
-#################################
+```
+SERVER-RELEASE:   2016_06.v17
+CODE-RELEASE:     4.5.2.11
+```
 
-* HIGHLIGHTS:
+### Highlights
 	- RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively. 
 	
-* APPRIS-SERVER, v4.5
+### APPRIS-SERVER, v4.5
 	- Change in the web services to accepts multiple datasets sources.
 	
 	- Now the search web services retrieves the results for a specific query.
 	
 	- Add TSL annots in the report web page:
 
-* APPRIS-CODE, v2.11
+### APPRIS-CODE, v2.11
 
 	- The file names of method results have changed.
 	
@@ -70,15 +70,15 @@ A variant with "start/stop codons not found" can not to win.
 	- Create script "appristools_srv" to update the APPRIS release
 
 ==APPRIS_RELEASE:RELNOTES:2016_04.v16==
-#############################
-# A-RELEASE: 	2016_04.v16	#
-# C-RELEASE: 	4.4.2.10	#
-#############################
+```
+A-RELEASE: 	2016_04.v16
+C-RELEASE: 	4.4.2.10
+```
 
-* HIGHLIGHTS:
+### Highlights
 	- RefSeq versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively.
 	
-* APPRIS-CODE, v2.10
+### APPRIS-CODE, v2.10
 
 	- Add "tag" field into database and return its values like "readthought_transcripts"
 	
@@ -112,16 +112,16 @@ drosophila_melanogaster		BDGP6			ens84.v15				appris_drosophila_melanogaster_e84
 caenorhabditis_elegans		WBcel235		ens84.v15				appris_caenorhabditis_elegans_e84v15
 
 ==APPRIS_RELEASE:RELNOTES:2016_03.v15==
-#############################
-# A-RELEASE: 	2016_03.v15	#
-# C-RELEASE: 	4.4.2.9		#
-#############################
+```
+A-RELEASE: 	2016_03.v15
+C-RELEASE: 	4.4.2.9
+```
 
-* HIGHLIGHTS:
+### Highlights
 	- New name for each release... Forget the date
 	- New algorithm for SPADE: SPADE2
 	
-* APPRIS-CODE, v2.9
+### APPRIS-CODE, v2.9
 
 	- APPRIS
 		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1),
