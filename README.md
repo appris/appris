@@ -4,7 +4,7 @@ Welcome to APPRIS - A system for annotating alternative splice isoforms
 
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
-The server has been used in the context of the scale up of the GENCODE (http://www.gencodegenes.org/, a sub-project of the ENCODE) project to annotate the Human genome but APPRIS is being used for other species:
+The server has been used in the context of the scale up of the [GENCODE] (http://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
   * Human
   * Mouse
   * Rat
@@ -28,7 +28,7 @@ Data access
 The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.
 
   * Web Services, APPRIS data can be returned remotely using web services.
-http://apprisws.bioinfo.cnio.es/
+  http://apprisws.bioinfo.cnio.es/
 
   * Downloads, APPRIS data text files.
   http://appris.bioinfo.cnio.es/#/downloads
@@ -45,9 +45,9 @@ Nucleic Acids Res. 2015 Jul 1;43(W1):W455-9. doi: 10.1093/nar/gkv512.
 Contact
 =======
 This APPRIS website is powered by the Structural Computational Biology Group at
-	Centro Nacional de Investigaciones Oncologicas, ([CNIO]) (http://www.cnio.es)
+	Centro Nacional de Investigaciones Oncologicas, [CNIO] (http://www.cnio.es)
 		and
-	Instituto Nacional de Bioinformatica, ([INB]) (http://www.inab.org)
+	Instituto Nacional de Bioinformatica, [INB] (http://www.inab.org)
 
 If you have questions or comments, please write to:
 	Jose Manuel Rodríguez, jmrodriguez@cnio.es
@@ -114,52 +114,50 @@ Take into account the temporal files coming from "code/opt" programs
 Requirements
 ============
 
-Perl requirments:
+- Perl requirements (recommendation, use [CPAN] https://www.perl.org/cpan.html)):
 
   * for global scripts of appris:
-		- FindBin
-		- Getopt::Long
-		- Config::IniFiles
-		- Bio::SeqIO
-		- Bio::SearchIO
-		- File::Temp
-		- File::Basename
-		- Data::Dumper
+	- FindBin
+	- Getopt::Long
+	- Config::IniFiles
+	- Bio::SeqIO
+	- Bio::SearchIO
+	- File::Temp
+	- File::Basename
+	- Data::Dumper
 
   * for firestar scripts:
-		- DBI
-		- POSIX
+	- DBI
+	- POSIX
 
   * for inertia scripts:
-		- Statistics::Descriptive
+	- Statistics::Descriptive
 
   * for spade scripts:
-		- Moose
-		- Class::Load
-		- Data::OptList
-		- Module::Implementation
-		- Class::Load::XS
-		- MRO::Compat
-		- Data::Printer
-		- IPC::Run
+	- Moose
+	- Class::Load
+	- Data::OptList
+	- Module::Implementation
+	- Class::Load::XS
+	- MRO::Compat
+	- Data::Printer
+	- IPC::Run
 	
   * for web services:
-		- CGI
-		- HTTP::Status
-		- Email::Valid
-		- MIME::Lite
+	- CGI
+	- HTTP::Status
+	- Email::Valid
+	- MIME::Lite
 	
   * for ensembl scripts:
-		- Parse::RecDescent
+	- Parse::RecDescent
 
-BioPerl API (at least, 1.2.3)
+- [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
 
-Ensembl API
+- [Ensembl API] (http://www.ensembl.org/info/docs/api/api_installation.html)
 
-	- http://www.ensembl.org/info/docs/api/api_installation.html
+- Softwares:
 
-Softwares:
-
-	>> for crash scripts:
-		- gawk
+  * for crash scripts:
+	- gawk
 		
