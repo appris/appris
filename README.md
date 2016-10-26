@@ -1,6 +1,6 @@
 Welcome to APPRIS - A system for annotating alternative splice isoforms
 =======================================================================
-APPRIS [1] (http://appris.bioinfo.cnio.es) is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
+[APPRIS] (http://appris.bioinfo.cnio.es) [1] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
 
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
@@ -15,22 +15,22 @@ System overview
 The goals of the APPRIS system are to annotate alternative variants with reliable biological data and to select the primary variant for each gene. APPRIS is based on a range of complementary computational methods.
 
 The methods in APPRIS are the following:
-  == Functionally important residues, firestar
-  == Protein structural information, Matador3D
-  == Presence of whole protein domains, SPADE
-  == Conservation against vertebrates, CORSAIR
-  == Presence of whole trans-membrane helices, THUMP
-  == Prediction of signal peptide and sub-cellular location, CRASH
-  == Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
+## Functionally important residues, firestar
+## Protein structural information, Matador3D
+## Presence of whole protein domains, SPADE
+## Conservation against vertebrates, CORSAIR
+## Presence of whole trans-membrane helices, THUMP
+## Prediction of signal peptide and sub-cellular location, CRASH
+## Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
 
 Data access
 ===========
 The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.
 
-== Web Services, APPRIS data can be returned remotely using web services.
-  http://apprisws.bioinfo.cnio.es/
+## Web Services, APPRIS data can be returned remotely using web services.
+http://apprisws.bioinfo.cnio.es/
 
-== Downloads, APPRIS data text files.
+## Downloads, APPRIS data text files.
   http://appris.bioinfo.cnio.es/#/downloads
 
 References
@@ -45,9 +45,9 @@ Nucleic Acids Res. 2015 Jul 1;43(W1):W455-9. doi: 10.1093/nar/gkv512.
 Contact
 =======
 This APPRIS website is powered by the Structural Computational Biology Group at
-	Centro Nacional de Investigaciones Oncologicas, (CNIO, http://www.cnio.es)
+	Centro Nacional de Investigaciones Oncologicas, ([CNIO]) (http://www.cnio.es)
 		and
-	Instituto Nacional de Bioinformatica, (INB, http://www.inab.org)
+	Instituto Nacional de Bioinformatica, ([INB]) (http://www.inab.org)
 
 If you have questions or comments, please write to:
 	Jose Manuel Rodríguez, jmrodriguez@cnio.es
@@ -116,41 +116,41 @@ Requirements
 
 Perl requirments:
 
-	## for global scripts of appris:
-		- FindBin
-		- Getopt::Long
-		- Config::IniFiles
-		- Bio::SeqIO
-		- Bio::SearchIO
-		- File::Temp
-		- File::Basename
-		- Data::Dumper
+## for global scripts of appris:
+	- FindBin
+	- Getopt::Long
+	- Config::IniFiles
+	- Bio::SeqIO
+	- Bio::SearchIO
+	- File::Temp
+	- File::Basename
+	- Data::Dumper
 
-	>> for firestar scripts:
-		- DBI
-		- POSIX
+>> for firestar scripts:
+	- DBI
+	- POSIX
 
-	>> for inertia scripts:
-		- Statistics::Descriptive
+>> for inertia scripts:
+	- Statistics::Descriptive
 
-	>> for spade scripts:
-		- Moose
-		- Class::Load
-		- Data::OptList
-		- Module::Implementation
-		- Class::Load::XS
-		- MRO::Compat
-		- Data::Printer
-		- IPC::Run
-		
-	>> for web services:
-		- CGI
-		- HTTP::Status
-		- Email::Valid
-		- MIME::Lite
-		
-	>> for ensembl scripts:
-		- Parse::RecDescent
+>> for spade scripts:
+	- Moose
+	- Class::Load
+	- Data::OptList
+	- Module::Implementation
+	- Class::Load::XS
+	- MRO::Compat
+	- Data::Printer
+	- IPC::Run
+	
+>> for web services:
+	- CGI
+	- HTTP::Status
+	- Email::Valid
+	- MIME::Lite
+	
+>> for ensembl scripts:
+	- Parse::RecDescent
 
 BioPerl API (at least, 1.2.3)
 
