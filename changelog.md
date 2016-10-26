@@ -1,5 +1,4 @@
-==APPRIS_RELEASE:RELNOTES:2016_11.v19==
-## 2016_11.v19
+__2016_11.v19__
 ```
 SERVER-RELEASE:   2016_11.v19
 CODE-RELEASE:     4.5.2.12
@@ -12,8 +11,7 @@ CODE-RELEASE:     4.5.2.12
 A variant with "start/stop codons not found" can not to win.
 
 
-==APPRIS_RELEASE:RELNOTES:2016_07.v18==
-## 2016_07.v18
+__2016_07.v18__
 ```
 SERVER-RELEASE:   2016_07.v18
 CODE-RELEASE:     4.4.2.10
