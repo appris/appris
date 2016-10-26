@@ -45,9 +45,9 @@ Nucleic Acids Res. 2015 Jul 1;43(W1):W455-9. doi: 10.1093/nar/gkv512.
 Contact
 =======
 This APPRIS website is powered by the Structural Computational Biology Group at
-	Centro Nacional de Investigaciones Oncologicas, [CNIO] (http://www.cnio.es)
+	Centro Nacional de Investigaciones Oncologicas, ([CNIO] (http://www.cnio.es))
 		and
-	Instituto Nacional de Bioinformatica, [INB] (http://www.inab.org)
+	Instituto Nacional de Bioinformatica, ([INB] (http://www.inab.org))
 
 If you have questions or comments, please write to:
 	Jose Manuel Rodríguez, jmrodriguez@cnio.es
@@ -114,7 +114,7 @@ Take into account the temporal files coming from "code/opt" programs
 Requirements
 ============
 
-- Perl requirements (recommendation, use [CPAN] https://www.perl.org/cpan.html)):
+- Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
 
   * for global scripts of appris:
 	- FindBin
