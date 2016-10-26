@@ -35,31 +35,31 @@ Change Log
 		 
 ### Data, v17:
 - Human
-	> Ensembl86/Gencode25 (GRCh38)		ens86.v19
-	> Ensembl84/Gencode24 (GRCh38)		ens84.v19
-	> Ensembl81/Gencode23 (GRCh38)		ens81.v19 ???
-	> Ensembl79/Gencode22 (GRCh38)		ens79.v19 ???
-	> RefSeq107							rs107.v19
-	> Ensembl74/Gencode19 (GRCh37)		gen19.v19
-	> RefSeq105							rs105.v19
-	> UniProt 2016_06					up201606.v19
+	* Ensembl86/Gencode25 (GRCh38)		ens86.v19
+	* Ensembl84/Gencode24 (GRCh38)		ens84.v19
+	* Ensembl81/Gencode23 (GRCh38)		ens81.v19 ???
+	* Ensembl79/Gencode22 (GRCh38)		ens79.v19 ???
+	* RefSeq107							rs107.v19
+	* Ensembl74/Gencode19 (GRCh37)		gen19.v19
+	* RefSeq105							rs105.v19
+	* UniProt 2016_06					up201606.v19
 - Mouse
-	> Ensembl86/GencodeM11 (GRCm38)		ens86.v19
-	> Ensembl84/GencodeM9  (GRCm38)		ens84.v19
+	* Ensembl86/GencodeM11 (GRCm38)		ens86.v19
+	* Ensembl84/GencodeM9  (GRCm38)		ens84.v19
 - Zebra-fish
-	> Ensembl86 (GRCz10)				ens86.v19
-	> Ensembl77 (Zv9)					ens77.v19
+	* Ensembl86 (GRCz10)				ens86.v19
+	* Ensembl77 (Zv9)					ens77.v19
 - Rat
-	> Ensembl86 (Rn6)					ens86.v19
-	> Ensembl77 (Rn5)					ens77.v19
+	* Ensembl86 (Rn6)					ens86.v19
+	* Ensembl77 (Rn5)					ens77.v19
 - Pig
-	> Ensembl86 (Sscrofa10.2)			ens86.v19
+	* Ensembl86 (Sscrofa10.2)			ens86.v19
 - Chimp
-	> Ensembl86 (CHIMP2.1.4)			ens86.v19
+	* Ensembl86 (CHIMP2.1.4)			ens86.v19
 - Fruitfly
-	> Ensembl86 (BDGP6)					ens86.v19		
+	* Ensembl86 (BDGP6)					ens86.v19		
 - C-elegans
-	> Ensembl86 (WBcel235)				ens86.v19
+	* Ensembl86 (WBcel235)				ens86.v19
 			
 
 ## 2016_07.v18
