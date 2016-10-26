@@ -18,7 +18,6 @@ Change Log
 ```
 
 ## 2016_11.v19
-
 ```
 #############################
 # A-RELEASE: 	2016_11.v19	#
@@ -27,14 +26,14 @@ Change Log
 #############################
 ```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	
-** APPRIS-CODE, v2.11
+### APPRIS-CODE, v2.11
 
 	- CORSAIR:
 		- A variant with "start/stop codons not found" can not to win.
 		 
-** APPRIS-DATA, v17
+### APPRIS-DATA, v17
 		- Human
 			> Ensembl86/Gencode25 (GRCh38)		ens86.v19
 			> Ensembl84/Gencode24 (GRCh38)		ens84.v19
@@ -63,41 +62,50 @@ Change Log
 			> Ensembl86 (WBcel235)				ens86.v19
 			
 
+## 2016_07.v18
+```
 #############################
 # A-RELEASE: 	2016_07.v18	#
 # C-RELEASE: 	4.4.2.10	#
 # I-DATE: 		01Nov2016	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	
-** APPRIS-CODE, v2.10
+### APPRIS-CODE, v2.10
 
 	- Matador3D v2: Has been reported to UniProt.
 	
 	
 
+## 2016_06.v17
+```
 #############################
 # A-RELEASE: 	2016_06.v17	#
 # C-RELEASE: 	4.4.2.9		#
 # I-DATE: 		01Jun2016	#
 #############################
+```
 
-** HIGHLIGHTS:
-	- Freeze the code. 4.4.2.9
+### HIGHLIGHTS:
+	- Freeze the code. [4.4.2.9] (https://github.com/appris/appris/tree/freeze_4.4.2.9)
 
 
+## 2016_03.v15
+```
 #############################
 # A-RELEASE: 	2016_03.v15	#
 # C-RELEASE: 	4.4.2.9		#
 # I-DATE: 		01Mar2016	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- New name for each release... Forget the date
 	- New algorithm for SPADE: SPADE2
 	
-** APPRIS-CODE, v2.9
+### APPRIS-CODE, v2.9
 
 	- APPRIS
 		- Fragments (CDS start/stop not found) changes (eg, ADGRD2, NEDD8-MDP1),
@@ -119,7 +127,7 @@ Change Log
 		- Herence only domains with bigger bitscore. Eg, ENSG00000164692
 
 		 
-** APPRIS-DATA, v15
+### APPRIS-DATA, v15
 		- Human
 			> Ensembl84/Gencode24 (GRCh38),	ens84.v15
 			> Ensembl81/Gencode23 (GRCh38),	ens81.v15
@@ -140,22 +148,25 @@ Change Log
 		- C-elegans
 			> Ensembl84 (WBcel235), 		ens84.v15
 			
-	
+
+## 2016_01.v14
+```
 #############################
 # A-RELEASE: 	2016_01.v14	#
 # C-RELEASE: 	4.3.2.8		#
 # I-DATE: 		29Jan2016	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 
-** APPRIS-CODE, v2.8
+### APPRIS-CODE, v2.8
 	- APPRIS
 		- Discard the filter of "start/stop" codon not found.
 		- Add new cutoff for CORSAIR method.
 		If the aa length is longer than len-cutoff but the max score is bigger than score-cutoff, then continue; Otherwise, discard the scores of all variants. Eg, FRYL
 		
-** APPRIS-DATA, v14
+### APPRIS-DATA, v14
 		- Human
 			> Ensembl84/Gencode24 (GRCh38),	ens84.v14.29Jan2016
 			> Ensembl74/Gencode19 (GRCh37), gen19.v14.29Jan2016
@@ -166,18 +177,20 @@ Change Log
 
 
 		
+```
 #############################
 # A-RELEASE: 	2015_12.v13	#
 # C-RELEASE: 	4.3.2.7		#
 # I-DATE: 		14Dec2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 
-** APPRIS-SERVER, v4.3
+### APPRIS-SERVER, v4.3
 	- Add TSL annots in the report web page.
 
-** APPRIS-CODE, v2.7
+### APPRIS-CODE, v2.7
 	- Matador3D
 		- Fixed bug: Take into account the -1 and -0.5 score. 
 	
@@ -188,7 +201,7 @@ Change Log
 			- If all variants are NM or fragments, we don't reject them (and keep going with pipeline).
 		- If fragments have CCDS, we don't reject them (eg, EIF4G2)
 					
-** APPRIS-DATA, v13
+### APPRIS-DATA, v13
 		- Human
 			> Ensembl83/Gencode24 (GRCh38),	ens83.v13.14Dec2015
 			> Ensembl74/Gencode19 (GRCh37), gen19.v13.14Dec2015
@@ -208,16 +221,18 @@ Change Log
 			> Ensembl82 (WBcel235), 		ens83.v13.14Dec2015
 
 
+```
 #############################
 # A-RELEASE: 	2015_11.v12	#
 # C-RELEASE: 	4.3.2.6		#
 # I-DATE: 		26Oct2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Hand-over for e83: Human, Mouse and Rat.
 		
-** APPRIS-DATA, v12
+### APPRIS-DATA, v12
 		- Human
 			> Ensembl83/Gencode24 (GRCh38),	ens83.v12.26Oct2015
 		- Mouse
@@ -237,21 +252,23 @@ Change Log
 	
 	- New gene data set: RefSeq!!! (version r107)
 	
+```
 #############################
 # A-RELEASE: 	2015_10.v11	#
 # C-RELEASE: 	4.3.2.6		#
 # I-DATE: 		01Sep2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	
-** APPRIS-CODE, v2.6
+### APPRIS-CODE, v2.6
 	- APPRIS
 		- The filter of 'codon not found' has been deleted. For cases like GTF3A, or CG43172 gene for Drosophila. 
 	
 	- Scripts than download the features files for species and Ensembl version.
 	
-** APPRIS-DATA, v11
+### APPRIS-DATA, v11
 	- Annotations for all species using the code version v2.6.
 		- Human
 			> Ensembl82/Gencode23 (GRCh38),	ens82.v11.01Sep2015
@@ -271,18 +288,20 @@ Change Log
 		- C-elegans
 			> Ensembl82 (WBcel235), 		ens82.v11.01Sep2015
 	
+```
 #############################
 # A-RELEASE: 	2015_09.v10	#
 # C-RELEASE: 	4.3.2.5		#
 # I-DATE: 		21Aug2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Hand-over for e82: Mouse.
 	- NEW!!! Creation of UCSC 'trackHub' for APPRIS species:
 		human(hg38,hg19), mouse(mm10), zebra-fish(danRer10), rat(rn6), pig(susScr3), chimp(panTro4), fruitfly(dm6), C.elegans(ce10)   
 	
-** APPRIS-DATA, v10
+### APPRIS-DATA, v10
 	New gene data-set for Mouse:
 	- Mouse
 		> Ensembl82/GencodeM7 (GRCm38),	ens82.v10.21Aug2015
@@ -294,13 +313,15 @@ Change Log
 	- C-elegans
 		> Ensembl81 (WBcel235), 		ens81.v10.21Aug2015
 	
+```
 #############################
 # A-RELEASE: 	2015_08.v10 #
 # C-RELEASE: 	4.3.2.5		#
 # I-DATE: 		21Aug2015	#
 #############################
+```
 
-** APPRIS-CODE, v2.5
+### APPRIS-CODE, v2.5
 	- APPRIS 
 		- Horrible bug fixed. The decision in length was bad :-(
 		- Bug fixed in the APPRIS decision:
@@ -308,7 +329,7 @@ Change Log
         	But we check also if the gene has unique transcripts, eg. CTD-3222D19.2
 	- Change the name of databases. Add suffix for version
 
-** APPRIS-DATA, v10
+### APPRIS-DATA, v10
 	- Human
 		> Ensembl81/Gencode23 (GRCh38),	ens81.v10.21Aug2015
 		> Ensembl76/Gencode20 (GRCh38),	ens76.v10.21Aug2015
@@ -325,18 +346,20 @@ Change Log
 	- Chimp
 		> Ensembl81 (CHIMP2.1.4), 		ens81.v10.21Aug2015
 		
+```
 #############################
 # A-RELEASE: 	2015_08.v9  #
 # C-RELEASE: 	4.3.2.4 	#
 # I-DATE: 		17Jul2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Hand-over for e81: Human, and Mouse.
 	- APPRIS has included invertebrate species: Drosophila melanogaster and Caenorhabditis elegans!!!	
 	- TSL method (http://www.ensembl.org/Help/Glossary?id=492) is included into APPRIS decision.
 	
-** APPRIS-SERVER, v4.3
+### APPRIS-SERVER, v4.3
 	- Now Sequence Browser retrieves annotations in detail for residue.
 	- Improve/fixing the annotations within sequence Browser
 	- Change of 'viewer' web service that prints the UCSC image to 'sequencer'
@@ -347,7 +370,7 @@ Change Log
 	- Include 'Changelogs' section.
 	- Maintain templates 'app_mnt'
 	
-** APPRIS-CODE, v2.4
+### APPRIS-CODE, v2.4
 	- MATADOR3D
 		- The score of total gaps was not working. There were not cases with -1,-0.5 score. E.g. PAX6 gene
 	- SPADE
@@ -365,7 +388,7 @@ Change Log
 	- 'retrieve_method_data', Methods as input parameter
 	- Using fork to spread load to multiple cores	
 
-** APPRIS-DATA, v9
+### APPRIS-DATA, v9
 	- Human
 		> Ensembl81/Gencode23 (GRCh38),	ens81.v9.17Jul2015
 		> Ensembl76/Gencode20 (GRCh38),	ens76.v9.17Jul2015 <- FREEZE!!
@@ -386,26 +409,28 @@ Change Log
 	- Fruitfly
 		> Ensembl81 (BDGP6), 			ens81.v9.17Jul2015
 		
+```
 #############################
 # A-RELEASE: 	2015_05.v8  #
 # C-RELEASE: 	4.2.2.3 	#
 # I-DATE: 		16Apr2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Hand-over for e80: Mouse, Zebra-fish and Rat.
 	- New assemblies for Zebra-fish (GRCz10) and Rat (Rnor_6.0).
 
-** APPRIS-SERVER, v4.2
+### APPRIS-SERVER, v4.2
 	- Fix a bug when UCSC image is shown.	
 	- Include AWStats is a free powerful and featureful tool that generates advanced web, streaming, ftp or mail server statistics, graphically.
 	http://apprisws.bioinfo.cnio.es/awstats/awstats.pl?month=all&year=2015&output=main&config=appris&framename=index
 		
-** APPRIS-CODE, v2.3
+### APPRIS-CODE, v2.3
 	- APPRIS
 		- Fixing a bug where we detect "start/stop" codons
 		
-** APPRIS-DATA, v8
+### APPRIS-DATA, v8
 	- Human
 		> Ensembl80/Gencode22 (GRCh38),	ens80.v8.16Apr2015 = ens79.v8.2Apr2015 
 		> Ensembl76/Gencode20 (GRCh38),	ens76.v8.16Apr2015 <- FREEZE!!
@@ -419,25 +444,27 @@ Change Log
 	- Pig
 		> Ensembl80 (Sscrofa10.2),		ens80.v8.16Apr2015
 		
+```
 #############################
 # A-RELEASE: 	2015_03.v7  #
 # C-RELEASE: 	4.1.2.2 	#
 # I-DATE: 		9Feb2015	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Fixing a bug in the CORSAIR filter.
 	- We have increase the number of the version for the release. The reason is the same number.
 	- The annotations for GRCh37 of human have been frozen: gen19.v7.9Feb2015
 
-** APPRIS-SERVER, v4.1
+### APPRIS-SERVER, v4.1
 
-** APPRIS-CODE, v2.2
+### APPRIS-CODE, v2.2
 	- APPRIS 
 		- Fixing a bug in the CORSAIR filter
 		- Fixing a bug in the filter of length sequences.
 		
-** APPRIS-DATA, v7
+### APPRIS-DATA, v7
 	- Human
 		> Ensembl77/Gencode21 (GRCh38), ens77.v7.9Feb2015
 		> Ensembl76/Gencode20 (GRCh38), ens76.v7.9Feb2015
@@ -451,19 +478,21 @@ Change Log
 	- Pig
 		> Ensembl77 (Sscrofa10.2), ens77.v7.9Feb2015
 		
+```
 #############################
 # A-RELEASE: 	2014_02.v1  #
 # C-RELEASE: 	4.0.2.1 	#
 # I-DATE: 		27Jan2014	#
 #############################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- NEW APPRIS SERVER
 	- New APPRIS algorithm using oldest CCDS ids as principal isoforms:
 
-** APPRIS-SERVER, v4.0
+### APPRIS-SERVER, v4.0
 
-** APPRIS-CODE, v2.1
+### APPRIS-CODE, v2.1
 	- New tags of PRINCIPAL ISOFORMS
 	- New script to retrieve the list of principal isforms for Ensembl
 	- APPRIS
@@ -474,7 +503,7 @@ Change Log
 				3. the longest CCDS
 				4. the longes protein sequence
 				
-** APPRIS-DATA, v1
+### APPRIS-DATA, v1
 	- Human
 		> Ensembl79 (GRCh38), ens79.v1.26Jan2015 # TEMPORAL
 		> Ensembl77/Gencode21 (GRCh38), ens77.v5.27Jan2015
@@ -488,23 +517,28 @@ Change Log
 	- Pig
 		> Ensembl77 (Sscrofa10.2), ens77.v2.27Jan2015
 		
+```
 ###############################################
 # DESCRIPTION OF APPRIS RELEASES: WS.C1.D	  #
 # WS -> Release of web server				  #
 # C1 -> Release of code (the second number)	  #
 # D  -> Release of data files			 	  #
 ###############################################
-		 
+```
+
+## 1Nov2014
+```
 #######################
 # DATE: 	1Nov2014  #
 # RELEASE:  3.4.4     #
 #######################
+```
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- APPRIS improvements included in for Dominant Isoform paper.
 	- Frozen version (tag release-1.4 in svn repository).
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Ensembl77/Gencode21 (GRCh38), ens77.v4.31Oct2014
 		> Gencode19/Ensembl74 (GRCh37), gen19.v5.31Oct2014
@@ -518,7 +552,7 @@ Change Log
 	- Pig
 		> Ensembl77 (Sscrofa10.2), ens77.v1.13Jan2015
 		
-** APPRIS-CODE, v1.4 (-> v.2.0)
+### APPRIS-CODE, v1.4 (-> v.2.0)
 	- APPRIS
 		- New APPRIS algorithm:
 			- new weights for methods.
@@ -528,11 +562,11 @@ Change Log
 # RELEASE:  3.4.3     #
 #######################
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- New filter in APPRIS in the case of CORSAIR decision.
 	- Release for Ensembl.
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Ensembl77/Gencode21 (GRCh38), ens77.v3.28Oct2014
 	- Mouse
@@ -543,7 +577,7 @@ Change Log
 		> Ensembl77 (Rn5),    ens77.v1.30Oct2014
 		
 		
-** APPRIS-CODE, v1.4
+### APPRIS-CODE, v1.4
 	- APPRIS
 		- New APPRIS algorithm:
 			- filter by aa length in CORSAIR
@@ -555,10 +589,10 @@ Change Log
 # RELEASE:  3.4.3     #
 #######################
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Include CCDS correctly for Ensembl77/Gencode21.
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Gencode21/Ensembl77 (GRCh38), ens77.v2.08Oct2014
 		
@@ -567,10 +601,10 @@ Change Log
 # RELEASE:  3.4.2     #
 #######################
 
-** HIGHLIGHTS:
+### HIGHLIGHTS:
 	- Include CCDS correctly for Gencode20 and GencodeM3.
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Gencode21/Ensembl77 (GRCh38), ens77.v1.29Aug2014
 		> Gencode20 (GRCh38), gen20.v2.13Aug2014
@@ -579,7 +613,7 @@ Change Log
 	- Zebra-fish
 		> Ensembl76 (Zv9),    ens76.v1.03Oct2014
 		
-** APPRIS-CODE, v1.4
+### APPRIS-CODE, v1.4
 	- GENCODE has changed the comment line of FASTA translation file.
 	- Include method which parser the input files coming from Ensembl (gtf, pep.fa, cdna.fa).
 	- Cached files for gene. 
@@ -589,7 +623,7 @@ Change Log
 # RELEASE:  3.4.1     #
 #######################
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Gencode20 (GRCh38), gen20.v1.16Jul2014
 		> Gencode19, gen19.v4.16Jul2014
@@ -597,7 +631,7 @@ Change Log
 	- Mouse
 		> GencodeM3 (GRCm38), genM3.v1.16Jul2014
 		
-** APPRIS-CODE, v1.4
+### APPRIS-CODE, v1.4
 	- Print parameters within log file
 	- Gencode methods do not need connect to Ensembl (Parser.pm)
 	- Include RESTful web services of APPRIS Runner.
@@ -629,7 +663,7 @@ Change Log
 				
 	- Export PROTEO features by means RESTful services.
 	
-** APPRIS-WEBSITE, v1.3
+### APPRIS-WEBSITE, v1.3
 	- CExonic is DEPRECATED
 	- Add PROTEO annotations
 	- Improve Web Site features.
@@ -643,13 +677,13 @@ Change Log
 # RELEASE:  3.3.1     # 
 #######################
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Gencode19, gen19.v3
 	- Mouse
 		> GencodeM2, genM2.v2
 		
-** APPRIS-CODE, v1.3
+### APPRIS-CODE, v1.3
 	- Print parameters within log file
 	- Gencode methods do not need connect to Ensembl (Parser.pm)
 	- Include RESTful web services of APPRIS Runner.
@@ -683,10 +717,10 @@ Change Log
 # RELEASE:  3.2.3     #
 #######################
 
-** MAIN DESCRIPTION
+### MAIN DESCRIPTION
 	- New release of annotations of Gencode19. Preliminar gencode data did not contain external name of genes.
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Human
 		> Gencode19, gen19.v2.18Dec2013
 
@@ -695,9 +729,9 @@ Change Log
 # RELEASE:  3.2.2     #
 #######################
 
-** MAIN DESCRIPTION
+### MAIN DESCRIPTION
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Change the format of list of principal isoforms.
 	For more information:
 		http://appris.bioinfo.cnio.es/download/README.txt 
@@ -716,9 +750,9 @@ Change Log
 # RELEASE:  3.2.1     #
 #######################
 
-** MAIN DESCRIPTION
+### MAIN DESCRIPTION
 
-** APPRIS-DATA
+### APPRIS-DATA
 	- Include "chromosome" column within "conserved_exons" data.
 	- Human
 		> Gencode15, g15.v4.16Oct2013		
@@ -729,7 +763,7 @@ Change Log
 	- Lynx (private data)
 		> p23A.v3.14Oct2013 
 
-** APPRIS-CODE, v1.2
+### APPRIS-CODE, v1.2
 	- Put together README files
 	- Include all code of APPRIS in GitHub (https://github.com/inab/appris)
 	
@@ -785,7 +819,7 @@ Change Log
 # RELEASE:  3.1.1       #
 #########################
 
-** APPRIS-WEBSITE, v1.3
+### APPRIS-WEBSITE, v1.3
 
 - Links of archives redirect to more specific website.
 
@@ -811,10 +845,10 @@ Change Log
 #########################
 
 
-** MAIN DESCRIPTION:
+### MAIN DESCRIPTION:
 
 
-** APPRIS-CODE, v1.1
+### APPRIS-CODE, v1.1
 
 We have decided to establish new nomenclature of version of appris's code.
 
@@ -841,7 +875,7 @@ We have decided to establish new nomenclature of version of appris's code.
 			'Tetraodon nigroviridis'	=> 2,
 			'Danio rerio'				=> 2.5,
 
-** APPRIS-DATA:
+### APPRIS-DATA:
 
 - Human
 	> Gencode12, rel12.27Jun2013.v5
@@ -852,7 +886,7 @@ We have decided to establish new nomenclature of version of appris's code.
 		- SPADE did not migrate variant domains with the same sequence.		
 		- FIRESTAR printed results whose cutoff was smaller than 65%.
 
-** NEW GENOMES:
+### NEW GENOMES:
 
 - Mouse
 	> Ensembl70, e70.v3.15Jul2013
@@ -865,7 +899,7 @@ We have decided to establish new nomenclature of version of appris's code.
 		- FIRESTAR printed results whose cutoff was smaller than 65%.
 
 
-** APPRIS-WEBSITE, v1.3
+### APPRIS-WEBSITE, v1.3
 	
 	- Add script for the rest of species
 	
