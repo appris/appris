@@ -1,4 +1,4 @@
-__2016_11.v19__
+## 2016_11.v19
 ```
 SERVER-RELEASE:   2016_11.v19
 CODE-RELEASE:     4.5.2.12
@@ -10,8 +10,9 @@ CODE-RELEASE:     4.5.2.12
 - CORSAIR:
 A variant with "start/stop codons not found" can not to win.
 
+__
 
-__2016_07.v18__
+## 2016_07.v18
 ```
 SERVER-RELEASE:   2016_07.v18
 CODE-RELEASE:     4.4.2.10
@@ -23,7 +24,8 @@ CODE-RELEASE:     4.4.2.10
 #### Code (2.11)
 - Matador3D v2: Has been reported to UniProt.
 	
-==APPRIS_RELEASE:RELNOTES:2016_07.v17==
+__
+
 ## 2016_07.v17
 ```
 SERVER-RELEASE:   2016_07.v17
@@ -32,10 +34,10 @@ CODE-RELEASE:     4.5.2.11
 
 #### Highlights
 - New release of Ensembl (Ensembl 85) for human, mouse, and rat.
-- Freeze the code. [4.4.2.9] (https://github.com/appris/appris/tree/freeze_4.4.2.9)   
-	
+- Freeze the code. [4.4.2.9] (https://github.com/appris/appris/tree/freeze_4.4.2.9)
 
-==APPRIS_RELEASE:RELNOTES:2016_06.v17==
+__
+
 ## 2016_06.v17
 ```
 SERVER-RELEASE:   2016_06.v17
