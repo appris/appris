@@ -78,7 +78,8 @@ Steps you have to do to acquire APPRIS system
 		source ${APPRIS_HOME}/conf/apprisrc
 		source ${APPRIS_HOME}/conf/apprisrc.WS
 		```
-	2 Setting up the environment variables for each execution in the sample configuration file "conf/scripts/apprisrc.*"
+				
+	2. Setting up the environment variables for each execution in the sample configuration file "conf/scripts/apprisrc.*"
   
 
 4. Setting up environment vars for "firestar" ("conf/code/fire_var.ini"):
@@ -96,6 +97,7 @@ Steps you have to do to acquire APPRIS system
 			dir
 			DB
 		```
+		
 	2. Add FireDB database:
 		```
 		database: FireDB
@@ -106,13 +108,17 @@ Steps you have to do to acquire APPRIS system
 5. Setting up the variables for Ensembl database:
 
 	5.1 Modify variables of config file that sets up Ensembl database, "conf/code/ensembldb.ini":
+		```
 		ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
+		```
 	
 		
 6. Take into account the temporal files coming for "code/opt" programs SignalP and TargetP:
+		```
 		cd signalp-3.0/tmp and targetp-1.1/tmp
 		chmod -R +t tmp
 		chmod -R 777 tmp
+		```
 		
 
 Requirements
