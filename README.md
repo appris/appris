@@ -5,10 +5,17 @@ Welcome to APPRIS - A system for annotating alternative splice isoforms
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
 The server has been used in the context of the scale up of the [GENCODE] (http://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
-  * Human
-  * Mouse
-  * Rat
-  * Zebrafish
+  * Vertebrate genomes:
+	  * Human
+	  * Mouse
+	  * Rat
+	  * Zebrafish
+	  * Rat
+	  * Pig
+	  * Chimpanzee
+  * Invertebrate genomes:
+  	  * Fruitfly
+  	  * C. elegans  	
 
 
 System overview
@@ -151,7 +158,7 @@ Requirements
 
 - Softwares:
 
-  * for crash scripts:
+  * for crash scripts:  	
   	```
 	- gawk
 	```
