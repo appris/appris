@@ -39,6 +39,12 @@ Requirements
 
 - Linux x86_64 machine
 
+- Softwares:
+  	```
+	- gawk
+	- git
+	```
+	
 - Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
 
   * for global scripts of appris:
@@ -95,16 +101,9 @@ Requirements
 
 - [Ensembl API] (http://www.ensembl.org/info/docs/api/api_installation.html)
 
-- Softwares:
-
-  * for crash scripts:  	
-  	```
-	- gawk
-	```
-	
 	
 Installation
-=================
+============
 
 Steps you have to do to acquire APPRIS system
 
