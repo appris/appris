@@ -112,12 +112,7 @@ Steps you have to do to acquire APPRIS system
 	git clone https://github.com/appris/appris.git
 	```
 	
-2. Download databases for APPRIS code:
-	```
-	TODO: Think where locate 70Gb of data.
-	```
-	
-3. Setting up the environment variables:
+2. Setting up the environment variables:
 
 	1. Add in your bash profile the following lines:
 		```  
@@ -127,8 +122,14 @@ Steps you have to do to acquire APPRIS system
 		```
 				
 	2. Setting up the environment variables for each execution in the sample configuration file "${APPRIS_HOME}/conf/scripts/apprisrc.*"
-  
 
+3. Download databases for APPRIS code:
+	```
+	wget 
+	cd ${APPRIS_HOME}
+	tar -xf appris_local_db.${date_version}.tar.gz 
+	```
+	
 4. Setting up 'firestar' method:
 
 	1. Create FireDB database:
@@ -140,7 +141,7 @@ Steps you have to do to acquire APPRIS system
 		
 	2. Import FireDB database:
 		```
-		mysql FireDB -h localhost -u firedb < ${APPRIS_HOME}/db/FireDB_*.sql		
+		mysql FireDB -h localhost -u firedb < ${APPRIS_HOME}/db/FireDB_*.sql
 		```
 		
 	3. Setting up the environment variables in the file "${APPRIS_HOME}/conf/code/fire_var.ini":
