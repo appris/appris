@@ -129,10 +129,10 @@ sub main()
 	my ($find) = 0;
 	my ($rel_notes) = "";
 	foreach my $nline (@{$release_notes}) {		
-		if ( $nline =~ /^==APPRIS_RELEASE:[^\:]*:$release/ ) {
+		if ( $nline =~ /^## $release/ ) {
 			$find = 1;
 		}
-		elsif ( $nline =~ /^==APPRIS_RELEASE:.*/ ) {
+		elsif ( $nline =~ /^___/ ) {
 			$find = 0;
 		}
 		if ( $find == 1 ) {
@@ -223,7 +223,7 @@ Executes all APPRIS 'steps
 
 	appristools_srv \
 		-r 2016_06.v17 \
-		-n release.dat \
+		-n changelog.md \
 		-s ws/server.json
 
 =head1 AUTHOR
