@@ -4,21 +4,21 @@ use strict;
 use FindBin;
 
 # inparameters are <program to run (s, pro, prodiv)> <prodiv-tmhmm directory> <modfile/seqfile directory> <ouput directory>
-if ( $#ARGV != 3 ) {
-  printf "Usage: all_tmhmm_runner.pl <prog> <modfiledir/seqfiledir> <outputdir> <tmpdir>\n";
+if ( $#ARGV != 2 ) {
+  printf "Usage: all_tmhmm_runner.pl <tmpName> <tmpDir> <outputFile>\n";
   exit;
 }
 
-my ($name) = $ARGV[0];
-my ($seqdir) = $ARGV[1]."/";
-my ($outdir) = $ARGV[2]."/";
-my ($tmpdir) = $ARGV[3]."/";
+my ($tmpname) = $ARGV[0];
+my ($tmpdir) = $ARGV[1]."/";
+my ($hmg_prodiv_res_file) = $ARGV[2]."/";
 my ($progdir) = $FindBin::Bin.'/';
 
-my ($seqnamefile) = $tmpdir."/$name.seqname.tmp";
-my ($hmmnamefile) = $tmpdir."/$name.hmm.tmp";
-my ($hmg_prodiv_file) = $tmpdir."/$name.prodiv";
-my ($hmg_prodiv_res_file) = $outdir."/$name.prodiv.res";
+my ($modfile) = $tmpdir."/$tmpname.mod";	
+my ($seqnamefile) = $tmpdir."/parking.prodiv.seqname.tmp";
+my ($hmmnamefile) = $tmpdir."/parking.prodiv.hmm.tmp";
+my ($hmg_prodiv_file) = $tmpdir."/$tmpname.prodiv";
+#my ($hmg_prodiv_res_file) = $tmpdir."/$tmpname.prodiv.res";
 
 # if exist prodiv result, we exist
 if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
@@ -27,7 +27,6 @@ if ( -e $hmg_prodiv_res_file and (-s $hmg_prodiv_res_file > 0) ) {
 
 # list all modfiles to modfile-file
 eval {
-	my ($modfile) = $seqdir."/$name.mod";	
 	my $seqfiles = `ls $modfile`;
 	open (SEQNAMEFILE, ">$seqnamefile") or die "Could not open temporary seqnamefile\n";
 	print SEQNAMEFILE "$seqfiles";
@@ -63,14 +62,8 @@ close(HMG_FILE2);
 
 # run prodiv
 eval {
-	my ($cmd) = "$progdir/modhmm0.92b/modhmms -m $hmmnamefile -s $seqnamefile -f msa -o $outdir/ -r $progdir/util/replacement_letter_multi.rpl -M GM -L -c 1 --max_d";
+	my ($cmd) = "$progdir/modhmm0.92b/modhmms -m $hmmnamefile -s $seqnamefile -f msa -o $tmpdir/ -r $progdir/util/replacement_letter_multi.rpl -M GM -L -c 1 --max_d";
 	print $cmd."\n";
 	system ($cmd);		
 };
 exit 1 if($@);
-
-
-#remove modile-file
-#`rm $outdir/seqnamefile.tmp`;
-#remove protnamefile
-#`rm $outdir/protnamefile.tmp`;

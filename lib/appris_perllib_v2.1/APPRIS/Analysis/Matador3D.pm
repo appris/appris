@@ -68,20 +68,17 @@ sub new {
 	my ($self) = bless {}, $class;
 	
 	my (
-		$result,		$conservation_structure,
-		$score,			$num_alignments,
-		$alignments
+		$result,				$score,
+		$num_alignments,		$alignments
 	)
 	= rearrange( [
-		'result',		'conservation_structure',
-		'score',		'num_alignments',
-		'alignments'
+		'result',				'score',
+		'num_alignments',		'alignments'
 	],
 	@_
 	);
 
  	$self->result($result);
- 	$self->conservation_structure($conservation_structure);
 	$self->score($score) if(defined $score);
 	$self->num_alignments($num_alignments) if(defined $num_alignments);
 	$self->alignments($alignments) if(defined $alignments);
@@ -105,24 +102,6 @@ sub result {
 	my ($self) = shift;
 	$self->{'result'} = shift if(@_);
 	return $self->{'result'};
-}
-
-=head2 conservation_structure
-
-  Arg [1]    : (optional) String - the analysed conservation_structure to set
-  Example    : $analysis->conservation_structure(123);
-  Description: Getter/setter for the analysed conservation_structure
-  Returntype : String
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub conservation_structure {
-	my ($self) = shift;
-	$self->{'conservation_structure'} = shift if(@_);
-	return $self->{'conservation_structure'};
 }
 
 =head2 score

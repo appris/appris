@@ -7,8 +7,9 @@ use Bio::SeqIO;
 use Config::IniFiles;
 use Data::Dumper;
 
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_workspace );
 
 ###################
 # Global variable #
@@ -17,8 +18,10 @@ use vars qw(
 	$LOCAL_PWD	
 	$DEFAULT_CONFIG_FILE
 	$DEFALULT_FIRESTAR_CONFIG_FILE
-	$WSPACE_BASE
+	$WSPACE_TMP
 	$WSPACE_CACHE
+	$NAME_DIR
+	$NAME_CACHE	
 	$PROG_EVALUE
 	$PROG_CUTOFF
 	$PROG_CSA
@@ -57,12 +60,13 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 }
 
 # Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
-$LOCAL_PWD			= $FindBin::Bin;
-#$DEFALULT_FIRESTAR_CONFIG_FILE = $LOCAL_PWD.'/firestar.ini';
+my ($cfg) 				= new Config::IniFiles( -file =>  $config_file );
+$LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
-$WSPACE_BASE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('FIRESTAR_VARS', 'name').'/';
-$WSPACE_CACHE			= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
+$WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$NAME_DIR				= $cfg->val('FIRESTAR_VARS', 'name');
+$NAME_CACHE				= $cfg->val('CACHE_VARS', 'name');
 $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');
 $PROG_CUTOFF			= $cfg->val('FIRESTAR_VARS', 'cutoff');
 $PROG_CSA				= $cfg->val('FIRESTAR_VARS', 'csa');
@@ -110,18 +114,6 @@ sub main()
 	my (@winners);
 	my (@loosers);
 		
-	# Setup configure file of firestar
-	my ($firestar_config_file) = $WSPACE_BASE.'/firestar.ini';
-	my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
-	my $subs_template = sub {
-		my ($cont, $old, $new) = @_;	
-		$cont =~ s/$old/$new/g;		
-		return $cont;		
-	};
-	$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $WSPACE_CACHE);
-	my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
-	$logger->error("-- printing firestar config annot") unless ( defined $print_log );
-		
 	# Declare and init the local variables
 	$logger->info("-- declare and init the local variables\n");
 		
@@ -161,20 +153,50 @@ sub main()
 	$output_content .= "# ============================================ #\n";
 	foreach my $varname (keys %gene_vars)
 	{
-		$logger->info("\t-- $varname");
+		$logger->info("\t-- $varname ");
 		my $seq = $gene_vars{$varname};
-		my ($firePredText_file) = $WSPACE_BASE.'/'.$varname.'.out'; # tmp file
+				
+		# create cache obj
+		my ($cache) = APPRIS::Utils::CacheMD5->new(
+			-dat => $seq,
+			-ws  => $WSPACE_CACHE			
+		);		
+		my ($seq_idx) = $cache->idx;
+		my ($seq_sidx) = $cache->sidx;
+		my ($seq_dir) = $cache->dir;
+				
+		# prepare cache dir
+		my ($ws_cache) = $cache->c_dir();
+		# prepare tmp dir
+		my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+		prepare_workspace($ws_tmp);		
+		
+		# Setup configure file of firestar
+		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
+		my $subs_template = sub {
+			my ($cont, $old, $new) = @_;	
+			$cont =~ s/$old/$new/g;		
+			return $cont;		
+		};
+
+		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
+		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
+		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
+		my ($firePredText_file) = $ws_cache.'/'.'seq.firestar';				
+		
+		my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
+		$logger->error("-- printing firestar config annot") unless ( defined $print_log );
 		
 		# If output is not cached
 		unless ( -e $firePredText_file and (-s $firePredText_file > 0) ) {
-			my ($firePredText_log) = $WSPACE_BASE.'/'.$varname.'.log'; # tmp file
-			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q $varname -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
+			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q seq -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
 			$logger->debug("\n** script: $cmd\n");			
 			my (@firePredText_out) = `$cmd`;
 			$logger->error("Empty output of firestar: $varname") unless (-e $firePredText_file and (-s $firePredText_file > 0) );			
 		}
-				
+			
 		my ($firePredText_cont) = getStringFromFile($firePredText_file);
+		$firePredText_cont =~ s/^>>>Query/>>>$varname/mg; # changet the 'Query' identifier from firestar to the current identifier 
 		my (@firePredText_cont2) = split(/\n/,$firePredText_cont);
 		foreach my $line (@firePredText_cont2)
 		{
@@ -417,8 +439,8 @@ sub main()
 	
 	
 	# Select rejected and accepted sequences ----------------
-	if ( defined $appris )
-	{
+	#if ( defined $appris )
+	#{
 		# get consensus residues
 		$logger->info("-- print consensus residues\n");	
 		
@@ -519,18 +541,16 @@ sub main()
 		
 		# print rejected and accepted sequences ----------------
 		$output_content .= "\n";
-		$output_content .= "# ================================ #\n";
-		$output_content .= "# Potential main variants -APPRIS- #\n";
-		$output_content .= "# ================================ #\n";
+		$output_content .= "# ========================================== #\n";
+		$output_content .= "# Final annotations: no. functional residues #\n";
+		$output_content .= "# ========================================== #\n";
 		foreach my $line (@winners)
 		{
 			my @vars = split(/ /, $line);
 			foreach my $varname (@vars)
 			{
-				# BEGIN: DEPRECATED
-				#$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\t$res_count{$varname}{seis}\t$res_count{$varname}{cinco}\t$res_count{$varname}{cuatro}\t$res_count{$varname}{tres}\n";
-				# END: DEPRECATED
-				$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				#$output_content .= "ACCEPT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				$output_content .= "F>>\t$varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
 			}
 		}
 		
@@ -539,13 +559,11 @@ sub main()
 			my @vars = split(/ /, $line);
 			foreach my $varname (@vars)
 			{
-				# BEGIN: DEPRECATED
-				#$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\t$res_count{$varname}{seis}\t$res_count{$varname}{cinco}\t$res_count{$varname}{cuatro}\t$res_count{$varname}{tres}\n";
-				# END: DEPRECATED
-				$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				#$output_content .= "REJECT: $varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
+				$output_content .= "F>>\t$varname\t$var_sumas{$varname}\t$res_count{$varname}{total}\n";
 			}
 		}	
-	}	
+	#}	
 
 	# Print output ----------------	
 	my ($print_out) = printStringIntoFile($output_content, $output_file);

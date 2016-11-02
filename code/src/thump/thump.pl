@@ -14,8 +14,9 @@ use Bio::SeqIO;
 use Config::IniFiles;
 use Data::Dumper;
 
+use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile );
+use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_workspace );
 
 ###################
 # Global variable #
@@ -26,21 +27,18 @@ use vars qw(
 	$MEMSAT3_DIR
 	$PHOBIUS_DIR
 	$PRODIV_DIR
-
-	$WSPACE_BASE
+	
+	$WSPACE_TMP
 	$WSPACE_CACHE
-	$WS_SEQUENCE
-	$WS_PREDICTION
-	$WS_MOD
-	$WS_PSIBLAST
-	$WS_ALIGN
-	$WS_TMP
 	$PROG_DB
-	$LOGGER_CONF
+	
+	$HELICE_LENGTH
 	
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
+	
+	$LOGGER_CONF
 );
 
 # Input parameters
@@ -73,25 +71,21 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 }
 
 # Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
+my ($cfg)			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $BIN_DIR			= $LOCAL_PWD.'/bin/';
 $MEMSAT3_DIR		= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/memsat3/';
 $PHOBIUS_DIR		= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/phobius/';
 $PRODIV_DIR			= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/prodiv/';
-$WSPACE_BASE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('THUMP_VARS', 'name').'/';
-$WSPACE_CACHE		= $cfg->val('APPRIS_PIPELINE', 'workspace').'/'.$cfg->val('CACHE_VARS', 'name').'/';
-$WS_SEQUENCE		= $WSPACE_BASE.'/sequences/';
-$WS_PREDICTION		= $WSPACE_BASE.'/predictions/';
-$WS_MOD				= $WSPACE_BASE.'/mod/';
-$WS_PSIBLAST		= $WSPACE_BASE.'/psiblast/';
-$WS_ALIGN			= $WSPACE_BASE.'/aligns/';
-$WS_TMP				= $WSPACE_BASE.'/tmp/';
+$WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('THUMP_VARS', 'db');
-$LOGGER_CONF		= '';
+$HELICE_LENGTH		= 9;
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
+
+$LOGGER_CONF		= '';
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -110,13 +104,15 @@ my ($logfilename) = $logger->logpath().'/'.$logger->logfile();
 #####################
 # Method prototypes #
 #####################
-sub run_phobius($$);
-sub run_memsat($$);
-sub run_kalign($$);
-sub convert_mod($$);
-sub run_prodiv($$);
+sub run_phobius($$$);
+sub run_memsat($$$);
+sub run_kalign($$$);
+sub convert_mod($$$);
+sub run_prodiv($$$);
+sub park_consensus($$$$$$);
+sub park_consensus_seq($);
+sub filter_damaged_length($);
 sub _get_appris_annotations($);
-sub _delete_tmp_dir($);
 
 
 #################
@@ -127,102 +123,86 @@ sub main()
 {
 	# Run methods
 	$logger->info("-- run thump pipeline for every variant\n");
-	eval {
-		my ($in) = Bio::SeqIO->new(
-					-file => $input_file,
-					-format => 'Fasta'
-		);
-		while ( my $seqObj = $in->next_seq() ) {			
-			if ( $seqObj->id =~ /([^|]*)/ )
-			{			
-				my ($seq_id) = $1;
-				if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }	
-				my ($seq) = $seqObj->seq;
-				my ($seq_file) = $WS_SEQUENCE."/$seq_id.fst";
-				my ($seq_cont) = ">$seq_id\n$seq\n";			
-				open (SEQ_FILE,">$seq_file");
-				print SEQ_FILE $seq_cont;
-				close (SEQ_FILE);
-				$logger->info("-- $seq_id\n");
-			
-				# Run methods
-				$logger->info("-- run phobius\n");
-				my ($output_phobius) = run_phobius($seq_id, $seq_file);
-				
-				$logger->info("-- run memsat (with psiblast)\n");
-				my ($output_memsat, $output_blast, $output_align) = run_memsat($seq_id, $seq_file);
-				
-				$logger->info("-- run kalign\n");
-				my ($output_kalign) = run_kalign($seq_id, $output_align);
-	
-				$logger->info("-- convert mod\n");
-				my ($output_mod) = convert_mod($seq_id,$output_kalign);
-			
-				$logger->info("-- run prodiv\n");
-				my ($output_prodiv) = run_prodiv($seq_id,$output_mod);
-			}
-		}
-	};
-	$logger->error("scaning input") if($@);
-	
-	# Run Consensus for each seq (if not cached)
-	$logger->info("-- run consensus method for every variant\n");
-	my ($num_helices_file, $consensus_file, $thump_file);
+	my ($report);		
 	my ($in) = Bio::SeqIO->new(
 				-file => $input_file,
 				-format => 'Fasta'
 	);
-	while ( my $seqObj = $in->next_seq() ) {
+	while ( my $seqObj = $in->next_seq() ) {			
 		if ( $seqObj->id =~ /([^|]*)/ )
 		{			
 			my ($seq_id) = $1;
-			if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }
-			my ($seq_file) = $WS_SEQUENCE."/$seq_id.fst";
-			my ($phobius_file) = $WSPACE_CACHE."/$seq_id.phobius";
-			my ($memsat_file) = $WSPACE_CACHE."/$seq_id.memsat";
-			my ($prodiv_file) = $WSPACE_CACHE."/$seq_id.prodiv";
-			$logger->info("-- $seq_id\n");
+			if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }	
+			my ($seq) = $seqObj->seq;
+			$logger->info("-- $seq_id\n");				
+			
+			# Create cache obj
+			my ($cache) = APPRIS::Utils::CacheMD5->new(
+				-dat => $seq,
+				-ws  => $WSPACE_CACHE			
+			);		
+			my ($seq_idx) = $cache->idx;
+			my ($seq_sidx) = $cache->sidx;
+			my ($seq_dir) = $cache->dir;
+					
+			# prepare cache dir
+			my ($ws_cache) = $cache->c_dir();
+			# prepare tmp dir
+			my ($ws_tmp) = $WSPACE_TMP.'/'.$seq_idx;
+			prepare_workspace($ws_tmp);
+			
+			# Cached fasta
+			my ($seq_file) = $ws_cache.'/seq.faa';
+			unless(-e $seq_file and (-s $seq_file > 0) ) {				
+				my ($seq_cont) = ">Query\n$seq\n";			
+				open (SEQ_FILE,">$seq_file");
+				print SEQ_FILE $seq_cont;
+				close (SEQ_FILE);
+			}
+		
+			# Run methods
+			$logger->info("-- run phobius\n");
+			my ($output_phobius) = run_phobius($seq_file, $ws_cache, $ws_tmp);
+			
+			$logger->info("-- run memsat (with psiblast)\n");
+			my ($output_memsat, $output_blast, $output_align) = run_memsat($seq_file, $ws_cache, $ws_tmp);
+			
+			$logger->info("-- run kalign\n");
+			my ($output_kalign) = run_kalign($output_align, $ws_cache, $ws_tmp);
 
+			$logger->info("-- convert mod\n");
+			my ($output_mod) = convert_mod($output_kalign, $ws_cache, $ws_tmp);
+		
+			$logger->info("-- run prodiv\n");
+			my ($output_prodiv) = run_prodiv($output_mod, $ws_cache, $ws_tmp);
+			
+			# Output files
+			my ($phobius_file) = $ws_cache."/seq.phobius";
+			my ($memsat_file) = $ws_cache."/seq.memsat";
+			my ($prodiv_file) = $ws_cache."/seq.prodiv";
 			$logger->info("-- parse consensus\n");
-			my ($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);		
 			eval {
-				($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file);
+				my ($park_cons) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp);
+				my ($cons_seq) = park_consensus_seq($park_cons);
+				$park_cons->{'consen'} = $cons_seq;
+				$report->{$seq_id}     = $park_cons;
 			};
 			$logger->error("parsing consensus") if($@);
 			
-			my ($aux_consensus_file);				
-			if ( defined $park_phobius_file and 
-				defined $park_prodiv_file and
-				defined $park_memsat_file and
-				defined $phobius and
-				defined $prodiv and
-				defined $memsat and
-				defined $phobius2 and
-				defined $prodiv2 and
-				defined $memsat2 )
-			{
-				eval {
-					$aux_consensus_file = park_consensus2($seq_id, $park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);
-				};
-				$logger->error("parsing consensus2") if($@);					
-			}
 			
-			if ( defined $aux_consensus_file )
-			{		
-				eval {
-					($num_helices_file, $consensus_file, $thump_file) = filter_length($aux_consensus_file);			
-				};
-				$logger->error("running filter_length") if($@);
-			}
 		}
-	}		
-	
-	# Print records by transcript ---------------
-	my ($output_content) = getStringFromFile($thump_file);
-	unless( defined $output_content ) {
-		$logger->error("Can not obtain output file: $!\n");
 	}
-	
+		
+	# Create consensus using the THM from another seq ---------------
+	my ($output_content) = '';
+	if ( defined $report )
+	{		
+		eval {
+			$output_content .= filter_damaged_length($report);			
+		};
+		$logger->error("running consensus_thm") if($@);
+	}
+
 	# Get the annotations for the main isoform /* APPRIS */ ----------------
 	if ( defined $appris )
 	{		
@@ -234,21 +214,16 @@ sub main()
 	unless( defined $print_out ) {
 		$logger->error("Can not create output file: $!\n");
 	}
-	
-	# Delete tmp directory ---------------
-	$logger->info("-- delete tmp dir\n");
-	_delete_tmp_dir($WS_TMP);
-	
+		
 	$logger->finish_log();
 	
 	exit 0;
 }
 
-sub run_phobius($$)
+sub run_phobius($$$)
 {
-	my ($id, $input) = @_;
-	my ($output) = $WSPACE_CACHE."/$id.phobius";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($output) = $ws_cache.'/seq.phobius';	
 	unless ( -e $output and (-s $output > 0) )
 	{
 		eval {
@@ -261,13 +236,13 @@ sub run_phobius($$)
 	return $output;
 }
 
-sub run_memsat($$)
+sub run_memsat($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_memsat) = $WSPACE_CACHE."/$id.memsat";
-	my ($out_blast) = $WS_PSIBLAST."/$id.blast";
-	my ($out_align) = $WS_ALIGN."/$id.align";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_memsat) = $ws_cache.'/seq.memsat';
+	my ($out_chk) = $ws_cache."/seq.chk_swtr90";
+	my ($out_blast) = $ws_cache."/seq.swtr90";
+	my ($out_align) = $ws_cache."/seq.memsat_aln";	
 	unless ( -e $out_memsat and (-s $out_memsat > 0) and 
 			 -e $out_blast and (-s $out_blast > 0) and
 			 -e $out_align and (-s $out_align > 0) )
@@ -275,12 +250,14 @@ sub run_memsat($$)
 		eval {
 			my ($cmd) = "perl $BIN_DIR/memsatvX.pl ".
 								" --db=$PROG_DB ".
-								" --name=$id ".
+								" --name=Query ".
 								" --input=$input ".
 								" --out-memsat=$out_memsat ".
+								" --out-chk=$out_chk ".
 								" --out-blast=$out_blast ".
 								" --out-align=$out_align ".
-								" --tmp-dir=$WS_TMP ".
+								" --tmp-dir=$ws_tmp ".
+								" --cache-dir=$ws_cache ".
 								" $LOGGER_CONF ";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
@@ -290,12 +267,10 @@ sub run_memsat($$)
 	return ($out_memsat, $out_blast, $out_align);
 }
 
-sub run_kalign($$)
+sub run_kalign($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_align) = $WS_ALIGN."/$id.aln";
-	#my ($log) = $WS_TMP."/$id.aln.log";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;	
+	my ($out_align) = $ws_cache.'/seq.kalign';
 	unless ( -e $out_align and (-s $out_align > 0) )
 	{
 		eval {
@@ -308,11 +283,10 @@ sub run_kalign($$)
 	return ($out_align);
 }
 
-sub convert_mod($$)
+sub convert_mod($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_mod) = $WS_MOD."/$id.mod";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_mod) = $ws_tmp.'/Query.mod';
 	eval {
 		my (%seen);
 		my (@trash);
@@ -355,27 +329,20 @@ sub convert_mod($$)
 	return ($out_mod);
 }
 
-sub run_prodiv($$)
+sub run_prodiv($$$)
 {
-	my ($id, $input) = @_;
-	my ($out_align) = $WSPACE_CACHE."/$id.prodiv";
-	my ($in_tmp_prodiv) = $WS_PREDICTION."/$id.prodiv.res";
-	
+	my ($input, $ws_cache, $ws_tmp) = @_;
+	my ($out_align) = $ws_cache.'/seq.prodiv';
+	my ($in_tmp_prodiv) = $ws_tmp.'/Query.prodiv.res';	
 	unless ( -e $out_align and (-s $out_align > 0) )
-	{
-		
+	{		
 		eval {
-			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP &>> $logfilename";
-			#my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null 2> /dev/null";
-			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl $id $WS_MOD $WS_PREDICTION $WS_TMP 1> /dev/null";
+			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp $in_tmp_prodiv 1> /dev/null 2> /dev/null";
 			$logger->debug("\n** script: $cmd\n");
 			my (@out) = `$cmd`;
 		};
-		$logger->error("run_kalign") if($@);
-
-		$logger->debug("PASE_PRODIV\n");	
+		$logger->error("run_prodiv") if($@);		
 		eval {
-
 			my ($output_prodiv) = parse_prodiv($in_tmp_prodiv,$out_align);		
 		};
 		$logger->error("parse_prodiv") if($@);
@@ -470,40 +437,31 @@ sub parse_prodiv($$)
 	}
 }
 
-sub park_consensus($$$$$) 
+sub park_consensus($$$$$$) 
 {
-	my ($id, $seq_file, $phobius_file, $memsat_file, $prodiv_file) = @_;
-	
-	my ($phobius);
-	my ($prodiv);
-	my ($memsat);
-	my ($phobius2);
-	my ($prodiv2);
-	my ($memsat2);
+	my ($id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp) = @_;
+	my ($consensus);
+	my ($coord_phobius);
+	my ($coord_prodiv);
+	my ($coord_memsat);
 	
 	my (@fichero);
 	my ($contador);
 	my (@sequence);
+	my ($seq_len);
 	my ($w);
-	my ($control);
-	
+	my ($control);	
 	
 	local(*SEQ_FILE);
 	open (SEQ_FILE, $seq_file);
 	my (@parking) = <SEQ_FILE>;
 	close(SEQ_FILE);
 
-	my ($park_phobius_file) = $WS_TMP."/parking.phobius";
-	my ($park_prodiv_file) = $WS_TMP."/parking.prodiv";
-	my ($park_memsat_file) = $WS_TMP."/parking.memsat";
+	my ($park_phobius_cont) = '';
+	my ($park_prodiv_cont) = '';
+	my ($park_memsat_cont) = '';
 	
-	local(*PARKPH);
-	open (PARKPH, ">>$park_phobius_file");
-	local(*PARKPR);
-	open (PARKPR, ">>$park_prodiv_file");
-	local(*PARKME);
-	open (PARKME, ">>$park_memsat_file");
-
+	# Phobius ---
 	@fichero = undef;
 	$contador = 0;
 	@sequence = undef;
@@ -518,38 +476,42 @@ sub park_consensus($$$$$)
 	
 	foreach my $z (@fichero) {
 		if ( $z =~ /^FT\s+TRANSMEM\s+(\d+)\s+(\d+)/ ) {
-			push(@{$phobius2},$1);
-			push(@{$phobius2},$2);
+			push(@{$coord_phobius},$1);
+			push(@{$coord_phobius},$2);
 			$contador++;
 		}
 	}		
-	$phobius->{$id} = $contador;
 	chomp($parking[1]);
 	@sequence = split(//,$parking[1]);
-	print PARKPH ">$id\t",scalar@sequence ," a.a.\n";
+	$seq_len = scalar@sequence;
 	for (my $i = 1; $i < (scalar@sequence+1); $i++ ) {
-		if ( defined $phobius2->[$w] && $i == $phobius2->[$w] && $control eq 'n' ) {
-			print PARKPH "X";
+		if ( defined $coord_phobius->[$w] && $i == $coord_phobius->[$w] && $control eq 'n' ) {
+			$park_phobius_cont .="X";
 			$control='H';
 			$w++;
 		}
-		elsif ( defined $phobius2->[$w] && ($i != $phobius2->[$w]) && ($control eq 'n') ) {
-			print PARKPH "-";
+		elsif ( defined $coord_phobius->[$w] && ($i != $coord_phobius->[$w]) && ($control eq 'n') ) {
+			$park_phobius_cont .="-";
 		}
-		elsif ( defined $phobius2->[$w] && ($i == $phobius2->[$w]) && ($control eq 'H') ){
-			print PARKPH "X";
+		elsif ( defined $coord_phobius->[$w] && ($i == $coord_phobius->[$w]) && ($control eq 'H') ){
+			$park_phobius_cont .="X";
 			$control='n';
 			$w++;
 		}
-		elsif ( defined $phobius2->[$w] && ($i != $phobius2->[$w]) && ($control eq 'H') ) {
-			print PARKPH "X";
+		elsif ( defined $coord_phobius->[$w] && ($i != $coord_phobius->[$w]) && ($control eq 'H') ) {
+			$park_phobius_cont .="X";
 		}
 		else {
-			print PARKPH "-";
+			$park_phobius_cont .="-";
 		}
 	}
-	print PARKPH "\n";
-
+	$park_phobius_cont .="\n";
+	$consensus->{'phobius'}->{'num'}   = $contador;
+	$consensus->{'phobius'}->{'coord'} = $coord_prodiv;	
+	$consensus->{'phobius'}->{'coord'} = $coord_phobius;
+	$consensus->{'phobius'}->{'seq'}   = $park_phobius_cont;
+	
+	# Prodiv ---
 	@fichero = undef;
 	$contador = 0;
 	@sequence = undef;
@@ -564,38 +526,42 @@ sub park_consensus($$$$$)
 			
 	foreach my $z (@fichero) {
 		if ( defined $z && ($z =~ /^FT\s+TRANSMEM\t+(\d+)\t+(\d+)/) ){
-			push(@{$prodiv2},$1);
-			push(@{$prodiv2},$2);
+			push(@{$coord_prodiv},$1);
+			push(@{$coord_prodiv},$2);
 			$contador++;
 		}
 	}
-	$prodiv->{$id}=$contador;
 	chomp($parking[1]);
 	@sequence = split(//,$parking[1]);
-	print PARKPR ">$id\t",scalar@sequence ," a.a.\n";
+	$seq_len = scalar@sequence;
 	for (my $i = 1; $i <(scalar@sequence+1); $i++ ) {
-		if ( defined $prodiv2->[$w] && ($i == $prodiv2->[$w]) && ($control eq 'n') ) {
-			print PARKPR "X";
+		if ( defined $coord_prodiv->[$w] && ($i == $coord_prodiv->[$w]) && ($control eq 'n') ) {
+			$park_prodiv_cont .="X";
 			$control='H';
 			$w++;
 		}
-		elsif ( defined $prodiv2->[$w] && ($i != $prodiv2->[$w]) && ($control eq 'n') ) {
-			print PARKPR "-";
+		elsif ( defined $coord_prodiv->[$w] && ($i != $coord_prodiv->[$w]) && ($control eq 'n') ) {
+			$park_prodiv_cont .="-";
 		}
-		elsif ( defined $prodiv2->[$w] && ($i == $prodiv2->[$w]) && ($control eq 'H') ) {
-			print PARKPR "X";
+		elsif ( defined $coord_prodiv->[$w] && ($i == $coord_prodiv->[$w]) && ($control eq 'H') ) {
+			$park_prodiv_cont .="X";
 			$control='n';
 			$w++;
 		}
-		elsif ( defined $prodiv2->[$w] && ($i != $prodiv2->[$w]) && ($control eq 'H') ) {
-			print PARKPR "X";
+		elsif ( defined $coord_prodiv->[$w] && ($i != $coord_prodiv->[$w]) && ($control eq 'H') ) {
+			$park_prodiv_cont .="X";
 		}
 		else {
-			print PARKPR "-";
+			$park_prodiv_cont .="-";
 		}			
 	}
-	print PARKPR "\n";
+	$park_prodiv_cont .="\n";
+	$consensus->{'prodiv'}->{'num'}   = $contador;
+	$consensus->{'prodiv'}->{'len'}   = $seq_len;
+	$consensus->{'prodiv'}->{'coord'} = $coord_prodiv;
+	$consensus->{'prodiv'}->{'seq'}   = $park_prodiv_cont;	
 	
+	# Memsat ---
 	@fichero = undef;
 	$contador = 0;
 	@sequence = undef;
@@ -614,8 +580,8 @@ sub park_consensus($$$$$)
 			while ( $z < scalar(@fichero) ) {
 				if ( $fichero[$z] =~ /^\d+:\s+\(?([a-z]+)?\)?\s?(\d+)-(\d+)\t\((-?\d+)\.\d+\)/ ) {
 					if ($4 > 1.9){
-						push(@{$memsat2},$2);
-						push(@{$memsat2},$3);
+						push(@{$coord_memsat},$2);
+						push(@{$coord_memsat},$3);
 						$contador++;
 					}
 				}					
@@ -623,213 +589,107 @@ sub park_consensus($$$$$)
 			}
 		}
 	}
-	$memsat->{$id}=$contador;
 	chomp($parking[1]);
 	@sequence = split(//,$parking[1]);
-	print PARKME ">$id\t",scalar@sequence ," a.a.\n";
+	$seq_len = scalar@sequence;
 	for (my $i = 1 ; $i <(scalar@sequence+1); $i++ ) {
-		if ( defined $memsat2->[$w] && ($i == $memsat2->[$w]) && ($control eq 'n') ) {
-			print PARKME "X";
+		if ( defined $coord_memsat->[$w] && ($i == $coord_memsat->[$w]) && ($control eq 'n') ) {
+			$park_memsat_cont .="X";
 			$control='H';
 			$w++;
 		}
-		elsif ( defined $memsat2->[$w] && ($i != $memsat2->[$w]) && ($control eq 'n') ) {
-			print PARKME "-";
+		elsif ( defined $coord_memsat->[$w] && ($i != $coord_memsat->[$w]) && ($control eq 'n') ) {
+			$park_memsat_cont .="-";
 		}
-		elsif ( defined $memsat2->[$w] && ($i == $memsat2->[$w]) && ($control eq 'H') ) {
-			print PARKME "X";
+		elsif ( defined $coord_memsat->[$w] && ($i == $coord_memsat->[$w]) && ($control eq 'H') ) {
+			$park_memsat_cont .="X";
 			$control='n';
 			$w++;
 		}
-		elsif ( defined $memsat2->[$w] && ($i != $memsat2->[$w]) && ($control eq 'H') ) {
-			print PARKME "X";
+		elsif ( defined $coord_memsat->[$w] && ($i != $coord_memsat->[$w]) && ($control eq 'H') ) {
+			$park_memsat_cont .="X";
 		}
 		else {
-			print PARKME "-";
+			$park_memsat_cont .="-";
 		}			
 	}
-	print PARKME "\n";
-	
-	close (PARKPH);
-	close (PARKPR);
-	close (PARKME);
-	
-	return ($park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2);
+	$park_memsat_cont .="\n";
+	$consensus->{'memsat'}->{'num'}   = $contador;
+	$consensus->{'memsat'}->{'len'}   = $seq_len;
+	$consensus->{'memsat'}->{'coord'} = $coord_memsat;
+	$consensus->{'memsat'}->{'seq'}   = $park_memsat_cont;	
+		
+	return $consensus;
 }
 
-sub park_consensus2($$$$$$$)
+sub park_consensus_seq($)
 {
-	my ($id, $park_phobius_file, $park_prodiv_file, $park_memsat_file, $phobius, $prodiv, $memsat, $phobius2, $prodiv2, $memsat2) = @_;
+	my ($consensus) = @_;
+	my ($consesus_seq) = '';
 	
-	my ($consensus_file) = $WS_TMP."/consensus.txt";
-	my ($no_predict_file) = $WS_TMP."/no_predict.txt";
-	
-	local(*RESUL);
-	open (RESUL, ">>$consensus_file");
-	local(*RESUL2);
-	open (RESUL2, ">>$no_predict_file");
-	
-	if ( exists $phobius->{$id} && exists $memsat->{$id} && exists $prodiv->{$id} ) {
-		my (@phobius3) = ();
-		my (@prodiv3) = ();
-		my (@memsat3) = ();
-		my ($longitud);		
-
-		local(*PHOB_FILE);
-		open (PHOB_FILE, $park_phobius_file);
-		my (@phob_cont) = <PHOB_FILE>;
-		close(PHOB_FILE);
-		for ( my $z = 0; $z < scalar(@phob_cont); $z++ ) {
-			if ( $phob_cont[$z] =~ />$id\t(\d+) a.a./ ) {
-				$longitud=$1;
-				chomp($phob_cont[$z+1]);
-				@phobius3=split(//,$phob_cont[$z+1]);
-			}
-		}
-		
-		local(*PROD_FILE);
-		open (PROD_FILE, $park_prodiv_file);
-		my (@prod_cont) = <PROD_FILE>;
-		close(PROD_FILE);
-		for (my $z = 0; $z < scalar(@prod_cont); $z++ ) {
-			if ( $prod_cont[$z] =~ />$id\t(\d+) a.a./ ) {
-				chomp($prod_cont[$z+1]);
-				@prodiv3=split(//,$prod_cont[$z+1]);
-			}
-		}
-		
-		local(*MEM_FILE);
-		open (MEM_FILE, $park_memsat_file);
-		my (@mem_cont) = <MEM_FILE>;
-		close(MEM_FILE);
-		for (my $z = 0; $z < scalar(@mem_cont); $z++ ) {
-			if ( $mem_cont[$z] =~ />$id\t(\d+) a.a./ ) {
-				chomp($mem_cont[$z+1]);
-				@memsat3=split(//,$mem_cont[$z+1]);
-			}
-		}
-			
-		print RESUL ">$id\tlength $longitud a.a.\n";
-		for (my $z = 0; $z < $longitud; $z++ ) {
-			if ( defined $phobius3[$z] && defined $prodiv3[$z] && defined $memsat3[$z] ) {				
-				if ( ($phobius3[$z] eq $prodiv3[$z]) && ($phobius3[$z] eq $memsat3[$z]) && ($phobius3[$z] eq 'X') ) {
-					print RESUL "X";
+	if (
+		exists $consensus->{'phobius'} and exists $consensus->{'phobius'}->{'seq'} and $consensus->{'phobius'}->{'seq'} ne '' and
+		exists $consensus->{'prodiv'}  and exists $consensus->{'prodiv'}->{'seq'}  and $consensus->{'prodiv'}->{'seq'} ne '' and
+		exists $consensus->{'memsat'}  and exists $consensus->{'memsat'}->{'seq'}  and $consensus->{'memsat'}->{'seq'} ne ''
+	) {		
+		my (@phobius) = split(//,$consensus->{'phobius'}->{'seq'});
+		my (@prodiv) = split(//,$consensus->{'prodiv'}->{'seq'});
+		my (@memsat) = split(//,$consensus->{'memsat'}->{'seq'});
+		if ( scalar(@phobius) eq scalar(@prodiv) and scalar(@phobius) eq scalar(@memsat) ) {			
+			my ($len) = $consensus->{'prodiv'}->{'len'};
+			my ($init_thm) = 0;
+			for (my $z = 0; $z < $len; $z++ ) {				
+				if ( defined $phobius[$z] && defined $prodiv[$z] && defined $memsat[$z] ) {		
+					if ( ($phobius[$z] eq $prodiv[$z]) && ($phobius[$z] eq $memsat[$z]) && ($phobius[$z] eq 'X') ) {
+						$consesus_seq .= "X";
+					}
+					else {
+						$init_thm = 0;
+						$consesus_seq .= "-";
+					}				
 				}
 				else {
-					print RESUL "-";
-				}				
-			}
-			else {
-				print RESUL "-";
+					$init_thm = 0;
+					$consesus_seq .= "-";
+				}
 			}
 		}
-		print RESUL "\n";
-	}
-	else {
-		print RESUL2 "$id\tdoesn't have all the predictions.\n";
-	}
-
-	close (RESUL);
-	close (RESUL2);
-	
-	return $consensus_file;
+	}	
+	return $consesus_seq;
 }
 
-#filtrado por numero minimo de  9 a.a. en la helice
-sub filter_length($)
+# label the helix
+sub filter_damaged_length($)
 {
-	my ($tmp_consensus_file) = @_;
-	
-	local(*RESUL);
-	open (RESUL, $tmp_consensus_file);
-	my (@content) = <RESUL>;
-	close(RESUL);
-	
-	my ($longitud) = 0;
-	my ($presencia);
-	
-	my ($num_helices_file) = $WS_PREDICTION."/num_helices.txt";	
-	my ($consensus_file) = $WS_PREDICTION."/consensus.txt";
-	my ($thump_file) = $WS_PREDICTION."/thump.txt";
-	
-	open (RE,">$consensus_file");
-	open (COORD,">$thump_file");
-	
-	for ( my $i = 0; $i < scalar(@content); $i++ ) {
-		if ( $content[$i] =~ /^>.+/ ) {
-			print RE $content[$i];
-			print COORD $content[$i];
-		}
-		else {
-			chomp($content[$i]);
-			my (@parking) = ();
-			my (@sequence) = ();
-			my (@listado) = split(//,$content[$i]);
-			for (my $w = 0; $w <= scalar(@listado); $w++ ) {
-				if ( $w > 0 && defined $listado[$w] && defined $listado[$w-1] && ($listado[$w] eq '-') && ($listado[$w-1] eq '-') ) {
-					push(@sequence,'-');
-				}
-				if ( $w == 0 && defined $listado[$w] && $listado[$w] eq '-' ) {
-					push(@sequence,'-');
-				}
-				elsif ( defined $listado[$w] && defined $listado[$w-1] && ($listado[$w] eq '-') && ($listado[$w-1] eq 'X') ) {
-					if ( exists $presencia->{scalar(@parking)} ) {
-						$presencia->{scalar(@parking)}++;
-					}
-					else {
-						$presencia->{scalar(@parking)}=1;
-					}
-					if ( scalar(@parking) > 9 ) {
-						foreach my $z (@parking){
-							push(@sequence,'X');
-						}
-					}
-					else {
-						foreach my $z (@parking){
-							push(@sequence,'-');
-						}
-					}
-					push(@sequence,'-');
-					@parking = ();
-				}  
-				elsif ( defined $listado[$w] && ($listado[$w] eq 'X') ) {
-					push(@parking,'X');
-				}
-			}
-			my ($k) = 0;
-			my ($num_helix) = 0;
-			foreach my $z (@sequence) {
-				$k++;
-				print RE $z;
-				if ( defined $sequence[$k-2] && ($z eq 'X') && ($sequence[$k-2] eq '-') ) {
+	my ($report) = @_;
+	my ($output) = '';	
+	while ( my ($id, $rep) = each(%{$report}) ) {
+		my ($cons_seq) = $rep->{'consen'};
+		my (@content) = split('',$cons_seq);
+		$output .= '>'.$id."\t"."length ".length($cons_seq)." a.a.\n";
+		my ($num_helix) = 0;
+		my ($init_thm) = 0;
+		for ( my $i = 0; $i < scalar(@content); $i++ ) {
+			my ($aa) = $content[$i];
+			if ( $aa eq 'X' ) { # check the first position of helix
+				my ($x) = substr($cons_seq, $i);
+				my ($x_seq) = $x =~ m/^X+/mg;
+				my ($x_len) = length($x_seq);
+				if ( $x_len > 9 ) { # helix bigger than 9 aa.
 					$num_helix++;
-					$longitud=$k;
-					print COORD "helix number $num_helix start: $k\t";
+					if ( $x_len > 14 ) {
+						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\n";
+					}
+					else { # damaged is smaller than 14 aa.
+						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\tdamaged\n";
+					}
 				}
-				elsif ( defined $sequence[$k-2] && ($z eq '-') && ($sequence[$k-2] eq 'X') ) {
-					if ( ($k - $longitud) > 14) {
-						print COORD "end: ",$k-1,"\n";
-					}
-					else {
-						print COORD "end: ",$k-1,"\tdamaged\n";
-					}
-				}						
+				$i = $i + $x_len;
 			}
-			print RE "\n";
+			
 		}
-	}
-	close(RE);
-	close(COORD);
-	
-	local(*NUM);
-	open (NUM,">$num_helices_file");	
-	my (@key) = keys(%{$presencia});
-	foreach my $z (@key){
-		print NUM "$z\t",$presencia->{$z},"\n";
-	}
-	close(NUM);
-	
-	return ($num_helices_file, $consensus_file, $thump_file);
+	}	
+	return $output;
 }
 
 # This program localizes and opens the files THUMP.txt from all the analysis directories. 
@@ -949,17 +809,6 @@ sub _get_appris_annotations($)
 		}		
 	}
 	return $output_content;	
-}
-sub _delete_tmp_dir($)
-{
-	my ($dir) = @_;
-	eval {
-		my ($cmd) = "rm -rf $dir/*";
-		$logger->debug("\n** script: $cmd\n");
-		my (@out) = `$cmd`;
-	};
-	$logger->error("_delete_tmp_dir") if($@);
-	return undef;
 }
 
 main();

@@ -820,12 +820,13 @@ sub create_seqdata($)
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
 			}
-			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
+			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
 				$isof_id = $2;
 				my ($name) = $3;
-				$ccds_id = $4;
+				my ($gene_id) = $4;
 				$gene_name = $5;
-				my ($len) = $6;
+				$ccds_id = $6;
+				my ($len) = $7;
 			}
 			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
 				$isof_id = $1;
