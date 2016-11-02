@@ -809,8 +809,11 @@ sub create_seqdata($)
 			my ($s_desc) = $seq->desc;
 			my ($s_seq) = $seq->seq;
 			my ($isof_id);
+			my ($transl_id);
+			my ($gene_id);
 			my ($gene_name);
 			my ($ccds_id);
+			my ($seq_length);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
@@ -823,10 +826,10 @@ sub create_seqdata($)
 			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
 				$isof_id = $2;
 				my ($name) = $3;
-				my ($gene_id) = $4;
+				$gene_id = $4;
 				$gene_name = $5;
 				$ccds_id = $6;
-				my ($len) = $7;
+				$seq_length = $7;
 			}
 			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
 				$isof_id = $1;
@@ -835,8 +838,19 @@ sub create_seqdata($)
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
 			}
+			#elsif ( $s_id =~ /^appris\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
+			elsif ( $s_id =~ /^([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
+				$isof_id = $1;
+				$transl_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;			
+				$seq_length = $6;
+			}
 			if ( defined $isof_id ) {
-				my ($gene_id) = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;
+				unless ( defined $gene_id ) {
+					$gene_id = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;					
+				}
 				unless ( exists $data->{$gene_id} ) {
 					$data->{$gene_id} = {
 						'id'		=> $gene_id,
