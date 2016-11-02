@@ -45,11 +45,11 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,X,Y,M,MT
 
 #export APPRIS_E_VERSION=82
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.vM11.annotation.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.86.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.vM11.pc_transcripts.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.cdna.all.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.vM11.pc_translations.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Mus_musculus.GRCm38.pep.all.fa"
 
 #export APPRIS_GENE_LIST=""
 
