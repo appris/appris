@@ -278,7 +278,7 @@ sub parser_matador3d_residues {
 	my ($method, $inres) = @_;
 	my ($residues);
 	
-	if ( defined $method->conservation_structure and defined $method->result ) {
+	if ( defined $method->result ) {
 		if ( defined $method->alignments ) {
 			foreach my $region (@{$method->alignments}) {	
 				if ( ($region->type eq 'mini-exon') and 
@@ -307,7 +307,7 @@ sub parser_spade_residues {
 	my ($method, $inres) = @_;
 	my ($residues);
 	
-	if ( defined $method->domain_signal and defined $method->result ) {
+	if ( defined $method->result ) {
 		if ( defined $method->regions ) {
 			foreach my $region (@{$method->regions}) {	
 				if ( defined $region->alignment_start and defined $region->alignment_end and defined $region->hmm_name and defined $region->evalue and defined $region->type_domain ) {
@@ -336,7 +336,7 @@ sub parser_corsair_residues {
 	my ($method, $len) = @_;
 	my ($residues);
 	
-	if ( defined $method->vertebrate_signal and defined $method->result ) {
+	if ( defined $method->result ) {
 		my ($s_report) = $method->result;
 		#>ENST00000511833        0.5
 		#Homo sapiens    100.00  0.5
@@ -422,7 +422,7 @@ sub parser_thump_residues {
 	my ($method, $inres) = @_;
 	my ($residues);
 	
-	if ( defined $method->transmembrane_signal and defined $method->result ) {
+	if ( defined $method->result ) {
 		if ( defined $method->regions ) {
 			foreach my $region (@{$method->regions}) {
 				if ( defined $region->pstart and defined $region->pend ) {

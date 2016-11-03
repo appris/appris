@@ -1587,7 +1587,6 @@ sub query_firestar_residues {
         my $statement = "select
         f.firestar_id,
         f.num_residues,
-        f.functional_residue,
         r.firestar_residues_id,
 		r.peptide_position,
 		r.domain,
