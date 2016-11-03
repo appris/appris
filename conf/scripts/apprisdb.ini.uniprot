@@ -1,8 +1,8 @@
 [APPRIS_DATABASES]
   species=homo_sapiens
-  host=localhost
-  user=josemrc
-  pass=
+  host=jabba.cnio.es
+  user=wensembl
+  pass=wensembl
   port=
 
 [HOMO_SAPIENS_DB]
