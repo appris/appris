@@ -789,7 +789,7 @@ sub export_features
 				$result = $exporter->get_tsv_annotations($features, $methods, $res);
 			}
 			elsif ( ($format eq 'bed') or ($format eq 'bed12') ) {
-				$result = $exporter->get_bed_annotations($features, $methods, undef, $format);
+				$result = $exporter->get_bed_annotations($features, $methods, undef, $format, $self->source);
 		    }
 			elsif ($format eq 'json') {
 				$result = $exporter->get_json_annotations($features, $methods);
@@ -862,24 +862,24 @@ sub export_seq_features
 	if ( defined $features ) {
 		my ($exporter) = APPRIS::Exporter->new();
 		if ( $operation eq 'sequences' ) {
-			$result = $exporter->get_seq_annotations($self->source, $features, $type, $format);
+			$result = $exporter->get_seq_annotations($features, $type, $format);
 		}
 		elsif ( $operation eq 'align' ) { # "A minimum of 2 sequences is required\n"
-			my ($seq_result) = $exporter->get_seq_annotations($self->source, $features, $type, 'fasta');
+			my ($seq_result) = $exporter->get_seq_annotations($features, $type, 'fasta');
 			my ($num_seq) = $seq_result =~ tr/\>//;
 			if ( $num_seq >= 2 ) {
 				my ($wsretriever) = new WSRetriever();
 				$result = $wsretriever->get_aln_annotations($seq_result, $format, $ids);
 			}
 			else {
-				$result = $exporter->get_seq_annotations($self->source, $features, $type, 'json');				
+				$result = $exporter->get_seq_annotations($features, $type, 'json');
 			}			
 		}		
 		elsif ($operation eq 'residues') {
-			$result = $exporter->get_res_annotations($self->source, $features, $methods, $res);
+			$result = $exporter->get_res_annotations($features, $methods, $res);
 	    }
 		elsif ($operation eq 'cds') {
-			$result = $exporter->get_cds_annotations($self->source, $features, $methods, $res);
+			$result = $exporter->get_cds_annotations($features, $methods, $res);
 	    }
 		elsif ($operation eq 'genome') {
 			$result = $self->get_gen_annotations($self->source, $methods, $ids);

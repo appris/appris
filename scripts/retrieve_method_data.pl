@@ -149,7 +149,7 @@ sub get_data_by_method($$)
 		my ($gene_id) = $gene->stable_id;
 		my ($exporter) = APPRIS::Exporter->new();
 		if ($gene and ($format eq 'bed' or $format eq 'bed12' ) ){
-			$output .= $exporter->get_bed_annotations($gene, $method, undef, $format);
+			$output .= $exporter->get_bed_annotations($gene, $method, undef, $format, undef);
 		}
 		elsif ($gene and $format eq 'gtf') {
 			$output .= $exporter->get_gtf_annotations($gene, $method);
