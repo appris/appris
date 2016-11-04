@@ -733,21 +733,9 @@ sub get_corsair_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;	 		
-			if ( defined $method->score and defined $method->vertebrate_signal ) {
+			if ( defined $method->score ) {
 				# get type
-				my ($method_type) = '.';				
-				if ( $method->vertebrate_signal eq $APPRIS::Utils::Constant::NO_LABEL ) {
-					$method_type = $GTF_CONSTANTS->{'corsair'}->{'annot'}->[2];
-				}
-				elsif ( $method->vertebrate_signal eq $APPRIS::Utils::Constant::UNKNOWN_LABEL ) {
-					$method_type = $GTF_CONSTANTS->{'corsair'}->{'annot'}->[1];
-				}
-				elsif ($method->vertebrate_signal eq $APPRIS::Utils::Constant::OK_LABEL ) {
-					$method_type = $GTF_CONSTANTS->{'corsair'}->{'annot'}->[0];
-				}
-				else {
-					$method_type = $GTF_CONSTANTS->{'corsair'}->{'annot'}->[1];
-				}
+				my ($method_type) = $GTF_CONSTANTS->{'corsair'}->{'type'};				
 				# common attributes
 				my ($common) = {
 						'seqname'	=> $feature->chromosome,
