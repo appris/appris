@@ -71,7 +71,7 @@ SELECT
 FROM
 	entity e1, sequence s
 WHERE 	
-	e1.datasource_id=6 AND 
+	e1.datasource_id=3 AND 
 	e1.entity_id=s.entity_id AND
 	s.type_id=1;
 
@@ -83,7 +83,7 @@ SELECT
 FROM
 	entity e1, sequence s
 WHERE 	
-	e1.datasource_id=6 AND 
+	e1.datasource_id=3 AND 
 	e1.entity_id=s.entity_id AND
 	s.type_id=2;
 
@@ -112,9 +112,9 @@ SELECT
 FROM
 	entity e1, coordinate c
 WHERE
-	e1.datasource_id=5 AND
+	e1.datasource_id=2 AND
 	e1.entity_id=c.entity_id
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 -- 
 -- Number of transcripts by chromosome
@@ -125,9 +125,9 @@ SELECT
 FROM
 	entity e1, coordinate c
 WHERE
-	e1.datasource_id=6 AND
+	e1.datasource_id=3 AND
 	e1.entity_id=c.entity_id
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 -- 
 -- Number of genes by chromosome that at least one transcript has sequence 
@@ -139,13 +139,13 @@ FROM
 	entity e1, coordinate c, xref_identify x, entity e2, sequence s
 WHERE
 	e1.entity_id=x.entity_id AND
-	e1.datasource_id=5 AND
+	e1.datasource_id=2 AND
 	e1.entity_id=c.entity_id AND
 	x.identifier=e2.identifier AND
 	x.datasource_id=6 AND	
 	e2.entity_id=s.entity_id AND
 	s.type_id=1
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 -- 
 -- Number of transcripts by chromosome that have sequence 
@@ -156,11 +156,11 @@ SELECT
 FROM
 	entity e1, coordinate c, sequence s
 WHERE
-	e1.datasource_id=6 AND
+	e1.datasource_id=3 AND
 	e1.entity_id=c.entity_id AND
 	e1.entity_id=s.entity_id AND
 	s.type_id=1
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 
 -- 
@@ -173,13 +173,13 @@ FROM
 	entity e1, coordinate c, xref_identify x, entity e2, sequence s
 WHERE
 	e1.entity_id=x.entity_id AND
-	e1.datasource_id=5 AND
+	e1.datasource_id=2 AND
 	e1.entity_id=c.entity_id AND
 	x.identifier=e2.identifier AND
 	x.datasource_id=6 AND	
 	e2.entity_id=s.entity_id AND
 	s.type_id=2
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 -- 
 -- Number of transcripts by chromosome that have translation
@@ -190,11 +190,11 @@ SELECT
 FROM
 	entity e1, coordinate c, sequence s
 WHERE
-	e1.datasource_id=6 AND
+	e1.datasource_id=3 AND
 	e1.entity_id=c.entity_id AND
 	e1.entity_id=s.entity_id AND
 	s.type_id=2
-GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC;
+GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
 
 -- 
 -- Number of genes by biotype
@@ -205,7 +205,7 @@ SELECT
 FROM
 	entity e1
 WHERE
-	e1.datasource_id=5
+	e1.datasource_id=2
 GROUP BY e1.biotype;
 
 -- 
@@ -217,7 +217,7 @@ SELECT
 FROM
 	entity e1
 WHERE
-	e1.datasource_id=6
+	e1.datasource_id=3
 GROUP BY e1.biotype;
 
 -- 
@@ -229,7 +229,7 @@ SELECT
 FROM
 	entity e1, sequence s
 WHERE
-	e1.datasource_id=6 AND 
+	e1.datasource_id=3 AND 
 	e1.entity_id=s.entity_id AND
 	s.type_id=1
 GROUP BY e1.biotype;
@@ -243,7 +243,7 @@ SELECT
 FROM
 	entity e1, sequence s
 WHERE
-	e1.datasource_id=6 AND 
+	e1.datasource_id=3 AND 
 	e1.entity_id=s.entity_id AND
 	s.type_id=2
 GROUP BY e1.biotype;
