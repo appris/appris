@@ -370,7 +370,7 @@ sub get_features
 {
 	my ($self) = shift;
 	my ($methods) = shift if (@_);
-	my ($ids) = shift if (@_);
+	my ($t_inputs) = shift if (@_);
 	my ($type) = $self->type;
 	my ($inputs) = $self->input;
 	my ($species)  = $self->species;
@@ -393,16 +393,17 @@ sub get_features
 	foreach my $registry (@{$registries}) {		
 		if ( defined $type ) {
 			if ( ($type eq 'id') and $inputs ) {
-				if ( defined $ids ) { $inputs = $ids }
+				my ($query_type) = 'gene';
+				if ( defined $t_inputs ) { $query_type = 'transcript'; $inputs = $t_inputs; }
 				foreach my $input (split(',', $inputs)) {
-					my ($feat) = $self->get_feat_by_stable_id($registry, $input, $methods_str);
+					my ($feat) = $self->get_feat_by_stable_id($registry, $query_type, $input, $methods_str);
 					if ( defined $feat ) {
 						push(@{$features}, $feat) ;
 					}
 				}
+
 			}
 			elsif ( ($type eq 'name') and $inputs ) {
-				if ( defined $ids ) { $inputs = $ids }
 				foreach my $input (split(',', $inputs)) {
 					my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
@@ -411,7 +412,6 @@ sub get_features
 				}
 			}
 			elsif ( ($type eq 'position') and $inputs ) {
-				if ( defined $ids ) { $inputs = $ids }
 				foreach my $input (split(',', $inputs)) {
 					my ($feat) = $self->get_feat_by_region($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
@@ -481,48 +481,52 @@ sub get_seek_features
 sub get_feat_by_stable_id {
 	my ($self) = shift;
 	my ($aregistry) = shift;
-	my ($id) = shift;
+	my ($type) = shift;
+	my ($input) = shift;
 	my ($methods) = shift;
 	my ($registry) = $aregistry->{'registry'};
 	my ($feat);
-	
-	my ($type);	
-	if (
-	(
-		lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or
-		lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or
-		lc($id) =~ /^ensgr([\d+|\.]+)$/ or
-		lc($id) =~ /^fbgn([\d+|\.]+)$/ or
-		lc($id) =~ /^wbgene([\d+|\.]+)$/
-	)
-	and
-		($aregistry->{'source'} eq 'ensembl')
-	) {
-		$type = 'gene';
-	}
-	elsif (	(lc($id) =~ /^(\d+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
-		$type = 'gene';
-	}
-	elsif (
-	(
-		lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or
-		lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or
-		lc($id) =~ /^enstr([\d+|\.]+)$/ or
-		lc($id) =~ /^fbtr([\d+|\.]+)$/
-	)
-	and
-		($aregistry->{'source'} eq 'ensembl')
-	) {
-		$type = 'transcript';
-	}
-	elsif (  (lc($id) =~ /^xm\_([\d+|\.]+)$/ or lc($id) =~ /^nm\_([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
-		$type = 'transcript';
-	}
-	else {
-		$type = 'transcript';
-	}
-	if ( defined $type ) {
-		$feat = $registry->fetch_by_stable_id($type, $id, $methods);
+		
+#	if (
+#	(
+#		lc($id) =~ /^ens(\w\w\w)?g([\d+|\.]+)$/ or
+#		lc($id) =~ /^ens(\w\w\w)?gr([\d+|\.]+)$/ or
+#		lc($id) =~ /^ensgr([\d+|\.]+)$/ or
+#		lc($id) =~ /^fbgn([\d+|\.]+)$/ or
+#		lc($id) =~ /^wbgene([\d+|\.]+)$/
+#	)
+#	and
+#		($aregistry->{'source'} eq 'ensembl')
+#	) {
+#		$type = 'gene';
+#	}
+#	elsif (	(lc($id) =~ /^(\d+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
+#		$type = 'gene';
+#	}
+#	elsif (	(lc($id) !~ /-/) and ($aregistry->{'source'} eq 'uniprot') ) {
+#		$type = 'gene';
+#	}
+#	elsif (
+#	(
+#		lc($id) =~ /^ens(\w\w\w)?t([\d+|\.]+)$/ or
+#		lc($id) =~ /^ens(\w\w\w)?tr([\d+|\.]+)$/ or
+#		lc($id) =~ /^enstr([\d+|\.]+)$/ or
+#		lc($id) =~ /^fbtr([\d+|\.]+)$/
+#	)
+#	and
+#		($aregistry->{'source'} eq 'ensembl')
+#	) {
+#		$type = 'transcript';
+#	}
+#	elsif (  (lc($id) =~ /^xm\_([\d+|\.]+)$/ or lc($id) =~ /^nm\_([\d+|\.]+)$/) and ($aregistry->{'source'} eq 'refseq') ) {
+#		$type = 'transcript';
+#	}
+#	else {
+#		$type = 'transcript';
+#	}
+
+	if ( defined $input and defined $type ) {
+		$feat = $registry->fetch_by_stable_id($type, $input, $methods);
 	}
 	
 	return $feat;	

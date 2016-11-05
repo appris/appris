@@ -118,7 +118,7 @@ $GTF_CONSTANTS = {
 =cut
 
 sub get_trans_annotations {
-    my ($feature, $source, $version) = @_;
+    my ($feature, $source) = @_;
     my ($output) = '';
 
     if (ref($feature) and $feature->isa("APPRIS::Transcript")) {
@@ -138,74 +138,56 @@ sub get_trans_annotations {
 				$output .= get_appris_annotations(	$transcript_id,
    		        										$gene_id,
    		        										$external_id,
-           												$feature,
-           												$version
-				);
+           												$feature);
 			}
 			if ($feature->translate and $feature->translate->sequence) { # proteing coding methods
 				if ( ($source =~ /firestar/) or ($source eq 'all') ) {
 					$output .= get_firestar_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /matador3d/) or ($source eq 'all') ) {
 					$output .= get_matador3d_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /corsair/) or ($source eq 'all') ) {
 					$output .= get_corsair_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /spade/) or ($source eq 'all') ) {
 					$output .= get_spade_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /inertia/) or ($source eq 'all') ) {
 					$output .= get_inertia_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /thump/) or ($source eq 'all') ) {
 					$output .= get_thump_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /crash/) or ($source eq 'all') ) {
 					$output .= get_crash_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 				if ( ($source =~ /proteo/) or ($source eq 'all') ) {
 					$output .= get_proteo_annotations(	$transcript_id,
 						   		        					$gene_id,
 	   		        										$external_id,
-	           												$feature,
-	           												$version
-					);
+	           												$feature);
 				}
 			}
 		}
@@ -266,7 +248,7 @@ sub print_annotations {
 =cut
 
 sub get_appris_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 	
     my ($output) = '';
  	my ($biotype_annot) = $feature->biotype;
@@ -314,8 +296,16 @@ sub get_appris_annotations {
 	 		
 	 		# print principal isoform feature
 			if ( $method->principal_isoform_signal ) {
+				my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 				my ($method_source) = $GTF_CONSTANTS->{'appris'}->{'source'};
 				my ($method_type) = $GTF_CONSTANTS->{'appris'}->{'type'};
+				my ($method_start,$method_end,$method_strand);			
+				if ( $feature->start and $feature->end and $feature->strand ) {
+					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+				}
+				else {
+					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+				}
 				my ($method_score) = '.';
 				my ($method_phase) = '.';
 				my ($appris_annot) = $method->principal_isoform_signal;		
@@ -330,13 +320,13 @@ sub get_appris_annotations {
 				}
 				$reliability = $method->reliability if ( $method->reliability );
 				my ($common) = {
-						'seqname'	=> $feature->chromosome,
+						'seqname'	=> $method_seqname,
 						'source'	=> $method_source,
 						'type'		=> $method_type,
-						'start'		=> $feature->start,
-						'end'		=> $feature->end,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
 						'score'		=> $method_score,
-						'strand'	=> $feature->strand,
+						'strand'	=> $method_strand,
 						'phase'		=> $method_phase
 				};
 				my ($optional) = {
@@ -355,7 +345,6 @@ sub get_appris_annotations {
 				$optional->{'annotation'}		= $method_annot if (defined $method_annot);
 				$optional->{'reliability'}		= $reliability if (defined $reliability);
 				$optional->{'all_rejected'}		= $all_rejected if (defined $all_rejected);
-				$optional->{'version'}			= $version if (defined $version);
 				
 				if (defined $common and defined $optional) { # print output
 					$output .= print_annotations($common,$optional);			
@@ -376,8 +365,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			}
 			# homolog structure feature
 			if ( defined $method->homologous_structure_signal ) {				
@@ -393,8 +381,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			}	
 			# vertebrate conservation features
 			if ( defined $method->vertebrate_conservation_signal ) {
@@ -410,8 +397,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			} 		
 			# pfam whole domains features	
 			if ( defined $method->domain_signal ) {
@@ -427,8 +413,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			}	
 			# unsual exon features
 			if ( defined $method->unusual_evolution_signal ) {
@@ -444,8 +429,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			}	
  		
 			# helix transmembrane features
@@ -462,8 +446,7 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			}	
  		
 			# signal peptide features
@@ -478,8 +461,7 @@ sub get_appris_annotations {
 														$feature,
 														$method_type,
 														$method_score,
-														$annot,
-														$version);				
+														$annot);				
 				}	
 				if ( defined $method->mitochondrial_signal ) {				
 					my ($annot) = $method->mitochondrial_signal;
@@ -490,8 +472,7 @@ sub get_appris_annotations {
 														$feature,
 														$method_type,
 														$method_score,
-														$annot,
-														$version);				
+														$annot);				
 				}				
 			}
 			# peptide evidence feature
@@ -509,26 +490,33 @@ sub get_appris_annotations {
 													$feature,
 													$method_type,
 													$method_score,
-													$annot,
-													$version);				
+													$annot);				
 			} 		
  		
  		}
 	 	else
 	 	{
 	 		# There is not APPRIS annotations => Retrieves common features
+	 		my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 			my ($method_source) = $GTF_CONSTANTS->{'appris'}->{'source'};
 			my ($method_type) = $GTF_CONSTANTS->{'appris'}->{'type'};
+			my ($method_start,$method_end,$method_strand);			
+			if ( $feature->start and $feature->end and $feature->strand ) {
+				$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+			}
+			else {
+				$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+			}
 			my ($method_score) = '.';
 			my ($method_phase) = '.';			
 			my ($common) = {
-					'seqname'	=> $feature->chromosome,
+					'seqname'	=> $method_seqname,
 					'source'	=> $method_source,
 					'type'		=> $method_type,
-					'start'		=> $feature->start,
-					'end'		=> $feature->end,
+					'start'		=> $method_start,
+					'end'		=> $method_end,
 					'score'		=> $method_score,
-					'strand'	=> $feature->strand,
+					'strand'	=> $method_strand,
 					'phase'		=> $method_phase
 			};
 			my ($optional) = {
@@ -549,21 +537,33 @@ sub get_appris_annotations {
 } # End get_appris_annotations
 
 sub get_appris_annotations2 {
-	my ($transcript_id, $gene_id, $external_id, $feature, $method_type, $method_score, $appris_annot, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature, $method_type, $method_score, $appris_annot) = @_;
 	
 	my ($output) = '';
+	my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
+	my ($method_start,$method_end,$method_strand);			
+	if ( $feature->start and $feature->end and $feature->strand ) {
+		$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+	}
+	else {
+		my ($length_aa);
+		if ($feature->translate and $feature->translate->sequence) {
+			$length_aa = length($feature->translate->sequence);
+		}
+		$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+	}
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'appris'}->{'source'};
 
 	# Common attributes
 	my ($common) = {
-			'seqname'	=> $feature->chromosome,
+			'seqname'	=> $method_seqname,
 			'source'	=> $method_source,
 			'type'		=> $method_type,
-			'start'		=> $feature->start,
-			'end'		=> $feature->end,
+			'start'		=> $method_start,
+			'end'		=> $method_end,
 			'score'		=> $method_score,
-			'strand'	=> $feature->strand,
+			'strand'	=> $method_strand,
 			'phase'		=> $method_phase
 	};
 	
@@ -573,7 +573,6 @@ sub get_appris_annotations2 {
 	$optional->{'transcript_id'}	= $transcript_id;
 	$optional->{'transcript_name'}	= $external_id;
 	$optional->{'annotation'}		= $appris_annot if ( defined $appris_annot );
-	$optional->{'version'}			= $version if ( defined $version);		
 	if (defined $common and defined $optional) {
 		$output .= print_annotations($common,$optional);			
 	}
@@ -596,9 +595,10 @@ sub get_appris_annotations2 {
 =cut
 
 sub get_firestar_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = 0;
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'firestar'}->{'source'};
@@ -612,17 +612,20 @@ sub get_firestar_annotations {
 	 		# get residue annotations
 			if ( defined $method->residues ) {
 				foreach my $region (@{$method->residues}) {
-					if ( defined $region->residue and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->residue ) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )  ? $region->start  : $region->residue;
+						my ($method_end)    = ( defined $region->end )    ? $region->end    : $region->residue;
+						my ($method_strand) = ( defined $region->strand ) ? $region->strand : '.';
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -660,10 +663,10 @@ sub get_firestar_annotations {
 =cut
 
 sub get_matador3d_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
-	my ($method_score) = 0;
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'matador3d'}->{'source'};
 	my ($method_type) = $GTF_CONSTANTS->{'matador3d'}->{'type'};
@@ -673,19 +676,62 @@ sub get_matador3d_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->matador3d ) {
 	 		my ($method) = $analysis->matador3d;
-	 		# get residue annotations	 		
-			if ( defined $method->alignments ) {
+	 		
+	 		# get method annotations
+	 		if ( defined $method->score and !defined $method->alignments ) {
+	 			# get coords
+				my ($method_start,$method_end,$method_strand);			
+				if ( $feature->start and $feature->end and $feature->strand ) {
+					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+				}
+				else {
+					my ($length_aa);
+					if ($feature->translate and $feature->translate->sequence) {
+						$length_aa = length($feature->translate->sequence);
+					}
+					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+				}
+				my ($method_score)  = ( defined $method->score )  ? $method->score  : 0;
+				# common attributes
+				my ($common) = {
+						'seqname'	=> $method_seqname,
+						'source'	=> $method_source,
+						'type'		=> $method_type,
+						'type'		=> $method_type,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
+						'score'		=> $method_score,
+						'strand'	=> $method_strand,
+						'phase'		=> $method_phase
+				};
+				# optinal attributes
+				my($optional);
+				$optional->{'gene_id'}			= $gene_id;
+				$optional->{'transcript_id'}	= $transcript_id;
+				if (defined $common and defined $optional) {
+					$output .= print_annotations($common,$optional);			
+				}
+	 		}
+	 		
+	 		# get residue annotations
+			elsif ( defined $method->alignments ) {
 				foreach my $region (@{$method->alignments}) {
-					if ( defined $region->start and defined $region->end and defined $region->strand and $region->score ) {
+					if ( defined $region->score ) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )  ? $region->start  : $region->score;
+						my ($method_end)    = ( defined $region->end )    ? $region->end    : $region->score;
+						my ($method_score)  = ( defined $region->score )  ? $region->score  : 0;
+						my ($method_strand) = ( defined $region->strand ) ? $region->strand : '.';
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
-								'score'		=> $region->score,
-								'strand'	=> $region->strand,
+								'type'		=> $method_type,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
+								'score'		=> $method_score,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -721,9 +767,10 @@ sub get_matador3d_annotations {
 =cut
 
 sub get_corsair_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = 0;
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'corsair'}->{'source'};
@@ -734,17 +781,29 @@ sub get_corsair_annotations {
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;	 		
 			if ( defined $method->score ) {
+				# get coords
+				my ($method_start,$method_end,$method_strand);			
+				if ( $feature->start and $feature->end and $feature->strand ) {
+					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+				}
+				else {
+					my ($length_aa);
+					if ($feature->translate and $feature->translate->sequence) {
+						$length_aa = length($feature->translate->sequence);
+					}
+					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+				}			
 				# get type
 				my ($method_type) = $GTF_CONSTANTS->{'corsair'}->{'type'};				
 				# common attributes
 				my ($common) = {
-						'seqname'	=> $feature->chromosome,
+						'seqname'	=> $method_seqname,
 						'source'	=> $method_source,
 						'type'		=> $method_type,
-						'start'		=> $feature->start,
-						'end'		=> $feature->end,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
 						'score'		=> $method->score,
-						'strand'	=> $feature->strand,
+						'strand'	=> $method_strand,
 						'phase'		=> $method_phase
 				};
 				# optinal attributes
@@ -776,10 +835,10 @@ sub get_corsair_annotations {
 =cut
 
 sub get_spade_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
-    my ($method_score) = '.';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'spade'}->{'source'};
 
@@ -791,16 +850,21 @@ sub get_spade_annotations {
 			# get residue annotations
 			if ( defined $method->regions ) {
 				foreach my $region (@{$method->regions}) {
-					if ( defined $region->type_domain and defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->type_domain and defined $region->bit_score) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )      ? $region->start      : $region->alignment_start;
+						my ($method_end)    = ( defined $region->end )        ? $region->end        : $region->alignment_end;
+						my ($method_score)  = ( defined $region->bit_score )  ? $region->bit_score  : '.';
+						my ($method_strand) = ( defined $region->strand )     ? $region->strand     : '.';					
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $region->type_domain,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -839,9 +903,10 @@ sub get_spade_annotations {
 =cut
 
 sub get_inertia_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = '.';
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'inertia'}->{'source'};
@@ -869,7 +934,7 @@ sub get_inertia_annotations {
 						}							 	
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
 								'start'		=> $region->start,
@@ -909,9 +974,10 @@ sub get_inertia_annotations {
 =cut
 
 sub get_thump_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = '.';
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'thump'}->{'source'};
@@ -924,7 +990,11 @@ sub get_thump_annotations {
 	 		# get residue annotations
 			if ( defined $method->regions ) {
 				foreach my $region (@{$method->regions}) {
-					if ( defined $region->start and defined $region->end and defined $region->strand ) {
+					#if ( defined $region->start and defined $region->end and defined $region->strand ) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )      ? $region->start      : $region->pstart;
+						my ($method_end)    = ( defined $region->end )        ? $region->end        : $region->pend;
+						my ($method_strand) = ( defined $region->strand )     ? $region->strand     : '.';					
 						# get type
 						my ($method_type) = '.';
 						if ( $region->damaged and ($region->damaged eq '0') ) {
@@ -938,13 +1008,13 @@ sub get_thump_annotations {
 						}
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -957,7 +1027,7 @@ sub get_thump_annotations {
 						if (defined $common and defined $optional) {
 							$output .= print_annotations($common,$optional);			
 						}													 	
-					}
+					#}
 				}
 			} 		
  		}
@@ -981,9 +1051,10 @@ sub get_thump_annotations {
 =cut
 
 sub get_crash_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = '.';
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'crash'}->{'source'};
@@ -999,8 +1070,7 @@ sub get_crash_annotations {
 					if ( defined $region->s_mean and defined $region->s_prob and 
 						 defined $region->d_score and defined $region->c_max and
 						 defined $region->reliability and defined $region->localization and
-						 defined $region->pstart and defined $region->pend and
-						 defined $region->start and defined $region->end and defined $region->strand ) {						 	
+						 defined $region->pstart and defined $region->pend ) {
 						# get type
 						my ($method_type) = '.';
 						if ( $method->peptide_signal eq $APPRIS::Utils::Constant::UNKNOWN_LABEL ) {
@@ -1011,16 +1081,20 @@ sub get_crash_annotations {
 						}
 						elsif ( $method->peptide_signal eq $APPRIS::Utils::Constant::OK_LABEL ) {
 							$method_type = $GTF_CONSTANTS->{'crash'}->{'annot'}->{'signal_peptide'}->[0];
-						}							 	
+						}
+						# get coords
+						my ($method_start)  = ( defined $region->start )      ? $region->start      : $region->pstart;
+						my ($method_end)    = ( defined $region->end )        ? $region->end        : $region->pend;
+						my ($method_strand) = ( defined $region->strand )     ? $region->strand     : '.';					
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -1047,16 +1121,16 @@ sub get_crash_annotations {
 						}
 						elsif ( $method->mitochondrial_signal eq $APPRIS::Utils::Constant::OK_LABEL ) {
 							$method_type2 = $GTF_CONSTANTS->{'crash'}->{'annot'}->{'mitochondrial_signal'}->[0];
-						}							 	
+						}
 						# common attributes
 						my ($common2) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type2,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes
@@ -1091,9 +1165,10 @@ sub get_crash_annotations {
 
 =cut
 sub get_proteo_annotations {
-	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_score) = '.';
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'proteo'}->{'source'};
@@ -1107,17 +1182,20 @@ sub get_proteo_annotations {
 	 		# get residue annotations
 			if ( defined $method->peptides ) {
 				foreach my $region (@{$method->peptides}) {
-					if ( defined $region->sequence and defined $region->num_experiments and 
-						 defined $region->start and defined $region->end and defined $region->strand ) {
+					if ( defined $region->sequence and defined $region->num_experiments ) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )      ? $region->start      : $region->pstart;
+						my ($method_end)    = ( defined $region->end )        ? $region->end        : $region->pend;
+						my ($method_strand) = ( defined $region->strand )     ? $region->strand     : '.';
 						# common attributes
 						my ($common) = {
-								'seqname'	=> $feature->chromosome,
+								'seqname'	=> $method_seqname,
 								'source'	=> $method_source,
 								'type'		=> $method_type,
-								'start'		=> $region->start,
-								'end'		=> $region->end,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
 								'score'		=> $method_score,
-								'strand'	=> $region->strand,
+								'strand'	=> $method_strand,
 								'phase'		=> $method_phase
 						};
 						# optinal attributes

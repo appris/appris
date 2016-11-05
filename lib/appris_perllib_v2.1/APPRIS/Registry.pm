@@ -1021,7 +1021,8 @@ sub fetch_by_gene_stable_id {
 			throw('Wrong coordinate');
 		}
 	};
-	throw('Wrong coordinate') if ($@);
+	#throw('Wrong coordinate') if ($@);
+	warning('Wrong coordinate') if ($@);
 
 	# Get the list of datasources for this gene
 	my ($datasource_list) = $self->dbadaptor->query_datasource();
@@ -1041,7 +1042,7 @@ sub fetch_by_gene_stable_id {
 				entity_id => $entity->{'entity_id'},
 				datasource_id => $datasource_id
 			);
-
+			
 			# External name
 			if (($datasource_name eq 'External_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 				my ($xref_id) = $xref_id_list->[0]->{'identifier'};
@@ -1143,11 +1144,22 @@ sub fetch_by_transc_stable_id {
 		);
 		$self->dbadaptor($dbadaptor);	
 	}
+	
+	# Get gene and trascript list
+	my ($gene_datasource_id);
+	my ($transcript_datasource_id);
+	eval {
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Gene_Id')->[0];
+		$gene_datasource_id = $datasource->{'datasource_id'} if (defined $datasource);
+		my ($datasource2) = $self->dbadaptor->query_datasource(name => 'Transcript_Id')->[0];
+		$transcript_datasource_id = $datasource2->{'datasource_id'} if (defined $datasource2);
+	};
+	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
 	my ($entity);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
 		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
 			$entity = $entity_list->[0];
 		}
@@ -1156,7 +1168,7 @@ sub fetch_by_transc_stable_id {
 		}
 	};
 	return undef if ( $@ or !(defined $entity) );
-
+	
 	# Get coordinate of entity
 	my ($coordinate);
 	eval {
@@ -1328,11 +1340,22 @@ sub fetch_by_transl_stable_id {
 		);
 		$self->dbadaptor($dbadaptor);	
 	}
+	
+	# Get gene and trascript list
+	my ($gene_datasource_id);
+	my ($transcript_datasource_id);
+	eval {
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Gene_Id')->[0];
+		$gene_datasource_id = $datasource->{'datasource_id'} if (defined $datasource);
+		my ($datasource2) = $self->dbadaptor->query_datasource(name => 'Transcript_Id')->[0];
+		$transcript_datasource_id = $datasource2->{'datasource_id'} if (defined $datasource2);
+	};
+	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
 	my ($entity);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
 		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
 			$entity = $entity_list->[0];
 		}
@@ -1506,11 +1529,22 @@ sub fetch_analysis_by_stable_id {
 		);
 		$self->dbadaptor($dbadaptor);	
 	}
+	
+	# Get gene and trascript list
+	my ($gene_datasource_id);
+	my ($transcript_datasource_id);
+	eval {
+		my ($datasource) = $self->dbadaptor->query_datasource(name => 'Gene_Id')->[0];
+		$gene_datasource_id = $datasource->{'datasource_id'} if (defined $datasource);
+		my ($datasource2) = $self->dbadaptor->query_datasource(name => 'Transcript_Id')->[0];
+		$transcript_datasource_id = $datasource2->{'datasource_id'} if (defined $datasource2);
+	};
+	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
 	my ($entity);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id);
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
 		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
 			$entity = $entity_list->[0];
 		}
