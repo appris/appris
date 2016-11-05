@@ -72,13 +72,13 @@ sub new {
 	my ($self) = bless {}, $class;
 
 	my (
-		$result,						$domain_signal,
+		$result,						
 		$num_domains,					$num_damaged_domains,
 		$num_possibly_damaged_domains,	$num_wrong_domains,
 		$bitscore,						$regions
 	)
 	= rearrange( [
-		'result',						'domain_signal',
+		'result',						
 		'num_domains',					'num_damaged_domains',
 		'num_possibly_damaged_domains',	'num_wrong_domains',
 		'bitscore',						'regions'
@@ -87,7 +87,6 @@ sub new {
 	);
 
  	$self->result($result);
- 	$self->domain_signal($domain_signal);
 	$self->num_domains($num_domains) if(defined $num_domains);
 	$self->num_possibly_damaged_domains($num_possibly_damaged_domains) if(defined $num_possibly_damaged_domains);
 	$self->num_damaged_domains($num_damaged_domains) if(defined $num_damaged_domains);
@@ -114,24 +113,6 @@ sub result {
 	my ($self) = shift;
 	$self->{'result'} = shift if(@_);
 	return $self->{'result'};
-}
-
-=head2 domain_signal
-
-  Arg [1]    : (optional) String - the analysed domain_signal to set
-  Example    : $analysis->domain_signal(123);
-  Description: Getter/setter for the analysed domain_signal
-  Returntype : String
-  Exceptions : none
-  Caller     : general
-  Status     : Stable
-
-=cut
-
-sub domain_signal {
-	my ($self) = shift;
-	$self->{'domain_signal'} = shift if(@_);
-	return $self->{'domain_signal'};
 }
 
 =head2 num_domains
