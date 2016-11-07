@@ -2232,21 +2232,16 @@ sub get_corsair_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;
-			if ( $method->vertebrate_signal and 
-					( ($method->vertebrate_signal eq $APPRIS::Utils::Constant::OK_LABEL) or 
-					($method->vertebrate_signal eq $APPRIS::Utils::Constant::UNKNOWN_LABEL) ) 
-			) {
-				if ( $feature->exons ) {
-					my ($res_list) = $feature->exons;					
-					my ($data) = extract_track_cds($transcript_id,
-													$feature,
-													$res_list);
-					if (defined $data ) {
-						$data->{'note'} = 'Species Conserv';
-						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
-					}
+			if ( $feature->exons ) {
+				my ($res_list) = $feature->exons;					
+				my ($data) = extract_track_cds($transcript_id,
+												$feature,
+												$res_list);
+				if (defined $data ) {
+					$data->{'note'} = 'Species Conserv';
+					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 				}
- 			}
+			}
  		}
  	}
 }
