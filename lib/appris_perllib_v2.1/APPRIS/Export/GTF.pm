@@ -780,7 +780,7 @@ sub get_corsair_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;	 		
-			if ( defined $method->score ) {
+			if ( defined $method->score and $method->score != 0 ) {
 				# get coords
 				my ($method_start,$method_end,$method_strand);			
 				if ( $feature->start and $feature->end and $feature->strand ) {

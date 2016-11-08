@@ -2232,16 +2232,18 @@ sub get_corsair_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;
-			if ( $feature->exons ) {
-				my ($res_list) = $feature->exons;					
-				my ($data) = extract_track_cds($transcript_id,
-												$feature,
-												$res_list);
-				if (defined $data ) {
-					$data->{'note'} = 'Species Conserv';
-					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
+	 		if ( defined $method->score and $method->score != 0 ) {  	 		
+				if ( $feature->exons ) {
+					my ($res_list) = $feature->exons;					
+					my ($data) = extract_track_cds($transcript_id,
+													$feature,
+													$res_list);
+					if (defined $data ) {
+						$data->{'note'} = 'Species Conserv';
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
+					}
 				}
-			}
+	 		}
  		}
  	}
 }
