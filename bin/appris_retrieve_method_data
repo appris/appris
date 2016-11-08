@@ -188,7 +188,7 @@ METHOD_SCRIPT_2="retrieve_method_data"
 SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
 
 #OUTPUT_WORKSPACE="${APPRIS_DATA_DIR}/${FORMAT}"
-#prepare_workspace "${OUTPUT_WORKSPACE}"
+prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
 OUTPUT_PREFIX="${APPRIS_DATA_DIR}/appris_method"
 
 # -----------------------------------------------------------------------------
