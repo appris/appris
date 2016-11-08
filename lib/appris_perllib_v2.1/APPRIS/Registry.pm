@@ -431,7 +431,12 @@ sub fetch_entity_by_region {
 				},			
 			]);			
 		}
-		$gene_list = $self->dbadaptor->query_entity_coordinate5(@args);
+		if (defined $chr) {
+			$gene_list = $self->dbadaptor->query_entity_coordinate5(@args);
+		}
+		else {
+			$gene_list = $self->dbadaptor->query_entity(datasource_id => $datasource->{'datasource_id'});
+		}
 		warning('Argument must be a correct region') unless (defined $gene_list and scalar(@{$gene_list}) > 0);
 	};
 	warning('Argument must be a correct region') if ($@);
