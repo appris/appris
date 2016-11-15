@@ -148,7 +148,7 @@ sub main()
 	# upload datafiles to server
 	info("upload datafiles to server...");
 	eval {
-		my ($cmd) = "cd $LOC_RELEASE_DIR && tar -cf - . | ssh $SRV_NAME 'mkdir -p $SRV_RELEASE_DIR; cd $SRV_RELEASE_DIR/; tar -xf -'";
+		my ($cmd) = "cd $LOC_RELEASE_DIR && tar -cpf - . | ssh $SRV_NAME 'mkdir -p $SRV_RELEASE_DIR; cd $SRV_RELEASE_DIR/; tar -xf -'";
 		info($cmd);
 		system ($cmd);
 	};
