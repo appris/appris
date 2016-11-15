@@ -6,12 +6,14 @@ CODE-RELEASE:     4.5.2.12
 ```
 
 ### Highlights
-- Upload local databases for methods in DropBox: 
+- APPRIS annotations for UniProt (2016_06 version).
+- New release of Ensembl (e86 version).
 
 ### Code (2.12)
 - CORSAIR:
-A variant with "start/stop codons not found" can not to win.
+	A variant with "start/stop codons not found" can not to win.
 
+- Upload local databases to DropBox.
 
 
 ___
