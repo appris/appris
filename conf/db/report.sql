@@ -6,7 +6,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=5;
+	datasource_id=2;
 
 -- 	
 -- Count the number of genes coming FROM HAVANA
@@ -16,7 +16,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=5 AND
+	datasource_id=2 AND
 	source='HAVANA';
 
 -- 	
@@ -27,7 +27,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=5 AND 
+	datasource_id=2 AND 
 	source='ENSEMBL';
 
 -- 	
@@ -38,7 +38,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=6;
+	datasource_id=3;
 
 -- 	
 -- Count the number of transcripts coming FROM HAVANA
@@ -48,7 +48,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=6 AND
+	datasource_id=3 AND
 	source='HAVANA';
 
 -- 	
@@ -59,7 +59,7 @@ SELECT
 FROM
 	entity e
 WHERE
-	datasource_id=6 AND
+	datasource_id=3 AND
 	source='ENSEMBL';
 
 
@@ -142,7 +142,7 @@ WHERE
 	e1.datasource_id=2 AND
 	e1.entity_id=c.entity_id AND
 	x.identifier=e2.identifier AND
-	x.datasource_id=6 AND	
+	x.datasource_id=3 AND	
 	e2.entity_id=s.entity_id AND
 	s.type_id=1
 GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
@@ -176,7 +176,7 @@ WHERE
 	e1.datasource_id=2 AND
 	e1.entity_id=c.entity_id AND
 	x.identifier=e2.identifier AND
-	x.datasource_id=6 AND	
+	x.datasource_id=3 AND	
 	e2.entity_id=s.entity_id AND
 	s.type_id=2
 GROUP BY c.chromosome ORDER BY CAST(c.chromosome AS SIGNED) ASC, c.chromosome ASC;
