@@ -163,7 +163,7 @@ sub main()
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
 				if ( exists $cfg_dataset->{'database'} ) {
 					my ($ds_id) = $cfg_dataset->{'id'};
-					my ($ds_db) = $cfg_dataset->{'database'};					
+					my ($ds_db) = $cfg_dataset->{'database'}.'_'.$ds_id;					
 					my ($srv_relspe_dir) = $SRV_RELEASE_DIR.'/datafiles/'.$species_id;
 					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
 					my ($srv_db_file) = $srv_reldat_dir.'/appris_db.dump.gz';

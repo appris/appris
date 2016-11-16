@@ -321,14 +321,15 @@ sub load_registry {
 						else { $found_ty = 0 }
 					}
 
-					if ( $found_sc == 1 and $found_ds == 1 and $found_ty == 1 ) {						
+					if ( $found_sc == 1 and $found_ds == 1 and $found_ty == 1 ) {
+						my ($db_name) = $cfg_dataset->{'database'}.'_'.$cfg_dataset->{'id'};
 						my ($registry) = APPRIS::Registry->new();		
 						$registry->load_registry_from_db(
 												-dbhost	=> $db_cfg->val('APPRIS_DATABASES', 'host'),
 												-dbuser	=> $db_cfg->val('APPRIS_DATABASES', 'user'),
 												-dbpass	=> $db_cfg->val('APPRIS_DATABASES', 'pass'),
 												-dbport	=> $db_cfg->val('APPRIS_DATABASES', 'port'),
-												-dbname	=> $cfg_dataset->{'database'}
+												-dbname	=> $db_name
 						);
 						push(@{$registries}, {
 								'species'	=> $species_id,
@@ -343,7 +344,9 @@ sub load_registry {
 			}				
 		}
 	}
-		
+	
+print STDERR "REGISTRIES\n".Dumper($registries)."\n";
+
 	return $registries;
 	
 } # end load_registry
