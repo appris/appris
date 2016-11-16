@@ -345,8 +345,6 @@ sub load_registry {
 		}
 	}
 	
-print STDERR "REGISTRIES\n".Dumper($registries)."\n";
-
 	return $registries;
 	
 } # end load_registry

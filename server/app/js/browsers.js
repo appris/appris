@@ -71,7 +71,7 @@ module.controller('BrowsersController', ['$scope', '$routeParams', '$filter', fu
             info:       '#infoBrowserSeq',
             template:   'templates/apprisBrowserSeq.tpl.html'
         }];
-        if ( !$scope.isSeqRunner ) {
+        if ( !$scope.isSeqRunner && $scope.sc !== 'uniprot' ) {
             $scope.browsers.push({
                 id:         'genome',
                 title:      'Genome Browser',
