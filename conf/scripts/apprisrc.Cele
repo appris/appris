@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="caenorhabditis_elegans/e86"
 
-export APPRIS_WS_DATE="caenorhabditis_elegans/ens86.v19"
+export APPRIS_WS_DATE="caenorhabditis_elegans/e86v19"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 

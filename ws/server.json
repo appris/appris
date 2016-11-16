@@ -12,14 +12,14 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "ens86.v19",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "label": "Gencode25/Ensembl86",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_homo_sapiens_e86v19",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -31,13 +31,13 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs107.v19",
+                    "id":   "rs107v19",
                     "type": "current",
                     "source": {
                         "name": "refseq",
                         "version": "107"
                     },
-                    "database":   "appris_homo_sapiens_rs107v19",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -48,67 +48,31 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201606.v19",
+                    "id":   "up201606v19",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
                         "version": "2016_06"
                     },
-                    "database":   "appris_homo_sapiens_up201606v19",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
                     }
                 },{
-                    "id":   "ens84.v19",
+                    "id":   "e84v19",
                     "type": "archive",
                     "source": {
                         "name": "ensembl",
                         "label": "Gencode24/Ensembl84",
                         "version": "84"
                     },
-                    "database":   "appris_homo_sapiens_e84v19",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"],
-                        "peptides":                 ["GTF","BED"]
-                    }
-                },{
-                    "id":   "ens81.v17",
-                    "type": "archive",
-                    "source": {
-                        "name": "ensembl",
-                        "version": "81"
-                    },
-                    "database":   "appris_homo_sapiens_e81v17",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"],
-                        "peptides":                 ["GTF","BED"]
-                    }
-                },{
-                    "id":   "ens79.v17",
-                    "type": "archive",
-                    "source": {
-                        "name": "ensembl",
-                        "version": "79"
-                    },
-                    "database":   "appris_homo_sapiens_e79v17",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -124,14 +88,14 @@
                 "id":       "hg19",
                 "name":     "GRCh37",
                 "datasets": [{
-                    "id":   "gen19.v19",
+                    "id":   "g19v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "label": "Gencode19/Ensembl74",
                         "version": "74"
                     },
-                    "database":   "appris_homo_sapiens_g19v19",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -143,13 +107,13 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs105.v19",
+                    "id":   "rs105v19",
                     "type": "current",
                     "source": {
                         "name": "refseq",
                         "version": "105"
                     },
-                    "database":   "appris_homo_sapiens_rs105v19",
+                    "database":   "appris_homo_sapiens",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -173,14 +137,14 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "GencodeM9/Ensembl84",
-                        "version": "84"
+                        "label": "GencodeM11/Ensembl86",
+                        "version": "86"
                     },
-                    "database":   "appris_mus_musculus_e84v17",
+                    "database":   "appris_mus_musculus",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -204,13 +168,13 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_danio_rerio_e84v17",
+                    "database":   "appris_danio_rerio",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -225,13 +189,13 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "ens77.v17",
+                    "id":   "e77v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "version": "77"
                     },
-                    "database":   "appris_danio_rerio_e77v17",
+                    "database":   "appris_danio_rerio",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -255,13 +219,13 @@
                 "id":       "rn6",
                 "name":     "Rnor_6.0",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_rattus_norvegicus_e84v17",
+                    "database":   "appris_rattus_norvegicus",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -276,13 +240,13 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "ens77.v17",
+                    "id":   "e77v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "version": "77"
                     },
-                    "database":   "appris_rattus_norvegicus_e84v17",
+                    "database":   "appris_rattus_norvegicus",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -306,21 +270,21 @@
                 "id":       "susScr3",
                 "name":     "Sscrofa10.2",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_sus_scrofa_e84v17",
+                    "database":   "appris_sus_scrofa",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
+                        "functional_residues":      ["GTF","BED","BED12"],
+                        "tertiary_structure":       ["GTF","BED","BED12"],
+                        "vertebrates_conservation": ["GTF","BED","BED12"],
+                        "whole_domains":            ["GTF","BED","BED12"],
+                        "transmembrane_helices":    ["GTF","BED","BED12"]
                     }
                 }]
             }]
@@ -336,13 +300,13 @@
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_pan_troglodytes_e84v17",
+                    "database":   "appris_pan_troglodytes",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -366,13 +330,13 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_drosophila_melanogaster_e84v17",
+                    "database":   "appris_drosophila_melanogaster",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -396,13 +360,13 @@
                 "id":       "ce10",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "ens84.v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "version": "86"
                     },
-                    "database":   "appris_caenorhabditis_elegans_e84v17",
+                    "database":   "appris_caenorhabditis_elegans",
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
