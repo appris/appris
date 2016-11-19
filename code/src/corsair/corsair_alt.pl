@@ -399,7 +399,10 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 						my ($aln_iden) = sprintf '%.2f', $identity;
 						#my ($iden_score) = iden_score($aln_iden);
 						my ($iden_score) = $aln_iden/100;
-						my ($divtime_score) = divtime_score($species);					
+						my ($divtime_score) = divtime_score($species);
+if ( $divtime_score == 0 ) {
+	print STDERR "DIVTIME_ZERO:$species\n";
+}
 						# save global score for transc
 						if ( $aln_score > 0 ) {
 							#push(@{$species_report}, "$species\t$aln_iden\t$iden_score\t$divtime_score"); # Record species and score
