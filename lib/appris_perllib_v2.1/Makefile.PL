@@ -6,8 +6,8 @@ name			'APPRIS';
 author			'Jose Manuel Rodriguez <jmrodriguez@cnio.es>';
 version			'0.1';
 abstract 		'This distribution is for communicating with a APPRIS annotations';
-#license			'perl';
-#perl_version	'5.16.2';
+license			'perl';
+perl_version	'5.18';
 
 # Perl dependencies
 
@@ -16,41 +16,38 @@ requires 'YAML::Tiny'				=> '1.69';
 requires 'File::Remove'				=> '1.52';
 
 # APPRIS
-requires 'DB'						=> 0;
-requires 'DBD::mysql'				=> 0;
-requires 'POSIX'					=> 0;
-requires 'FindBin'					=> 0;
-requires 'Config::IniFiles'			=> 0;
-requires 'Getopt::Long'				=> 0;
-requires 'Data::Dumper'				=> 0;
-requires 'Exporter'					=> 0;
-requires 'Bio::Seq'					=> '1.06';
-requires 'Bio::SeqIO'				=> '1.06';
-requires 'Bio::SearchIO'			=> '1.06';
-requires 'File::Temp'				=> 0;
-requires 'File::Basename'			=> 0;
-requires 'Time::localtime'			=> 0;
-requires 'File::Basename'			=> 0;
-requires 'JSON'						=> 0;
-requires 'SVG'						=> 0;
-requires 'Statistics::Descriptive'	=> 0;
-requires 'Moose'					=> 0;
-requires 'Class::Load'				=> 0;
-requires 'Data::OptList'			=> 0;
-requires 'Module::Implementation'	=> 0;
-requires 'Class::Load::XS'			=> 0;
-requires 'MRO::Compat'				=> 0;
-requires 'Data::Printer'			=> 0;
-requires 'XML::DOM'					=> 0;
-requires 'CGI'						=> 0;
-requires 'HTTP::Status'				=> 0;
-requires 'Email::Valid'				=> 0;
-requires 'MIME::Lite'				=> 0;
-requires 'Digest::MD5'				=> 0;
-
-requires 'List::MoreUtils'			=> 0;
-
-
+requires 'DB'							=> '1.04';
+requires 'DBD::mysql'					=> '4.039';
+requires 'POSIX'						=> '1.32';
+requires 'FindBin'						=> '1.51';
+requires 'Config::IniFiles'				=> '2.82';
+requires 'Getopt::Long'					=> '2.39';
+requires 'Data::Dumper'					=> '2.145';
+requires 'Exporter'						=> '5.68';
+requires 'Bio::Seq'						=> 0;
+requires 'Bio::SeqIO'					=> 0;
+requires 'Bio::SearchIO'				=> 0;
+requires 'IPC::Run'						=> 0;
+requires 'File::Temp'					=> '0.23';
+requires 'File::Basename'				=> '2.84';
+requires 'Time::localtime'				=> '1.02';
+requires 'JSON'							=> '2.90';
+requires 'SVG'							=> '2.59';
+requires 'Statistics::Descriptive'		=> '3.0605';
+requires 'Moose'						=> '2.1202';
+requires 'Class::Load'					=> '0.20';
+requires 'Data::OptList'				=> '0.109';
+requires 'Module::Implementation'		=> '0.07';
+requires 'Class::Load::XS'				=> '0.06';
+requires 'MRO::Compat'					=> '0.12';
+requires 'Data::Printer'				=> '0.35';
+requires 'XML::DOM'						=> '1.44';
+requires 'CGI'							=> '3.63';
+requires 'HTTP::Status'					=> '6.03';
+requires 'Email::Valid'					=> '1.202';
+requires 'MIME::Lite'					=> '3.030';
+requires 'Digest::MD5'					=> '2.52';
+requires 'List::MoreUtils'				=> '0.33';
 
 my (%arg_install);
 foreach my $arg (@ARGV) {

@@ -47,7 +47,6 @@ Requirements
 	
 - Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
 
-  * for global scripts of appris:
 	```
 	- FindBin
 	- Getopt::Long
@@ -57,21 +56,10 @@ Requirements
 	- File::Temp
 	- File::Basename
 	- Data::Dumper
-	```
-
-  * for firestar scripts:
-  	```
+	- JSON
 	- DBI
 	- POSIX
-	```
-
-  * for inertia scripts:
-  	```
 	- Statistics::Descriptive
-	```
-
-  * for spade scripts:
-  	```
 	- Moose
 	- Class::Load
 	- Data::OptList
@@ -80,21 +68,14 @@ Requirements
 	- MRO::Compat
 	- Data::Printer
 	- IPC::Run
-	```
-	
-  * for web services:
-  	```
 	- CGI
 	- HTTP::Status
 	- Email::Valid
 	- MIME::Lite
-	```
-	
-  * for ensembl scripts:
-  	```
 	- Parse::RecDescent
 	```
-
+	Note: See the lib/appris_perllib/Makefile.PL file
+	
 - [MySQL Client] (http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
 
 - [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
