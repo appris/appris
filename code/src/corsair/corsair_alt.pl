@@ -37,8 +37,10 @@ use vars qw(
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
-	$DEFALULT_CORSAIR_SPECIES_FILE
-	$SPECIES
+	$DEFALULT_CORSAIR_PRIMATES_FILE
+	$DEFALULT_CORSAIR_DIVERGE_TIME_FILE
+	$PRIMATES
+	$DIVERGE_TIME
 );
 		
 # Input parameters
@@ -87,8 +89,10 @@ $PROG_CUTOFF		= $cfg->val( 'CORSAIR_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
-$DEFALULT_CORSAIR_SPECIES_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_alt.list_primates.json';
-$SPECIES = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_SPECIES_FILE) );
+$DEFALULT_CORSAIR_PRIMATES_FILE		= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_alt.primates.json';
+$DEFALULT_CORSAIR_DIVERGE_TIME_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_alt.diverge_time.human.json';
+$PRIMATES = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_PRIMATES_FILE) );
+$DIVERGE_TIME = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_DIVERGE_TIME_FILE) );
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -104,7 +108,6 @@ $logger->init_log($str_params);
 #####################
 sub parse_blast($$$);
 sub check_alignment($$$\$$);
-sub _get_specie_score($);
 
 #################
 # Method bodies #
@@ -360,18 +363,16 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			if ($faalen != $sequence_length)
 				{ $logger->warning("Length of Blast's query is different than input sequence\n"); }
 		}
-		$string = join " ", $string, $_;	# cos BLAST has bad habit of printing species name over two lines
-		if($string =~ /[a-z]+\]/)		# ... has species name
+		if ( $_ =~ /^>/ ) { $string = $_ }
+		else { $string = join " ", $string, $_ } # cos BLAST has bad habit of printing species name over two lines			
+		# gets subject sequence length
+		# Extract the species name
+		if(/Length =/)						
 		{
-			my @data = split /\[/, $string;
-			$string = "";
-			$species = $data[$#data];
-			$species =~ s/\]//;
-		}
-		if(/Length =/)						# gets subject sequence length
-		{
-			my @data = split " ";
-			$length = $data[2];
+			if ( $string =~ /\[([^\]]*)\]\s*Length = ([0-9]*)/ ) {
+				$species = $1;
+				$length = $2;
+			}
 		}
 		if(/Identities/)
 		{
@@ -381,13 +382,14 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			$length = abs($length);				# difference in length between query and subject
 			my @identities = split " ", $iden[0];
 			my $identity = $iden[0]/$iden[1]*100;
+			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : "";			
 			if ($identity < 50)				# gets no points for this sequence
 				{ }
 			elsif ($length > $PROG_MINLEN) # gets no points for this sequence
 				{ }
 			elsif (exists $species_found->{$species}) # gets no points for this sequence
 				{ }
-			elsif ( exists $SPECIES->{$species} ) # only we accept species out of primates
+			elsif ( exists $PRIMATES->{$species_firstname} ) # only we accept species out of primates
 				{ }
 			else
 			{
@@ -395,10 +397,13 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 					if ( defined $aln_score and ($aln_score > 0) ) {
 						# get identity score
 						my ($aln_iden) = sprintf '%.2f', $identity;
-						my ($iden_score) = iden_score($aln_iden);						
+						#my ($iden_score) = iden_score($aln_iden);
+						my ($iden_score) = $aln_iden/100;
+						my ($divtime_score) = divtime_score($species);					
 						# save global score for transc
 						if ( $aln_score > 0 ) {
-							push(@{$species_report}, "$species\t$aln_iden\t$iden_score"); # Record species and score
+							#push(@{$species_report}, "$species\t$aln_iden\t$iden_score\t$divtime_score"); # Record species and score
+							push(@{$species_report}, "$species\t$iden_score\t$divtime_score"); # Record species and score
 							$species_found->{$species} = 1;							
 						}
 						# save scores per exons (genomics region), if apply
@@ -429,7 +434,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 								}
 							}
 						}
-						$species_score += $iden_score;						
+						$species_score += ($iden_score*$divtime_score);
 					}
 			}
 		}
@@ -451,6 +456,22 @@ sub iden_score($)
 	}
 	elsif ( $identity >= 60 ) {
 		$score = 0.5;
+	}
+	return $score;
+}
+
+#Ê(Normalized) Score based on diverge time
+sub divtime_score($)
+{
+	my ($species) = shift;
+	my ($species_firstname) = ( $species =~ /^([^\s]*)/ ) ? $1 : "";	
+	my ($score) = 0;
+	if ( exists $DIVERGE_TIME->{$species_firstname} ) {
+		foreach my $div_time (@{$DIVERGE_TIME->{$species_firstname}}) {
+			if ( $div_time->{'name'} eq $species ) {
+				$score = $div_time->{'norm'};
+			}
+		}
 	}
 	return $score;
 }
