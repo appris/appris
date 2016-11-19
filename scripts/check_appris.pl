@@ -9,7 +9,10 @@ use FindBin;
 use Data::Dumper;
 
 use lib "$FindBin::Bin/lib";
-use appris qw( get_gene_list create_ensembl_input create_gencode_input );
+use appris qw(
+	get_gene_list
+	create_ensembl_input
+);
 use APPRIS::Parser qw( parse_gencode );
 use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
