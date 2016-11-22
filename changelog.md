@@ -1,4 +1,18 @@
 ___
+## 2016_12.v20
+```
+SERVER-RELEASE:   2016_12.v20
+CODE-RELEASE:     4.5.2.13
+```
+
+### Highlights
+
+### Code (2.13)
+- APPRIS:
+	Changes in the weight of CORSAIR
+
+
+___
 ## 2016_11.v19
 ```
 SERVER-RELEASE:   2016_11.v19
@@ -12,8 +26,6 @@ CODE-RELEASE:     4.5.2.12
 ### Code (2.12)
 - CORSAIR:
 	A variant with "start/stop codons not found" can not to win.
-
-- Upload local databases to DropBox.
 
 
 ___

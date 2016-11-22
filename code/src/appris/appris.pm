@@ -54,18 +54,14 @@ $METHOD_WEIGHTED = {
 	'spade'		=> 6,
 	'corsair'	=> [{
 					  'max'    => 3,
-				  	  'weight' => 1	
-					},
-					{
-					  'max'    => 4,
 				  	  'weight' => 1.5	
 					},
 					{
-					  'max'    => 6,
+					  'max'    => 4,
 				  	  'weight' => 2	
 					},
 					{
-					  'max'    => 7,
+					  'max'    => 5,
 					  'weight' => 3	
 					}],
 	'thump'		=> 0,
