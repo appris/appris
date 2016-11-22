@@ -221,7 +221,7 @@ apprisFilters.filter('suffixDatafiles', function() {
     return function(item) {
         var item = item.toLocaleLowerCase();
         if ( item === "txt" ) { return item }
-        else if ( item === "bed" || item == "gtf" ) { return item + '.gz' }
+        else { return item + '.gz' }
     };
 });
 
