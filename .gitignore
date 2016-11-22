@@ -9,6 +9,7 @@
 .gitconfig
 .mysql_history
 .Xauthority
+.selected_editor
 .cache/
 .idea/
 .ssh/
