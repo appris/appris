@@ -1707,21 +1707,23 @@ sub get_gen_features {
 			$params .= '&' . 'refGene.label.omimhg38=0';
 			$params .= '&' . 'refGene.hideNoncoding=1';
 		}
-		else {
-			$params .= '&' . 'knownGene.label.gencodeId=1';
-			$params .= '&' . 'knownGene.label.gene=0';
-			$params .= '&' . 'knownGene.label.kgId=0';
-			$params .= '&' . 'knownGene.label.prot=0';
-			$params .= '&' . 'knownGene.label.omimhg38=0';
-			$params .= '&' . 'knownGene.show.comprehensive=1';
-			$params .= '&' . 'knownGene.show.spliceVariants=1';
-			$params .= '&' . 'knownGene.show.noncoding=0';
-			# for mouse and old species
-			my ($gencode_db_for_mouse) = 'M4'; # HARD-CORE!!! due UCSC does not update correctly
-			$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'_sel=' . '1';
-			$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db_for_mouse.'_sel=' . '0';
-			$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db_for_mouse.'_sel=' . '0';
-			$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'.label=' . 'accession';				
+		elsif ( defined $source and $source eq 'ensembl' ) {
+			if ( $species_id eq 'homo_sapiens' ) {
+				$params .= '&' . 'knownGene.label.gencodeId=1';
+				$params .= '&' . 'knownGene.label.gene=0';
+				$params .= '&' . 'knownGene.label.kgId=0';
+				$params .= '&' . 'knownGene.label.prot=0';
+				$params .= '&' . 'knownGene.label.omimhg38=0';
+				$params .= '&' . 'knownGene.show.comprehensive=1';
+				$params .= '&' . 'knownGene.show.spliceVariants=1';
+				$params .= '&' . 'knownGene.show.noncoding=0';
+				# for mouse and old species
+				my ($gencode_db_for_mouse) = 'M4'; # HARD-CORE!!! due UCSC does not update correctly
+				$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'_sel=' . '1';
+				$params .= '&' . 'wgEncodeGencodeBasicV'.$gencode_db_for_mouse.'_sel=' . '0';
+				$params .= '&' . 'wgEncodeGencodePseudoGeneV'.$gencode_db_for_mouse.'_sel=' . '0';
+				$params .= '&' . 'wgEncodeGencodeCompV'.$gencode_db_for_mouse.'.label=' . 'accession';				
+			}		
 		}
 		
 		my ($ucsc_render_track_url) = $ENV{APPRIS_WSERVER_UCSC_RENDER_URL} . '?' . $params;
