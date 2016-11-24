@@ -193,67 +193,6 @@ sub new {
 	return $self;
 }
 
-=head2 is_registry
-
-  Arg [1]    : String $specie
-               specie name (humna, mouse)
-  Arg [2]    : Integer $ens
-               Ensembl version
-  Example    : use DBRetriever qw(is_registry);
-               my $rst = is_registry($specie);
-  Description: Throws an exception which if not caught by an eval will
-               provide a stack trace to STDERR and die.  If the verbosity level
-               is lower than the level of the throw, then no error message is
-               displayed but the program will still die (unless the exception
-               is caught).
-  Returntype : none
-  Exceptions : thrown every time
-  Caller     : generally on error
-
-=cut
-#sub is_registry {
-#	my ($self) = shift;
-#	my ($specie) = shift;
-#	my ($ds) = shift;
-#	my ($db) = shift;
-#	my ($all_species);
-#	my ($is_registry);
-#	
-#	# config ini
-#	my ($cfg) = new Config::IniFiles( -file => $self->{'conf'} );
-#	
-#	# unless defined, then check all species
-#	if ( defined $specie ) {
-#		$all_species = [ $specie ];
-#	} else {
-#		$all_species = [ split( ',', $cfg->val('APPRIS_DATABASES', 'species') ) ];
-#	}
-#	
-#	foreach my $species (@{$all_species}) {
-#		my ($datasets) = [ split( ',', $cfg->val($species, 'datasets') ) ];
-#		if ( defined $db and ($db ne '') ) {
-#			$species_db .= 'DB_'.$ens; 
-#		}
-#		else {
-#			# assign default version for each assembly/database. We get the first one
-#			my ($versions) = [ split( ',', $cfg->val($specie, 'versions') ) ];
-#			$ens = $versions->[0];
-#			$self->ens($ens);
-#			$specie_ens .= '_ens'.$ens; 		
-#		}
-#		
-#		my ($specie_db) = uc($specie_ens.'_db');
-#		my ($species_dbname) = $cfg->val($species_db, 'db');		
-#		if ( defined $species_dbname ) {
-#			$is_registry = $species_dbname;
-#			
-#			return $is_registry;			
-#		}		
-#	}
-#		
-#	return $is_registry;
-#}
-
 =head2 load_registry
 
   Arg [1]    : String $type
@@ -273,7 +212,6 @@ sub new {
 
 sub load_registry {
 	my ($self) = shift;
-	my ($ds_type) = shift if (@_);
 	my ($species)  = $self->species  || undef;
 	my ($assembly) = $self->assembly || undef;
 	my ($source)   = $self->source   || undef;
@@ -296,39 +234,46 @@ sub load_registry {
 		
 		# For each assembly. By default, all assemblies
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			my ($found_as) = 0;			
+			my ($found_as) = 0;
 			if ( defined $assembly ) {
 				if ( lc($assembly) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }				
 			} else {
-				if ( lc($cfg_species->{'official'}) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
+				#if ( lc($cfg_species->{'official'}) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
+				$found_as = 1;
 			}
 			if ( $found_as == 1 ) {
-				
 				foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
-					my ($found_sc,$found_ds,$found_ty) = (0,0,0);
+					my ($found_sc,$found_ds) = (0,0);
 
 					if ( defined $source ) {
-						if ( lc($source) eq lc($cfg_dataset->{'source'}->{'name'}) ) { $found_sc = 1 }				
+						if ( lc($source) eq lc($cfg_dataset->{'source'}->{'name'}) ) { $found_sc = 1 }
 					} else { $found_sc = 1 }
 
 					if ( defined $dataset ) {
 						if ( lc($cfg_dataset->{'id'}) =~ /^$dataset/ ) { $found_ds = 1 }				
 					} else { $found_ds = 1 }
 
-					if ( defined $ds_type and (lc($ds_type) eq 'archives') ) { $found_ty = 1
-					} else {
-						if ( lc($cfg_dataset->{'type'}) eq 'current' ) { $found_ty = 1 }
-						else { $found_ty = 0 }
-					}
-
-					if ( $found_sc == 1 and $found_ds == 1 and $found_ty == 1 ) {
+					if ( $found_sc == 1 and $found_ds == 1 and exists $cfg_dataset->{'database'} ) {
+						my ($db_host, $db_user, $db_pass, $db_port) = (undef, undef, undef, undef);
 						my ($db_name) = $cfg_dataset->{'database'}.'_'.$cfg_dataset->{'id'};
-						my ($registry) = APPRIS::Registry->new();		
+						my ($registry) = APPRIS::Registry->new();
+						if ( exists $cfg_dataset->{'type'} and lc($cfg_dataset->{'type'}) eq 'archive' ) {
+							$db_host  = $db_cfg->val('APPRIS_ARCHIVES', 'host');
+							$db_user  = $db_cfg->val('APPRIS_ARCHIVES', 'user');
+							$db_pass  = $db_cfg->val('APPRIS_ARCHIVES', 'pass');
+							$db_port  = $db_cfg->val('APPRIS_ARCHIVES', 'port');
+						}
+						else {
+							$db_host  = $db_cfg->val('APPRIS_DATABASES', 'host');
+							$db_user  = $db_cfg->val('APPRIS_DATABASES', 'user');
+							$db_pass  = $db_cfg->val('APPRIS_DATABASES', 'pass');
+							$db_port  = $db_cfg->val('APPRIS_DATABASES', 'port');							
+						}
 						$registry->load_registry_from_db(
-												-dbhost	=> $db_cfg->val('APPRIS_DATABASES', 'host'),
-												-dbuser	=> $db_cfg->val('APPRIS_DATABASES', 'user'),
-												-dbpass	=> $db_cfg->val('APPRIS_DATABASES', 'pass'),
-												-dbport	=> $db_cfg->val('APPRIS_DATABASES', 'port'),
+												-dbhost	=> $db_host,
+												-dbuser	=> $db_user,
+												-dbpass	=> $db_pass,
+												-dbport	=> $db_port,
 												-dbname	=> $db_name
 						);
 						push(@{$registries}, {
