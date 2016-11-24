@@ -9,6 +9,31 @@
         "gene": "ENSDARG00000024771"
     },
     {
-        "cache": "RNF215"
+        "gene": "RNF215",
+        "species_id": "mus_musculus",
+        "assembly": "mm10",
+        "source": "ensembl"
+    },
+    {
+        "gene": "TRMT2A",
+        "species_id": "danio_rerio"
+    },
+    {
+        "gene": "ENSG00000099904",
+        "species_id": "homo_sapiens",
+        "assembly": "hg19",
+        "source": "ensembl"
+    },
+    {
+        "gene": "27037",
+        "species_id": "homo_sapiens",
+        "assembly": "hg38",
+        "source": "refseq"
+    },
+    {
+        "gene": "Q8NCW6",
+        "species_id": "homo_sapiens",
+        "assembly": "hg38",
+        "source": "uniprot"
     }
 ]

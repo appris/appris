@@ -257,17 +257,55 @@ apprisServices.factory('Retriever', ['$http', '$q', 'serverHostWS', function($ht
 }]);
 
 /* SEEKER services */
-apprisServices.factory('Seeker', ['$resource', 'serverHostWS', function($resource, serverHostWS){
-    return $resource(serverHostWS+'/rest/seeker/:id', { id:'@id', methods:'@methods', format: '@format'}, {
-        /* method: query */
-        query: {
-            method:'GET',
-            cache: false,
-            isArray: false,
-            params: { format:'json' }
-        }
+apprisServices.factory('Seeker', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
+    return({
+        get: getSeeker
     });
+    function getSeeker( params ) {
+        var qParams = {};
+        var urlParams = params.id;
+        if ( angular.isDefined(params.sp) ) { qParams.sp = params.sp }
+        if ( angular.isDefined(params.ds) ) { qParams.ds = params.ds }
+        var request = $http({
+            method: "get",
+            cache: false,
+            url: serverHostWS+'/rest/seeker/'+urlParams,
+            params: qParams
+        });
+        return request.then(handleSuccess, handleError) ;
+
+        // PRIVATE METHODS
+
+        // I transform the error response, unwrapping the application dta from the API response payload.
+        function handleError(response) {
+            if ( !(angular.isDefined(response.data))  ) {
+                return $q.reject( "An unknown error occurred." );
+            }
+            else {
+                if ( response.status === 404 ) {
+                    return $q.reject( "The search was not found for your query. Try to add at least one sequence or one method." );
+                }
+                else if ( response.status === 405 ) {
+                    return $q.reject( "Your query is malformed. Please, rephrase your query. Try to add at least one sequence or one method." );
+                }
+            }
+            return $q.reject(response.data);
+        }
+
+        // I transform the successful response, unwrapping the application data from the API response payload.
+        function handleSuccess( response ) {
+            if ( angular.isDefined(response.data) ) {
+                //if ( (angular.isArray(response.data) || angular.isString(response.data) || angular.isObject(response.data) ) && (response.data.length > 0) ) {
+                if ( angular.isArray(response.data) || angular.isString(response.data) || angular.isObject(response.data) ) {
+                    return response.data;
+                }
+                else { return "The search was not found. Try to add another methods." }
+            }
+            else { return "Empty response" }
+        }
+    }
 }]);
+
 
 /* SEQUENCER services */
 apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($http, $q, serverHostWS){
@@ -296,7 +334,6 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($ht
             url: serverHostWS+'/rest/sequencer/'+urlParams,
             params: qParams
         });
-//        return request.then(handleSuccess) ;
         return request.then(handleSuccess, handleError) ;
 
         // PRIVATE METHODS

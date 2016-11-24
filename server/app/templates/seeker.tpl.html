@@ -1,6 +1,7 @@
-<form class="navbar-form" role="search" name="seekerForm" data-ng-controller="SeekerController" data-ng-submit="runJob(seekerForm)">
+<form class="navbar-form" role="search" name="seekerSimpleForm" data-ng-controller="SeekerSimpleController"
+      data-ng-submit="runJob(seekerSimpleForm)">
     <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search gene..." data-ng-model="seekerForm.inQuery">
+        <input type="text" class="form-control" placeholder="Search gene..." data-ng-model="seekerSimpleForm.inQuery">
         <div class="input-group-btn">
             <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
         </div>

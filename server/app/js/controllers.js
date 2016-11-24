@@ -33,7 +33,10 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
         // get route parameters from type of mode
         // EXPORTER mode
         if ( angular.isDefined($routeParams.tid) && angular.isDefined($routeParams.species) && angular.isDefined($routeParams.id) ) {
-            rawResults = Seeker.query({
+//            rawResults = Seeker.query({
+//                id: $routeParams.id
+//            });
+            rawResults = Seeker.get({
                 id: $routeParams.id
             });
             if ( angular.isDefined($routeParams.ens) ) {
@@ -42,14 +45,18 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
         }
         // RUNNER mode
         else if ( angular.isDefined($routeParams.jobid) ) {
-            rawResults = Seeker.query({
+//            rawResults = Seeker.query({
+//                id: $routeParams.jobid
+//            });
+            rawResults = Seeker.get({
                 id: $routeParams.jobid
             });
         }
 
         // create info
         if ( angular.isDefined(rawResults) ) {
-            rawResults.$promise.then( function(data) {
+            //rawResults.$promise.then( function(data) {
+            rawResults.then(function (data) {
                 if ( angular.isDefined(data) && angular.isArray(data.match) && data.match.length > 0 ) {
                     var item = data.match[0]; // get the first
                     var specie_id = item.species;
@@ -115,92 +122,92 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
  * SEEKER Controllers
  *
  */
-apprisControllers.controller('SeekerController', ['consPathSeeker', '$scope', '$location',
-    function(consPathSeeker, $scope, $location) {
+//apprisControllers.controller('SeekerController', ['consPathSeeker', '$scope', '$location',
+//    function(consPathSeeker, $scope, $location) {
+//
+//        // init form var
+//        $scope.seekerForm = {};
+//
+//        // submit search
+//        $scope.runJob = function (form) {
+//
+//            // Validate
+//            // empty specie input
+//            if ( angular.isUndefined(form.inQuery) && (form.inQuery != '')) {
+//                $scope.queInvalid = true;
+//            }
+//            // messages
+//            if ( $scope.queInvalid ) {
+//                return;
+//            }
+//            // Redirect URL
+//            $location.url(consPathSeeker+form.inQuery);
+//        };
+//    }
+//]);
 
-        // init form var
-        $scope.seekerForm = {};
-
-        // submit search
-        $scope.runJob = function (form) {
-
-            // Validate
-            // empty specie input
-            if ( angular.isUndefined(form.inQuery) && (form.inQuery != '')) {
-                $scope.queInvalid = true;
-            }
-            // messages
-            if ( $scope.queInvalid ) {
-                return;
-            }
-            // Redirect URL
-            $location.url(consPathSeeker+form.inQuery);
-        };
-    }
-]);
-
-apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Seeker',
-    function(consQueryNotMatch, $rootScope, $scope, $routeParams, $location, $filter, Seeker) {
-
-        // init vars
-        $rootScope.isLoadingScreen = true;
-        var id = $routeParams.id;
-
-        // create search summary
-        var specieResult = {};
-        var rawResults = Seeker.query({
-            id: id
-        });
-        rawResults.$promise.then( function(data) {
-            angular.forEach(data.match, function(item) {
-                if (  angular.isUndefined(specieResult[item.species]) ) {
-                    specieResult[item.species] = [];
-                }
-                var position = '-';
-                if ( item.chr !== null && item.start !== null && item.end !== null ) {
-                    position = item.chr+':'+item.start+'-'+item.end;
-                }
-                var speRst = {
-                    "species":      item.species,
-                    "assembly": {
-                        "id": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].id,
-                        "name": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].name
-                    },
-                    "source":      item.source,
-                    "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
-                    "label":        item.label,
-                    "namespace":    item.namespace,
-                    "id":           item.id,
-                    "biotype":      item.biotype,
-                    "dblink":       item.dblink,
-                    "position":     position
-                }
-                specieResult[item.species].push(speRst);
-            });
-            // sort by specie
-            $scope.seekerResult = [];
-            angular.forEach($rootScope.species, function(item, key) {
-                if (  angular.isDefined(specieResult[key]) ) {
-                    var rst = {
-                        "species":   item.scientific,
-                        "match":    specieResult[key]
-                    };
-                    $scope.seekerResult.push(rst);
-                    $rootScope.isLoadingScreen = false;
-                }
-            });
-        }, function(error) {
-            $rootScope.isLoadingScreen = false;
-            if ( error.status >= 400 && error.status < 500 ) {
-                $location.url(consQueryNotMatch);
-            }
-            else if ( error.status >= 500 ) {
-                $location.url(consQueryNotMatch);
-            }
-        });
-
-    }
-]);
+//apprisControllers.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', '$scope', '$routeParams', '$location', '$filter', 'Seeker',
+//    function(consQueryNotMatch, $rootScope, $scope, $routeParams, $location, $filter, Seeker) {
+//
+//        // init vars
+//        $rootScope.isLoadingScreen = true;
+//        var id = $routeParams.id;
+//
+//        // create search summary
+//        var specieResult = {};
+//        var rawResults = Seeker.query({
+//            id: id
+//        });
+//        rawResults.$promise.then( function(data) {
+//            angular.forEach(data.match, function(item) {
+//                if (  angular.isUndefined(specieResult[item.species]) ) {
+//                    specieResult[item.species] = [];
+//                }
+//                var position = '-';
+//                if ( item.chr !== null && item.start !== null && item.end !== null ) {
+//                    position = item.chr+':'+item.start+'-'+item.end;
+//                }
+//                var speRst = {
+//                    "species":      item.species,
+//                    "assembly": {
+//                        "id": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].id,
+//                        "name": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].name
+//                    },
+//                    "source":      item.source,
+//                    "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
+//                    "label":        item.label,
+//                    "namespace":    item.namespace,
+//                    "id":           item.id,
+//                    "biotype":      item.biotype,
+//                    "dblink":       item.dblink,
+//                    "position":     position
+//                }
+//                specieResult[item.species].push(speRst);
+//            });
+//            // sort by specie
+//            $scope.seekerResult = [];
+//            angular.forEach($rootScope.species, function(item, key) {
+//                if (  angular.isDefined(specieResult[key]) ) {
+//                    var rst = {
+//                        "species":   item.scientific,
+//                        "match":    specieResult[key]
+//                    };
+//                    $scope.seekerResult.push(rst);
+//                    $rootScope.isLoadingScreen = false;
+//                }
+//            });
+//        }, function(error) {
+//            $rootScope.isLoadingScreen = false;
+//            if ( error.status >= 400 && error.status < 500 ) {
+//                $location.url(consQueryNotMatch);
+//            }
+//            else if ( error.status >= 500 ) {
+//                $location.url(consQueryNotMatch);
+//            }
+//        });
+//
+//    }
+//]);
 
 
 /* The REST of Controllers */
@@ -266,7 +273,19 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$f
     }
 ]);
 
-apprisControllers.controller('NavTopController', ['$rootScope', function($rootScope) { } ]);
+apprisControllers.controller('NavTopController', ['$scope',
+    function($scope) {
+        $scope.status = {
+            isopen: false
+        };
+
+        $scope.toggleDropdown = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.status.isopen = !$scope.status.isopen;
+        };
+    }
+]);
 
 apprisControllers.controller('AboutController', ['$scope',
     function($scope) {

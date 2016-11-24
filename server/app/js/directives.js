@@ -194,6 +194,22 @@ apprisDirectives.directive('speciesList', function() {
     };
 });
 
+apprisDirectives.directive('seekerInfoGeneTpl', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/seeker/infoGene.html'
+    };
+});
+
+apprisDirectives.directive('seekerInfoInputsTpl', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/seeker/infoInputs.html'
+    };
+});
+
 apprisDirectives.directive('runnerInfoSpeciesTpl', function() {
     return {
         restrict: 'E',

@@ -1,33 +1,79 @@
-<h2>Search Summary</h2>
-<div>
-    <ul>
-        <li data-ng-repeat="seekerRst in seekerResult"><h4>{{seekerRst.species}}</h4>
-            <ul>
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed">
-                        <tbody>
-                        <tr>
-                            <th>Gene Entry</th>
-                            <th>Gene Name</th>
-                            <th>Assembly</th>
-                            <th>Position</th>
-                            <th>Source</th>
-                            <th>Dataset version</th>
-                        </tr>
-                        <tr
-                                data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'}" data-ng-if="queryRst.namespace == 'Gene_Id'">
-                            <td><a
-                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source}}">{{queryRst.id}}</a></td>
-                            <td data-ng-repeat="dbRst in queryRst.dblink | filter:{namespace:'External_Id'}">{{dbRst.id}}</td>
-                            <td>{{queryRst.assembly.name}}</td>
-                            <td>{{queryRst.position}}</td>
-                            <td>{{queryRst.source | capitalize}}</td>
-                            <td>{{queryRst.dataset}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </ul>
-        </li>
-    </ul>
-</div>
+<h2>Advanced Searching</h2>
+<p>The advanced search allows you to build structured queries to search for issues. You can specify criteria
+    that cannot be defined in the simple search (panel at top, right).
+</p>
+<seeker-info-gene-tpl></seeker-info-gene-tpl>
+<seeker-info-inputs-tpl></seeker-info-inputs-tpl>
+
+<form name="seekerAdvancedForm" role="form" class="form-horizontal" data-ng-submit="runJob(seekerAdvancedForm)" novalidate>
+
+    <div class="control-group runner-input">
+        <label>1: Gene Name / ID</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
+              data-target="#infoGene"></span>
+        <div class="input-group-addon">
+            <input type="text" class="form-control" data-ng-model="seekerAdvancedForm.gene"
+                   placeholder="e.g. TRMT2A or ENSG00000099904 or RNF215 or FBgn0052693 or rpl-22">
+
+        </div>
+        <span class="help-block has-error" data-ng-show="genInvalid">
+            <label class="control-label">gene name/id are required</label>
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="control-group runner-input">
+        <label>2: Optional queries</label>
+        <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
+              data-target="#infoInputs"></span>
+        <div class="input-group-addon" style="text-align: left;">
+            <div class="form-inline">
+                <select class="form-control"  data-ng-model="seekerAdvancedForm.species" data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.group for ( specie_id, specie_val ) in species | showHousesGenomes | orderObjectBy:'order' ">
+                    <option value="" selected>-- List of species --</option>
+                </select>
+                <br/><br/>
+                <!--<div data-ng-repeat="assembly in seekerAdvancedForm.species.assemblies">-->
+                    <!--<select class="form-control" data-ng-model="seekerAdvancedForm.dataset"-->
+                            <!--data-ng-options="dataset.id for (id,dataset) in assembly.datasets">-->
+                    <!--<option value="" selected>---->
+                        <!--Select Dataset version --</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <select class="form-control"  data-ng-model="seekerAdvancedForm.dataset" data-ng-options="dataset.source.label for dataset in seekerAdvancedForm.species.assemblies | getDatasets">
+                    <option value="" selected>-- Gene dataset version for given species --</option>
+                </select>
+
+                <!--<select class="form-control" data-ng-model="seekerAdvancedForm.dataset">-->
+                    <!--<option>-- Select Dataset version --</option>-->
+                    <!--<div data-ng-repeat="assembly in seekerAdvancedForm.species.assemblies">-->
+                        <!--<option-->
+
+                                <!--data-ng-options="dataset in assembly.datasets" value=""-->
+                                <!--selected>{{dataset.id}}</option>-->
+                    <!--</div>-->
+                <!--</select>-->
+            </div>
+        </div>
+        <span class="help-block has-error" data-ng-show="dupInvalid">
+            <label class="control-label">Input are duplicated. Choose only one type of input</label>
+        </span>
+        <span class="help-block has-error" data-ng-show="inpInvalid">
+            <label class="control-label">One type of input is required.</label>
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="form-actions runner-input">
+        <button type="submit" class="btn btn-primary" ng-disabled="submitted">Search</button>
+        &nbsp;<a data-ng-click="exSeekerController('gene_name_1')">Gene name1 e.g.</a>&nbsp;|
+        &nbsp;<a data-ng-click="exSeekerController('gene_name_2')">Gene name2 e.g.</a>&nbsp;|
+        &nbsp;<a data-ng-click="exSeekerController('gene_id_1')">Gene id1 e.g.</a>&nbsp;|
+        &nbsp;<a data-ng-click="exSeekerController('gene_id_2')">Gene id2 e.g.</a>&nbsp;|
+        &nbsp;<a data-ng-click="exSeekerController('clear')">Clear</a>
+                <span class="help-block has-error" data-ng-show="formInvalid">
+                    <label class="control-label">Invalid submission</label>
+                </span>
+    </div>
+</form>

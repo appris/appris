@@ -14,6 +14,7 @@ var apprisApp = angular.module('apprisApp', [
     'apprisServices',
     'apprisFilters',
 
+    'appris.seeker',
     'appris.runner',
     'appris.status',
     'appris.report',
@@ -125,23 +126,21 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
                 templateUrl: 'partials/status.html'
             }).
             when('/server/result/:jobid', {
-                //controller: 'ResultController',
                 controller: 'ReportController',
                 templateUrl: 'partials/report.html'
             }).
-//            when('/seeker', {
-//                redirectTo: '/exporter'
-//            }).
             when('/database', {
-//                controller: 'ExporterController',
-                templateUrl: 'partials/database.html'
+                redirectTo: '/seeker'
+            }).
+            when('/seeker', {
+                controller: 'SeekerAdvancedController',
+                templateUrl: 'partials/seeker.html'
             }).
             when('/seeker/:id?', {
                 controller: 'SeekerResultController',
-                templateUrl: 'partials/seeker.html'
+                templateUrl: 'partials/sresult.html'
             }).
             when('/database/:tid/:species/:id/:methods?', {
-                //controller: 'ResultController',
                 controller: 'ReportController',
                 templateUrl: 'partials/report.html'
             }).
@@ -166,7 +165,6 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
                 templateUrl: 'partials/changelogs.html'
             }).
             when('/', {
-//                controller: 'ApprisController',
                 templateUrl: 'partials/frontpage.html'
             }).
             when('/query_not_match', {

@@ -182,6 +182,13 @@ img.imgTrackUCSC {
     font-size: smaller;
 }
 
+.dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: #121212;
+}
 
 .navbar-browser label {
     text-align: left;

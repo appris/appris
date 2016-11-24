@@ -142,13 +142,39 @@ apprisFilters.filter('showHousesGenomes', function() {
         var filtered = [];
         angular.forEach(items, function(item) {
             if ( angular.isObject(item) && item.category === 'houses' ) {
-                filtered.push(item) ;
+                filtered.push(item);
             }
         });
         return filtered;
     };
 });
 
+// From species Object (coming from server.json): Create species id
+apprisFilters.filter('getSpeciesId', function() {
+    return function(input) {
+        var speciesId = null;
+        if ( angular.isDefined(input) && angular.isObject(input) && input ) {
+            speciesId = input.scientific.toLowerCase().replace(/ /g,'_');
+        }
+        return speciesId;
+    };
+});
+
+// From species Object (coming from server.json): Create list of dataset object
+apprisFilters.filter('getDatasets', function() {
+    return function(input) {
+        if (!angular.isObject(input)) return input;
+        var filtered = [];
+        angular.forEach(input, function(items) {
+            angular.forEach(items.datasets, function(item) {
+                if ( angular.isObject(item) ) {
+                    filtered.push(item);
+                }
+            });
+        });
+        return filtered;
+    };
+});
 
 /* For SERVER FORM */
 
@@ -224,219 +250,3 @@ apprisFilters.filter('suffixDatafiles', function() {
         else { return item + '.gz' }
     };
 });
-
-/* For RESULT REPORT */
-
-//// Creates report from results with genome input
-//apprisFilters.filter('convertTransScoreObj', function() {
-//    return function(input) {
-//        var filtered = {};
-//        var idList = [];
-//        var selected = [];
-//        angular.forEach(input, function(item) {
-//            if ( angular.isDefined(item.annotation) ) {
-//                var iTrans = item.transcript_id;
-//                var sLabel = item.type;
-//                var sScore = item.score;
-//                if ( !(filtered[iTrans]) ) {
-//                    filtered[iTrans] = {};
-//                    filtered[iTrans]['transcript_id'] = iTrans;
-//                    if ( angular.isDefined(item.transcript_name) ) {
-//                        filtered[iTrans]['transcript_name'] = item.transcript_name;
-//                    }
-//                    if ( angular.isDefined(item.biotype) ) {
-//                        filtered[iTrans]['biotype'] = item.biotype;
-//                    }
-//                    if ( angular.isDefined(item.length_aa) ) {
-//                        filtered[iTrans]['length_aa'] = item.length_aa;
-//                    }
-//                    if ( angular.isDefined(item.ccds_id) ) {
-//                        filtered[iTrans]['ccds_id'] = item.ccds_id;
-//                    }
-//                    if ( angular.isDefined(item.no_codons) ) {
-//                        filtered[iTrans]['no_codons'] = item.no_codons;
-//                    }
-//                    var id = {}
-//                    id['id'] = iTrans;
-//                    if ( angular.isDefined(item.length_aa) ) {
-//                        id['length_aa'] = item.length_aa;
-//                    }
-//                    idList.push(id);
-//                }
-//                if ( sLabel == "principal_isoform") {
-//                    var sAnnot = '-';
-////                    if ( angular.isDefined(item.annotation) ) {
-////                        if ( item.annotation == "Principal Isoform" ) {
-////                            sAnnot = principal_label;
-////                        }
-////                        else if ( item.annotation == "Possible Principal Isoform" ) {
-////                            sAnnot = candidate_label;
-////                        }
-////                        else if ( item.annotation == "No Principal Isoform" ) {
-////                            sAnnot = alternative_label;
-////                        }
-////                        filtered[iTrans][sLabel] = sAnnot;
-////                    }
-//                    if ( angular.isDefined(item.reliability) ) {
-//                        sAnnot = item.reliability;
-//                    }
-//                    filtered[iTrans][sLabel] = sAnnot;
-//                }
-//                else if ( sLabel == "peptide_signal" || sLabel == "mitochondrial_signal" ) {
-//                    filtered[iTrans][sLabel] = sAnnot;
-//                }
-//                else {
-//                    filtered[iTrans][sLabel] = sScore;
-//                }
-//            }
-//        });
-//
-//        Object.keys(filtered).forEach(function (key) {
-//            var val = filtered[key];
-//            selected.push(val);
-//        });
-//        return [idList, selected];
-//    };
-//});
-
-//// Checks if the result is "SeqRUNNER mode"
-//apprisFilters.filter('isSeqRunner', function() {
-//    return function(input) {
-//        var isSeqResult = null;
-//        if ( angular.isDefined(input) && input.length > 0 ) {
-//            isSeqResult = false;
-//            var data = input[0];
-//            if ( data.mode == "sequence" ) {
-//                isSeqResult = true;
-//            }
-//        }
-//        return isSeqResult;
-//    };
-//});
-
-//// Creates report from results with seq input (SeqRUNNER mode)
-//apprisFilters.filter('convertSeqRunnerObj', function() {
-//    return function(input) {
-//        var idList = [];
-//        var selected = [];
-//        if ( angular.isDefined(input) && input.length > 0 ) {
-//            var data = input[0];
-//            if ( data.appris && angular.isObject(data.appris) ) {
-//                var dat = data.appris;
-//                angular.forEach(dat, function(item, key) {
-//                    if ( angular.isObject(item) ) {
-//                        var filtered = {};
-//                        var id = {}
-//                        id['id'] = key;
-//                        idList.push(id);
-//                        filtered['transcript_id'] = key;
-//                        if ( angular.isDefined(item.principal_isoform_signal) ) {
-//                            var sAnnot = '-';
-////                            var item2 = item.principal_isoform_signal;
-////                            if ( item2 == "YES" ) {
-////                                sAnnot = principal_label;
-////                            }
-////                            else if ( item2 == "UNKNOWN" ) {
-////                                sAnnot = candidate_label;
-////                            }
-////                            else if ( item2 == "NO" ) {
-////                                sAnnot = alternative_label;
-////                            }
-//                            if ( angular.isDefined(item.reliability) ) {
-//                                sAnnot = item.reliability;
-//                            }
-//                            filtered['principal_isoform'] = sAnnot;
-//                        }
-//                        //if ( angular.isDefined(item.reliability) ) {
-//                        //    filtered['reliability'] = item.reliability;
-//                        //}
-//                        if ( angular.isDefined(item.functional_residues_score) ) {
-//                            filtered['functional_residue'] = item.functional_residues_score;
-//                        }
-//                        if ( angular.isDefined(item.homologous_structure_score) ) {
-//                            filtered['homologous_structure'] = item.homologous_structure_score;
-//                        }
-//                        if ( angular.isDefined(item.vertebrate_conservation_score) ) {
-//                            filtered['vertebrate_conservation'] = item.vertebrate_conservation_score;
-//                        }
-//                        if ( angular.isDefined(item.domain_score) ) {
-//                            filtered['functional_domain'] = item.domain_score;
-//                        }
-//                        if ( angular.isDefined(item.transmembrane_helices_score) ) {
-//                            filtered['transmembrane_signal'] = item.transmembrane_helices_score;
-//                        }
-//                        if ( angular.isDefined(item.peptide_signal) ) {
-//                            filtered['signal_peptide_mitochondrial'] = item.peptide_signal;
-//                        }
-//                        if ( angular.isDefined(item.mitochondrial_signal) ) {
-//                            filtered['signal_peptide_mitochondrial'] += '/'+item.mitochondrial_signal;
-//                        }
-//
-////                        angular.forEach(item, function(item2, key2) {
-////                            if ( key2 == "principal_isoform_signal") {
-////                                var sAnnot = '-';
-////                                if ( item2 == "YES" ) {
-////                                    sAnnot = principal_label;
-////                                }
-////                                else if ( item2 == "UNKNOWN" ) {
-////                                    sAnnot = candidate_label;
-////                                }
-////                                else if ( item2 == "NO" ) {
-////                                    sAnnot = alternative_label;
-////                                }
-////                                filtered['principal_isoform'] = sAnnot;
-////                            }
-////                            else if ( key2 == "reliability") {
-////                                filtered['reliability'] = item2;
-////                            }
-////                            else if ( key2 == "functional_residues_score") {
-////                                filtered['functional_residue'] = item2;
-////                            }
-////                            else if ( key2 == "homologous_structure_score") {
-////                                filtered['homologous_structure'] = item2;
-////                            }
-////                            else if ( key2 == "vertebrate_conservation_score") {
-////                                filtered['vertebrate_conservation'] = item2;
-////                            }
-////                            else if ( key2 == "domain_score") {
-////                                filtered['functional_domain'] = item2;
-////                            }
-////                            else if ( key2 == "transmembrane_helices_score") {
-////                                filtered['transmembrane_signal'] = item2;
-////                            }
-////                            else if ( key2 == "peptide_signal" || key2 == "mitochondrial_signal" ) {
-////                                if ( angular.isUndefined(filtered.signal_peptide_mitochondrial) ) {
-////                                    filtered['signal_peptide_mitochondrial'] = item2;
-////                                }
-////                                else {
-////                                    filtered['signal_peptide_mitochondrial'] += '/'+item2;
-////                                }
-////                            }
-////                        });
-//                        selected.push(filtered);
-//                    }
-//                });
-//            }
-//        }
-//        return [idList, selected];
-//    };
-//});
-//
-//// Replaces the appris labels for "css class"
-//apprisFilters.filter('activeAnnotClass', function(principal1, principal2, principal3, principal4, principal5, alternative1, alternative2) {
-//    return function(input, type){
-//        var filtered = '';
-//        if ( angular.isDefined(input) ) {
-//            if ( (input == principal1) ||  (input == principal2) || (input == principal3) || (input == principal4) || (input == principal5) ) {
-//                if ( angular.isDefined(type) && type == 'label' ) { filtered = "success" }
-//                else { filtered = "principal" }
-//            }
-//            else if ( (input == alternative1) || (input == alternative2) ) {
-//                if ( angular.isDefined(type) && type == 'label' ) { filtered = "warning" }
-//                else { filtered = "candidate" }
-//            }
-//        }
-//        return filtered;
-//    };
-//});
-
