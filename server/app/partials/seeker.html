@@ -33,26 +33,9 @@
                     <option value="" selected>-- List of species --</option>
                 </select>
                 <br/><br/>
-                <!--<div data-ng-repeat="assembly in seekerAdvancedForm.species.assemblies">-->
-                    <!--<select class="form-control" data-ng-model="seekerAdvancedForm.dataset"-->
-                            <!--data-ng-options="dataset.id for (id,dataset) in assembly.datasets">-->
-                    <!--<option value="" selected>---->
-                        <!--Select Dataset version --</option>-->
-                    <!--</select>-->
-                <!--</div>-->
                 <select class="form-control"  data-ng-model="seekerAdvancedForm.dataset" data-ng-options="dataset.source.label for dataset in seekerAdvancedForm.species.assemblies | getDatasets">
                     <option value="" selected>-- Gene dataset version for given species --</option>
                 </select>
-
-                <!--<select class="form-control" data-ng-model="seekerAdvancedForm.dataset">-->
-                    <!--<option>-- Select Dataset version --</option>-->
-                    <!--<div data-ng-repeat="assembly in seekerAdvancedForm.species.assemblies">-->
-                        <!--<option-->
-
-                                <!--data-ng-options="dataset in assembly.datasets" value=""-->
-                                <!--selected>{{dataset.id}}</option>-->
-                    <!--</div>-->
-                <!--</select>-->
             </div>
         </div>
         <span class="help-block has-error" data-ng-show="dupInvalid">

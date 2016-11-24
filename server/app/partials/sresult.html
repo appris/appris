@@ -17,7 +17,7 @@
                         <tr
                                 data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'}" data-ng-if="queryRst.namespace == 'Gene_Id'">
                             <td><a
-                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source}}">{{queryRst.id}}</a></td>
+                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source}}&ds={{queryRst.dataset}}">{{queryRst.id}}</a></td>
                             <td data-ng-repeat="dbRst in queryRst.dblink | filter:{namespace:'External_Id'}">{{dbRst.id}}</td>
                             <td>{{queryRst.assembly.name}}</td>
                             <td>{{queryRst.position}}</td>

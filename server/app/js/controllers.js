@@ -28,26 +28,20 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
 
         // init vars
         var rawResults = null;
-        var ens = null;
 
         // get route parameters from type of mode
         // EXPORTER mode
         if ( angular.isDefined($routeParams.tid) && angular.isDefined($routeParams.species) && angular.isDefined($routeParams.id) ) {
-//            rawResults = Seeker.query({
-//                id: $routeParams.id
-//            });
-            rawResults = Seeker.get({
+            var queryData = {
+                sp: $routeParams.species,
                 id: $routeParams.id
-            });
-            if ( angular.isDefined($routeParams.ens) ) {
-                ens = $routeParams.ens;
-            }
+            };
+            if ( angular.isDefined($routeParams.as) ) { queryData.as = $routeParams.as }
+            if ( angular.isDefined($routeParams.ds) ) { queryData.ds = $routeParams.ds }
+            rawResults = Seeker.get(queryData);
         }
         // RUNNER mode
         else if ( angular.isDefined($routeParams.jobid) ) {
-//            rawResults = Seeker.query({
-//                id: $routeParams.jobid
-//            });
             rawResults = Seeker.get({
                 id: $routeParams.jobid
             });
@@ -95,7 +89,7 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
                             });
                         }
                         if ( angular.isDefined(speciesInfo.assemblies) && angular.isArray(speciesInfo.assemblies) && (speciesInfo.assemblies.length > 0)) {
-                            var assembly = $filter('filter')(speciesInfo.assemblies, { "dataset": ens });
+                            var assembly = $filter('filter')(speciesInfo.assemblies, { "id":  $routeParams.as });
                             if ( angular.isDefined(assembly) && angular.isArray(assembly) && (assembly.length > 0) ) {
                                 rst.push({
                                     "label": "Assembly",
