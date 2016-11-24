@@ -23,8 +23,8 @@ apprisControllers.run(function($rootScope, serverName, serverType, serverHost, s
 })
 
 /* The Gene Info Controllers */
-apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootScope', '$scope', '$routeParams', '$filter', 'Seeker',
-    function(consUrlEnsembl, $rootScope, $scope, $routeParams, $filter, Seeker) {
+apprisControllers.controller('GeneResultController', ['consUrlEnsembl', 'consUrlRefSeq', 'consUrlUniProt', '$rootScope', '$scope', '$routeParams', '$filter', 'Seeker',
+    function(consUrlEnsembl, consUrlRefSeq, consUrlUniProt, $rootScope, $scope, $routeParams, $filter, Seeker) {
 
         // init vars
         var rawResults = null;
@@ -49,7 +49,6 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
 
         // create info
         if ( angular.isDefined(rawResults) ) {
-            //rawResults.$promise.then( function(data) {
             rawResults.then(function (data) {
                 if ( angular.isDefined(data) && angular.isArray(data.match) && data.match.length > 0 ) {
                     var item = data.match[0]; // get the first
@@ -57,11 +56,22 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', '$rootSc
                     var rst = [];
                     if ( angular.isDefined($rootScope.species[specie_id]) ) {
                         var speciesInfo = $rootScope.species[specie_id];
-                        if ( angular.isDefined(item.namespace) && item.namespace !== null ) {
+                        if ( angular.isDefined(item.namespace) && item.namespace == 'Gene_Id' && angular.isDefined($routeParams.sc) ) {
+                            var link_source = '';
+                            if ( $routeParams.sc == 'ensembl' ) {
+                                link_source = consUrlEnsembl + '/' + specie_id + '/Gene/Summary?db=core;g=' + item.id
+                            }
+                            else if ( $routeParams.sc == 'refseq' ) {
+                                link_source = consUrlRefSeq + '/' + 'gene/' + item.id
+                            }
+                            else if ( $routeParams.sc == 'uniprot' ) {
+                                link_source = consUrlUniProt + '/' + 'uniprot/' + item.id
+                            }
                             rst.push({
                                 "label": "Id",
                                 "value": item.id,
-                                "link_ensembl": consUrlEnsembl + '/' + specie_id + '/Gene/Summary?db=core;g=' + item.id
+                                "source": $routeParams.sc,
+                                "link_source": link_source
                             });
                         }
                         else {

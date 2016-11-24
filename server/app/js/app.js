@@ -53,6 +53,8 @@ apprisApp.config(['$provide', function ($provide) {
 
     // CONSTANTS
     $provide.value("consUrlEnsembl", 'http://www.ensembl.org');
+    $provide.value("consUrlRefSeq",  'https://www.ncbi.nlm.nih.gov');
+    $provide.value("consUrlUniProt", 'http://www.uniprot.org');
     $provide.value("consUrlFirestarligand", 'http://firedb.bioinfo.cnio.es/Php/ligand/index.html?id=');
     $provide.value("consUrlPDBligand", 'http://www.rcsb.org/pdb/ligand/ligandsummary.do?hetId=');
     $provide.value("consUrlPDBstructure", 'http://www.rcsb.org/pdb/explore/explore.do?structureId=');
@@ -138,7 +140,7 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
             }).
             when('/seeker/:id?', {
                 controller: 'SeekerResultController',
-                templateUrl: 'partials/sresult.html'
+                templateUrl: 'partials/sreport.html'
             }).
             when('/database/:tid/:species/:id/:methods?', {
                 controller: 'ReportController',

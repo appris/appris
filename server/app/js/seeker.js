@@ -79,6 +79,9 @@ module.controller('SeekerAdvancedController', ['consPathSeeker', '$scope', '$loc
             else if ( inEx == 'gene_id_2' ) {
                 ex = $scope.examples[5];
             }
+            else if ( inEx == 'gene_id_3' ) {
+                ex = $scope.examples[6];
+            }
             if ( angular.isObject(ex) ) {
                 var sp_id = ex.species_id;
                 var sc = ex.source;

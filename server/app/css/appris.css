@@ -58,6 +58,9 @@ hr { margin-top: 11px; margin-bottom: 11px }
 
 .runner-input { padding-top: 30px; }
 
+.appris-table-in img {
+    width: 16px;
+}
 .appris-table-main {
     /*max-width: 1290px;*/
     margin-right: 20px;

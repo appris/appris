@@ -10,13 +10,14 @@
 
 <div class="control-group" data-ng-controller="GeneResultController">
     <div class="table-responsive">
-    <table class="table table-striped table-bordered table-condensed">
+    <table class="appris-table-in table table-striped table-bordered table-condensed">
         <tbody>
         <th data-ng-repeat="info in geneInfo">{{info.label}}</th>
         <tr>
             <td data-ng-repeat="info in geneInfo">{{info.value}}
-                <a class="pull-right" data-ng-if="info.link_ensembl" data-ng-href="{{info.link_ensembl}}" target="_blank">
-                    <img data-ng-src="img/e.ico">
+                <a class="pull-right" data-ng-if="info.link_source" data-ng-href="{{info.link_source}}"
+                   target="_blank">
+                    <img data-ng-src="img/{{info.source}}.ico">
                 </a>
             </td>
         </tr>
