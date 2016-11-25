@@ -97,8 +97,8 @@ sub main()
 			return $match;
 		};
 		
-		$logger->info("-- export CCDS for RefSeq -------\n");
-		my ($seq_report) = common::get_seq_report($seq_file);
+		#$logger->info("-- export CCDS for RefSeq -------\n");
+		#my ($seq_report) = common::get_seq_report($seq_file);
 		
 	}	
 
