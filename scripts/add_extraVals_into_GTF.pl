@@ -23,6 +23,7 @@ use vars qw(
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($is_refseq) = undef;
 my ($xref_file) = undef;
 my ($data_file) = undef;
@@ -63,7 +64,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 #####################
 # Method prototypes #
