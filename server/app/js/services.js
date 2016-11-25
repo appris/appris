@@ -208,6 +208,7 @@ apprisServices.factory('Retriever', ['$http', '$q', 'serverHostWS', function($ht
         if ( angular.isDefined(iparams.ids) ) { params.ids = iparams.ids }
         if ( angular.isDefined(iparams.as) ) { params.as = iparams.as }
         if ( angular.isDefined(iparams.sc) ) { params.sc = iparams.sc }
+        if ( angular.isDefined(iparams.ds) ) { params.ds = iparams.ds }
         if ( angular.isDefined(iparams.format) ) { params.format = iparams.format }
         return params;
     }
@@ -265,6 +266,8 @@ apprisServices.factory('Seeker', ['$http', '$q', 'serverHostWS', function($http,
         var qParams = {};
         var urlParams = params.id;
         if ( angular.isDefined(params.sp) ) { qParams.sp = params.sp }
+        if ( angular.isDefined(params.as) ) { qParams.as = params.as }
+        if ( angular.isDefined(params.sc) ) { qParams.sc = params.sc }
         if ( angular.isDefined(params.ds) ) { qParams.ds = params.ds }
         var request = $http({
             method: "get",
@@ -326,6 +329,7 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($ht
         if ( angular.isDefined(params.ids) ) { qParams.ids = params.ids }
         if ( angular.isDefined(params.as) ) { qParams.as = params.as }
         if ( angular.isDefined(params.sc) ) { qParams.sc = params.sc }
+        if ( angular.isDefined(params.ds) ) { qParams.ds = params.ds }
         if ( angular.isDefined(params.format) ) { qParams.format = params.format }
         if ( angular.isDefined(params.r) ) { qParams.r = params.r }
         var request = $http({
@@ -409,6 +413,7 @@ apprisServices.factory('Viewer', ['$http', '$q', 'serverHostWS', function($http,
         if ( angular.isDefined(iparams.ids) ) { qParams.ids = iparams.ids }
         if ( angular.isDefined(iparams.as) ) { qParams.as = iparams.as }
         if ( angular.isDefined(iparams.sc) ) { qParams.sc = iparams.sc }
+        if ( angular.isDefined(iparams.ds) ) { qParams.ds = iparams.ds }
         if ( angular.isDefined(iparams.format) ) { qParams.format = iparams.format }
         return qParams;
     }

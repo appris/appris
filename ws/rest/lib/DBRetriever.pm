@@ -235,14 +235,17 @@ sub load_registry {
 		# For each assembly. By default, all assemblies
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			my ($found_as) = 0;
-			if ( defined $assembly ) {
-				if ( lc($assembly) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }				
+			my ($cfg_datasets) = $cfg_assembly->{'datasets'}; #Êby default, scan all datasets
+			if ( defined $assembly ) {				
+				if ( lc($assembly) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
+				#Êscan only one (the first, the newest)
+				if ( !defined $dataset ) { $cfg_datasets = [$cfg_assembly->{'datasets'}[0]] }					
 			} else {
 				#if ( lc($cfg_species->{'official'}) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
 				$found_as = 1;
 			}
 			if ( $found_as == 1 ) {
-				foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+				foreach my $cfg_dataset (@{$cfg_datasets}) {
 					my ($found_sc,$found_ds) = (0,0);
 
 					if ( defined $source ) {
@@ -289,7 +292,7 @@ sub load_registry {
 			}				
 		}
 	}
-	
+		
 	return $registries;
 	
 } # end load_registry

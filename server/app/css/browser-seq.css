@@ -102,6 +102,19 @@ browser-seq-res.cr {
     background-color: rgba(153,153,102,1);
     color: #ffffff;
 }
+/* PROTEO */
+/* seq-viewer */
+browser-seq-res.p {
+    color: rgba(153,102,0,1) !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+/* legend */
+.browser-seq-legend > .p label {
+    color: rgba(153,102,0,1);
+    text-decoration: underline;
+}
+
 
 /* CDS */
 /* seq-viewer */

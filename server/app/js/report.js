@@ -58,6 +58,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                     id: $routeParams.id,
                     as: $routeParams.as,
                     sc: $routeParams.sc,
+                    ds: $routeParams.ds,
                     methods: 'appris'
                 };
             }
@@ -212,7 +213,8 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                 species: $routeParams.species,
                 id: $routeParams.id,
                 as: $routeParams.as,
-                sc: $routeParams.sc
+                sc: $routeParams.sc,
+                ds: $routeParams.ds
             };
         }
         else if ( $scope.runnerid ) {

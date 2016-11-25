@@ -62,80 +62,6 @@ use vars qw(
 	$APPRIS_ALTER_LABEL
 );
 
-#$METHOD_HEADS = {
-#	'appris'=>{
-#		'tsv'=>
-#			"== APPRIS > APPRIS\n".
-#			"== >sequence_id\n".
-#			"== appris_isoform\tappris_reliability\n",
-#		'raw'=>
-#			"== APPRIS > APPRIS\n".
-#			"== text_result\n",
-#	},
-#	'firestar'=>{
-#		'tsv'=>
-#			"== APPRIS > FIRESTAR\n".
-#			"== >sequence_id\n".
-#			"== residue\tamino_acid\tligand\treliability_score (1-->6)\n",
-#		'raw'=>
-#			"== APPRIS > FIRESTAR\n".
-#			"== text_result\n",
-#	},
-#	'matador3d'=>{
-#		'tsv'=>
-#			"== APPRIS > MATADOR3D\n".
-#			"== >sequence_id\n".
-#			"== residues\tbest_template\t%ID\n",
-#		'raw'=>
-#			"== APPRIS > MATADOR3D\n".
-#			"== text_result\n",
-#	},
-#	'spade'=>{
-#		'tsv'=>
-#			"== APPRIS > SPADE\n".
-#			"== >sequence_id\n".
-#			"== start\tend\tdomain_name\tbest_e-value\n",
-#		'raw'=>
-#			"== APPRIS > SPADE\n".
-#			"== text_result\n",
-#	},
-#	'corsair'=>{ 
-#		'tsv'=>
-#			"== APPRIS > CORSAIR\n".
-#			"== >sequence_id\n".
-#			"== nearest_homologue\t%ID\n",
-#		'raw'=>
-#			"== APPRIS > CORSAIR\n".
-#			"== text_result\n",
-#	},
-#	'crash'=>{
-#		'tsv'=>
-#			"== APPRIS > CRASH\n".
-#			"== >sequence_id\n".
-#			"== type_signal\tstart\tend\n",
-#		'raw'=>
-#			"== APPRIS > CRASH\n".
-#			"== text_result\n",
-#	},
-#	'thump'=>{
-#		'tsv'=>
-#			"== APPRIS > THUMP\n".
-#			"== >sequence_id\n".
-#			"== helix_start\thelix_end\tdamaged\n",	
-#		'raw'=>
-#			"== APPRIS > THUMP\n".
-#			"== text_result\n",
-#	},
-#	'inertia'=>{
-#		'tsv'=>
-#			"== APPRIS > INERTIA\n".
-#			"== >sequence_id\n".
-#			"== slr_omega_score\texon_start\texon_end\n",
-#		'raw'=>
-#			"== APPRIS > INERTIA\n".
-#			"== text_result\n",
-#	}
-#};
 $METHOD_HEADS = {
 	'appris'=>{
 		'tsv'=>
@@ -179,6 +105,12 @@ $METHOD_HEADS = {
 		'raw'=>
 			"== transmembrane_signal: text_result\n",
 	},
+	'proteo'=>{
+		'tsv'=>
+			"== proteomic_evidence: peptides\tsequence\tno.experiments_found\n",
+		'raw'=>
+			"== proteomic_evidence: text_result\n",
+	},
 	'inertia'=>{
 		'tsv'=>
 			"== INERTIA: slr_omega_score\texon_start\texon_end\n",
@@ -218,76 +150,28 @@ sub get_trans_annotations {
 				$output .= ">".$feature->stable_id."\n";
 				if ( ($source =~ /firestar/) or ($source eq 'all') ) {
 					$output .= get_trans_firestar_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_firestar_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_firestar_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /matador3d/) or ($source eq 'all') ) {
 					$output .= get_trans_matador3d_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_matador3d_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_matador3d_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /corsair/) or ($source eq 'all') ) {
 					$output .= get_trans_corsair_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_corsair_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_corsair_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /spade/) or ($source eq 'all') ) {
 					$output .= get_trans_spade_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_spade_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_spade_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /inertia/) or ($source eq 'all') ) {
 					$output .= get_trans_inertia_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_inertia_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_inertia_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /thump/) or ($source eq 'all') ) {
 					$output .= get_trans_thump_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_thump_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_thump_raw_annot($feature);
-					#}
 				}
 				if ( ($source =~ /crash/) or ($source eq 'all') ) {
 					$output .= get_trans_crash_tsv_annot($feature, $res);
-					#if ( $type eq 'tsv' ) {
-					#	$output .= get_trans_crash_tsv_annot($feature);
-					#}
-					#elsif ( $type eq 'raw' ) {
-					#	$output .= get_trans_crash_raw_annot($feature);
-					#}
 				}
-#				if ( ($source =~ /proteo/) or ($source eq 'all') ) {
-#					$output .= get_trans_proteo_tsv_annot($feature,$res);
-#					#if ( $type eq 'tsv' ) {
-#					#	$output .= get_trans_proteo_tsv_annot($feature);
-#					#}
-#					#elsif ( $type eq 'raw' ) {
-#					#	$output .= get_trans_proteo_raw_annot($feature);
-#					#}
-#				}
+				if ( ($source =~ /proteo/) ) {
+					$output .= get_trans_proteo_tsv_annot($feature,$res);
+				}
 #				if ( ($source =~ /appris/) or ($source eq 'all') ) {
 #					$output .= get_trans_appris_tsv_annot($feature,$res);
 #					#if ( $type eq 'tsv' ) {
@@ -398,6 +282,9 @@ sub get_raw_annotations {
 			if ( ($method eq 'appris') or ($method eq 'all') ) {
 				$output .= get_appris_annot($method, $type, $feature);
 			}
+			if ( ($method eq 'proteo') ) {
+				$output .= get_proteo_annot($method, $type, $feature);
+			}
     	}
     }
     else {
@@ -478,10 +365,6 @@ sub get_raw_results {
 						$output .= $seq_report->{'result'}."\n"; 
 					}
 				}
-	    		#if ( exists $m_report->{'result'} and defined $m_report->{'result'} ) {
-	    		#	$output .= "== APPRIS > ".uc($method)."\n";
-	    		#	$output .= $m_report->{'result'}."\n";
-	    		#}    			
     		}
     	}
     }
@@ -792,7 +675,7 @@ sub get_trans_matador3d_tsv_annot {
 				my ($analysis) = $transcript->analysis;				
 				if ( $analysis->matador3d and $analysis->matador3d->result ) {
 					my ($method) = $analysis->matador3d;					
-					if ( defined $method->conservation_structure and defined $method->result ) {
+					if ( defined $method->result ) {
 						if ( defined $method->alignments ) {
 							foreach my $region (@{$method->alignments}) {
 								if ( ($region->type eq 'mini-exon') and 
@@ -931,7 +814,7 @@ sub get_trans_spade_tsv_annot {
 				my ($analysis) = $transcript->analysis;				
 				if ( $analysis->spade and $analysis->spade->result ) {
 					my ($method) = $analysis->spade;
-					if ( defined $method->domain_signal and defined $method->result ) {
+					if ( defined $method->result ) {
 						if ( defined $method->regions ) {
 							foreach my $region (@{$method->regions}) {					
 								if ( defined $region->alignment_start and defined $region->alignment_end and
@@ -1268,7 +1151,7 @@ sub get_trans_thump_tsv_annot {
 				my ($analysis) = $transcript->analysis;				
 				if ( $analysis->thump and $analysis->thump->result ) {					
 					my ($method) = $analysis->thump;					
-					if ( defined $method->transmembrane_signal and defined $method->result ) {
+					if ( defined $method->result ) {
 						if ( defined $method->regions ) {
 							foreach my $region (@{$method->regions}) {
 								if ( defined $region->pstart and defined $region->pend ) {
@@ -1666,4 +1549,136 @@ sub get_appris_tsv_result
 }
 
 
+
+# PROTEO METHODS -------
+sub get_proteo_annot {
+	my ($imethod, $itype, $feature) = @_;
+	my ($output) = '';
+	if ( $itype eq 'tsv' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'tsv'};	
+	}
+	elsif ( $itype eq 'raw' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'raw'};
+	}
+	if ($feature and (ref($feature) ne 'ARRAY')) { # one object
+	   	if ($feature->isa("APPRIS::Gene")) {
+			foreach my $transcript (@{$feature->transcripts}) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_proteo_tsv_annot($transcript);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_proteo_raw_annot($transcript);
+				}
+			}
+ 		}
+    	elsif ($feature->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_proteo_tsv_annot($feature);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_proteo_raw_annot($feature);
+				}
+    	}
+    	else {
+			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+    	}
+	}
+	elsif ($feature and (ref($feature) eq 'ARRAY') ) { # listref of objects
+	   	foreach my $feat (@{$feature}) {
+	    	if ($feat->isa("APPRIS::Gene")) {
+				foreach my $transcript (@{$feat->transcripts}) {
+					if ( $itype eq 'tsv' ) {
+						$output .= get_trans_proteo_tsv_annot($transcript);
+					}
+					elsif ( $itype eq 'raw' ) {
+						$output .= get_trans_proteo_raw_annot($transcript);
+					}
+				}
+	    	}
+	   		elsif ($feat->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_proteo_tsv_annot($feat);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_proteo_raw_annot($feat);
+				}
+			}
+			else {
+				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+			}    		
+		}
+	}
+	return $output;
+}
+# proteo: annotation input. tabular output
+sub get_trans_proteo_tsv_annot {
+	my ($transcript,$res) = @_;
+	my ($imet) = 'proteo';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->proteo and $analysis->proteo->result ) {
+					my ($method) = $analysis->proteo;					
+					if ( defined $method->result ) {
+						if ( defined $method->peptides ) {
+							foreach my $region (@{$method->peptides}) {
+								if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend ) {
+									$output .=	$region->pstart.':'.$region->pend."\t".
+												$region->sequence."\t".
+												$region->num_experiments."\n";
+								}
+							}
+						}
+					}				
+				}
+		 	}
+		}
+    }
+    if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'tsv'} . $output }    
+	return $output;	
+}
+# proteo: annotation input. raw output
+sub get_trans_proteo_raw_annot {
+	my ($transcript) = @_;
+	my ($imet) = 'proteo';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->proteo and $analysis->proteo->result ) {
+					$output .= $analysis->proteo->result."\n";
+				}
+		 	}
+		}
+    }
+	if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'raw'} . $output }    
+	return $output;	
+}
+# proteo: result input. tabular output
+sub get_proteo_tsv_result
+{
+	my ($method, $report) = @_;
+	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};
+	
+	while (my ($seq_id, $seq_report) = each(%{$report}) ) {
+		if ( ($seq_id ne 'result') and (exists $seq_report->{'alignments'}) ) {
+			foreach my $region (@{$seq_report->{'alignments'}}) {
+				if ( ($region->{'type'} eq 'mini-exon') and 
+					defined $region->{'pstart'} and defined $region->{'pend'} and 
+					defined $region->{'pdb_id'} and defined $region->{'identity'} ) {
+						$output .=	$region->{'pstart'}.':'.$region->{'pend'}."\t".
+									$region->{'pdb_id'}."\t".
+									$region->{'identity'}."\n";
+				}
+			}
+						
+		}
+	}
+	return $output;
+}
 1;

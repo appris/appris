@@ -73,6 +73,7 @@ $METHOD_HEADS = {
 	'crash'		=> "type signal",
 	'thump'		=> "type signal",
 	'inertia'	=> "slr_omega_score",
+	'proteo'	=> "peptide (no. experiments found)",
 };
 
 =head2 get_trans_annotations
@@ -192,21 +193,21 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-#		 		if ( ($source =~ /appris/) or ($source eq 'all') ) {
-#			 		if ( $analysis->appris and $analysis->appris->result ) {
-#			 			my ($method) = $analysis->appris;		 			
-#				 		my ($residues) = parser_appris_residues($method, $len);
-#						if ( defined $residues and scalar($residues) > 0 ) {
-#							push(@{$methods}, {
-#								'name'		=> 'appris',
-#								'id'		=> $METHOD_DESC->{'appris'},
-#								'label'		=> $METHOD_LABEL_DESC->{'appris'},
-#								'title'		=> $METHOD_HEADS->{'appris'},
-#								'residues'	=> $residues
-#							});
-#						}
-#			 		}
-#		 		}
+		 		if ( ($source =~ /proteo/) ) {
+			 		if ( $analysis->proteo and $analysis->proteo->result ) {
+			 			my ($method) = $analysis->proteo;		 			
+				 		my ($residues) = parser_proteo_residues($method, $len);
+						if ( defined $residues and scalar($residues) > 0 ) {
+							push(@{$methods}, {
+								'name'		=> 'proteo',
+								'id'		=> $METHOD_DESC->{'proteo'},
+								'label'		=> $METHOD_LABEL_DESC->{'proteo'},
+								'title'		=> $METHOD_HEADS->{'proteo'},
+								'residues'	=> $residues
+							});
+						}
+			 		}
+		 		}
 		 		if ( defined $methods ) {
 					$report = {
 						'id'		=> $id,
@@ -473,5 +474,28 @@ sub parser_appris_residues {
 	return $residues;
 	
 } # end parser_appris_residues
+
+sub parser_proteo_residues {
+	my ($method, $inres) = @_;
+	my ($residues);
+	
+	if ( defined $method->result ) {
+		if ( defined $method->peptides ) {
+			foreach my $region (@{$method->peptides}) {	
+				if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend ) {
+					my ($res) = {
+						'start'		=> $region->pstart,
+						'end'		=> $region->pend,
+						'annot'		=> $region->sequence . " (".$region->num_experiments.")",
+					};
+					push(@{$residues},$res);
+				}
+			}
+		}
+	}
+	
+	return $residues;
+	
+} # end parser_proteo_residues
 
 1;

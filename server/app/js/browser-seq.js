@@ -536,7 +536,13 @@ function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFi
                         if ( angular.isDefined(query.sc) && query.sc !== null ) {
                             al += '&sc=' + query.sc;
                         }
-                        alink += '<a class="pull-right" href="' +  al + '" target="blank">In detail<i class="glyphicon glyphicon-new-window" style="text-decoration: none; margin-left: 3px"></a></i>';
+                        if ( angular.isDefined(query.ds) && query.ds !== null ) {
+                            al += '&ds=' + query.ds;
+                        }
+                        // NOTE: HARD-CORE PROTEO does not print results in detail!!!
+                        if ( mname != 'proteo' ) {
+                            alink += '<a class="pull-right" href="' +  al + '" target="blank">In detail<i class="glyphicon glyphicon-new-window" style="text-decoration: none; margin-left: 3px"></a></i>';
+                        }
                     }
                     else if ( angular.isDefined(query.jobid) ) {
                         var al = urlRunnerRst + '/' + query.jobid + '?' + 'ids=' + query.ids + '&methods=' + mname + '&format=raw';
