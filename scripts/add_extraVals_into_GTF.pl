@@ -9,6 +9,8 @@ use Data::Dumper;
 use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
+use lib "/local/jmrodriguez/appris/scripts/lib";
+use common;
 
 ###################
 # Global variable #
