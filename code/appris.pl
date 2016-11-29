@@ -288,13 +288,6 @@ sub _cp_files($$)
 
 sub create_workspace()
 {
-	# create identifier path
-	my ($ws_base) = '';
-	if ( defined $ENV{APPRIS_WS_NAME} and $ENV{APPRIS_WS_NAME} eq "wserver" ) {
-		$ws_base = '/'.$ENV{APPRIS_WS_NAME};
-	}
-	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
-	
 	# create workspace for each variant
 	# create tmp dir for each variant
 	my ($in) = Bio::SeqIO->new(
@@ -308,7 +301,7 @@ sub create_workspace()
 		my ($seq_s) = $seq->seq;		
 		my ($cache) = APPRIS::Utils::CacheMD5->new(
 			-dat => $seq_s,
-			-ws  => $ws_base_g			
+			-ws  => $ENV{APPRIS_PROGRAMS_CACHE_DIR}			
 		);		
 		my ($seq_idx) = $cache->idx;
 		my ($seq_sidx) = $cache->sidx;
@@ -326,13 +319,6 @@ sub create_workspace()
 
 sub delete_workspace()
 {		
-	# create identifier path
-	my ($ws_base) = '';
-	if ( defined $ENV{APPRIS_WS_NAME} and $ENV{APPRIS_WS_NAME} eq "wserver" ) {
-		$ws_base = '/'.$ENV{APPRIS_WS_NAME};
-	}
-	my ($ws_base_g) = $ENV{APPRIS_PROGRAMS_CACHE_DIR}.$ws_base;
-	
 	# delete tmp dir for each variant
 	my ($in) = Bio::SeqIO->new(
 						-file => $transl_file,
@@ -345,7 +331,7 @@ sub delete_workspace()
 		my ($seq_s) = $seq->seq;
 		my ($cache) = APPRIS::Utils::CacheMD5->new(
 			-dat => $seq_s,
-			-ws  => $ws_base_g
+			-ws  => $ENV{APPRIS_PROGRAMS_CACHE_DIR}
 		);		
 		my ($seq_idx) = $cache->idx;
 		my ($ws_tmp) = $ENV{APPRIS_TMP_DIR}.'/'.$seq_idx;
