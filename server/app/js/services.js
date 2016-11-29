@@ -279,20 +279,9 @@ apprisServices.factory('Seeker', ['$http', '$q', 'serverHostWS', function($http,
 
         // PRIVATE METHODS
 
-        // I transform the error response, unwrapping the application dta from the API response payload.
+        // It would be possible to transform the error response, but I did not.
         function handleError(response) {
-            if ( !(angular.isDefined(response.data))  ) {
-                return $q.reject( "An unknown error occurred." );
-            }
-            else {
-                if ( response.status === 404 ) {
-                    return $q.reject( "The search was not found for your query. Try to add at least one sequence or one method." );
-                }
-                else if ( response.status === 405 ) {
-                    return $q.reject( "Your query is malformed. Please, rephrase your query. Try to add at least one sequence or one method." );
-                }
-            }
-            return $q.reject(response.data);
+            return $q.reject(response);
         }
 
         // I transform the successful response, unwrapping the application data from the API response payload.
