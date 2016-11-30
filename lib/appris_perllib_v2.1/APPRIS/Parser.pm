@@ -3481,9 +3481,9 @@ sub _parse_indata($)
 				$cds->{'strand'} = $strand if(defined $strand);
 				$cds->{'phase'} = $phase if(defined $phase);
 				
-				if(exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'})
+				if( (exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'}) or (exists $attribs->{'cds_id'} and defined $attribs->{'cds_id'}) )
 				{
-					my ($x) = $attribs->{'exon_id'};
+					my ($x) = (exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'}) ? $attribs->{'exon_id'} : $attribs->{'cds_id'};
 					if ( $x =~ /^ENS/ ) { $x =~ s/\.\d*$// } # delete suffix in Ensembl ids
 					$cds->{'exon_id'} = $x;
 				}				
