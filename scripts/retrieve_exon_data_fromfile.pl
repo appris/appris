@@ -11,8 +11,8 @@ use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 
 use lib "$FindBin::Bin/lib";
-use common qw( get_main_report get_label_report );
-use appris qw( create_indata );
+use common;
+use appris;
 
 ###################
 # Global variable #
