@@ -223,11 +223,6 @@ sub main()
 	exit 0;	
 }
 
-sub count_bp() {
-	my ($file) = @_;
-	
-	
-}
 sub get_exon_data($$)
 {
 	my ($dataset, $labelset) = @_;
@@ -479,39 +474,6 @@ sub extract_gencode_tsl($) {
 	}
 	return $report;
 }
-#
-#sub _add_codon($$) {
-#	my ($gendata,$i_transc_id) = @_;
-#	my ($output) = '';
-#	
-#	foreach my $gene (@{$gendata}) {
-#		my ($gene_id) = $gene->stable_id;
-#		my ($chr) = $gene->chromosome;		
-#		if ( exists $gene->{'_index_transcripts'}->{$i_transc_id} ) {
-#			my ($index) = $gene->{'_index_transcripts'}->{$i_transc_id};
-#			my ($transcript) = $gene->transcripts->[$index];
-#			if ( $transcript->translate and $transcript->translate->codons ) {
-#				my ($translation) = $transcript->translate;
-#				foreach my $codon (@{$translation->codons}) {
-#					my ($type) = $codon->type.'_codon';
-#	 				$output .=
-#	 						$chr."\t".
-#	 						'APPRIS'."\t".
-#	 						$type."\t".
-#							$codon->start."\t".
-#							$codon->end."\t".
-#							'.'."\t".
-#							$codon->strand."\t".
-#							$codon->phase."\t".
-#							'gene_id "'.$gene_id.'"'."; ".
-#							'transc_id"'.$i_transc_id.'"'."\n";
-#				}
-#			}
-#			last;
-#		}
-#	}
-#	return $output;
-#}
 
 sub get_codon_data($)
 {
@@ -596,10 +558,18 @@ retrieve_exon_data_fromfile
 =head1 DESCRIPTION
 
 Get the sorted list of exons per gene.
-Each exon is labeled which the following column:
-	PRINCIPAL/POTENTIAL -> the exon belongs to principal isoform or the variant is possible principal isoform.
-	CONSERVE/NO_CONSERVE -> the exon is conserve agains vertebrates.
-	OVERLAP/NO_OVERLAP -> the exon is not in the whole variants labaled as principal isoform. 
+
+	- Get the annotations for all exons '/appris_data.exons.gff'
+
+	- Get prin transc '/appris_data.exons.prin.gff'
+	
+	- Get alternative transc '/appris_data.exons.alt.gff';
+	
+	- Get the specific principal exons (that do not overlap with alternative exons) '/appris_data.exons.PI.gff';
+	
+	- Get the specific alternative exons (that do not overlap with principal exons) '/appris_data.exons.NPI.gff';
+
+	- get the overlap regions PI+NPI '/appris_data.exons.OVER.gff';
 
 =head1 SYNOPSIS
 
@@ -617,12 +587,6 @@ retrieve_exon_data
 	
 	--outpath <Output path to save files>	
 	
-=head2 Optional arguments:
-
-	--position= <Genome position> (chr21 or chr1:109102711-109187522)
-
-	--apprisdb-conf <Config file of APPRIS database (default: 'conf/apprisdb.ini' file)>
-
 =head2 Optional arguments:
 
 	--loglevel=LEVEL <define log level (default: NONE)>	
