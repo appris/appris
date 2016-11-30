@@ -29,7 +29,6 @@ $GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens7
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
 my ($data_file) = undef;
-my ($transcripts_file) = undef;
 my ($translations_file) = undef;
 my ($input_main_file) = undef;
 my ($input_label_file) = undef;
@@ -42,9 +41,8 @@ my ($logappend) = undef;
 my ($loglevel) = undef;
 &GetOptions(
 	'data=s'			=> \$data_file,
-	'transc=s'			=> \$transcripts_file,
 	'transl=s'			=> \$translations_file,
-	'input-label=s'		=> \$input_label_file,
+	'label=s'			=> \$input_label_file,
 	'outpath=s'			=> \$outpath,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -53,7 +51,7 @@ my ($loglevel) = undef;
 );
 
 # Required arguments
-unless ( defined $data_file and defined $transcripts_file and defined $translations_file and defined $input_label_file and defined $outpath )
+unless ( defined $data_file and defined $translations_file and defined $input_label_file and defined $outpath )
 {
 	print `perldoc $0`;
 	exit 1;
@@ -89,7 +87,7 @@ my ($GEN_TSL_REPORT) = extract_gencode_tsl($GENCODE_TSL_FILE);
 sub main()
 {
 	$logger->info("-- get gene dataset from files -------\n");
-	my ($data_report) = appris::create_indata($data_file, $transcripts_file, $translations_file);
+	my ($data_report) = appris::create_indata($data_file, undef, $translations_file);
 	$logger->debug("DATA_REPORT:\n".Dumper($data_report)."\n");
 
 	# Get data from file
@@ -579,11 +577,9 @@ retrieve_exon_data
 
 	--data=  <Gene annotation file>
 	
-	--transc= <Transcript sequences file>
-	
 	--transl= <Translation sequences file>
 	
-	--input-label <Result file of APPRIS's labels>
+	--label <Result file of APPRIS's labels>
 	
 	--outpath <Output path to save files>	
 	
@@ -602,15 +598,13 @@ retrieve_exon_data
 
 perl retrieve_exon_data_fromfile.pl
 	
-	--data={ABSOLUTE_PATH}/gencode.v20.annotation.gtf
+	--data=data/appris_data.annot.gtf
 	
-	--transc={ABSOLUTE_PATH}/gencode.v20.pc_transcripts.fa
+	--transl=data/appris_data.transl.fa
 	
-	--transl={ABSOLUTE_PATH}/gencode.v20.pc_translations.fa
-	
-	--input-label=data/appris_data.appris_label.txt
+	--label=data/appris_data.appris_label.txt
 
-	--outpath=../data/
+	--outpath=data/
 	
 
 =head1 AUTHOR
