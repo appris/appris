@@ -1,6 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use strict;
+use warnings;
 use Getopt::Long;
 use FindBin;
 use Data::Dumper;
@@ -9,7 +10,7 @@ use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 
-use lib $ENV{'APPRIS_HOME'}.'/scripts/lib';
+use lib "$FindBin::Bin/lib";
 use common qw( get_main_report get_label_report );
 use appris qw( create_indata );
 
