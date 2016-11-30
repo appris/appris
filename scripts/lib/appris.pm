@@ -741,7 +741,7 @@ sub create_gencode_data($;$;$)
 	
 } # end create_gencode_data
 
-=head2 create_ensembl_data
+=head2 create_indata
 
   Arg[1]      : (optional) String $text - notification text to present to user
   Example     : # run a code snipped conditionally
@@ -772,7 +772,7 @@ sub create_indata($;$;$)
 	
 	return $data;
 	
-} # end create_ensembl_data
+} # end create_indata
 
 =head2 create_seqdata
 
