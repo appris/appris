@@ -10,9 +10,10 @@ use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 
+# the order of package it's important. Conflict of names
 use lib "$FindBin::Bin/lib";
-use common;
 use appris;
+use common;
 
 ###################
 # Global variable #
