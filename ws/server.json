@@ -171,7 +171,7 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e84v17",
+                    "id":   "e86v17",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -339,12 +339,12 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e84v17",
+                    "id":   "e86v17",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "label": "Ensembl86",
-                        "version": "84"
+                        "version": "86"
                     },
                     "database":   "appris_drosophila_melanogaster",
                     "datafiles":   {
@@ -370,12 +370,12 @@
                 "id":       "ce10",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e84v17",
+                    "id":   "e86v17",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "label": "Ensembl86",
-                        "version": "84"
+                        "version": "86"
                     },
                     "database":   "appris_caenorhabditis_elegans",
                     "datafiles":   {
@@ -400,11 +400,12 @@
                 "id":       "bosTau8",
                 "name":     "UMD3.1",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -419,11 +420,12 @@
                 "id":       "canFam3",
                 "name":     "CanFam3.1",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -438,11 +440,12 @@
                 "id":       "felCat5",
                 "name":     "Felis_catus_6.2",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -457,11 +460,12 @@
                 "id":       "monDom5",
                 "name":     "BROADO5",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -474,13 +478,14 @@
             "official":     "galGal4",
             "assemblies":   [{
                 "id":       "galGal4",
-                "name":     "Galgal4",
+                "name":     "Gallus_gallus-5.0",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -495,11 +500,12 @@
                 "id":       "taeGut1",
                 "name":     "taeGut3.2.4",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -514,11 +520,12 @@
                 "id":       "anoCar2",
                 "name":     "AnoCar2.0",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -531,13 +538,14 @@
             "official":     "xenTro3",
             "assemblies":   [{
                 "id":       "xenTro3",
-                "name":     "JGI4.2",
+                "name":     "JGI_4.2",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
@@ -552,11 +560,12 @@
                 "id":       "fr3",
                 "name":     "FUGU4",
                 "datasets": [{
-                    "id":   "e84",
+                    "id":   "e86",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "version": "84"
+                        "label": "Ensembl86",
+                        "version": "86"
                     }
                 }]
             }]
