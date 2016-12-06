@@ -18,7 +18,7 @@ hhdb_path=/home/appris/db
 [PROGRAMS]
 square=/home/appris/code/src/firestar/source/Square/another_fire_mess_web
 square_test=/home/appris/code/src/firestar/source/Square/another_fire_mess_test
-bstbin=/opt/Bio/blast/blast-2.2.18/bin
+bstbin=/home/appris/code/opt/blast-2.2.26/bin
 [EXT_LINKS]
 PubChem=http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=
 KEGG COMPOUND=http://www.genome.jp/dbget-bin/www_bget?cpd:
