@@ -310,9 +310,9 @@ sub add_last_character_directory($)
 
 =cut
 
-sub prepare_workspace($)
+sub prepare_workspace($;$)
 {
-	my ($directory) = @_;
+	my ($directory, $perm) = @_;
 
 	my ($dir,$accum)=('','');
 	
@@ -328,6 +328,9 @@ sub prepare_workspace($)
 		}
 	}
 	$directory = $directory.'/' if (substr($directory, -1, 1) ne '/');
+	if ( defined $perm) {
+		system("chmod $perm $directory") == 0 or return undef;
+	}
 	return $directory;
 }
 

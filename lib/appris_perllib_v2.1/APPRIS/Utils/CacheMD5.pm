@@ -311,7 +311,7 @@ sub mkidir
 	
 	# create dirs
 	eval {
-		my ($cmd) = "mkdir -p $dir";
+		my ($cmd) = "mkdir -p $dir && chmod -R 775 $dir";
 		system($cmd);
 	};
 	throw('Creating subdir idx') if ($@);
