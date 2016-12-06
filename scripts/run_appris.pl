@@ -809,7 +809,7 @@ sub run_cluster_appris($$$)
 	my ($c_cmd) = "\n".
 				"perl $c_jobhome/code/appris.pl ".
 				" $c_parameters ".
-				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND \n";
+				" --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND \n";
 	my ($c_stderr) = $c_id.'.err';
 				
 	# create script for cluster
@@ -884,7 +884,7 @@ sub run_appris($$$)
 	my ($c_logfile) = 'log';
 	my ($cmd) =	" perl $ENV{APPRIS_CODE_DIR}/appris.pl ".
 				" $parameters ".
-				" --loglevel=$LOGLEVEL --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
+				" --logpath=$c_logpath --logfile=$c_logfile $LOGAPPEND ";
 	my ($pid) = fork();	
 	if ( defined $wserver ) {
 		$c_wspace =~ s/\/*$//g;

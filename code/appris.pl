@@ -15,7 +15,6 @@ use File::Basename;
 use Data::Dumper;
 
 use APPRIS::Utils::Logger;
-use APPRIS::Utils::WSpace;
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::File qw( prepare_workspace rm_dir printStringIntoFile getStringFromFile );
 
