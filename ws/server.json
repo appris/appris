@@ -171,7 +171,7 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e86v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -193,7 +193,7 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "e77v17",
+                    "id":   "e77v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -246,7 +246,7 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "e77v17",
+                    "id":   "e77v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -339,7 +339,7 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e86v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -370,7 +370,7 @@
                 "id":       "ce10",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e86v17",
+                    "id":   "e86v19",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
