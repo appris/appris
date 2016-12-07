@@ -2,26 +2,33 @@ ___
 ## 2016_12.v20
 ```
 SERVER-RELEASE:   2016_12.v20
-CODE-RELEASE:     4.5.2.13
+CODE-RELEASE:     4.6.2.13
 ```
 
 ### Highlights
+- New gene dataset in APPRIS which is an union between Ensembl, RefSeq, UniProt (APPRIS ds1) TODO!!!!
+- APPRIS annotations for UniProt (2016_10 version) in Mouse proteome.
 
 ### Code (2.13)
 - APPRIS:
 	Changes in the weight of CORSAIR
+	Changes in the weight of firestar (e.g. bad result for ANAPC15 - ENSG00000110200)
 
 
 ___
 ## 2016_11.v19
 ```
 SERVER-RELEASE:   2016_11.v19
-CODE-RELEASE:     4.5.2.12
+CODE-RELEASE:     4.6.2.12
 ```
 
 ### Highlights
 - APPRIS annotations for UniProt (2016_06 version).
 - New release of Ensembl (e86 version).
+
+### Server (4.6)
+- Include Advanced Search panel.
+- CNIO proteomic evidences (PROTEO) have been included into the SequenceBrowser
 
 ### Code (2.12)
 - CORSAIR:
