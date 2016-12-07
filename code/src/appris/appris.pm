@@ -49,7 +49,26 @@ $METHOD_LABELS = {
 	'appris'	=> [ 'principal_isoform',			'score_principal_isoform',			'reliability'	]
 };
 $METHOD_WEIGHTED = {
-	'firestar'	=> 6,
+	'firestar'	=> [{
+					  'max'    => 2,
+					  'weight' => 2
+					},
+					{
+					  'max'    => 3,
+				  	  'weight' => 3	
+					},
+					{
+					  'max'    => 4,
+				  	  'weight' => 4	
+					},
+					{
+					  'max'    => 5,
+				  	  'weight' => 5	
+					},
+					{
+					  'max'    => 6,
+					  'weight' => 6	
+					}],
 	'matador3d'	=> 6,
 	'spade'		=> 6,
 	'corsair'	=> [{
@@ -498,7 +517,24 @@ sub get_final_scores($$\$\$)
 				$nscores->{$transcript_id}->{$method} = $n_sc;
 				
 				# apply weights to normalize scores
-				if ( $method eq 'corsair' ) {
+				if ( $method eq 'firestar' ) {
+					if ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) {
+						$appris_score += $METHOD_WEIGHTED->{$method}->[4]->{'weight'}*$n_sc;
+					}
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
+						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
+					}
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
+						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
+					}
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
+						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
+					}
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
+						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
+					}
+				}
+				elsif ( $method eq 'corsair' ) {
 					if ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
 						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
 					}
