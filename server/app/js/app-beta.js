@@ -33,23 +33,11 @@ var apprisApp = angular.module('apprisApp', [
 
 apprisApp.config(['$provide', function ($provide) {
     // SERVER INFO
-/*
-    // GOLD server - production
-    $provide.value("serverName", '{APPRIS}');
-    $provide.value("serverType", 'gold');
-    $provide.value("serverHost", 'http://appris.bioinfo.cnio.es');
-    $provide.value("serverHostWS", 'http://apprisws.bioinfo.cnio.es');
     // BETA server - development
     $provide.value("serverName", '{APPRISdev}');
     $provide.value("serverType", 'beta');
     $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
     $provide.value("serverHostWS", 'http://apprisws-dev.bioinfo.cnio.es');
-*/
-    // ALPHA server - development in local
-    $provide.value("serverName", '{APPRISloc}');
-    $provide.value("serverType", 'alpha');
-    $provide.value("serverHost", 'http://apprisws.local:3000');
-    $provide.value("serverHostWS", 'http://apprisws.local');
 
     // CONSTANTS
     $provide.value("consUrlEnsembl", 'http://www.ensembl.org');
