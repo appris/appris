@@ -1,0 +1,158 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary for dev.\n
+\n
+ Name:\n
+\t appris_bin\n
+\n
+ Description:\n
+\t script that runs APPRIS scripts for a current gene.\n
+\n
+Required arguments:\n
+\t-s {Species name}\n
+\t\t Homo sapiens\n
+\t\t Mus musculus\n
+\t\t Rattus norvegicus\n
+\t\t Danio rerio\n
+\t\t Sus scrofa\n
+\t\t Pan troglodytes\n
+\t\t Drosophila melanogaster\n
+\t\t Caenorhabditis elegans\n
+\n
+Optional arguments:\n
+\t -m {Methods which will execute. By default, all}\n
+\t\t f -> firestar\n
+\t\t m -> matador3d\n
+\t\t s -> spade\n
+\t\t c -> corsair\n
+\t\t t -> thump\n
+\t\t r -> crash\n
+\t\t p -> proteo\n
+\n
+\t -l \n
+\t\t info\n
+\t\t debug\n
+\n
+\t -h \n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+ALL_METHOD="firestar,matador3d,spade,corsair,thump,crash,proteo"
+LOG_LEVEL="info"
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-s )
+			SPECIES=$2
+			shift
+			;;	
+		-m )
+			METHODS=$2
+			shift
+			;;
+		-l )
+			case "$2" in
+				info | debug )
+		        	LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;			
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${SPECIES}" == "" ]; then
+	echo You must specify species name!
+	echo -e $USAGE
+	exit 1
+fi
+
+METHODS_PARAM=""
+if [ "${METHODS}" != "" ]; then
+	MET=""
+	if [[ "${METHODS}" == *"f"* ]]; then
+		MET="${MET},firestar"
+	fi
+	if [[ "${METHODS}" == *"m"* ]]; then
+		MET="${MET},matador3d"
+	fi
+	if [[ "${METHODS}" == *"s"* ]]; then
+		MET="${MET},spade"
+	fi
+	if [[ "${METHODS}" == *"c"* ]]; then
+		MET="${MET},corsair"
+	fi
+	if [[ "${METHODS}" == *"t"* ]]; then
+		MET="${MET},thump"
+	fi
+	if [[ "${METHODS}" == *"r"* ]]; then
+		MET="${MET},crash"
+	fi
+	if [[ "${METHODS}" == *"p"* ]]; then
+		MET="${MET},proteo"
+	fi	
+	METHODS_PARAM="${MET:1}"
+else
+	METHODS_PARAM="${ALL_METHOD}"
+fi
+
+
+# -----------------------------------------------------------------------------
+# Run method
+
+METHOD_SCRIPT="appris.pl"
+SCRIPT="${APPRIS_CODE_DIR}/${METHOD_SCRIPT}"
+
+# print trace
+echo "================="
+echo "perl ${SCRIPT} \\ "
+echo " --species=\"${SPECIES}\" \\ "
+echo " --data=annot.gtf \\ "
+echo " --transc=transc.fa \\ "
+echo " --transl=transl.fa \\ "
+echo " --pdata=pannot.gtf \\ "
+echo " --methods=${METHODS_PARAM} \\ "
+echo " --outpath=${PWD} \\ "
+echo " --loglevel=${LOG_LEVEL}\ "
+
+# run method
+perl ${SCRIPT} \
+--species="${SPECIES}" \
+--data=annot.gtf \
+--transc=transc.fa \
+--transl=transl.fa \
+--pdata=pannot.gtf \
+--methods=${METHODS_PARAM} \
+--outpath=${PWD} \
+--loglevel=${LOG_LEVEL}
+echo "================="
+
+
+
