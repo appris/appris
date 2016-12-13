@@ -47,9 +47,9 @@ our $ncbidir = $FindBin::Bin.'/../../../../blast-2.2.26/bin';    # path to NCBI 
 #our $pdbdir  =  ".../pdb/all";            # where are the pdb files? (pdb/divided directory will also work)
 #our $dsspdir =  ".../dssp/data";          # where are the dssp files? Used in addss.pl.
 #our $dssp    =  ".../dssp/bin/dsspcmbi";  # where is the dssp binary? Used in addss.pl.
-our $pdbdir  =  "/cluster/databases/pdb/all";            # where are the pdb files? (pdb/divided directory will also work)
-our $dsspdir =  "/cluster/databases/dssp/data";          # where are the dssp files? Used in addss.pl
-our $dssp    =  "/cluster/databases/dssp/bin/dsspcmbi";  # where is the dssp binary? Used in addss.pl
+our $pdbdir  =  "/local/jmrodriguez/firestar/DB/GOLDEN_PDB/divided";            # where are the pdb files? (pdb/divided directory will also work)
+our $dsspdir =  $FindBin::Bin.'/../../../../dssp-2.0.4/data';          # where are the dssp files? Used in addss.pl
+our $dssp    =  $FindBin::Bin.'/../../../../dssp-2.0.4/bin/dssp';  # where is the dssp binary? Used in addss.pl
 ##############################################################################################
 
 # The lines below probably do not need to be changed
