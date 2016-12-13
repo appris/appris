@@ -586,6 +586,10 @@ sub run_pipeline($$$)
 			$files->{$method} = $outpath.'/'.$method;
 		}
 	}
+	# appris is allways executed
+	foreach my $met ( @{$METHOD_STRUCT} ) {
+		$files->{'appris'}->{$met} = $outpath.'/'.$met;
+	}
 	
 	# execute sequentially
 	if ( exists $files->{'firestar'} ) {
@@ -601,12 +605,25 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);
 	}
+#	if ( exists $files->{'matador3d'} ) {
+#		my ($m) = 'matador3d';
+#		eval {
+#			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
+#							"--conf=".$config_file." ".
+#							"--gff=".$files->{'annot'}." ".
+#							"--input=".$files->{'transl'}." ".
+#							"--output=".$files->{$m}." ".
+#							"$LOGGER_CONF ";
+#			$logger->info("\n** script: $cmd\n");
+#			system ($cmd);
+#		};
+#		$logger->error("runing $m: ".$!) if($@);
+#	}
 	if ( exists $files->{'matador3d'} ) {
 		my ($m) = 'matador3d';
 		eval {
-			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
+			my ($cmd) = "perl $SRC_DIR/matador3d_v2/matador3d.pl ".
 							"--conf=".$config_file." ".
-							"--gff=".$files->{'annot'}." ".
 							"--input=".$files->{'transl'}." ".
 							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
@@ -698,33 +715,32 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);	
 	}
-	if ( exists $files->{'appris'} ) {
-		my ($m) = 'appris';
-		eval {
-			my ($cmd) = "perl $SRC_DIR/appris/appris.pl ".
-							"--conf=".$config_file." ".
-							"--data=".$files->{'annot'}." ".
-							"--transcripts=".$files->{'transc'}." ".
-							"--translations=".$files->{'transl'}." ".
-							
-							"--firestar=".$files->{$m}->{'firestar'}." ".
-							"--matador3d=".$files->{$m}->{'matador3d'}." ".
-							"--spade=".$files->{$m}->{'spade'}." ".
-							"--corsair=".$files->{$m}->{'corsair'}." ".
-							"--thump=".$files->{$m}->{'thump'}." ".
-							"--crash=".$files->{$m}->{'crash'}." ".
-							"--inertia=".$files->{$m}->{'inertia'}." ".
-							"--proteo=".$files->{$m}->{'proteo'}." ".
-															
-							"--output=".$files->{$m}->{'appris'}." ".
-							"--output_nscore=".$files->{$m}->{'appris'}.".nscore ".
-							"--output_label=".$files->{$m}->{'appris'}.".label ".
-							"$LOGGER_CONF ";
-			$logger->info("\n** script: $cmd\n");
-			system ($cmd);
-		};
-		$logger->error("runing $m: ".$!) if($@);
-	}
+	# appris is allways executed
+	my ($m) = 'appris';
+	eval {
+		my ($cmd) = "perl $SRC_DIR/appris/appris.pl ".
+						"--conf=".$config_file." ".
+						"--data=".$files->{'annot'}." ".
+						"--transcripts=".$files->{'transc'}." ".
+						"--translations=".$files->{'transl'}." ".
+
+						"--firestar=".$files->{$m}->{'firestar'}." ".
+						"--matador3d=".$files->{$m}->{'matador3d'}." ".
+						"--spade=".$files->{$m}->{'spade'}." ".
+						"--corsair=".$files->{$m}->{'corsair'}." ".
+						"--thump=".$files->{$m}->{'thump'}." ".
+						"--crash=".$files->{$m}->{'crash'}." ".
+						"--inertia=".$files->{$m}->{'inertia'}." ".
+						"--proteo=".$files->{$m}->{'proteo'}." ".
+
+						"--output=".$files->{$m}->{'appris'}." ".
+						"--output_nscore=".$files->{$m}->{'appris'}.".nscore ".
+						"--output_label=".$files->{$m}->{'appris'}.".label ".
+						"$LOGGER_CONF ";
+		$logger->info("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	$logger->error("runing $m: ".$!) if($@);
 }
 
 

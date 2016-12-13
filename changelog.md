@@ -11,8 +11,9 @@ CODE-RELEASE:     4.6.2.13
 
 ### Code (2.13)
 - APPRIS:
-	Changes in the weight of CORSAIR
-	Changes in the weight of firestar (e.g. bad result for ANAPC15 - ENSG00000110200)
+	Changes in the weight of CORSAIR.
+	Changes in the weight of firestar (e.g. bad result for ANAPC15 - ENSG00000110200).
+- Matador3D v2: Has been included in APPRIS code.
 
 
 ___

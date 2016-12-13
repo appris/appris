@@ -20,12 +20,15 @@
  	APD8_a2_sortu.2.csv (PROTEO db)
 	AllPeptideData8_sortu.nondiscrim.leu_ile.sort.csv (GENCODE20) #DEPRECATED
 	AllPeptideData3_sortu.csv (GENCODE19) # DEPRECATED
+	pdb_70.hmm*
 		
 ############################
 # DESCRIPTION OF DATABASES #
 ############################
 		
 * v1: Jan-2013
+
+>> PDB_70.HMM for Matador3Dv2:
 
 >> PDB created by Jose Maria. In thise case, you have to discard empty sequences:
 	
