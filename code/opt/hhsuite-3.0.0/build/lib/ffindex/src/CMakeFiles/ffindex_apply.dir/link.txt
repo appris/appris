@@ -1,0 +1,1 @@
+/usr/bin/cc  -std=c99  -O2 -g -DNDEBUG    CMakeFiles/ffindex_apply.dir/ffindex_apply.c.o  -o ../../../bin/ffindex_apply -rdynamic ../../libffindex.a 

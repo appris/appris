@@ -1,0 +1,26 @@
+Performing C++ SOURCE FILE Test HAVE_AVX2_EXTENSIONS failed with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3035791197/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3035791197.dir/build.make CMakeFiles/cmTryCompileExec3035791197.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3035791197.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_AVX2_EXTENSIONS -mavx2 -Wa,-q   -o CMakeFiles/cmTryCompileExec3035791197.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3035791197
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3035791197.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_AVX2_EXTENSIONS -mavx2 -Wa,-q    CMakeFiles/cmTryCompileExec3035791197.dir/src.cxx.o  -o cmTryCompileExec3035791197 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: FAILED_TO_RUN
+Source file was:
+
+      #include <immintrin.h>
+      int main()
+      {
+        __m256i a, b;
+        a = _mm256_set1_epi8 (1);
+        b = a;
+        _mm256_add_epi8 (a,a);
+        return 0;
+      }

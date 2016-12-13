@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC -std=c99  -O2 -g -DNDEBUG   -shared -Wl,-soname,libffindex_shared.so -o ../../libffindex_shared.so CMakeFiles/ffindex_shared.dir/ffindex.c.o CMakeFiles/ffindex_shared.dir/ffutil.c.o 

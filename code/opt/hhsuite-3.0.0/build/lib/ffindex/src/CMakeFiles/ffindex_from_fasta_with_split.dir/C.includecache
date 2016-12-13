@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/local/jmrodriguez/appris/code/opt/hh-suite/lib/ffindex/src/ffindex.h
+stdio.h
+-
+
+/local/jmrodriguez/appris/code/opt/hh-suite/lib/ffindex/src/ffindex_from_fasta_with_split.c
+unistd.h
+-
+stdlib.h
+-
+stdio.h
+-
+sys/types.h
+-
+sys/stat.h
+-
+unistd.h
+-
+ctype.h
+-
+ffindex.h
+/local/jmrodriguez/appris/code/opt/hh-suite/lib/ffindex/src/ffindex.h
+ffutil.h
+/local/jmrodriguez/appris/code/opt/hh-suite/lib/ffindex/src/ffutil.h
+
+/local/jmrodriguez/appris/code/opt/hh-suite/lib/ffindex/src/ffutil.h
+err.h
+-
+errno.h
+-
+string.h
+-
+stdio.h
+-
+

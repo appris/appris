@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../../libffindex.a  CMakeFiles/ffindex.dir/ffindex.c.o CMakeFiles/ffindex.dir/ffutil.c.o
+/usr/bin/ranlib ../../libffindex.a

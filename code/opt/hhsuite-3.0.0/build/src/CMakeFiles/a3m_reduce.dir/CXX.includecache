@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../lib/ffindex/src/ffindex.h
+stdio.h
+-
+
+/local/jmrodriguez/appris/code/opt/hh-suite/src/a3m_compress.h
+ctype.h
+-
+iostream
+-
+fstream
+-
+string
+-
+getopt.h
+-
+string.h
+-
+stdlib.h
+-
+algorithm
+-
+stdint.h
+-
+cstring
+-
+climits
+-
+ffindex.h
+-
+
+/local/jmrodriguez/appris/code/opt/hh-suite/src/a3m_reduce.cpp
+a3m_compress.h
+/local/jmrodriguez/appris/code/opt/hh-suite/src/a3m_compress.h
+sstream
+-
+

@@ -1,0 +1,1 @@
+/usr/bin/c++     -march=native -mavx -mfpmath=sse -Wa,-q -fopenmp -fno-strict-aliasing -O2 -g -DNDEBUG  -march=native -mavx -mfpmath=sse -Wa,-q    CMakeFiles/a3m_database_reduce.dir/a3m_database_reduce.cpp.o CMakeFiles/A3M_COMPRESS_OBJECT.dir/a3m_compress.cpp.o  -o ../bin/a3m_database_reduce -rdynamic ../lib/libffindex.a 

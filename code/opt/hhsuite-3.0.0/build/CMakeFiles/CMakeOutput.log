@@ -1,0 +1,556 @@
+The system is: Linux - 3.13.0-32-generic - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/2.8.12.2/CompilerIdCXX/a.out"
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2635162742/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2635162742.dir/build.make CMakeFiles/cmTryCompileExec2635162742.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2635162742.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTryCompileExec2635162742.dir/testCXXCompiler.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTryCompileExec2635162742
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2635162742.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTryCompileExec2635162742.dir/testCXXCompiler.cxx.o  -o cmTryCompileExec2635162742 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1980112365/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1980112365.dir/build.make CMakeFiles/cmTryCompileExec1980112365.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++     -o CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTryCompileExec1980112365
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1980112365.dir/link.txt --verbose=1
+/usr/bin/c++      -v CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o  -o cmTryCompileExec1980112365 -rdynamic  
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 4.8.4-2ubuntu1~14.04.3' --with-bugurl=file:///usr/share/doc/gcc-4.8/README.Bugs --enable-languages=c,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.8 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.8 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --disable-libmudflap --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-4.8-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Thread model: posix
+gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/home/jmrodriguez/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/jmrodriguez/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec1980112365' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTryCompileExec1980112365 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/jmrodriguez/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/jmrodriguez/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:/usr/bin/make "cmTryCompileExec1980112365/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec1980112365.dir/build.make CMakeFiles/cmTryCompileExec1980112365.dir/build]
+  ignore line: [make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building CXX object CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTryCompileExec1980112365]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1980112365.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o  -o cmTryCompileExec1980112365 -rdynamic  ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
+  ignore line: [Target: x86_64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 4.8.4-2ubuntu1~14.04.3' --with-bugurl=file:///usr/share/doc/gcc-4.8/README.Bugs --enable-languages=c,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.8 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.8 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --disable-libmudflap --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-4.8-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/home/jmrodriguez/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/jmrodriguez/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec1980112365' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTryCompileExec1980112365 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/jmrodriguez/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/jmrodriguez/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
+    arg [--sysroot=/] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec1980112365] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
+    arg [-L/home/jmrodriguez/lib/../lib] ==> dir [/home/jmrodriguez/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib]
+    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/home/jmrodriguez/lib] ==> dir [/home/jmrodriguez/lib]
+    arg [-L.] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
+    arg [CMakeFiles/cmTryCompileExec1980112365.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  collapse library dir [/home/jmrodriguez/lib/../lib] ==> [/home/jmrodriguez/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8] ==> [/usr/lib/gcc/x86_64-linux-gnu/4.8]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/home/jmrodriguez/lib] ==> [/home/jmrodriguez/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> [/usr/lib]
+  implicit libs: [stdc++;m;c]
+  implicit dirs: [/home/jmrodriguez/lib;/usr/lib/gcc/x86_64-linux-gnu/4.8;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+Performing C++ SOURCE FILE Test HAVE_MM_MALLOC succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1527748338/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1527748338.dir/build.make CMakeFiles/cmTryCompileExec1527748338.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1527748338.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_MM_MALLOC   -o CMakeFiles/cmTryCompileExec1527748338.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1527748338
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1527748338.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_MM_MALLOC    CMakeFiles/cmTryCompileExec1527748338.dir/src.cxx.o  -o cmTryCompileExec1527748338 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+        #include <mm_malloc.h>
+        int main()
+        {
+          void* mem = _mm_malloc (100, 16);
+          return 0;
+        }
+Performing C++ SOURCE FILE Test HAVE_POSIX_MEMALIGN succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4000876214/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec4000876214.dir/build.make CMakeFiles/cmTryCompileExec4000876214.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec4000876214.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_POSIX_MEMALIGN   -o CMakeFiles/cmTryCompileExec4000876214.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec4000876214
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4000876214.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_POSIX_MEMALIGN    CMakeFiles/cmTryCompileExec4000876214.dir/src.cxx.o  -o cmTryCompileExec4000876214 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+        #include <stdlib.h>
+        int main()
+        {
+          void* mem;
+          return posix_memalign (&mem, 16, 100);
+        }
+Performing C++ SOURCE FILE Test HAVE_AVX_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3244583922/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3244583922.dir/build.make CMakeFiles/cmTryCompileExec3244583922.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3244583922.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_AVX_EXTENSIONS -mavx -Wa,-q   -o CMakeFiles/cmTryCompileExec3244583922.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3244583922
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3244583922.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_AVX_EXTENSIONS -mavx -Wa,-q    CMakeFiles/cmTryCompileExec3244583922.dir/src.cxx.o  -o cmTryCompileExec3244583922 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+      #include <immintrin.h>
+      int main()
+      {
+        __m256 a, b;
+        float vals[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+        const int mask = 123;
+        a = _mm256_loadu_ps(vals);
+        b = a;
+        b = _mm256_dp_ps (a, a, 3);
+        _mm256_storeu_ps(vals,b);
+        return 0;
+      }
+Performing C++ SOURCE FILE Test HAVE_SSE4_2_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1544348285/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1544348285.dir/build.make CMakeFiles/cmTryCompileExec1544348285.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1544348285.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSE4_2_EXTENSIONS -msse4.2   -o CMakeFiles/cmTryCompileExec1544348285.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1544348285
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1544348285.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSE4_2_EXTENSIONS -msse4.2    CMakeFiles/cmTryCompileExec1544348285.dir/src.cxx.o  -o cmTryCompileExec1544348285 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+      #include <nmmintrin.h>
+      int main ()
+      {
+        long long a[2] = {  1, 2 };
+        long long b[2] = { -1, 3 };
+        long long c[2];
+        __m128i va = _mm_loadu_si128 ((__m128i*)a);
+        __m128i vb = _mm_loadu_si128 ((__m128i*)b);
+        __m128i vc = _mm_cmpgt_epi64 (va, vb);
+        _mm_storeu_si128 ((__m128i*)c, vc);
+        return 0;
+      }
+Performing C++ SOURCE FILE Test HAVE_SSE4_1_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1874239493/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1874239493.dir/build.make CMakeFiles/cmTryCompileExec1874239493.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1874239493.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSE4_1_EXTENSIONS -msse4.1   -o CMakeFiles/cmTryCompileExec1874239493.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1874239493
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1874239493.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSE4_1_EXTENSIONS -msse4.1    CMakeFiles/cmTryCompileExec1874239493.dir/src.cxx.o  -o cmTryCompileExec1874239493 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+      #include <smmintrin.h>
+      int main ()
+      {
+        __m128 a, b;
+        float vals[4] = {1, 2, 3, 4};
+        const int mask = 123;
+        a = _mm_loadu_ps (vals);
+        b = a;
+        b = _mm_dp_ps (a, a, 4);
+        _mm_storeu_ps (vals,b);
+        return (0);
+      }
+Performing C++ SOURCE FILE Test HAVE_SSSE3_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3122847007/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3122847007.dir/build.make CMakeFiles/cmTryCompileExec3122847007.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3122847007.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSSE3_EXTENSIONS -mssse3   -o CMakeFiles/cmTryCompileExec3122847007.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3122847007
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3122847007.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSSE3_EXTENSIONS -mssse3    CMakeFiles/cmTryCompileExec3122847007.dir/src.cxx.o  -o cmTryCompileExec3122847007 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+      #include <tmmintrin.h>
+      int main ()
+      {
+        __m128i a, b;
+        int vals[4] = {1, 2, 3, 4};
+        const int mask = 123;
+        a = _mm_load_si128 ((__m128i*)vals);
+        b = _mm_shuffle_epi8 (a, a);
+        _mm_store_si128 ((__m128i*)vals,b);
+        return (0);
+      }
+Performing C++ SOURCE FILE Test HAVE_SSE3_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2612375769/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2612375769.dir/build.make CMakeFiles/cmTryCompileExec2612375769.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2612375769.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSE3_EXTENSIONS -msse3   -o CMakeFiles/cmTryCompileExec2612375769.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2612375769
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2612375769.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSE3_EXTENSIONS -msse3    CMakeFiles/cmTryCompileExec2612375769.dir/src.cxx.o  -o cmTryCompileExec2612375769 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+        #include <pmmintrin.h>
+        int main ()
+        {
+            __m128d a, b;
+            double vals[2] = {0};
+            a = _mm_loadu_pd (vals);
+            b = _mm_hadd_pd (a,a);
+            _mm_storeu_pd (vals, b);
+            return (0);
+        }
+Performing C++ SOURCE FILE Test HAVE_SSE2_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec663235777/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec663235777.dir/build.make CMakeFiles/cmTryCompileExec663235777.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec663235777.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSE2_EXTENSIONS -msse2   -o CMakeFiles/cmTryCompileExec663235777.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec663235777
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec663235777.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSE2_EXTENSIONS -msse2    CMakeFiles/cmTryCompileExec663235777.dir/src.cxx.o  -o cmTryCompileExec663235777 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+        #include <emmintrin.h>
+        int main ()
+        {
+            __m128d a, b;
+            double vals[2] = {0};
+            a = _mm_loadu_pd (vals);
+            b = _mm_add_pd (a,a);
+            _mm_storeu_pd (vals,b);
+            return (0);
+        }
+Performing C++ SOURCE FILE Test HAVE_SSE_EXTENSIONS succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2300990896/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2300990896.dir/build.make CMakeFiles/cmTryCompileExec2300990896.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2300990896.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_SSE_EXTENSIONS -msse   -o CMakeFiles/cmTryCompileExec2300990896.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2300990896
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2300990896.dir/link.txt --verbose=1
+/usr/bin/c++    -DHAVE_SSE_EXTENSIONS -msse    CMakeFiles/cmTryCompileExec2300990896.dir/src.cxx.o  -o cmTryCompileExec2300990896 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Return value: 1
+Source file was:
+
+        #include <xmmintrin.h>
+        int main ()
+        {
+            __m128 a, b;
+            float vals[4] = {0};
+            a = _mm_loadu_ps (vals);
+            b = a;
+            b = _mm_add_ps (a,b);
+            _mm_storeu_ps (vals,b);
+            return (0);
+        }
+Performing C++ SOURCE FILE Test OpenMP_FLAG_DETECTED succeded with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec667968567/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec667968567.dir/build.make CMakeFiles/cmTryCompileExec667968567.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec667968567.dir/src.cxx.o
+/usr/bin/c++    -march=native -mavx -mfpmath=sse -Wa,-q -DOpenMP_FLAG_DETECTED -fopenmp   -o CMakeFiles/cmTryCompileExec667968567.dir/src.cxx.o -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec667968567
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec667968567.dir/link.txt --verbose=1
+/usr/bin/c++     -march=native -mavx -mfpmath=sse -Wa,-q -DOpenMP_FLAG_DETECTED -fopenmp    CMakeFiles/cmTryCompileExec667968567.dir/src.cxx.o  -o cmTryCompileExec667968567 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <omp.h>
+int main() {
+#ifdef _OPENMP
+  return 0;
+#else
+  breaks_on_purpose
+#endif
+}
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/2.8.12.2/CompilerIdC/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec2615589000/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2615589000.dir/build.make CMakeFiles/cmTryCompileExec2615589000.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2615589000.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec2615589000.dir/testCCompiler.c.o   -c /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTryCompileExec2615589000
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2615589000.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec2615589000.dir/testCCompiler.c.o  -o cmTryCompileExec2615589000 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3634989266/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3634989266.dir/build.make CMakeFiles/cmTryCompileExec3634989266.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c
+Linking C executable cmTryCompileExec3634989266
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3634989266.dir/link.txt --verbose=1
+/usr/bin/cc     -v CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o  -o cmTryCompileExec3634989266 -rdynamic  
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 4.8.4-2ubuntu1~14.04.3' --with-bugurl=file:///usr/share/doc/gcc-4.8/README.Bugs --enable-languages=c,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.8 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.8 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --disable-libmudflap --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-4.8-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Thread model: posix
+gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/home/jmrodriguez/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/jmrodriguez/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec3634989266' '-rdynamic' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTryCompileExec3634989266 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/jmrodriguez/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/jmrodriguez/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:/usr/bin/make "cmTryCompileExec3634989266/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec3634989266.dir/build.make CMakeFiles/cmTryCompileExec3634989266.dir/build]
+  ignore line: [make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building C object CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTryCompileExec3634989266]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3634989266.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o  -o cmTryCompileExec3634989266 -rdynamic  ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
+  ignore line: [Target: x86_64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 4.8.4-2ubuntu1~14.04.3' --with-bugurl=file:///usr/share/doc/gcc-4.8/README.Bugs --enable-languages=c,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.8 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.8 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --disable-libmudflap --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-4.8-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-4.8-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/home/jmrodriguez/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/jmrodriguez/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec3634989266' '-rdynamic' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTryCompileExec3634989266 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/jmrodriguez/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/jmrodriguez/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
+    arg [--sysroot=/] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec3634989266] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
+    arg [-L/home/jmrodriguez/lib/../lib] ==> dir [/home/jmrodriguez/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib]
+    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/home/jmrodriguez/lib] ==> dir [/home/jmrodriguez/lib]
+    arg [-L.] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
+    arg [CMakeFiles/cmTryCompileExec3634989266.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  collapse library dir [/home/jmrodriguez/lib/../lib] ==> [/home/jmrodriguez/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8] ==> [/usr/lib/gcc/x86_64-linux-gnu/4.8]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/home/jmrodriguez/lib] ==> [/home/jmrodriguez/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> [/usr/lib]
+  implicit libs: [c]
+  implicit dirs: [/home/jmrodriguez/lib;/usr/lib/gcc/x86_64-linux-gnu/4.8;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+Determining if the function fmemopen exists passed with the following output:
+Change Dir: /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1953804995/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1953804995.dir/build.make CMakeFiles/cmTryCompileExec1953804995.dir/build
+make[1]: Entering directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1953804995.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -std=c99  -DCHECK_FUNCTION_EXISTS=fmemopen   -o CMakeFiles/cmTryCompileExec1953804995.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec1953804995
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1953804995.dir/link.txt --verbose=1
+/usr/bin/cc  -std=c99  -DCHECK_FUNCTION_EXISTS=fmemopen    CMakeFiles/cmTryCompileExec1953804995.dir/CheckFunctionExists.c.o  -o cmTryCompileExec1953804995 -rdynamic 
+make[1]: Leaving directory `/local/jmrodriguez/appris/code/opt/hh-suite/build/CMakeFiles/CMakeTmp'
+
+

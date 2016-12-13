@@ -1,0 +1,1 @@
+/usr/bin/cc  -std=c99  -O2 -g -DNDEBUG    CMakeFiles/ffindex_from_fasta_with_split.dir/ffindex_from_fasta_with_split.c.o  -o ../../../bin/ffindex_from_fasta_with_split -rdynamic ../../libffindex.a 
