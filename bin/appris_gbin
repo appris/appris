@@ -40,6 +40,9 @@ Optional arguments:\n
 \n
 \t -h \n
 \n
+Example:\n
+\t\t appris_gbin -s 'Homo sapiens' -m fmscrp
+\n
 \n
  Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
 \n
