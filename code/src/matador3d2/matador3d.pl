@@ -59,10 +59,8 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 # Get conf vars
 my ($cfg) 			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
-#$WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
-#$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$WSPACE_TMP			= '/tmp/matador3d';
-$WSPACE_CACHE		= '/tmp/matador3d/cache';
+$WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
+$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $RUN_PROGRAM		= $ENV{APPRIS_PRG_OPT_HMMER_31b2_BIN_DIR}.'/'.$cfg->val( 'MATADOR3D_VARS', 'program');
 $PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D_VARS', 'db');
 
