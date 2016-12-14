@@ -6,7 +6,7 @@ CODE-RELEASE:     4.6.2.13
 ```
 
 ### Highlights
-- New gene dataset in APPRIS which is an union between Ensembl, RefSeq, UniProt (APPRIS ds1) TODO!!!!
+- New release of Ensembl (e87) for all species.
 - APPRIS annotations for UniProt (2016_10 version) in Mouse proteome.
 
 ### Code (2.13)

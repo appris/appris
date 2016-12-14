@@ -1,5 +1,5 @@
 {
-    "version": "2016_11.v19",
+    "version": "2016_12.v20",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -12,12 +12,12 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Gencode25/Ensembl86",
-                        "version": "86"
+                        "label": "Gencode25/Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_homo_sapiens",
                     "datafiles":   {
@@ -31,7 +31,7 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs107v19",
+                    "id":   "rs107v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -49,7 +49,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201606v19",
+                    "id":   "up201606v20",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -67,7 +67,7 @@
                         "transmembrane_helices":    ["GTF"]
                     }
                 },{
-                    "id":   "e84v19",
+                    "id":   "e84v20",
                     "type": "archive",
                     "source": {
                         "name": "ensembl",
@@ -90,7 +90,7 @@
                 "id":       "hg19",
                 "name":     "GRCh37",
                 "datasets": [{
-                    "id":   "g19v19",
+                    "id":   "g19v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -109,7 +109,7 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs105v19",
+                    "id":   "rs105v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -140,12 +140,12 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "GencodeM11/Ensembl86",
-                        "version": "86"
+                        "label": "GencodeM12/Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_mus_musculus",
                     "datafiles":   {
@@ -171,12 +171,12 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_danio_rerio",
                     "datafiles":   {
@@ -193,7 +193,7 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "e77v19",
+                    "id":   "e77v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -224,12 +224,12 @@
                 "id":       "rn6",
                 "name":     "Rnor_6.0",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_rattus_norvegicus",
                     "datafiles":   {
@@ -246,7 +246,7 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "e77v19",
+                    "id":   "e77v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -277,12 +277,12 @@
                 "id":       "susScr3",
                 "name":     "Sscrofa10.2",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_sus_scrofa",
                     "datafiles":   {
@@ -308,12 +308,12 @@
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_pan_troglodytes",
                     "datafiles":   {
@@ -339,12 +339,12 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_drosophila_melanogaster",
                     "datafiles":   {
@@ -370,12 +370,12 @@
                 "id":       "ce10",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e86v19",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_caenorhabditis_elegans",
                     "datafiles":   {
@@ -400,12 +400,12 @@
                 "id":       "bosTau8",
                 "name":     "UMD3.1",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -420,12 +420,12 @@
                 "id":       "canFam3",
                 "name":     "CanFam3.1",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -440,12 +440,12 @@
                 "id":       "felCat5",
                 "name":     "Felis_catus_6.2",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -460,12 +460,12 @@
                 "id":       "monDom5",
                 "name":     "BROADO5",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -480,12 +480,12 @@
                 "id":       "galGal4",
                 "name":     "Gallus_gallus-5.0",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -500,12 +500,12 @@
                 "id":       "taeGut1",
                 "name":     "taeGut3.2.4",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -520,12 +520,12 @@
                 "id":       "anoCar2",
                 "name":     "AnoCar2.0",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -540,12 +540,12 @@
                 "id":       "xenTro3",
                 "name":     "JGI_4.2",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
@@ -560,12 +560,12 @@
                 "id":       "fr3",
                 "name":     "FUGU4",
                 "datasets": [{
-                    "id":   "e86",
+                    "id":   "e87",
                     "type": "download",
                     "source": {
                         "name": "ensembl",
-                        "label": "Ensembl86",
-                        "version": "86"
+                        "label": "Ensembl87",
+                        "version": "87"
                     }
                 }]
             }]
