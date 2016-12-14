@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/gencode19"
 
-export APPRIS_WS_DATE="homo_sapiens/g19v19"
+export APPRIS_WS_DATE="homo_sapiens/g19v20"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 

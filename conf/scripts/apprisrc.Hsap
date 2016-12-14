@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="homo_sapiens/e86_g25"
+export APPRIS_WS_NAME="homo_sapiens/e87"
 
-export APPRIS_WS_DATE="homo_sapiens/e86v19"
+export APPRIS_WS_DATE="homo_sapiens/e87v20"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -45,12 +45,12 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
 
 #export APPRIS_E_VERSION=84
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.86.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.annot.gtf"
 #export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.85.extra.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.cdna.all.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Homo_sapiens.GRCh38.pep.all.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transl.fa"
 
 #export APPRIS_GENE_LIST=""
 

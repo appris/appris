@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="drosophila_melanogaster/e86"
+export APPRIS_WS_NAME="drosophila_melanogaster/e87"
 
-export APPRIS_WS_DATE="drosophila_melanogaster/e86v19"
+export APPRIS_WS_DATE="drosophila_melanogaster/e87v20"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -46,11 +46,11 @@ export APPRIS_CHR_LIST="2L,2R,3L,3R,4,X,Y,dmel_mitochondrion_genome"
 
 #export APPRIS_E_VERSION=79
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.86.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.cdna.all.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Drosophila_melanogaster.BDGP6.pep.all.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.transl.fa"
 
 #export APPRIS_GENE_LIST=""
 

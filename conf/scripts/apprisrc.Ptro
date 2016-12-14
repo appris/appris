@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="pan_troglodytes/e86"
+export APPRIS_WS_NAME="pan_troglodytes/e87"
 
-export APPRIS_WS_DATE="pan_troglodytes/e86v19"
+export APPRIS_WS_DATE="pan_troglodytes/e87v20"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -47,11 +47,11 @@ export APPRIS_CHR_LIST="1,2A,2B,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,2
 
 #export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/Pan_troglodytes.CHIMP2.1.4.86.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/Pan_troglodytes.CHIMP2.1.4.cdna.all.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/Pan_troglodytes.CHIMP2.1.4.pep.all.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transl.fa"
 
 #export APPRIS_GENE_LIST=""
 
