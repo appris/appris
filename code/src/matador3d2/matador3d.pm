@@ -565,5 +565,21 @@ sub usage {
 
 
 #ÊBEGIN: CHANGE for APPRIS
+#
+# OUTPUT DESCRIPTION:
+# Description of columns
+#
+# 1.  Gene identifier
+# 2.  Transcript/Protein identifier
+# 3.  Total bitscore from every HMMER alignment.
+# 4.  Result from HMMER Alignment:
+# 4.1 PDB identifier
+# 4.2 Bitscore from alignment
+# 4.3 Bias of aligment: bias of the distribution of amino acid compositions calculated by HMMER
+# 4.4 Start-End of query position
+# 4.5 Absolute value of aligmnet
+#
+
 1;
+
 #ÊEND: CHANGE for APPRIS

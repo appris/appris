@@ -535,10 +535,7 @@ sub get_final_scores($$\$\$)
 					}
 				}
 				elsif ( $method eq 'corsair' ) {
-					if ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
+					if ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
 						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
 					}
 					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {

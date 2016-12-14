@@ -1,0 +1,152 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary for dev.\n
+\n
+ Name:\n
+\t appris_bin\n
+\n
+ Description:\n
+\t script that insert the APPRIS results of a gene into DB.\n
+\n
+Optional arguments:\n
+\t -m {Methods which will execute. By default, all}\n
+\t\t f -> firestar\n
+\t\t m -> matador3d\n
+\t\t s -> spade\n
+\t\t c -> corsair\n
+\t\t t -> thump\n
+\t\t r -> crash\n
+\t\t p -> proteo\n
+\n
+\t -l \n
+\t\t info\n
+\t\t debug\n
+\n
+\t -h \n
+\n
+Example:\n
+\t\t appris_ibin -s 'Homo sapiens' -m fmscrp
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+ALL_METHOD="firestar,matador3d,spade,corsair,thump,crash,proteo"
+LOG_LEVEL="info"
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-m )
+			METHODS=$2
+			shift
+			;;
+		-l )
+			case "$2" in
+				info | debug )
+		        	LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;			
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+METHODS_PARAM=""
+if [ "${METHODS}" != "" ]; then
+	MET=""
+	if [[ "${METHODS}" == *"f"* ]]; then
+		MET="${MET},firestar"
+	fi
+	if [[ "${METHODS}" == *"m"* ]]; then
+		MET="${MET},matador3d"
+	fi
+	if [[ "${METHODS}" == *"s"* ]]; then
+		MET="${MET},spade"
+	fi
+	if [[ "${METHODS}" == *"c"* ]]; then
+		MET="${MET},corsair"
+	fi
+	if [[ "${METHODS}" == *"t"* ]]; then
+		MET="${MET},thump"
+	fi
+	if [[ "${METHODS}" == *"r"* ]]; then
+		MET="${MET},crash"
+	fi
+	if [[ "${METHODS}" == *"p"* ]]; then
+		MET="${MET},proteo"
+	fi	
+	METHODS_PARAM="${MET:1}"
+else
+	METHODS_PARAM="${ALL_METHOD}"
+fi
+
+METHOD_SCRIPT="iappris.pl"
+SCRIPT="${APPRIS_CODE_DIR}/${METHOD_SCRIPT}"
+
+SPECIES="APPRIS test"
+APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.test.ini"
+
+# -----------------------------------------------------------------------------
+# Delete and create DB
+
+appris_db_delete -d appris_test -h localhost -u root
+
+appris_db_create -d appris_test -h localhost -u root
+
+
+# -----------------------------------------------------------------------------
+# Run method
+
+METHOD_SCRIPT="iappris.pl"
+SCRIPT="${APPRIS_CODE_DIR}/${METHOD_SCRIPT}"
+
+SPECIES="APPRIS test"
+APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.test.ini"
+
+# print trace
+echo "================="
+echo "perl ${SCRIPT} \\ "
+echo " --inpath=${PWD} \\ "
+echo " --id=${PWD##*/} \\ "
+echo " --species=\"${SPECIES}\" \\ "
+echo " --methods=${METHODS_PARAM} \\ "
+echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \\ "
+echo " --loglevel=${LOG_LEVEL}\ "
+
+# run method
+perl ${SCRIPT} \
+--inpath=${PWD} \
+--id=${PWD##*/} \
+--species="${SPECIES}" \
+--methods=${METHODS_PARAM} \
+--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+--loglevel=${LOG_LEVEL}
+echo "================="
+
+
+

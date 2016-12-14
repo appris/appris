@@ -1609,13 +1609,71 @@ sub fetch_analysis_by_stable_id {
 			}	
 		}
 		
-		# Get MATADOR3D analysis -----------------
+#		# Get MATADOR3D analysis -----------------
+#		if (defined $source and ($source eq 'matador3d' or $source eq 'all')) {
+#			my ($method);
+#			my ($regions);
+#			my ($num_alignments) = 0; # TODO: add this field into database
+#			eval {	
+#				my ($list) = $self->dbadaptor->query_matador3d(entity_id => $entity->{'entity_id'});
+#				if (defined $list and scalar(@{$list}) > 0) {
+#					$method = $list->[0];
+#				}				
+#			};
+#			throw('No matador analysis') if ($@);
+#			eval {	
+#				my ($list);
+#				if (defined $region) {
+#					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
+#				}
+#				else {
+#					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'})
+#				}				
+#				foreach my $residue (@{$list}) {
+#					$num_alignments++ if ($residue->{'alignment_score'} ne '0');
+#					push(@{$regions},
+#						APPRIS::Analysis::Matador3DRegion->new
+#						(
+#							-start	=> $residue->{'trans_start'},
+#							-end	=> $residue->{'trans_end'},
+#							-strand	=> $residue->{'trans_strand'},
+#							-cds_id	=> $residue->{'cds_id'},
+#							-pstart	=> $residue->{'start'},
+#							-pend	=> $residue->{'end'},
+#							-type	=> $residue->{'type'},
+#							-alignment_start	=> $residue->{'alignment_start'},
+#							-alignment_end	=> $residue->{'alignment_end'},
+#							-score	=> $residue->{'alignment_score'},
+#							-pdb_id	=> $residue->{'pdb_id'},
+#							-identity	=> $residue->{'identity'},
+#							-external_id	=> $residue->{'external_id'}
+#						)				
+#					);
+#				}
+#			};
+#			throw('No matador analysis') if ($@);
+#			if (defined $method) { # Create object
+#				eval {
+#					$matador3d = APPRIS::Analysis::Matador3D->new
+#					(
+#						-result						=> $method->{'result'},
+#						-conservation_structure		=> $method->{'conservation_structure'},
+#						-score						=> $method->{'score'},
+#						-num_alignments				=> $num_alignments
+#					);
+#					$matador3d->alignments($regions) if (defined $regions);				
+#				};
+#				throw('No matador object') if ($@);
+#			}
+#		}
+		
+		# Get MATADOR3D2 analysis -----------------
 		if (defined $source and ($source eq 'matador3d' or $source eq 'all')) {
 			my ($method);
 			my ($regions);
 			my ($num_alignments) = 0; # TODO: add this field into database
 			eval {	
-				my ($list) = $self->dbadaptor->query_matador3d(entity_id => $entity->{'entity_id'});
+				my ($list) = $self->dbadaptor->query_matador3d2(entity_id => $entity->{'entity_id'});
 				if (defined $list and scalar(@{$list}) > 0) {
 					$method = $list->[0];
 				}				
@@ -1624,29 +1682,24 @@ sub fetch_analysis_by_stable_id {
 			eval {	
 				my ($list);
 				if (defined $region) {
-					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
+					$list = $self->dbadaptor->query_matador3d2_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
-					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'})
+					$list = $self->dbadaptor->query_matador3d2_alignments(entity_id => $entity->{'entity_id'})
 				}				
 				foreach my $residue (@{$list}) {
 					$num_alignments++ if ($residue->{'alignment_score'} ne '0');
 					push(@{$regions},
-						APPRIS::Analysis::Matador3DRegion->new
+						APPRIS::Analysis::Matador3D2Region->new
 						(
 							-start	=> $residue->{'trans_start'},
 							-end	=> $residue->{'trans_end'},
 							-strand	=> $residue->{'trans_strand'},
-							-cds_id	=> $residue->{'cds_id'},
 							-pstart	=> $residue->{'start'},
 							-pend	=> $residue->{'end'},
-							-type	=> $residue->{'type'},
-							-alignment_start	=> $residue->{'alignment_start'},
-							-alignment_end	=> $residue->{'alignment_end'},
 							-score	=> $residue->{'alignment_score'},
-							-pdb_id	=> $residue->{'pdb_id'},
-							-identity	=> $residue->{'identity'},
-							-external_id	=> $residue->{'external_id'}
+							-score	=> $residue->{'bias'},
+							-pdb_id	=> $residue->{'pdb_id'}
 						)				
 					);
 				}
@@ -1665,7 +1718,7 @@ sub fetch_analysis_by_stable_id {
 				};
 				throw('No matador object') if ($@);
 			}
-		}
+		}		
 		
 		# Get SPADE analysis -----------------
 		if (defined $source and ($source eq 'spade' or $source eq 'all')) {

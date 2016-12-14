@@ -29,10 +29,10 @@ USAGE="
  APPRIS's binary package.\n
 \n
  Name:\n
-\t appris_db_create\n
+\t appris_db_delete\n
 \n
  Description:\n
-\t create APPRIS database.\n
+\t delete APPRIS database.\n
 \n
 Required arguments:\n
 \t -d [-database]\n
@@ -114,29 +114,10 @@ if [ "${PASSWD}" != "" ]; then
 	PASSWD_PARAMETERS="-p${PASSWD}"
 fi  
 
-# Get file of database schema
-DIRNAME=`dirname $0`
-DATABASE_SCHEMA_FILE="${APPRIS_HOME}/conf/db/apprisdb.sql"
-
 # -----------------------------------------------------------------------------
-MYSQL_EXIST=`mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "SHOW DATABASES LIKE '${DATABASE}'"`
-if [ "${MYSQL_EXIST}" == "" ]; then
-	# -----------------------------------------------------------------------------
-	# Create database
-	echo "---------------------------"
-	echo "Create database"
-	echo "mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}"
-	mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}
-	echo ""
-	
-	# -----------------------------------------------------------------------------
-	# Create tables
-	echo "---------------------------"
-	echo "Create tables"
-	echo "mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} < ${DATABASE_SCHEMA_FILE}"
-	mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} < ${DATABASE_SCHEMA_FILE}
-	echo ""
-else
-    echo "Database already exist"
-fi
-
+# Delete database
+echo "---------------------------"
+echo "Delete database"
+echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DATABASE}""
+mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DATABASE}"
+echo ""

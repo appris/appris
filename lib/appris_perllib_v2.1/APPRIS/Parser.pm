@@ -89,6 +89,8 @@ use vars qw(@ISA @EXPORT);
 	parse_firestar
 	parse_matador3d_rst
 	parse_matador3d
+	parse_matador3d2_rst
+	parse_matador3d2
 	parse_spade_rst
 	parse_spade
 	parse_inertia
@@ -125,6 +127,8 @@ sub parse_firestar_rst($);
 sub parse_firestar($$);
 sub parse_matador3d_rst($);
 sub parse_matador3d($$);
+sub parse_matador3d2_rst($);
+sub parse_matador3d2($$);
 sub parse_spade_rst($);
 sub parse_spade($$);
 sub parse_inertia($$);
@@ -901,6 +905,77 @@ sub parse_matador3d_rst($)
 	return $cutoffs;
 }
 
+=head2 parse_matador3d2_rst
+
+  Arg [1]    : string $result
+               Parse firestar result
+  Example    : use APPRIS::Parser qw(parse_firestar);
+               parse_firestar($result);
+  Description: Parse output of firestar.
+  Returntype : APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : generally on error
+
+=cut
+
+sub parse_matador3d2_rst($)
+{
+	my ($result) = @_;
+	my ($cutoffs);
+		
+	my (@results) = split("\n",$result);	
+	foreach my $transcript_result (@results)
+	{
+		#ENSG00000007216	ENST00000459818	0
+		#ENSG00000007216	ENST00000314669	258.8	4f35_D;124.3;13.9;405-552;148	4f35_D;102.8;10.0;45-162;118	4r1i_A;31.7;6.6;220-345;126
+        #if ( $transcript_result =~ /^([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\$]+)$/ )
+        if ( $transcript_result =~ /^([^\s]+)\s+([^\s]+)\s+([^\$]+)$/ )
+		{
+			my ($gid) = $1;
+			my ($id) = $2;
+			my (@trans_score_alignments) = split("\t", $3);
+			my ($structure_score) = $trans_score_alignments[0];
+			my (@trans_alignments) = ( defined $trans_score_alignments[1] ) ?  @trans_score_alignments[1..$#trans_score_alignments] : undef;
+			$cutoffs->{$id}->{'score'} = $structure_score;
+
+			my ($alignment_list_report);
+			for (my $i = 0; $i < scalar(@trans_alignments); $i++) { # 4f35_D;124.3;13.9;405-552;148
+				if ( defined $trans_alignments[$i] and $trans_alignments[$i] =~ /^([^\;]+)\;+([^\;]+)\;+([^\;]+)\;+([^\-]*)\-([^\;]+)\;+([^\$]*)$/ )
+				{
+					my ($trans_align_pdb_id) = $1;
+					my ($trans_align_score) = $2;
+					my ($trans_align_bias) = $3;
+					my ($trans_align_start) = $4;
+					my ($trans_align_end) = $5;
+					my ($trans_align_abs_pos) = $6;
+
+					if( defined $trans_align_pdb_id and defined $trans_align_score and defined $trans_align_bias and 
+						defined $trans_align_start and defined $trans_align_end and defined $trans_align_abs_pos
+					){
+						my ($alignment_report) = {
+							'start'		=> $trans_align_start,
+							'end'		=> $trans_align_end,
+							'score'		=> $trans_align_score,
+							'bias'		=> $trans_align_bias,
+							'pdb_id'	=> $trans_align_pdb_id,
+						};
+						push(@{$alignment_list_report}, $alignment_report);					
+					}
+				}
+			}			
+			if ( defined $alignment_list_report and (scalar(@{$alignment_list_report}) > 0) )
+			{
+				$cutoffs->{$id}->{'alignments'} = $alignment_list_report;
+			}
+			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
+			$cutoffs->{$id}->{'result'}=$transcript_result;
+		}
+	}
+	$cutoffs->{'result'} = $result;
+	
+	return $cutoffs;
+}
+
 =head2 parse_matador3d
 
   Arg [1]    : APPRIS::Gene $gene 
@@ -991,6 +1066,132 @@ sub parse_matador3d($$)
 							$region->pdb_id($residue->{'pdb_id'}) if (exists $residue->{'pdb_id'} and defined $residue->{'pdb_id'});
 							$region->identity($residue->{'identity'}) if (exists $residue->{'identity'} and defined $residue->{'identity'});
 							$region->external_id($residue->{'external_id'}) if (exists $residue->{'external_id'} and defined $residue->{'external_id'});
+						}
+						push(@{$regions}, $region) if ( defined $region );
+					}
+				}
+			}
+			
+			# create Analysis object (for trans)			
+			my ($method) = APPRIS::Analysis::Matador3D->new (
+							-result					=> $report->{'result'},
+							-score					=> $report->{'score'}
+			);
+			if (defined $regions and (scalar(@{$regions}) > 0) ) {
+				$method->alignments($regions);
+				$method->num_alignments(scalar(@{$regions}));
+			}			
+			$analysis = APPRIS::Analysis->new();
+			if (defined $method) {
+				$analysis->matador3d($method);
+				$analysis->number($analysis->number+1);
+			}			
+		}
+				
+		# create Transcript object
+		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
+		$transcript->analysis($analysis) if (defined $analysis);
+		push(@{$transcripts}, $transcript);
+		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
+	}
+
+	# create Analysis object (for gene)
+	my ($method2) = APPRIS::Analysis::Matador3D->new( -result => $cutoffs->{'result'} );	
+	my ($analysis2) = APPRIS::Analysis->new();
+	if (defined $method2) {
+		$analysis2->matador3d($method2);
+		$analysis2->number($analysis2->number+1);
+	}
+	
+	# create Gene object
+	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
+	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
+	$entity->analysis($analysis2) if (defined $analysis2);	
+
+	return $entity;
+}
+
+=head2 parse_matador3d2
+
+  Arg [1]    : APPRIS::Gene $gene 
+               APPRIS::Gene object
+  Arg [2]    : string $result
+               Parse matador3d result
+  Example    : use APPRIS::Parser qw(parse_matador3d2);
+               parse_matador3d2($result);
+  Description: Parse output of matador3d.
+  Returntype : APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : generally on error
+
+=cut
+
+sub parse_matador3d2($$)
+{
+	my ($gene, $result) = @_;
+
+	my ($stable_id) = $gene->stable_id;
+	my ($transcripts);
+	my ($index_transcripts);
+	my ($index) = 0;
+	
+	# Create hash object from result
+	my ($cutoffs) = parse_matador3d2_rst($result);
+	
+	# Create APPRIS object
+	foreach my $transcript (@{$gene->transcripts}) {			
+		my ($transcript_id) = $transcript->stable_id;
+		my ($transcript_ver);
+		my ($transc_eid) = $transcript_id;
+		if ( $transcript->version ) {
+			$transcript_ver = $transcript->version;			
+			$transc_eid = $transcript_id.'.'.$transcript_ver;
+		}
+		my ($analysis);
+		
+		# create method object
+		if ( exists $cutoffs->{$transcript_id} ) {
+			my ($report) = $cutoffs->{$transcript_id};
+			my ($regions);			
+			if ( $transcript->translate ) {
+				my ($translate) = $transcript->translate;
+				
+				if ( exists $report->{'alignments'} ) {
+					my ($strand) = $transcript->strand;
+					foreach my $residue (@{$report->{'alignments'}}) {
+						my ($region);
+						if ( $transcript->translate->cds ) { # with CDS coords from GTF files
+							my ($pro_coord_start) = get_coords_from_residue($transcript, $residue->{'start'});
+							my ($pro_coord_end) = get_coords_from_residue($transcript, $residue->{'end'});
+							$residue->{'trans_strand'} = $strand;
+							if ( $strand eq '-' ) {
+								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
+								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+							}
+							else {
+								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
+								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
+							}
+							$region = APPRIS::Analysis::Matador3D2Region->new (
+											-pstart		=> $residue->{'start'},
+											-pend		=> $residue->{'end'},
+											-score		=> $residue->{'score'},
+											-bias		=> $residue->{'bias'},
+											-pdb_id		=> $residue->{'pdb_id'},
+											-start		=> $residue->{'trans_start'},
+											-end		=> $residue->{'trans_end'},
+											-strand		=> $residue->{'trans_strand'}								
+							);
+						}
+						else {
+							$region = APPRIS::Analysis::Matador3D2Region->new (
+											-pstart		=> $residue->{'start'},
+											-pend		=> $residue->{'end'},
+											-score		=> $residue->{'score'},
+											-bias		=> $residue->{'bias'},
+											-pdb_id		=> $residue->{'pdb_id'}											
+							);
 						}
 						push(@{$regions}, $region) if ( defined $region );
 					}
@@ -1612,6 +1813,7 @@ sub parse_corsair_rst($)
 	
 	return $cutoffs;
 }
+
 =head2 parse_corsair
 
   Arg [1]    : APPRIS::Gene $gene 
@@ -2666,7 +2868,8 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 		$firestar = parse_firestar($gene, $firestar_result);
 	}
 	if ( defined $matador3d_result ) {
-		$matador3d = parse_matador3d($gene, $matador3d_result);
+		#$matador3d = parse_matador3d($gene, $matador3d_result);
+		$matador3d = parse_matador3d2($gene, $matador3d_result);
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($gene, $corsair_result);
@@ -2975,7 +3178,8 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 		$firestar = parse_firestar($entity, $firestar_result);
 	}
 	if ( defined $matador3d_result ) {
-		$matador3d = parse_matador3d($entity, $matador3d_result);
+		#$matador3d = parse_matador3d($entity, $matador3d_result);
+		$matador3d = parse_matador3d2($entity, $matador3d_result);
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($entity, $corsair_result);
