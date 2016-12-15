@@ -954,7 +954,7 @@ sub feed_gene_by_analysis {
 
 			my($global_id);
 			eval {
-				$global_id = $self->dbadaptor->insert_matador3d2(
+				$global_id = $self->dbadaptor->insert_matador3d(
 								entity_id		=> $internal_entity_id,
 								result			=> $result
 				);
@@ -1344,7 +1344,7 @@ sub feed_transc_by_analysis {
 			my($global_id);
 			if ( defined $method->score and defined $method->result ) {
 				eval {
-					$global_id = $self->dbadaptor->insert_matador3d2(
+					$global_id = $self->dbadaptor->insert_matador3d(
 									entity_id				=> $internal_entity_id,
 									score					=> $method->score,
 									result					=> $method->result
@@ -1373,7 +1373,7 @@ sub feed_transc_by_analysis {
 							$parameters{trans_end} = $region->end if ( defined $region->end );
 							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
 							
-							my ($method_residues_id) = $self->dbadaptor->insert_matador3d2_alignments(%parameters);
+							my ($method_residues_id) = $self->dbadaptor->insert_matador3d_alignments(%parameters);
 						};
 						throw('No matador3d residue analysis') if ($@);					
 					}

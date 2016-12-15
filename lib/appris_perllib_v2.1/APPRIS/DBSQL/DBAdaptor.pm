@@ -1729,6 +1729,85 @@ sub query_corsair {
 	return $final;
 }
 
+#sub query_matador3d {
+#	my ($self, %args) = @_;
+#	my $dbh = $self->dbh;
+#
+#	my @args;
+#	while (my ($k, $v) = each %args){
+#		push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
+#	}
+#	if (keys(%args)){ pop @args;}  # remove final "and"
+#
+#        my $statement = "select
+#        entity_id,
+#		result,
+#		score
+#  
+#		from matador3d ";
+#  
+#	my @bindvalues;
+#	($statement, @bindvalues) = _add_condition($statement, @args);
+#
+#	my $final = _do_query($dbh, $statement, @bindvalues);
+#	return $final;
+#}
+#
+#sub query_matador3d_alignments {
+#	my ($self, %iargs) = @_;
+#	my $dbh = $self->dbh;
+#
+#	my @args;
+#	foreach my $k (sort keys %iargs){ # important sort the keys!!!
+#		my $v = $iargs{$k};
+#		if ( $k eq 'region' ) {
+#			my @args1;
+#			push(@args1, {'trans_end' => $v->{'start'}});
+#			push(@args1, "and");			
+#			push(@args1, {'trans_start' => $v->{'end'}});
+#			push(@args, [@args1]);
+#			push(@args, "or");
+#			my @args2;
+#			push(@args2, {'trans_end' => $v->{'start'}});
+#			push(@args2, "and");			
+#			push(@args2, {'trans_start' => $v->{'end'}});
+#			push(@args, [@args2]);
+#			push(@args, "or");
+#		}
+#		else {
+#			push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
+#		}
+#	}
+#	if (keys(%iargs)){ pop @args;}  # remove final "and"
+#
+#        my $statement = "select
+#        m.matador3d_id,
+#        m.result,
+#        m.score,
+#        a.matador3d_alignments_id,
+#		a.cds_id,
+#		a.start,
+#		a.end,
+#		a.score as alignment_score,
+#		a.type,
+#		a.alignment_start,
+#		a.alignment_end,
+#		a.pdb_id,
+#		a.identity,
+#		a.external_id,
+#		a.trans_start,
+#		a.trans_end,
+#		a.trans_strand
+#   
+#		from matador3d m, matador3d_alignments a ";
+#
+#	my @bindvalues;
+#	($statement, @bindvalues) = _add_condition_combine5($statement, @args);
+#
+#	my $final = _do_query($dbh, $statement, @bindvalues);
+#	return $final;	
+#}
+
 sub query_matador3d {
 	my ($self, %args) = @_;
 	my $dbh = $self->dbh;
@@ -1785,85 +1864,6 @@ sub query_matador3d_alignments {
         m.result,
         m.score,
         a.matador3d_alignments_id,
-		a.cds_id,
-		a.start,
-		a.end,
-		a.score as alignment_score,
-		a.type,
-		a.alignment_start,
-		a.alignment_end,
-		a.pdb_id,
-		a.identity,
-		a.external_id,
-		a.trans_start,
-		a.trans_end,
-		a.trans_strand
-   
-		from matador3d m, matador3d_alignments a ";
-
-	my @bindvalues;
-	($statement, @bindvalues) = _add_condition_combine5($statement, @args);
-
-	my $final = _do_query($dbh, $statement, @bindvalues);
-	return $final;	
-}
-
-sub query_matador3d2 {
-	my ($self, %args) = @_;
-	my $dbh = $self->dbh;
-
-	my @args;
-	while (my ($k, $v) = each %args){
-		push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
-	}
-	if (keys(%args)){ pop @args;}  # remove final "and"
-
-        my $statement = "select
-        entity_id,
-		result,
-		score
-  
-		from matador3d2 ";
-  
-	my @bindvalues;
-	($statement, @bindvalues) = _add_condition($statement, @args);
-
-	my $final = _do_query($dbh, $statement, @bindvalues);
-	return $final;
-}
-
-sub query_matador3d2_alignments {
-	my ($self, %iargs) = @_;
-	my $dbh = $self->dbh;
-
-	my @args;
-	foreach my $k (sort keys %iargs){ # important sort the keys!!!
-		my $v = $iargs{$k};
-		if ( $k eq 'region' ) {
-			my @args1;
-			push(@args1, {'trans_end' => $v->{'start'}});
-			push(@args1, "and");			
-			push(@args1, {'trans_start' => $v->{'end'}});
-			push(@args, [@args1]);
-			push(@args, "or");
-			my @args2;
-			push(@args2, {'trans_end' => $v->{'start'}});
-			push(@args2, "and");			
-			push(@args2, {'trans_start' => $v->{'end'}});
-			push(@args, [@args2]);
-			push(@args, "or");
-		}
-		else {
-			push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
-		}
-	}
-	if (keys(%iargs)){ pop @args;}  # remove final "and"
-
-        my $statement = "select
-        m.matador3d_id,
-        m.result,
-        m.score,
-        a.matador3d_alignments_id,
 		a.start,
 		a.end,
 		a.score as alignment_score,
@@ -1873,7 +1873,7 @@ sub query_matador3d2_alignments {
 		a.trans_end,
 		a.trans_strand
    
-		from matador3d2 m, matador3d2_alignments a ";
+		from matador3d m, matador3d_alignments a ";
 
 	my @bindvalues;
 	($statement, @bindvalues) = _add_condition_combine5($statement, @args);
@@ -2541,6 +2541,47 @@ sub insert_firestar_residues {
 	return $dbh->{'mysql_insertid'};
 }
 
+#sub insert_matador3d {
+#	my ($self, %args) = @_;
+#	my $dbh = $self->dbh;
+#
+#	eval {
+#	$dbh->do(q{insert into matador3d (entity_id, result, score) values (?,?,?)},
+#			undef,(
+#				$args{'entity_id'},
+#				$args{'result'},
+#				$args{'score'} ));
+#	};
+#	die("\nERROR: $!\n") if $@;
+#	return $dbh->{'mysql_insertid'};
+#}
+#
+#sub insert_matador3d_alignments {
+#	my ($self, %args) = @_;
+#	my $dbh = $self->dbh;
+#
+#	eval {
+#	$dbh->do(q{insert into matador3d_alignments (matador3d_id, cds_id, start, end, score, type, alignment_start, alignment_end, pdb_id, identity, external_id, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)},
+#			undef,(
+#				$args{'matador3d_id'},
+#				$args{'cds_id'},
+#				$args{'start'},
+#				$args{'end'},
+#				$args{'score'},
+#				$args{'type'},
+#				$args{'alignment_start'},
+#				$args{'alignment_end'},
+#				$args{'pdb_id'},
+#				$args{'identity'},
+#				$args{'external_id'},
+#				$args{'trans_start'},
+#				$args{'trans_end'},
+#				$args{'trans_strand'} ));
+#	};
+#	die("\nERROR: $!\n") if $@;
+#	return $dbh->{'mysql_insertid'};
+#}
+
 sub insert_matador3d {
 	my ($self, %args) = @_;
 	my $dbh = $self->dbh;
@@ -2561,48 +2602,7 @@ sub insert_matador3d_alignments {
 	my $dbh = $self->dbh;
 
 	eval {
-	$dbh->do(q{insert into matador3d_alignments (matador3d_id, cds_id, start, end, score, type, alignment_start, alignment_end, pdb_id, identity, external_id, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)},
-			undef,(
-				$args{'matador3d_id'},
-				$args{'cds_id'},
-				$args{'start'},
-				$args{'end'},
-				$args{'score'},
-				$args{'type'},
-				$args{'alignment_start'},
-				$args{'alignment_end'},
-				$args{'pdb_id'},
-				$args{'identity'},
-				$args{'external_id'},
-				$args{'trans_start'},
-				$args{'trans_end'},
-				$args{'trans_strand'} ));
-	};
-	die("\nERROR: $!\n") if $@;
-	return $dbh->{'mysql_insertid'};
-}
-
-sub insert_matador3d2 {
-	my ($self, %args) = @_;
-	my $dbh = $self->dbh;
-
-	eval {
-	$dbh->do(q{insert into matador3d2 (entity_id, result, score) values (?,?,?)},
-			undef,(
-				$args{'entity_id'},
-				$args{'result'},
-				$args{'score'} ));
-	};
-	die("\nERROR: $!\n") if $@;
-	return $dbh->{'mysql_insertid'};
-}
-
-sub insert_matador3d2_alignments {
-	my ($self, %args) = @_;
-	my $dbh = $self->dbh;
-
-	eval {
-	$dbh->do(q{insert into matador3d2_alignments (matador3d_id, start, end, score, bias, pdb_id, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?)},
+	$dbh->do(q{insert into matador3d_alignments (matador3d_id, start, end, score, bias, pdb_id, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?)},
 			undef,(
 				$args{'matador3d_id'},
 				$args{'start'},
@@ -3195,30 +3195,6 @@ sub update_matador3d {
 	if (keys(%args)){ pop @args;}  # remove final ", "
 
 	my $statement = "update matador3d set ";
-	my @bindvalues;
-	($statement, @bindvalues) =_add_condition_update($statement, @args);
-	$statement .= "where entity_id = $id ";
-
-	my $final = do_sql_sentence($dbh, $statement, @bindvalues);
-	return $final;
-}
-
-sub update_matador3d2 {
-	my ($self, %args) = @_;
-	my $dbh = $self->dbh;
-
-	my $id;
-	my @args;
-	while (my ($k, $v) = each %args) {
-		if ($k eq 'entity_id') {
-			$id = $args{'entity_id'};
-		} else {
-			push @args, ({$k => $v}, ","); # format for the_add_condition subroutine but too bad won't be scalable for "or"
-		}
-	}
-	if (keys(%args)){ pop @args;}  # remove final ", "
-
-	my $statement = "update matador3d2 set ";
 	my @bindvalues;
 	($statement, @bindvalues) =_add_condition_update($statement, @args);
 	$statement .= "where entity_id = $id ";

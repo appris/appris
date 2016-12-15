@@ -251,9 +251,9 @@ CREATE TABLE firestar_residues (
 -- ) ENGINE=InnoDB CHARSET=utf8;
 
 --
--- Table structure for table matador3d2
+-- Table structure for table matador3d
 --
-CREATE TABLE matador3d2 (
+CREATE TABLE matador3d (
   matador3d_id INT(11) unsigned NOT NULL auto_increment,
   entity_id INT(11) unsigned NOT NULL,
   result LONGTEXT DEFAULT NULL,
@@ -265,9 +265,9 @@ CREATE TABLE matador3d2 (
 ) ENGINE=InnoDB CHARSET=utf8;
 
 --
--- Table structure for table matador3d2_alignments
+-- Table structure for table matador3d_alignments
 --
-CREATE TABLE matador3d2_alignments (
+CREATE TABLE matador3d_alignments (
   matador3d_alignments_id INT(11) unsigned NOT NULL auto_increment,
   matador3d_id INT(11) unsigned NOT NULL,
   start INT(11) unsigned NOT NULL,
@@ -278,7 +278,7 @@ CREATE TABLE matador3d2_alignments (
   trans_start INT(20) unsigned DEFAULT NULL,
   trans_end INT(20) unsigned DEFAULT NULL,
   trans_strand ENUM('.','+','-') DEFAULT NULL,
-  CONSTRAINT fk_matador3d_alignments_matador3d FOREIGN KEY (matador3d_id) REFERENCES matador3d2 (matador3d_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_matador3d_alignments_matador3d FOREIGN KEY (matador3d_id) REFERENCES matador3d (matador3d_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (matador3d_alignments_id),
   UNIQUE KEY unique_key_matador3d_alignments_matador3d_alignments_id (matador3d_alignments_id),
   INDEX index_matador3d_alignments_matador3d_alignments_id_matador3d_id (matador3d_alignments_id,matador3d_id)

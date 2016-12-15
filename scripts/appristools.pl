@@ -47,6 +47,19 @@ unless ( defined $steps and defined $conf_species ) {
 unless ( defined $methods ) {
 	$methods = $ENV{APPRIS_METHODS};
 }
+else {
+	my ($met) = '';
+	if ( $methods =~ /f/ ) { $met .= 'firestar,'  }
+	if ( $methods =~ /m/ ) { $met .= 'matador3d,' }
+	if ( $methods =~ /s/ ) { $met .= 'spade,'     }
+	if ( $methods =~ /c/ ) { $met .= 'corsair,'   }
+	if ( $methods =~ /t/ ) { $met .= 'thump,'     }
+	if ( $methods =~ /r/ ) { $met .= 'crash,'     }
+	if ( $methods =~ /p/ ) { $met .= 'proteo,'    }
+	if ( $methods =~ /a/ ) { $met .= 'appris,'    }
+	$met =~ s/\,$//g;
+	$methods = $met;
+}
 
 # get species name from config file
 my ($APPRIS_SPECIES) = `. $conf_species; echo \$APPRIS_SPECIES`; $APPRIS_SPECIES =~ s/\s*$//g;
@@ -349,14 +362,15 @@ Executes all APPRIS 'steps
 
 =head2 Optional arguments:
 		
-  -m, --methods {vector} <List of retrieved methods separated by commas: 'firestar,matador3d,spade,corsair,thump,crash,appris,proteo' (default: all)>
+  -m, --methods {vector} <List of methods. Characters of methods: fmsctrpa (default: all)>
 	* f  - Functionally important residues, firestar
 	* m  - Protein structural information, Matador3D
 	* s  - Presence of whole protein domains, SPADE
 	* c  - Conservation against vertebrates, CORSAIR
 	* t  - Presence of whole trans-membrane helices, THUMP
-	* cr - Prediction of signal peptide and sub-cellular location, CRASH
+	* r  - Prediction of signal peptide and sub-cellular location, CRASH
 	* p  - Proteomic evidence, PROTEO
+	* a  - Principal Isoforms, APPRIS
   
   -f, --format {vector} <Output format: 'gtf,bed,bed12', or 'json' (default: JSON)>
   
@@ -369,7 +383,7 @@ Executes all APPRIS 'steps
 
 =head1 EXAMPLE
 
-	apprisall -p 1234 -c conf/scripts/apprisrc.Hsap -m 'firestar,matador3d,spade,corsair,thump,crash,appris,proteo' -e 'jmrodriguez@cnio.es' -f gtf
+	apprisall -p 1234 -c conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'jmrodriguez@cnio.es' -f gtf
 
 =head1 AUTHOR
 

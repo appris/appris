@@ -22,6 +22,7 @@ Optional arguments:\n
 \t\t t -> thump\n
 \t\t r -> crash\n
 \t\t p -> proteo\n
+\t\t a -> appris\n
 \n
 \t -l \n
 \t\t info\n
@@ -99,6 +100,9 @@ if [ "${METHODS}" != "" ]; then
 	fi
 	if [[ "${METHODS}" == *"p"* ]]; then
 		MET="${MET},proteo"
+	fi	
+	if [[ "${METHODS}" == *"a"* ]]; then
+		MET="${MET},appris"
 	fi	
 	METHODS_PARAM="${MET:1}"
 else

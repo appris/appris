@@ -1673,7 +1673,7 @@ sub fetch_analysis_by_stable_id {
 			my ($regions);
 			my ($num_alignments) = 0; # TODO: add this field into database
 			eval {	
-				my ($list) = $self->dbadaptor->query_matador3d2(entity_id => $entity->{'entity_id'});
+				my ($list) = $self->dbadaptor->query_matador3d(entity_id => $entity->{'entity_id'});
 				if (defined $list and scalar(@{$list}) > 0) {
 					$method = $list->[0];
 				}				
@@ -1682,15 +1682,15 @@ sub fetch_analysis_by_stable_id {
 			eval {	
 				my ($list);
 				if (defined $region) {
-					$list = $self->dbadaptor->query_matador3d2_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
+					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
-					$list = $self->dbadaptor->query_matador3d2_alignments(entity_id => $entity->{'entity_id'})
+					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'})
 				}				
 				foreach my $residue (@{$list}) {
 					$num_alignments++ if ($residue->{'alignment_score'} ne '0');
 					push(@{$regions},
-						APPRIS::Analysis::Matador3D2Region->new
+						APPRIS::Analysis::Matador3DRegion->new
 						(
 							-start	=> $residue->{'trans_start'},
 							-end	=> $residue->{'trans_end'},
