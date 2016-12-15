@@ -498,6 +498,71 @@ sub get_firestar_annotations {
 
 =cut
 
+#sub get_matador3d_annotations {
+#	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
+#
+#    my ($output) = '';
+#	my ($method_score) = 0;
+#	my ($method_phase) = '.';
+#	my ($method_source) = $GFF3_CONSTANTS->{'matador3d'}->{'source'};
+#	my ($method_type) = $GFF3_CONSTANTS->{'matador3d'}->{'type'};
+#
+#	# Get annotations
+# 	if ( $feature->analysis ) {
+# 		my ($analysis) = $feature->analysis;
+# 		if ( $analysis->matador3d ) {
+#	 		my ($method) = $analysis->matador3d;
+#	 		# get residue annotations	 		
+#			if ( defined $method->alignments ) {
+#				foreach my $region (@{$method->alignments}) {
+#					if ( defined $region->start and defined $region->end and defined $region->strand and $region->score ) {
+#						# common attributes
+#						my ($common) = {
+#								'seqname'	=> $feature->chromosome,
+#								'source'	=> $method_source,
+#								'type'		=> $method_type,
+#								'start'		=> $region->start,
+#								'end'		=> $region->end,
+#								'score'		=> $region->score,
+#								'strand'	=> $region->strand,
+#								'phase'		=> $method_phase
+#						};
+#						# optinal attributes
+#						my($optional);
+#						$optional->{'Parent'}			= $gene_id;
+#						$optional->{'ID'}				= $transcript_id;
+#						$optional->{'Note'}				= "pdb_id:".$region->pdb_id if ($region->pdb_id);
+#						$optional->{'Note'}				.= ",identity:".$region->identity if ($region->identity);
+#						if (defined $common and defined $optional) {
+#							$output .= print_annotations($common,$optional);			
+#						}													 	
+#					}
+#				}
+#			} 		
+# 		}
+#		# get appris annotation 		
+# 		if ( $analysis->appris ) {
+# 			my ($method) = $analysis->appris;
+#			if ( defined $method->homologous_structure_signal ) {
+#				my ($annot) = $method->homologous_structure_signal;				
+#				if ( $feature->analysis->matador3d and $feature->analysis->matador3d->score ) {
+#					$method_score = $feature->analysis->matador3d->score;
+#				}
+#				$output .= get_appris_annotations2(	$transcript_id,
+#													$gene_id,
+#													$external_id,
+#													$feature,
+#													$method_type,
+#													$method_score,
+#													$annot,
+#													$version);				
+#			}	
+# 		}
+# 	}
+#
+#	return $output;
+#	
+#} # End get_matador3d_annotations
 sub get_matador3d_annotations {
 	my ($transcript_id, $gene_id, $external_id, $feature, $version) = @_;
 
@@ -532,7 +597,6 @@ sub get_matador3d_annotations {
 						$optional->{'Parent'}			= $gene_id;
 						$optional->{'ID'}				= $transcript_id;
 						$optional->{'Note'}				= "pdb_id:".$region->pdb_id if ($region->pdb_id);
-						$optional->{'Note'}				.= ",identity:".$region->identity if ($region->identity);
 						if (defined $common and defined $optional) {
 							$output .= print_annotations($common,$optional);			
 						}													 	

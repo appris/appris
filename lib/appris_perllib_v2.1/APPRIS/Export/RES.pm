@@ -275,6 +275,33 @@ sub parser_firestar_residues {
 		
 } # end parser_firestar_residues
 
+#sub parser_matador3d_residues {
+#	my ($method, $inres) = @_;
+#	my ($residues);
+#	
+#	if ( defined $method->result ) {
+#		if ( defined $method->alignments ) {
+#			foreach my $region (@{$method->alignments}) {	
+#				if ( ($region->type eq 'mini-exon') and 
+#					defined $region->score and 
+#					defined $region->pstart and defined $region->pend and 
+#					defined $region->pdb_id and defined $region->identity ) {
+#						if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
+#							my ($res) = {
+#								'start'		=> $region->pstart,
+#								'end'		=> $region->pend,
+#								'annot'		=> $region->pdb_id ." (" . $region->identity . ")",
+#							};
+#							push(@{$residues},$res);
+#						}
+#				}
+#			}
+#		}
+#	}
+#	
+#	return $residues;
+#	
+#} # end parser_matador3d_residues
 sub parser_matador3d_residues {
 	my ($method, $inres) = @_;
 	my ($residues);
@@ -282,18 +309,18 @@ sub parser_matador3d_residues {
 	if ( defined $method->result ) {
 		if ( defined $method->alignments ) {
 			foreach my $region (@{$method->alignments}) {	
-				if ( ($region->type eq 'mini-exon') and 
-					defined $region->score and 
+				if ( 
 					defined $region->pstart and defined $region->pend and 
-					defined $region->pdb_id and defined $region->identity ) {
-						if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
-							my ($res) = {
-								'start'		=> $region->pstart,
-								'end'		=> $region->pend,
-								'annot'		=> $region->pdb_id ." (" . $region->identity . ")",
-							};
-							push(@{$residues},$res);
-						}
+					defined $region->pdb_id and defined $region->score
+				){
+					if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
+						my ($res) = {
+							'start'		=> $region->pstart,
+							'end'		=> $region->pend,
+							'annot'		=> $region->pdb_id ." (" . $region->score . ")",
+						};
+						push(@{$residues},$res);
+					}
 				}
 			}
 		}
@@ -302,7 +329,6 @@ sub parser_matador3d_residues {
 	return $residues;
 	
 } # end parser_matador3d_residues
-
 
 sub parser_spade_residues {
 	my ($method, $inres) = @_;

@@ -664,6 +664,39 @@ sub get_matador3d_annot {
 	return $output;
 }
 # matador3d: annotation input. tabular output
+#sub get_trans_matador3d_tsv_annot {
+#	my ($transcript,$res) = @_;
+#	my ($imet) = 'matador3d';
+#	my ($output) = '';
+#	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+#		if ($transcript->stable_id) {
+#			my ($transcript_id) = $transcript->stable_id;
+#			if ( $transcript->analysis ) {
+#				my ($analysis) = $transcript->analysis;				
+#				if ( $analysis->matador3d and $analysis->matador3d->result ) {
+#					my ($method) = $analysis->matador3d;					
+#					if ( defined $method->result ) {
+#						if ( defined $method->alignments ) {
+#							foreach my $region (@{$method->alignments}) {
+#								if ( ($region->type eq 'mini-exon') and 
+#									defined $region->pstart and defined $region->pend and 
+#									defined $region->pdb_id and defined $region->identity ) {
+#										next unless ( res_is_inside($res, $region->pstart, $region->pend) );								
+#										$output .=	$region->pstart.':'.$region->pend."\t".
+#													$region->pdb_id."\t".
+#													$region->identity."\n";
+#								}
+#							}
+#						}
+#					}
+#										
+#				}
+#		 	}
+#		}
+#    }
+#    if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'tsv'} . $output }    
+#	return $output;	
+#}
 sub get_trans_matador3d_tsv_annot {
 	my ($transcript,$res) = @_;
 	my ($imet) = 'matador3d';
@@ -678,13 +711,14 @@ sub get_trans_matador3d_tsv_annot {
 					if ( defined $method->result ) {
 						if ( defined $method->alignments ) {
 							foreach my $region (@{$method->alignments}) {
-								if ( ($region->type eq 'mini-exon') and 
+								if ( 
 									defined $region->pstart and defined $region->pend and 
-									defined $region->pdb_id and defined $region->identity ) {
-										next unless ( res_is_inside($res, $region->pstart, $region->pend) );								
-										$output .=	$region->pstart.':'.$region->pend."\t".
-													$region->pdb_id."\t".
-													$region->identity."\n";
+									defined $region->pdb_id and defined $region->score
+								) {
+									next unless ( res_is_inside($res, $region->pstart, $region->pend) );								
+									$output .=	$region->pstart.':'.$region->pend."\t".
+												$region->pdb_id."\t".
+												$region->score."\n";
 								}
 							}
 						}
@@ -717,6 +751,27 @@ sub get_trans_matador3d_raw_annot {
 	return $output;	
 }
 # matador3d: result input. tabular output
+#sub get_matador3d_tsv_result
+#{
+#	my ($method, $report) = @_;
+#	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};
+#	
+#	while (my ($seq_id, $seq_report) = each(%{$report}) ) {
+#		if ( ($seq_id ne 'result') and (exists $seq_report->{'alignments'}) ) {
+#			foreach my $region (@{$seq_report->{'alignments'}}) {
+#				if ( ($region->{'type'} eq 'mini-exon') and 
+#					defined $region->{'pstart'} and defined $region->{'pend'} and 
+#					defined $region->{'pdb_id'} and defined $region->{'identity'} ) {
+#						$output .=	$region->{'pstart'}.':'.$region->{'pend'}."\t".
+#									$region->{'pdb_id'}."\t".
+#									$region->{'identity'}."\n";
+#				}
+#			}
+#						
+#		}
+#	}
+#	return $output;
+#}
 sub get_matador3d_tsv_result
 {
 	my ($method, $report) = @_;
@@ -725,20 +780,19 @@ sub get_matador3d_tsv_result
 	while (my ($seq_id, $seq_report) = each(%{$report}) ) {
 		if ( ($seq_id ne 'result') and (exists $seq_report->{'alignments'}) ) {
 			foreach my $region (@{$seq_report->{'alignments'}}) {
-				if ( ($region->{'type'} eq 'mini-exon') and 
+				if ( 
 					defined $region->{'pstart'} and defined $region->{'pend'} and 
-					defined $region->{'pdb_id'} and defined $region->{'identity'} ) {
-						$output .=	$region->{'pstart'}.':'.$region->{'pend'}."\t".
-									$region->{'pdb_id'}."\t".
-									$region->{'identity'}."\n";
+					defined $region->{'pdb_id'} and defined $region->{'score'}
+				) {
+					$output .=	$region->{'pstart'}.':'.$region->{'pend'}."\t".
+								$region->{'pdb_id'}."\t".
+								$region->{'score'}."\n";
 				}
 			}
-						
 		}
 	}
 	return $output;
 }
-
 
 
 

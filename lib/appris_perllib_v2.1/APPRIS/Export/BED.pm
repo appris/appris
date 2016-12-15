@@ -1171,6 +1171,44 @@ sub _aux_get_firestar_annotations {
 
 =cut
 
+#sub get_matador3d_annotations {
+#	my ($typebed, $transcript_id, $feature, $ref_output) = @_;
+#
+#	# Get annotations
+# 	if ( $feature->analysis ) {
+# 		my ($analysis) = $feature->analysis;
+# 		if ( $analysis->matador3d ) { 			
+#	 		my ($method) = $analysis->matador3d;
+#	 		# get residue annotations
+#			if ( defined $method->alignments ) {
+#				
+#				# get the residues with 'mini-exon' info
+#				my ($res_list) = $method->alignments;				
+#				my ($num_res) = scalar(@{$res_list});
+#				my ($res_exon);
+#				my ($res_mini_exon);
+#				foreach my $res (@{$res_list}) {
+#					if ( $res->type eq 'exon' ) {
+#						push(@{$res_exon}, $res);
+#					}
+#					elsif ( $res->type eq 'mini-exon' ) {
+#						push(@{$res_mini_exon}, $res);
+#					}
+#				}
+#				my ($data) = extract_track_region(	$transcript_id,
+#													$feature,
+#													$res_mini_exon,
+#													[{
+#														'name' => 'note',
+#														'value' => 'pdb_id'
+#													}]);
+#				if (defined $data ) {
+#					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
+#				}
+#			}
+# 		}
+# 	}
+#}
 sub get_matador3d_annotations {
 	my ($typebed, $transcript_id, $feature, $ref_output) = @_;
 
@@ -1182,22 +1220,16 @@ sub get_matador3d_annotations {
 	 		# get residue annotations
 			if ( defined $method->alignments ) {
 				
-				# get the residues with 'mini-exon' info
+				# get the residues
 				my ($res_list) = $method->alignments;				
 				my ($num_res) = scalar(@{$res_list});
-				my ($res_exon);
-				my ($res_mini_exon);
+				my ($res_align);
 				foreach my $res (@{$res_list}) {
-					if ( $res->type eq 'exon' ) {
-						push(@{$res_exon}, $res);
-					}
-					elsif ( $res->type eq 'mini-exon' ) {
-						push(@{$res_mini_exon}, $res);
-					}
+					push(@{$res_align}, $res);
 				}
 				my ($data) = extract_track_region(	$transcript_id,
 													$feature,
-													$res_mini_exon,
+													$res_align,
 													[{
 														'name' => 'note',
 														'value' => 'pdb_id'
