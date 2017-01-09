@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+OLDER_THAN_DAYS=60
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_srv_delete_tmp\n
+\n
+ Description:\n
+\t Delete tmp files in APPRIS server.\n
+\n
+\n\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+echo "---------------------------"
+echo "Delete 'tmp folders' older than ${OLDER_THAN_DAYS} days"
+echo "find ${APPRIS_WORKSPACE_LOG_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf \"{}\" \\;"
+find ${APPRIS_WORKSPACE_LOG_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf "{}" \;
+echo ""
+
+echo "---------------------------"
+echo "Delete 'log files' in tmp folder older than ${OLDER_THAN_DAYS} days"
+echo "find ${APPRIS_LOG_DIR} -not -path '*/\.*' -mtime +${OLDER_THAN_DAYS} -type f -delete"
+find ${APPRIS_LOG_DIR} -not -path '*/\.*' -mtime +${OLDER_THAN_DAYS} -type f -delete
+echo ""
+
+echo "---------------------------"
+echo "Delete 'annot folders' older than ${OLDER_THAN_DAYS} days"
+echo "find ${APPRIS_WORKSPACE} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf \"{}\" \\;"
+find ${APPRIS_WORKSPACE} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf "{}" \;
+echo ""
+
+echo "---------------------------"
+echo "Delete 'cache folders' older than ${OLDER_THAN_DAYS} days"
+echo "find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf \"{}\" \\;"
+find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf "{}" \;
+echo ""
