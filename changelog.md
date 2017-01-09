@@ -1,13 +1,13 @@
 ___
-## 2016_12.v20
+## 2017_01.v20
 ```
-SERVER-RELEASE:   2016_12.v20
+SERVER-RELEASE:   2017_01.v20
 CODE-RELEASE:     4.6.2.13
 ```
 
 ### Highlights
 - New release of Ensembl (e87) for all species.
-- APPRIS annotations for UniProt (2016_10 version) in Mouse proteome.
+- APPRIS annotations for UniProt (2016_10 version) in Mouse, Zebra-fish, and Rat proteomes.
 
 ### Code (2.13)
 - APPRIS:
@@ -24,8 +24,8 @@ CODE-RELEASE:     4.6.2.12
 ```
 
 ### Highlights
-- APPRIS annotations for UniProt (2016_06 version).
 - New release of Ensembl (e86 version).
+- APPRIS annotations for UniProt (2016_06 version).
 
 ### Server (4.6)
 - Include Advanced Search panel.

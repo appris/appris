@@ -17,6 +17,7 @@ then
 fi
 
 DATABASE=""
+DATABASE_VERSION=""
 HOST=""
 USER=""
 PASSWD=""
@@ -32,11 +33,14 @@ USAGE="
 \t appris_db_delete\n
 \n
  Description:\n
-\t delete APPRIS database.\n
+\t delete APPRIS database(s).\n
 \n
 Required arguments:\n
 \t -d [-database]\n
 \t\t Name of database (eg, appris_homo_sapiens_gencode_19_dev)\n
+\n
+\t -dv [-dbversion]\n
+\t\t Version of databases (eg, v20 )\n
 \n
 \t -h [-host]\n
 \t\t Host of database (eg, jabba.cnio.es)\n
@@ -64,6 +68,10 @@ do
 			DATABASE=$2
 			shift
 			;;
+		-dv | -dbversion )
+			DATABASE_VERSION=$2
+			shift
+			;;
 		-h | -host )
 			HOST=$2
 			shift
@@ -89,7 +97,7 @@ do
 	shift
 done
 
-if [ "${DATABASE}" == "" ]; then
+if [[ "${DATABASE}" == "" && "${DATABASE_VERSION}" == "" ]]; then
 	echo You must specify a database!
 	echo -e $USAGE
 	exit 1
@@ -115,9 +123,30 @@ if [ "${PASSWD}" != "" ]; then
 fi  
 
 # -----------------------------------------------------------------------------
-# Delete database
-echo "---------------------------"
-echo "Delete database"
-echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DATABASE}""
-mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DATABASE}"
+# Delete databases
+if [ "${DATABASE}" != "" ]; then
+	echo "---------------------------"
+	echo "Delete database"
+	echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e 'DROP DATABASE IF EXISTS ${DATABASE}'"
+	mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DATABASE}"
+
+else if [ "${DATABASE_VERSION}" != ""  ]; then
+
+	credentialsFile=/tmp/mysql-credentials.cnf
+	echo "[client]" > $credentialsFile
+	echo "user=${USER}" >> $credentialsFile
+	echo "password=${PASSWD}" >> $credentialsFile
+	echo "host=${HOST}" >> $credentialsFile
+
+	echo "mysql --defaults-extra-file=$credentialsFile -Bse \"show databases like '%${DATABASE_VERSION}'\""
+	DBS=$(mysql --defaults-extra-file=$credentialsFile -Bse "show databases like '%${DATABASE_VERSION}'")
+	rm $credentialsFile
+	for db in $DBS; do
+		echo "Deleting $db"
+		echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e 'DROP DATABASE IF EXISTS ${DATABASE}'"
+		mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e 'DROP DATABASE IF EXISTS ${DB}'
+	done
+	fi
+
+fi
 echo ""
