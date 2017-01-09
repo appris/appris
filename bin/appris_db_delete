@@ -142,7 +142,6 @@ else if [ "${DATABASE_VERSION}" != ""  ]; then
 	DBS=$(mysql --defaults-extra-file=$credentialsFile -Bse "show databases like '%${DATABASE_VERSION}'")
 	rm $credentialsFile
 	for DB in $DBS; do
-		echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e 'DROP DATABASE IF EXISTS ${DB}'"
 		mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e "DROP DATABASE IF EXISTS ${DB}"
 	done
 	fi
