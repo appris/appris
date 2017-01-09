@@ -16,7 +16,8 @@ then
 	source ${HOME}/.bashrc
 fi
 
-OLDER_THAN_DAYS=60
+OLDER_THAN_DAYS=7
+OLDER_THAN_DAYS_CACHE=60
 
 # -----------------------------------------------------------------------------
 # Usage
@@ -58,6 +59,6 @@ echo ""
 
 echo "---------------------------"
 echo "Delete 'cache folders' older than ${OLDER_THAN_DAYS} days"
-echo "find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf \"{}\" \\;"
-find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS} -type d -exec rm -rf "{}" \;
+echo "find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS_CACHE} -type d -exec rm -rf \"{}\" \\;"
+find ${APPRIS_PROGRAMS_CACHE_DIR} -mindepth 1 -maxdepth 1 -mtime +${OLDER_THAN_DAYS_CACHE} -type d -exec rm -rf "{}" \;
 echo ""
