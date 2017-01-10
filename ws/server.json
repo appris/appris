@@ -157,6 +157,24 @@
                         "whole_domains":            ["GTF","BED"],
                         "transmembrane_helices":    ["GTF","BED"]
                     }
+                },{
+                    "id":   "up201610v20",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    }
                 }]
             }]
         },
@@ -187,6 +205,24 @@
                         "vertebrates_conservation": ["GTF","BED"],
                         "whole_domains":            ["GTF","BED"],
                         "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
+                    "id":   "up201610v20",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
                     }
                 }]
             },{
@@ -240,6 +276,24 @@
                         "vertebrates_conservation": ["GTF","BED"],
                         "whole_domains":            ["GTF","BED"],
                         "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
+                    "id":   "up201610v20",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
                     }
                 }]
             },{

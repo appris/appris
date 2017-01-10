@@ -7,7 +7,13 @@ CODE-RELEASE:     4.6.2.13
 
 ### Highlights
 - New release of Ensembl (e87) for all species.
-- APPRIS annotations for UniProt (2016_10 version) in Mouse, Zebra-fish, and Rat proteomes.
+- New annotations for RefSeq human gene data-set (versions 105 and 107 for the assemblies GRCh37 and GRCh38, respectively).
+- APPRIS annotations for UniProt human, mouse, zebra-fish, and rat. Proteome versions:
+	Human (2016_06)
+	Mouse (2016_10)
+	Zebra-fish (2016_10)
+	Rat (2016_10)
+- New version of Matado3D method (v2).
 
 ### Code (2.13)
 - APPRIS:
