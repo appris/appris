@@ -25,6 +25,8 @@ Required arguments:\n
 \t\t Caenorhabditis elegans\n
 \n
 Optional arguments:\n
+\t -i Path where input data is located\n
+\n
 \t -m {Methods which will execute. By default, all}\n
 \t\t f -> firestar\n
 \t\t m -> matador3d\n
@@ -53,6 +55,7 @@ Example:\n
 # Get input parameters
 
 ALL_METHOD="firestar,matador3d,spade,corsair,thump,crash,proteo"
+INPATH="${PWD}"
 LOG_LEVEL="info"
 
 while expr "//$1" : //- >/dev/null
@@ -62,6 +65,10 @@ do
 			SPECIES=$2
 			shift
 			;;	
+		-i )
+			INPATH=$2
+			shift
+			;;
 		-m )
 			METHODS=$2
 			shift
@@ -132,6 +139,23 @@ fi
 
 
 # -----------------------------------------------------------------------------
+# Inputs data declarations
+INDATA_PARAMETERS=""
+if [[ -s "${INPATH}/annot.gtf" && -s "${INPATH}/transc.fa" && -s "${INPATH}/transl.fa" ]]; then
+	INDATA_PARAMETERS=" --data=${INPATH}/annot.gtf"
+	INDATA_PARAMETERS+=" --transc=${INPATH}/transc.fa"
+	INDATA_PARAMETERS+=" --transl=${INPATH}/transl.fa"
+	INDATA_PARAMETERS+=" --pdata=${INPATH}/pannot.gtf"
+else
+	if [ -s "${INPATH}/transl.fa" ]; then
+		INDATA_PARAMETERS=" --transl=${INPATH}/transl.fa"
+	else	
+		echo Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!
+		exit 1
+	fi
+fi
+
+# -----------------------------------------------------------------------------
 # Run method
 
 METHOD_SCRIPT="appris.pl"
@@ -141,10 +165,7 @@ SCRIPT="${APPRIS_CODE_DIR}/${METHOD_SCRIPT}"
 echo "================="
 echo "perl ${SCRIPT} \\ "
 echo " --species=\"${SPECIES}\" \\ "
-echo " --data=annot.gtf \\ "
-echo " --transc=transc.fa \\ "
-echo " --transl=transl.fa \\ "
-echo " --pdata=pannot.gtf \\ "
+echo "${INDATA_PARAMETERS}"
 echo " --methods=${METHODS_PARAM} \\ "
 echo " --outpath=${PWD} \\ "
 echo " --loglevel=${LOG_LEVEL}\ "
@@ -152,10 +173,7 @@ echo " --loglevel=${LOG_LEVEL}\ "
 # run method
 perl ${SCRIPT} \
 --species="${SPECIES}" \
---data=annot.gtf \
---transc=transc.fa \
---transl=transl.fa \
---pdata=pannot.gtf \
+${INDATA_PARAMETERS} \
 --methods=${METHODS_PARAM} \
 --outpath=${PWD} \
 --loglevel=${LOG_LEVEL}

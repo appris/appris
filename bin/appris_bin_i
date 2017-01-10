@@ -14,6 +14,8 @@ USAGE="
 \t script that insert the APPRIS results of a gene into DB.\n
 \n
 Optional arguments:\n
+\t -i Path where input data is located\n
+\n
 \t -m {Methods which will execute. By default, all}\n
 \t\t f -> firestar\n
 \t\t m -> matador3d\n
@@ -42,11 +44,16 @@ Example:\n
 # Get input parameters
 
 ALL_METHOD="firestar,matador3d,spade,corsair,thump,crash,proteo"
+INPATH="${PWD}"
 LOG_LEVEL="info"
 
 while expr "//$1" : //- >/dev/null
 do
 	case "$1" in
+		-i )
+			INPATH=$2
+			shift
+			;;
 		-m )
 			METHODS=$2
 			shift
@@ -135,8 +142,8 @@ APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.test.ini"
 # print trace
 echo "================="
 echo "perl ${SCRIPT} \\ "
-echo " --inpath=${PWD} \\ "
-echo " --id=${PWD##*/} \\ "
+echo " --inpath=${INPATH} \\ "
+echo " --id=${INPATH##*/} \\ "
 echo " --species=\"${SPECIES}\" \\ "
 echo " --methods=${METHODS_PARAM} \\ "
 echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \\ "
@@ -144,8 +151,8 @@ echo " --loglevel=${LOG_LEVEL}\ "
 
 # run method
 perl ${SCRIPT} \
---inpath=${PWD} \
---id=${PWD##*/} \
+--inpath=${INPATH} \
+--id=${INPATH##*/} \
 --species="${SPECIES}" \
 --methods=${METHODS_PARAM} \
 --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
