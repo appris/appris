@@ -1061,10 +1061,9 @@ sub parse_matador3d_rst($)
 	{
 		#ENSG00000007216	ENST00000459818	0
 		#ENSG00000007216	ENST00000314669	258.8	4f35_D;124.3;13.9;405-552;148	4f35_D;102.8;10.0;45-162;118	4r1i_A;31.7;6.6;220-345;126
-        #if ( $transcript_result =~ /^([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\$]+)$/ )
-        if ( $transcript_result =~ /^([^\s]+)\s+([^\s]+)\s+([^\$]+)$/ )
+        if ( $transcript_result =~ /^([^\s]*)\s+([^\s]+)\s+([^\$]+)$/ )
 		{
-			my ($gid) = $1;
+			my ($gid) = $1; # can be undefined
 			my ($id) = $2;
 			my (@trans_score_alignments) = split("\t", $3);
 			my ($structure_score) = $trans_score_alignments[0];
