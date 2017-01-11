@@ -69,7 +69,7 @@ sub main()
 {
 	$logger->info("-- get gene report from GTF file -------\n");
 	my ($genedata) = APPRIS::Parser::_parse_indata($data_file);
-#	$logger->debug(Dumper($genedata)."\n");
+	$logger->debug(Dumper($genedata)."\n");
 	
 
 	$logger->info("-- scan fasta sequence -------\n");
@@ -97,9 +97,11 @@ sub main()
 				$transc_id = $2;
 				$gene_id = $3;
 				$gene_name = $4;
-
-				if ( exists $genedata->{$gene_id} and exists $genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
-					$ccds_id = $genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+				( my $tid = $transc_id) =~ s/\.[0-9]*$//g;
+				( my $gid = $gene_id) =~ s/\.[0-9]*$//g;
+				
+				if ( exists $genedata->{$gid} and exists $genedata->{$gid}->{'transcripts'}->{$tid} and exists $genedata->{$gid}->{'transcripts'}->{$tid}->{'ccdsid'} ) {
+					$ccds_id = $genedata->{$gid}->{'transcripts'}->{$tid}->{'ccdsid'};
 				}
 				
 				$output .= ">".'ge_a'.'|'.$transl_id.'|'.$transc_id.'|'.$gene_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len."\n".
