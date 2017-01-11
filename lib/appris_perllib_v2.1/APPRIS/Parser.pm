@@ -4029,7 +4029,7 @@ sub _parse_inseq_transl($)
 				if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
 				if(exists $data->{$sequence_id}) {
 					warning("Duplicated sequence: $sequence_id");
-					return undef;
+					#return undef;
 				}
 				else {
 					my ($sequence) = $seq->seq; # control short sequences
