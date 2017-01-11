@@ -238,6 +238,7 @@ sub get_exon_data($$)
 		my ($g_appris_annot) = 'REJECTED';
 		my ($g_appris_transc_list) = '';
 		
+		if ( $gene->transcripts ) {
 		foreach my $transcript (@{$gene->transcripts}) {
 			my ($t_report);
 			my ($transcript_id) = $transcript->stable_id;
@@ -349,6 +350,7 @@ sub get_exon_data($$)
 					}											
 				}
 			}
+		}
 		}
 		#$c_report->{$gene_id} = $g_report if ( defined $g_report );
 		
