@@ -129,8 +129,10 @@ sub create_xreference($$) {
 		my $ann = $seq->annotation();
 		foreach my $ref ( $ann->get_Annotations('dblink') ) {
 			my ($transc_id) = $ref->primary_id();
-			if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
-			else { $report->{'var'}->{$isof_id} = $transc_id }
+			if ( $transc_id =~ /^[NM_|XM_]/ ) {
+				if ( exists $report->{'var'}->{$isof_id} ) { $report->{'var'}->{$isof_id} .= ';'.$transc_id }
+				else { $report->{'var'}->{$isof_id} = $transc_id }
+			}
 		}
 		    
 		for my $feat_object ($seq->get_SeqFeatures('CDS')) {
