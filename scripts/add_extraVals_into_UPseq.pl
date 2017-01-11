@@ -13,12 +13,6 @@ use APPRIS::Utils::Logger;
 ###################
 # Global variable #
 ###################
-use vars qw(
-	$LOCAL_PWD
-	$GENCODE_TSL_FILE
-);
-
-$LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
