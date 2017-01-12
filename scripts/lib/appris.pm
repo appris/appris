@@ -815,6 +815,10 @@ sub create_seqdata($)
 			my ($gene_name);
 			my ($ccds_id);
 			my ($seq_length);
+			my ($a_genes_id);
+			my ($a_transl_id);
+			my ($a_genes_name);
+			my ($a_ccds_id);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
@@ -864,13 +868,15 @@ sub create_seqdata($)
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
 			}
-			elsif ( $s_id =~ /^appris\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
+			elsif ( $s_id =~ /^appris\|([^\s]*)/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
-				$transl_id = $2;
-				$gene_id = $3;
-				$gene_name = $4;
-				$ccds_id = $5;			
-				$seq_length = $6;
+				if ( $s_desc =~ /xref_genes:([^\:]+).*transc:([^\s]+).*genes:([^\s]+).*gene_names:([^\s]+).*ccds:([^\s]+)/ ) {
+					$gene_id = $1;
+					$a_transl_id = $2;
+					$a_genes_id = $3;
+					$a_genes_name = $4;
+					$a_ccds_id = $5;			
+				}
 			}
 			if ( defined $isof_id ) {
 				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
@@ -892,6 +898,15 @@ sub create_seqdata($)
 				};
 				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
 					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'ccds'} = $ccds_id;
+				}
+				if ( defined $a_transl_id and $a_transl_id ne '' and $a_transl_id ne '-' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_transl'} = $a_transl_id;
+				}
+				if ( defined $a_genes_id and $a_genes_id ne '' and $a_genes_id ne '-' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_genes'} = $a_genes_id;
+				}
+				if ( defined $a_ccds_id and $a_ccds_id ne '' and $a_ccds_id ne '-' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_ccds'} = $a_ccds_id;
 				}
 			}
 		}		
