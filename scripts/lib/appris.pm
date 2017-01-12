@@ -870,12 +870,13 @@ sub create_seqdata($)
 			}
 			elsif ( $s_id =~ /^appris\|([^\s]*)/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
-				if ( $s_desc =~ /xref_genes:([^\:]+).*transc:([^\s]+).*genes:([^\s]+).*gene_names:([^\s]+).*ccds:([^\s]+)/ ) {
+				if ( $s_desc =~ /xref_genes:([^\:]+)\:([^\/]+).*transc:([^\s]+).*genes:([^\s]+).*gene_names:([^\s]+).*ccds:([^\s]+)/ ) {
 					$gene_id = $1;
-					$a_transl_id = $2;
-					$a_genes_id = $3;
-					$a_genes_name = $4;
-					$a_ccds_id = $5;			
+					$gene_name = $2;
+					$a_transl_id = $3;
+					$a_genes_id = $4;
+					$a_genes_name = $5;
+					$a_ccds_id = $6;	
 				}
 			}
 			if ( defined $isof_id ) {
