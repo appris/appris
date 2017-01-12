@@ -51,6 +51,7 @@ use vars qw(@ISA @EXPORT);
 	reduce_input
 	create_gencode_data
 	create_indata
+	create_seqdata
 	send_email
 );
 
@@ -831,6 +832,31 @@ sub create_seqdata($)
 				$ccds_id = $6;
 				$seq_length = $7;
 			}
+			elsif ( $s_id =~ /^ge_a\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # GENCODE sequences with extra values
+				my ($pep_id) = $1;
+				$isof_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;
+				$seq_length = $6;
+			}
+			elsif ( $s_id =~ /^en_a\|([^\s]*)/ ) { # ENSEMBL sequences with extra values
+				my ($pep_id) = $1;
+				if ( $s_desc =~ /gene:([^\s]+).*transcript:([^\s]+).*gene_symbol:([^\s]+).*ccds:([^\s]+)/ ) {
+					$gene_id = $1;
+					$isof_id = $2;
+					$gene_name = $3;
+					$ccds_id = $4;
+				}
+			}
+			elsif ( $s_id =~ /^gi_a\|[^|]*\|[^|]*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values
+				my ($pep_id) = $1;
+				$isof_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;
+				$seq_length = $6;
+			}
 			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
 				$isof_id = $1;
 				my (@desc) = split('Gname=', $s_desc);
@@ -838,8 +864,7 @@ sub create_seqdata($)
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
 			}
-			#elsif ( $s_id =~ /^appris\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
-			elsif ( $s_id =~ /^([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
+			elsif ( $s_id =~ /^appris\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
 				$transl_id = $2;
 				$gene_id = $3;
@@ -848,6 +873,7 @@ sub create_seqdata($)
 				$seq_length = $6;
 			}
 			if ( defined $isof_id ) {
+				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
 				unless ( defined $gene_id ) {
 					$gene_id = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;					
 				}
