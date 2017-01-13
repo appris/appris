@@ -16,7 +16,7 @@ export APPRIS_WS_NAME="rattus_norvegicus/e77"
 
 export APPRIS_WS_DATE="rattus_norvegicus/e77v20"
 
-export APPRIS_FEATURES_DIR="${APPRIS_FEATURES_DIR}/${APPRIS_WS_NAME}"
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
 
