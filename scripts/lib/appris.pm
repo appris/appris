@@ -875,7 +875,7 @@ sub create_seqdata($)
 					$ccds_id = $4;
 				}
 			}
-			if ( defined $isof_id ) {
+			if ( defined $isof_id and defined $gene_id ) {
 				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
 				unless ( defined $gene_id ) {
 					$gene_id = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;					

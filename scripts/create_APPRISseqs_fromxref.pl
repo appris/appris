@@ -287,7 +287,7 @@ sub extract_seqfasta($$$)
 			$seqrep_ccds_id .= join(',', sort { $a cmp $b} keys(%{$seqrep_ccds}) ) if ( defined $seqrep_ccds );
 			$outfasta .= '>appris'.'|'.
 						$seq_idx.' '.
-						'genes_ids:'.$seqreport_ids->{'gene_id'}.' '.
+						'gene_ids:'.$seqreport_ids->{'gene_id'}.' '.
 						'gene_names:'.$seqreport_ids->{'gene_name'}.' '.
 						'transc_ids:'.$seqrep_transc_id.' '.
 						'ccds_ids:'.$seqrep_ccds_id."\n".
