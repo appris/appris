@@ -20,10 +20,10 @@ use appris;
 # Global variable #
 ###################
 use vars qw(
-	$SOURCE_DB_LIST
+	$SOURCE_LIST
 );
 
-$SOURCE_DB_LIST = ['ensembl','refseq','uniprot'];
+$SOURCE_LIST = ['ensembl','refseq','uniprot'];
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
@@ -84,7 +84,7 @@ $logger->init_log($str_params);
 # Main subroutine
 sub main()
 {
-	my ($outcontent) = 	"";
+	my ($outfasta, $outmeta) = 	('','');
 	
 	$logger->info("-- create seqdata from ENSEMBL -------\n");
 	my ($ens_seqdata) = appris::create_seqdata($ensembl_seqfile);
@@ -112,40 +112,37 @@ sub main()
 		$ensembl_id =~ s/\s*//g; $ensembl_id =~ s/\.[0-9]$//g;
 		$entrez_id =~ s/\s*//g;
 		$uniprot_list_ids =~ s/\s*//g;
+		my ($xref_seqid) = join('/', @cols);
 		
 		#ÊCreate report with all the protein sequences from XREF gene
 		my ($seqreport);
 		if ( exists $ens_seqdata->{$ensembl_id} ) {
-			my ($found) = create_seqrep('ensembl', $ens_seqdata->{$ensembl_id}, \$seqreport);
+			create_seqrep('ensembl', $ens_seqdata->{$ensembl_id}, \$seqreport);
 		}
 		if ( exists $ref_seqdata->{$entrez_id} ) {
-			my ($found) = create_seqrep('refseq', $ref_seqdata->{$entrez_id}, \$seqreport);
+			create_seqrep('refseq', $ref_seqdata->{$entrez_id}, \$seqreport);
 		}
 		foreach my $uniprot_ids (split('\|', $uniprot_list_ids) ) {
 			if ( $uniprot_ids =~ /([^\>]*)\>([^\$]*)/ ) {
 				foreach my $up_id (split(',', $2) ) {
 					if ( exists $uni_seqdata->{$up_id} ) {
-						my ($found) = create_seqrep('uniprot', $uni_seqdata->{$up_id}, \$seqreport);
+						create_seqrep('uniprot', $uni_seqdata->{$up_id}, \$seqreport);
 					}
 				}
 			}
 		}
-		
-		#ÊCreate MD5 idx from XREF genes
-		my ($seqreport_idx) = '-';		
-		my ($seqreport_id) = join('/', @cols);			
-		eval {
-			my ($ctx) = Digest::MD5->new;
-			$ctx->add($seqreport_id);
-			($seqreport_idx) = $ctx->hexdigest;
-		};
-		throw('Creating md5') if ($@);		
-		
+						
+		# Create report id
+		my ($seqreport_id) = create_seqrep_ids($seqreport);
+
 		# Extract the Fasta sequences
-		$outcontent .= extract_seqfasta($seqreport_idx, $seqreport_id, $seqreport);
+		my ($outfa, $outmet) = extract_seqfasta($xref_seqid, $seqreport_id, $seqreport);
+		$outfasta .= $outfa if ($outfa ne '' );
+		$outmeta .= $outmet if ($outmet ne '' );
 	}
 	
-	my ($p) = printStringIntoFile($outcontent, $outfile);
+	my ($p) = printStringIntoFile($outfasta, $outfile);
+	my ($p2) = printStringIntoFile($outmeta, $outfile.'.meta');
 	
 	$logger->finish_log();
 	
@@ -156,7 +153,7 @@ sub create_seqrep($$\$)
 {
 	my ($db, $g_report, $ref_seqrep) = @_;
 	my ($gene_id) = $g_report->{'id'};
-	my ($gene_name) = ( exists $g_report->{'name'} ) ? $g_report->{'name'} : '-';
+	my ($gene_name) = ( exists $g_report->{'name'} ) ? $g_report->{'name'} : undef;
 	
 	while (my ($transc_id, $t_report) = each(%{$g_report->{'varsplic'}}) ) {
 		if ( exists $t_report->{'seq'} ) {
@@ -164,24 +161,41 @@ sub create_seqrep($$\$)
 			my ($seq_s) = $t_report->{'seq'};
 			my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq_s );		
 			my ($seq_idx) = $cache->idx;
-			#my ($seq_sidx) = $cache->sidx;
-			my ($ccds_id) = ( exists $t_report->{'ccds'} ) ? $t_report->{'ccds'} : '-';
+			my ($ccds_id) = ( exists $t_report->{'ccds'} ) ? $t_report->{'ccds'} : undef;
 			unless ( exists $$ref_seqrep->{$seq_idx} ) {
 				$$ref_seqrep->{$seq_idx} = {
 					'idx'		=> $seq_idx,
-					'gene_id'	=> [{ $db => $gene_id }],
-					'gene_name'	=> [{ $db => $gene_name }],
-					'transc_id'	=> [{ $db => $transc_id }],
-					'ccds_id'	=> [{ $db => $ccds_id }],
-					'seq'		=> $seq_s
+					'seq'		=> $seq_s,
+					'iden'		=> {
+									$db	=> {
+										$gene_id => {
+											'gene_id'	=> $gene_id,
+											'transc'	=> {
+												$transc_id => {
+													'transc_id'	=> $transc_id
+												}
+											}
+										}	
+									}
+					}
+				};
+				if ( defined $gene_name ) {
+					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'} = $gene_name;
+				}
+				if ( defined $ccds_id ) {
+					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'ccds_id'} = $ccds_id;
 				}
 			}
 			else {
 				if ( $seq_s eq $$ref_seqrep->{$seq_idx}->{'seq'} ) {
-					push(@{$$ref_seqrep->{$seq_idx}->{'gene_id'}},   { $db => $gene_id });
-					push(@{$$ref_seqrep->{$seq_idx}->{'gene_name'}}, { $db => $gene_name });
-					push(@{$$ref_seqrep->{$seq_idx}->{'transc_id'}}, { $db => $transc_id });
-					push(@{$$ref_seqrep->{$seq_idx}->{'ccds_id'}},   { $db => $ccds_id });
+					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_id'} = $gene_id;
+					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'transc_id'} = $transc_id;
+					if ( defined $gene_name ) {
+						$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'} = $gene_name;
+					}
+					if ( defined $ccds_id ) {
+						$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'ccds_id'} = $ccds_id;
+					}
 				}
 				else { die "Diff protein sequence with equal MD5 IDX" }
 			}
@@ -189,58 +203,110 @@ sub create_seqrep($$\$)
 	}
 }
 
-sub extract_seqfasta($$$)
+sub create_seqrep_ids($)
 {
-	my ($seqreport_idx, $seqreport_id, $seqreport) = @_;
-	my ($output) = '';	
-	
+	my ($seqreport) = @_;
+	my ($seqreport_ids);
+	my ($seqreport_gid,$seqreport_gn) = ('','');
+	my ($sep_rep);
+		
 	while (my ($seq_idx, $seqrep) = each(%{$seqreport}) )
 	{
+		if ( exists $seqrep->{'iden'} ) {
+			my ($seprep_iden) = $seqrep->{'iden'};
+			foreach my $source (@{$SOURCE_LIST}) {
+				if ( exists $seprep_iden->{$source} ) {
+					foreach my $gene_id ( keys(%{$seprep_iden->{$source}}) ) {
+						$sep_rep->{$source}->{'gene_id'}->{$gene_id} = 1;
+						if ( exists $seprep_iden->{$source}->{$gene_id}->{'gene_name'} ) {
+							my ($gn) = $seprep_iden->{$source}->{$gene_id}->{'gene_name'};
+							$sep_rep->{'gene_name'}->{$gn} = 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	foreach my $source (@{$SOURCE_LIST}) {
+		my ($sr_i) = '';
+		if ( exists $sep_rep->{$source} ) {
+			foreach my $g ( sort {$a cmp $b} keys(%{$sep_rep->{$source}->{'gene_id'}}) ) { $sr_i .= $g.',' }
+		}
+		else { $sr_i = '?'  }
+		$sr_i =~ s/\,$//g;
+		$seqreport_gid .= $sr_i.'+';
+	}
+	if ( exists $sep_rep->{'gene_name'} ) {
+		#foreach my $g ( sort {$a cmp $b} keys(%{$sep_rep->{'gene_name'}}) ) { $seqreport_gn .= $g.',' }
+		 $seqreport_gn = join(',', sort {$a cmp $b} keys(%{$sep_rep->{'gene_name'}}) );
+	}
+
+	$seqreport_gid =~ s/\+$//g;
+	$seqreport_ids->{'gene_id'} = $seqreport_gid;
+	$seqreport_ids->{'gene_name'} = $seqreport_gn; 
+
+	return $seqreport_ids;
+}
+
+sub extract_seqfasta($$$)
+{
+	my ($xref_seqid, $seqreport_ids, $seqreport) = @_;
+	my ($outfasta, $outmeta) = ('','');	
+	
+	#Êcreate FASTA sequence for seqreport
+	while (my ($seq_idx, $seqrep) = each(%{$seqreport}) )
+	{
+		if ( exists $seqrep->{'iden'} ) {
+			my ($seprep_iden) = $seqrep->{'iden'};
+			#Êcreate list of transc identifiers from source db
+			my ($seqrep_transc_id) = '';
+			my ($seqrep_gene_name) = '';
+			my ($seqrep_ccds_id) = '';
+			my ($seqrep_ccds);
+			foreach my $source (@{$SOURCE_LIST}) {
+				my ($sr_tid) = '';
+				if ( exists $seprep_iden->{$source} ) {
+					my ($seprep_sc) = $seprep_iden->{$source};
+					foreach my $gene_id ( sort {$a cmp $b} keys(%{$seprep_sc}) ) {
+						foreach my $transc_id ( sort {$a cmp $b} keys(%{$seprep_sc->{$gene_id}->{'transc'}}) ) {
+							my ($seprep_tr) = $seprep_sc->{$gene_id}->{'transc'}->{$transc_id};
+							$sr_tid .= $transc_id.',';
+							if ( exists $seprep_tr->{'ccds_id'} ) {
+								my ($c) = $seprep_tr->{'ccds_id'};
+								$c =~ s/\.[0-9]*$//g;
+								$seqrep_ccds->{$c} = 1;
+							}						
+						}
+					}
+				}
+				else { $sr_tid = '?' }
+				$sr_tid =~ s/\,$//g;		
+				$seqrep_transc_id .= $sr_tid.'+';
+			}
+			$seqrep_transc_id =~ s/\+$//g;
+			$seqrep_ccds_id .= join(',', sort { $a cmp $b} keys(%{$seqrep_ccds}) ) if ( defined $seqrep_ccds );
+			$outfasta .= '>appris'.'|'.
+						$seq_idx.' '.
+						'genes_ids:'.$seqreport_ids->{'gene_id'}.' '.
+						'gene_names:'.$seqreport_ids->{'gene_name'}.' '.
+						'transc_ids:'.$seqrep_transc_id.' '.
+						'ccds_ids:'.$seqrep_ccds_id."\n".
+						$seqrep->{'seq'}."\n";
+			$outmeta .= $xref_seqid."\t".
+						$seq_idx."\t".
+						$seqreport_ids->{'gene_id'}."\t".
+						$seqreport_ids->{'gene_name'}."\t".
+						$seqrep_transc_id."\t".
+						$seqrep_ccds_id."\n";			
+		}
+		
 		#Êcreate list of identifiers from source db
 		my ($seqrep_transc_id) = '';
-		my ($seqrep_gene_id) = '';
 		my ($seqrep_gene_name) = '';
 		my ($seqrep_ccds_id) = '';
-		foreach my $source_db (@{$SOURCE_DB_LIST}) {
-			my ($srep_tid) = '';
-			my ($srep_gid) = '';
-			my ($srep_gn) = '';
-			my ($srep_cid) = '';
-			foreach my $grep (@{$seqrep->{'transc_id'}}) {
-				my (@k) = keys(%{$grep});
-				if ( $k[0] eq $source_db ) { $srep_tid .= $grep->{$source_db}.',' }				
-			}
-			foreach my $grep (@{$seqrep->{'gene_id'}}) {
-				my (@k) = keys(%{$grep});
-				if ( $k[0] eq $source_db ) { $srep_gid .= $grep->{$source_db}.',' }				
-			}
-			foreach my $grep (@{$seqrep->{'gene_name'}}) {
-				my (@k) = keys(%{$grep});
-				if ( $k[0] eq $source_db ) { $srep_gn .= $grep->{$source_db}.',' }				
-			}
-			foreach my $grep (@{$seqrep->{'ccds_id'}}) {
-				my (@k) = keys(%{$grep});
-				if ( $k[0] eq $source_db ) { $srep_cid .= $grep->{$source_db}.',' }				
-			}
-			$srep_tid =~ s/,$//g; $srep_gid =~ s/,$//g; $srep_gn =~ s/,$//g; $srep_cid =~ s/,$//g;
-			if ( $srep_tid ne '' ) { $seqrep_transc_id .= $srep_tid.'/' } else { $seqrep_transc_id .= '-'.'/' }
-			if ( $srep_gid ne '' ) { $seqrep_gene_id   .= $srep_gid.'/' } else { $seqrep_gene_id   .= '-'.'/' }
-			if ( $srep_gn  ne '' ) { $seqrep_gene_name .= $srep_gn.'/'  } else { $seqrep_gene_name  .= '-'.'/' }
-			if ( $srep_cid ne '' ) { $seqrep_ccds_id   .= $srep_cid.'/' } else { $seqrep_ccds_id   .= '-'.'/' }
-		}
-		$seqrep_transc_id =~ s/\/$//g; $seqrep_gene_id =~ s/\/$//g; $seqrep_gene_name =~ s/\/$//g; $seqrep_ccds_id =~ s/\/$//g;
-		$output .= '>appris'.'|'.
-					$seq_idx.' '.
-					'xref_genes:'.$seqreport_idx.':'.$seqreport_id.' '.
-					'transc:'.$seqrep_transc_id.' '.
-					'genes:'.$seqrep_gene_id.' '.
-					'gene_names:'.$seqrep_gene_name.' '.
-					'ccds:'.$seqrep_ccds_id."\n".
-					$seqrep->{'seq'}."\n";
 	}
 	
-	
-	return $output;
+	return ($outfasta, $outmeta);
 }
 
 main();

@@ -817,8 +817,6 @@ sub create_seqdata($)
 			my ($seq_length);
 			my ($a_genes_id);
 			my ($a_transl_id);
-			my ($a_genes_name);
-			my ($a_ccds_id);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
@@ -870,13 +868,11 @@ sub create_seqdata($)
 			}
 			elsif ( $s_id =~ /^appris\|([^\s]*)/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
-				if ( $s_desc =~ /xref_genes:([^\:]+)\:([^\/]+).*transc:([^\s]+).*genes:([^\s]+).*gene_names:([^\s]+).*ccds:([^\s]+)/ ) {
+				if ( $s_desc =~ /gene_ids:([^\s]+).*gene_names:([^\s]+).*transc_ids:([^\s]+).*ccds_ids:([^\s]+)/ ) {
 					$gene_id = $1;
 					$gene_name = $2;
 					$a_transl_id = $3;
-					$a_genes_id = $4;
-					$a_genes_name = $5;
-					$a_ccds_id = $6;	
+					$ccds_id = $4;
 				}
 			}
 			if ( defined $isof_id ) {
@@ -897,17 +893,11 @@ sub create_seqdata($)
 					'desc'		=> $s_desc,
 					'seq' 		=> $s_seq
 				};
-				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
+				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' and $ccds_id ne '?' ) {
 					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'ccds'} = $ccds_id;
 				}
-				if ( defined $a_transl_id and $a_transl_id ne '' and $a_transl_id ne '-' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_transl'} = $a_transl_id;
-				}
-				if ( defined $a_genes_id and $a_genes_id ne '' and $a_genes_id ne '-' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_genes'} = $a_genes_id;
-				}
-				if ( defined $a_ccds_id and $a_ccds_id ne '' and $a_ccds_id ne '-' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'a_ccds'} = $a_ccds_id;
+				if ( defined $a_transl_id and $a_transl_id ne '' and $a_transl_id ne '-' and $a_transl_id ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'transl_ids'} = $a_transl_id;
 				}
 			}
 		}		
