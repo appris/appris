@@ -233,7 +233,6 @@ sub c_idx
 			eval {
 				my ($cd) = ( defined $ws ) ? "cd $ws && " : "";
 				my ($cmd) = "$cd ls -1d $sidx\_*";
-print STDERR "CMD: $cmd\n";
 				my (@sidxs) = `$cmd`;
 				# check if another idx was created
 				my ($found_idx) = 0;

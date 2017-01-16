@@ -236,12 +236,18 @@ sub create_seqrep_ids($)
 		$sr_i =~ s/\,$//g;
 		$seqreport_gid .= $sr_i.'+';
 	}
+	$seqreport_gid =~ s/\+$//g;
 	if ( exists $sep_rep->{'gene_name'} ) {
-		#foreach my $g ( sort {$a cmp $b} keys(%{$sep_rep->{'gene_name'}}) ) { $seqreport_gn .= $g.',' }
 		 $seqreport_gn = join(',', sort {$a cmp $b} keys(%{$sep_rep->{'gene_name'}}) );
 	}
-
-	$seqreport_gid =~ s/\+$//g;
+	my ($seqreport_gidx) = '';
+	eval {
+		my ($ctx) = Digest::MD5->new;
+		$ctx->add($seqreport_gid);
+		($seqreport_gidx) = $ctx->hexdigest;
+	};
+	throw('Creating md5') if ($@);	
+	$seqreport_ids->{'gene_idx'} = $seqreport_gidx if ( $seqreport_gidx ne '' );
 	$seqreport_ids->{'gene_id'} = $seqreport_gid;
 	$seqreport_ids->{'gene_name'} = $seqreport_gn; 
 
@@ -286,7 +292,8 @@ sub extract_seqfasta($$$)
 			$seqrep_transc_id =~ s/\+$//g;
 			$seqrep_ccds_id .= join(',', sort { $a cmp $b} keys(%{$seqrep_ccds}) ) if ( defined $seqrep_ccds );
 			$outfasta .= '>appris'.'|'.
-						$seq_idx.' '.
+						$seq_idx.'|'.
+						$seqreport_ids->{'gene_idx'}.' '.
 						'gene_ids:'.$seqreport_ids->{'gene_id'}.' '.
 						'gene_names:'.$seqreport_ids->{'gene_name'}.' '.
 						'transc_ids:'.$seqrep_transc_id.' '.
@@ -294,6 +301,7 @@ sub extract_seqfasta($$$)
 						$seqrep->{'seq'}."\n";
 			$outmeta .= $xref_seqid."\t".
 						$seq_idx."\t".
+						$seqreport_ids->{'gene_idx'}."\t".
 						$seqreport_ids->{'gene_id'}."\t".
 						$seqreport_ids->{'gene_name'}."\t".
 						$seqrep_transc_id."\t".
