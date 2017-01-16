@@ -869,7 +869,7 @@ sub create_seqdata($)
 			elsif ( $s_id =~ /^appris\|([^|]*)\|([^\s]*)/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
 				$gene_id = $2;
-				if ( $s_desc =~ /gene_ids:([^\s]+).*gene_names:([^\s]+).*transc_ids:([^\s]+).*ccds_ids:([^\s]*)/ ) {
+				if ( $s_desc =~ /gene_ids:([^\s]*).*gene_names:([^\s]*).*transc_ids:([^\s*).*ccds_ids:([^\s]*)/ ) {
 					$a_gene_ids = $1;
 					$gene_name = $2;
 					$a_transl_ids = $3;
