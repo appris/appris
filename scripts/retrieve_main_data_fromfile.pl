@@ -93,13 +93,28 @@ sub main()
 			
 	# Get annots
 	$logger->debug("-- get anntos -------\n");
-	my ($output_content, $output_ens_content) = get_appris_annot($main_report, $label_report, $seq_report, $old_main_report);
-	if ( ($output_content ne '') and ($output_ens_content ne '') ) {
-		my ($printing_file_log) = printStringIntoFile($output_content,$output_file);
-		die ("ERROR: printing ") unless(defined $printing_file_log);		
-		my ($printing_file_log2) = printStringIntoFile($output_ens_content,$output_ens_file);
-		die ("ERROR: printing ") unless(defined $printing_file_log2);		
-	}	
+	eval {
+		my ($cmd) = "awk '{if (\$19 ~ /^PRINCIPAL/ || \$19 ~ /^ALTERNATIVE/ ) {print \$2\"\t\"\$1\"\t\"\$3\"\t\"\$7\"\t\"\$19}}' $input_main_file > $output_file";
+		$logger->debug("** script: $cmd\n");
+		system($cmd);		
+	};
+	die ("ERROR: getting principal annots") if ($@);
+		
+	$logger->debug("-- get anntos (for Ensembl) -------\n");
+	eval {
+		my ($cmd) = "awk '{if (\$19 ~ /^PRINCIPAL/ || \$19 ~ /^ALTERNATIVE/ ) {print \$1\"\t\"\$3\"\t\"\$19}}' $input_main_file > $output_ens_file";
+		$logger->debug("** script: $cmd\n");
+		system($cmd);		
+	};
+	die ("ERROR: getting principal annots (for Ensembl)") if ($@);
+
+#	my ($output_content, $output_ens_content) = get_appris_annot($main_report, $label_report, $seq_report, $old_main_report);
+#	if ( ($output_content ne '') and ($output_ens_content ne '') ) {
+#		my ($printing_file_log) = printStringIntoFile($output_content,$output_file);
+#		die ("ERROR: printing ") unless(defined $printing_file_log);		
+#		my ($printing_file_log2) = printStringIntoFile($output_ens_content,$output_ens_file);
+#		die ("ERROR: printing ") unless(defined $printing_file_log2);		
+#	}	
 
 	$logger->finish_log();
 	
