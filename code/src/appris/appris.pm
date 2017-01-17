@@ -956,10 +956,13 @@ sub step_longest($$$)
 			my ($equal) = 1;
 			my ($transc_id_0) = ($princ_isof->{$longest})->[0];
 			my ($seq_0) = $princ_isof_seqs->{$transc_id_0};
+			my ($higher_sc_longest) = $nscores->{$transc_id_0}->{'appris'};
 			for (my $i=1; $i < scalar(@{$princ_isof->{$longest}}); $i++) {
 				my ($transc_id_i) = ($princ_isof->{$longest})->[$i];
 				my ($seq_i) = $princ_isof_seqs->{$transc_id_i};
+				my ($sc_i) = $nscores->{$transc_id_i}->{'appris'};
 				if ( $seq_i ne $seq_0 ) { $equal = 0 }
+				if ( $sc_i > $higher_sc_longest ) { $higher_sc_longest = $sc_i }
 			}
 			if ( $equal == 1 ) {
 				foreach my $transc_id ( @{$princ_isof->{$longest}} ) {
@@ -967,17 +970,22 @@ sub step_longest($$$)
 				}
 			}
 			else {
-				# the decision base on biggest appris-score
-				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
-				my ($longest_sc) = $sort_sc[0];
-				foreach my $transc_id ( @{$princ_isof_scores->{$longest_sc}} ) {
-					foreach my $transc_id2 ( @{$princ_isof->{$longest}} ) {
-						if ( $transc_id eq $transc_id2 ) {
-							$report->{$transc_id} = 1;
-						}
+#				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
+#				my ($longest_sc) = $sort_sc[0];
+#				foreach my $transc_id ( @{$princ_isof_scores->{$longest_sc}} ) {
+#					foreach my $transc_id2 ( @{$princ_isof->{$longest}} ) {
+#						if ( $transc_id eq $transc_id2 ) {
+#							$report->{$transc_id} = 1;
+#						}
+#					}
+#				}
+				# if the seqs are different, get the one with higger appris-score. otherwise, all of them
+				foreach my $transc_id ( @{$princ_isof->{$longest}} ) {
+					my ($sc) = $nscores->{$transc_id}->{'appris'};
+					if ( $sc == $higher_sc_longest ) {
+						$report->{$transc_id} = 1;
 					}
 				}
-				
 			}
 		}
 	}
