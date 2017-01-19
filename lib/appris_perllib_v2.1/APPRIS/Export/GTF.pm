@@ -254,10 +254,15 @@ sub get_appris_annotations {
  	my ($biotype_annot) = $feature->biotype;
  	my ($status_annot) = $feature->status;
  	my ($ccds_id);
+ 	my ($xref_ids);
 	if ($feature->xref_identify) {
 		foreach my $xref_identify (@{$feature->xref_identify}) {
 			if ( $xref_identify->dbname eq 'CCDS' ) {
 				$ccds_id = $xref_identify->id;							
+			}
+			elsif ( $xref_identify->dbname =~ /_Gene_Id$/ or $xref_identify->dbname =~ /_Transcript_Id$/ ) {
+				my ($db) = lc($xref_identify->dbname);
+				$xref_ids->{$db} = $xref_identify->id;
 			}
 		}		
 	}
@@ -345,6 +350,7 @@ sub get_appris_annotations {
 				$optional->{'annotation'}		= $method_annot if (defined $method_annot);
 				$optional->{'reliability'}		= $reliability if (defined $reliability);
 				$optional->{'all_rejected'}		= $all_rejected if (defined $all_rejected);
+				while ( my ($x_id, $x_val) = each(%{$xref_ids}) ) { $optional->{$x_id} = $x_val }
 				
 				if (defined $common and defined $optional) { # print output
 					$output .= print_annotations($common,$optional);			

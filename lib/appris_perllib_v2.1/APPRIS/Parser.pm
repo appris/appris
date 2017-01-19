@@ -455,7 +455,7 @@ sub parse_transl_data($)
 				}
 				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
 				
-				# add Name
+				# add Xref
 				if ( exists $transcript_features->{'ccdsid'} and defined $transcript_features->{'ccdsid'} ) {
 					push(@{$xref_identities},
 							APPRIS::XrefEntry->new
@@ -464,6 +464,28 @@ sub parse_transl_data($)
 								-dbname			=> 'CCDS'
 							)
 					);
+				}
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
+
+				# add Xref
+				if ( exists $transcript_features->{'transc_ids'} and defined $transcript_features->{'transc_ids'} ) {
+					foreach my $tids ( split(/\+/, $transcript_features->{'transc_ids'}) ) {
+						if ( $tids =~ /^([^\:]+)\:([^\$]+)$/ ) {
+							my ($source) = $1;
+							my ($ids) = $2;
+							foreach my $id ( split(/\,/, $ids) ) {
+								if ( $id ne '' and $id ne '-' and $id ne '?' ) {
+									push(@{$xref_identities},
+											APPRIS::XrefEntry->new
+											(
+												-id				=> $id,
+												-dbname			=> ucfirst($source).'_Transcript_Id'
+											)
+									);
+								}
+							}
+						}
+					}
 				}
 				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
 
@@ -506,7 +528,30 @@ sub parse_transl_data($)
 					)
 			);
 		}
-		$gene->xref_identify($xref_identities) if (defined $xref_identities);		
+		$gene->xref_identify($xref_identities) if (defined $xref_identities);
+
+		# add Xref
+		if ( exists $gene_features->{'gene_ids'} and defined $gene_features->{'gene_ids'} ) {
+			foreach my $gids ( split(/\+/, $gene_features->{'gene_ids'}) ) {
+				if ( $gids =~ /^([^\:]+)\:([^\$]+)$/ ) {
+					my ($source) = $1;
+					my ($ids) = $2;
+					foreach my $id ( split(/\,/, $ids) ) {
+						if ( $id ne '' and $id ne '-' and $id ne '?' ) {
+							push(@{$xref_identities},
+									APPRIS::XrefEntry->new
+									(
+										-id				=> $id,
+										-dbname			=> ucfirst($source).'_Gene_Id'
+									)
+							);
+						}
+					}
+				}
+			}
+		}
+		$gene->xref_identify($xref_identities) if (defined $xref_identities);
+
 		
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);		
@@ -4069,10 +4114,12 @@ sub _parse_seq_data($)
 			);
 			while ( my $seq = $in->next_seq() )
 			{
-				if ( $seq->id=~/([^|]*)/ )
+				if ( $seq->id =~ /([^|]*)/ )
 				{
-					my ($transc_id, $transl_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);						
-
+					my ($sequence_id) = $1;
+					$source = 'sequence';
+					
+					my ($transc_id, $transl_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);
 					my (@ids) = split('\|', $seq->id);
 					if ( scalar(@ids) > 4 ) {
 						$transc_id = $ids[0];
@@ -4082,19 +4129,19 @@ sub _parse_seq_data($)
 						$ccds_id = $ids[4];
 						
 						$main_id = $gene_id;
-						$source = 'UNIPROT';
 					}
-					else {
-						$source = 'sequence';
-					}
+					
+					my ($gene_ids, $transc_ids) = (undef,undef);
+					if ( $seq->desc =~ /gene_ids\>([^\s]+)/ ) { $gene_ids = $1 }
+					if ( $seq->desc =~ /transc_ids\>([^\s]+)/ ) { $transc_ids = $1 }
 					
 					unless ( exists $data->{$main_id} ) {
 						$data->{$main_id}->{'source'} = $source;
 						$data->{$main_id}->{'transcripts'} = undef;
 						if ( defined $gene_name ) { $data->{$main_id}->{'name'} = $gene_name }
+						if ( defined $gene_ids )  { $data->{$main_id}->{'gene_ids'} = $gene_ids }
 					}
 					
-					my ($sequence_id) = $1;
 					if(exists $data->{$main_id}->{'transcripts'}->{$sequence_id}) {
 						throw("Duplicated sequence: $sequence_id");
 					}
@@ -4109,6 +4156,9 @@ sub _parse_seq_data($)
 							}
 							if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
 								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'name'} = $gene_name;
+							}
+							if ( defined $transc_ids and $transc_ids ne '' and $transc_ids ne '-' ) {
+								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'transc_ids'} = $transc_ids;
 							}
 						}
 						else {

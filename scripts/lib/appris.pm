@@ -626,7 +626,11 @@ sub create_appris_seqinput($$)
 				my ($ccds_id) = ( exists $isof->{'ccds'} ) ? $isof->{'ccds'} : '-';
 				my ($seq) = $isof->{'seq'};
 				my ($len) = length($seq);
-				$transl_cont .= ">$isof_id|$isof_id|$gene_id|$gene_name|$ccds_id|$len\n";
+				my ($id) = "$isof_id|$isof_id|$gene_id|$gene_name|$ccds_id|$len";
+				my ($desc) = '';
+				($desc) .= ( exists $isof->{'gene_ids'} ) ? ' gene_ids>'.$isof->{'gene_ids'} : '';
+				($desc) .= ( exists $isof->{'transc_ids'} ) ? ' transc_ids>'.$isof->{'transc_ids'} : '';
+				$transl_cont .= '>'.$id.$desc."\n";
 				$transl_cont .= $seq."\n";				
 			}
 		}
@@ -816,7 +820,7 @@ sub create_seqdata($)
 			my ($ccds_id);
 			my ($seq_length);
 			my ($a_gene_ids);
-			my ($a_transl_ids);
+			my ($a_transc_ids);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
@@ -869,12 +873,10 @@ sub create_seqdata($)
 			elsif ( $s_id =~ /^appris\|([^|]*)\|([^\s]*)/ ) { # APPRIS sequences FASTA file
 				$isof_id = $1;
 				$gene_id = $2;
-				if ( $s_desc =~ /gene_ids:([^\s]+).*gene_names:([^\s]+).*transc_ids:([^\s]+).*ccds_ids:([^\s]*)/ ) {
-					$a_gene_ids = $1;
-					$gene_name = $2;
-					$a_transl_ids = $3;
-					$ccds_id = $4;
-				}
+				if ( $s_desc =~ /gene_ids\>([^\s]+)/ ) { $a_gene_ids = $1 }
+				if ( $s_desc =~ /gene_names\>([^\s]+)/ ) { $gene_name = $1 }
+				if ( $s_desc =~ /transc_ids\>([^\s]+)/ ) { $a_transc_ids = $1 }
+				if ( $s_desc =~ /ccds_ids\>([^\s]+)/ ) { $ccds_id = $1 }
 			}
 			if ( defined $isof_id and defined $gene_id ) {
 				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
@@ -900,8 +902,8 @@ sub create_seqdata($)
 				if ( defined $a_gene_ids and $a_gene_ids ne '' and $a_gene_ids ne '-' and $a_gene_ids ne '?' ) {
 					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'gene_ids'} = $a_gene_ids;
 				}
-				if ( defined $a_transl_ids and $a_transl_ids ne '' and $a_transl_ids ne '-' and $a_transl_ids ne '?' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'transl_ids'} = $a_transl_ids;
+				if ( defined $a_transc_ids and $a_transc_ids ne '' and $a_transc_ids ne '-' and $a_transc_ids ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'transc_ids'} = $a_transc_ids;
 				}
 			}
 		}		

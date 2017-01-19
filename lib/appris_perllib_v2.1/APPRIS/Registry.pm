@@ -891,13 +891,7 @@ sub fetch_entity_by_xref_entry {
 					$external_name = $xref_id;
 				}
 				# Xref identifiers
-				elsif ((
-						$datasource_name eq 'CCDS' or
-						$datasource_name eq 'UniProtKB_SwissProt' or 
-						$datasource_name eq 'Gene_Id' or
-						$datasource_name eq 'Protein_Id'
-						)
-						and defined $xref_id) {
+				elsif (defined $xref_id) {
 					push(@{$xref_identifies},
 						APPRIS::XrefEntry->new
 						(
@@ -1068,7 +1062,7 @@ sub fetch_by_gene_stable_id {
 				}
 			}
 			# Xref identifiers
-			elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
+			elsif (($datasource_name =~ /Transcript_Id$/) and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 				foreach my $xref (@{$xref_id_list}) {
 					push(@{$trans_id_list}, $xref->{'identifier'});
 				}
@@ -1231,13 +1225,7 @@ sub fetch_by_transc_stable_id {
 				$external_name = $xref_id;
 			}
 			# Xref identifiers
-			elsif ((
-					$datasource_name eq 'CCDS' or
-					$datasource_name eq 'UniProtKB_SwissProt' or 
-					$datasource_name eq 'Gene_Id' or
-					$datasource_name eq 'Protein_Id'
-					)
-					and defined $xref_id) {
+			elsif (defined $xref_id) {
 				push(@{$xref_identifies},
 					APPRIS::XrefEntry->new
 					(

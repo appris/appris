@@ -16,7 +16,7 @@ CREATE TABLE entity (
   entity_id INT(11) unsigned NOT NULL auto_increment,
   datasource_id INT(11) unsigned NOT NULL,
   identifier VARCHAR(50) DEFAULT NULL,
-  source ENUM('GENCODE','HAVANA','ENSEMBL','REFSEQ','UNIPROT') DEFAULT NULL,
+  source VARCHAR(50) DEFAULT NULL,
   biotype VARCHAR(50) DEFAULT NULL,
   tsl INT(1) DEFAULT NULL,
   tag TEXT DEFAULT NULL,
@@ -581,19 +581,19 @@ INSERT INTO datasource SET
   datasource_id='2',
   name='Gene_Id',
   description='Gene Identifier',
-  url='http://www.ensembl.org/index.html';
+  url='http://appris.bioinfo.cnio.es';
 
 INSERT INTO datasource SET
   datasource_id='3',
   name='Transcript_Id',
   description='Transcript Identifier',
-  url='http://www.ensembl.org/index.html';
+  url='http://appris.bioinfo.cnio.es';
 
 INSERT INTO datasource SET
   datasource_id='4',
   name='Protein_Id',
   description='Protein Identifier',
-  url='http://www.ensembl.org/index.html';
+  url='http://appris.bioinfo.cnio.es';
 
 INSERT INTO datasource SET
   datasource_id='5',
@@ -606,6 +606,42 @@ INSERT INTO datasource SET
   name='CCDS',
   description='Consensus CDS',
   url='http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';
+
+INSERT INTO datasource SET
+  datasource_id='7',
+  name='Ensembl_Gene_Id',
+  description='Ensembl Gene Identifier',
+  url='http://www.ensembl.org';
+
+INSERT INTO datasource SET
+  datasource_id='8',
+  name='Refseq_Gene_Id',
+  description='RefSeq Gene Identifier',
+  url='https://www.ncbi.nlm.nih.gov/refseq/';
+
+INSERT INTO datasource SET
+  datasource_id='9',
+  name='Uniprot_Gene_Id',
+  description='UniProt Gene Identifier',
+  url='http://www.uniprot.org';
+
+INSERT INTO datasource SET
+  datasource_id='10',
+  name='Ensembl_Transcript_Id',
+  description='Ensembl Transcript Identifier',
+  url='http://www.ensembl.org';
+
+INSERT INTO datasource SET
+  datasource_id='11',
+  name='Refseq_Transcript_Id',
+  description='RefSeq Transcript Identifier',
+  url='https://www.ncbi.nlm.nih.gov/refseq/';
+
+INSERT INTO datasource SET
+  datasource_id='12',
+  name='Uniprot_Transcript_Id',
+  description='UniProt Transcript Identifier',
+  url='http://www.uniprot.org';
 
 --
 -- Insert default value into type table
