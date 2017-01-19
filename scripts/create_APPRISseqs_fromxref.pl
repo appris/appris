@@ -234,7 +234,7 @@ sub create_seqrep_ids($)
 		}
 		else { $sr_i = '?'  }
 		$sr_i =~ s/\,$//g;
-		$seqreport_gid .= $sr_i.'+';
+		$seqreport_gid .= $source.':'.$sr_i.'+';
 	}
 	$seqreport_gid =~ s/\+$//g;
 	if ( exists $sep_rep->{'gene_name'} ) {
@@ -287,17 +287,17 @@ sub extract_seqfasta($$$)
 				}
 				else { $sr_tid = '?' }
 				$sr_tid =~ s/\,$//g;		
-				$seqrep_transc_id .= $sr_tid.'+';
+				$seqrep_transc_id .= $source.':'.$sr_tid.'+';
 			}
 			$seqrep_transc_id =~ s/\+$//g;
 			$seqrep_ccds_id .= join(',', sort { $a cmp $b} keys(%{$seqrep_ccds}) ) if ( defined $seqrep_ccds );
 			$outfasta .= '>appris'.'|'.
 						$seq_idx.'|'.
 						$seqreport_ids->{'gene_idx'}.' '.
-						'gene_ids:'.$seqreport_ids->{'gene_id'}.' '.
-						'gene_names:'.$seqreport_ids->{'gene_name'}.' '.
-						'transc_ids:'.$seqrep_transc_id.' '.
-						'ccds_ids:'.$seqrep_ccds_id."\n".
+						'gene_ids>'.$seqreport_ids->{'gene_id'}.' '.
+						'gene_names>'.$seqreport_ids->{'gene_name'}.' '.
+						'transc_ids>'.$seqrep_transc_id.' '.
+						'ccds_ids>'.$seqrep_ccds_id."\n".
 						$seqrep->{'seq'}."\n";
 			$outmeta .= $xref_seqid."\t".
 						$seq_idx."\t".
