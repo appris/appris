@@ -9,7 +9,8 @@ use Data::Dumper;
 use APPRIS::Parser;
 use APPRIS::Utils::File qw( printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
-use lib "/local/jmrodriguez/appris/scripts/lib";
+
+use lib "$FindBin::Bin/lib";
 use common;
 
 ###################
@@ -42,7 +43,7 @@ my ($loglevel) = undef;
 );
 
 # Required arguments
-unless ( defined $data_file and defined $extra_data_file and defined $out_file )
+unless ( defined $data_file and defined $out_file )
 {
 	print `perldoc $0`;
 	exit 1;
@@ -73,7 +74,7 @@ sub main()
 	my ($output) = ""; 
 
 	$logger->info("-- get gene report from extra GTF file -------\n");
-	my ($extra_genedata) = APPRIS::Parser::_parse_indata($extra_data_file);
+	my ($extra_genedata) = APPRIS::Parser::_parse_indata($extra_data_file) if ( defined $extra_data_file );
 	$logger->debug(Dumper($extra_genedata)."\n");
 	
 	my ($xref_data);
@@ -97,7 +98,9 @@ sub main()
 		
 	}	
 
-	$logger->info("-- add extra values into GTF -------\n");	
+	$logger->info("-- add extra values into GTF -------\n");
+	my (@transc_coords)    = (0,0);
+	my (@cds_coords_first) = (0,0);
 	open (IN_FILE, $data_file) or throw('Can not open file');
 	while ( my $line = <IN_FILE> ) {
 		my ($new_values) = "";
@@ -123,34 +126,36 @@ sub main()
 								my ($ens_gene_id) = $xref_data->{$accesion_id}->{'gene_id'};
 								my ($ens_transc_id) = $xref_data->{$accesion_id}->{'transc_id'};
 								
-								# add CCDS
-								unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+								if ( defined $extra_genedata ) {
+									# add CCDS
+									unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+										if ( exists $extra_genedata->{$ens_gene_id} and
+											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
+											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'}
+										) {
+											my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
+											$new_values .= "; ccds_id \"$ccds_id\"";
+										}
+									}
+									# add RT
 									if ( exists $extra_genedata->{$ens_gene_id} and
 										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'}
+										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'}
 									) {
-										my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
-										$new_values .= "; ccds_id \"$ccds_id\"";
+										my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
+										if ( $extra_tags =~ /readthrough_transcript/ ) {
+											$new_values .= ";tag=readthrough_transcript";
+										}
 									}
-								}								
-								# add RT
-								if ( exists $extra_genedata->{$ens_gene_id} and
-									 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-									 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'}
-								) {
-									my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
-									if ( $extra_tags =~ /readthrough_transcript/ ) {
-										$new_values .= ";tag=readthrough_transcript";									
-									}							
-								}
-								# add TSL
-								if ( exists $extra_genedata->{$ens_gene_id} and
-									 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-									 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'}
-								) {
-									my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
-									if ( $extra_val ne '' ) {
-										$new_values .= ";tsl=$extra_val";
+									# add TSL
+									if ( exists $extra_genedata->{$ens_gene_id} and
+										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
+										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'}
+									) {
+										my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
+										if ( $extra_val ne '' ) {
+											$new_values .= ";tsl=$extra_val";
+										}
 									}
 								}
 							}
@@ -159,38 +164,72 @@ sub main()
 				}
 				# for Ensembl/GENCODE dataset
 				else {
+					#Êfor transcript track
 					if ( ($fields->{'type'} eq 'transcript') ) {
+						# init vars
 						my ($gene_id) = $fields->{'attrs'}->{'gene_id'};
 						my ($transc_id) = $fields->{'attrs'}->{'transcript_id'};
 						$gene_id =~ s/\.[0-9]*$//g;
 						$transc_id =~ s/\.[0-9]*$//g;
+						(@transc_coords)    = ($fields->{'start'},$fields->{'end'});
+						(@cds_coords_first) = (0,0);
 						
-						# add CCDS
-						unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
-							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
-								my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
-								$new_values .= "; ccds_id \"$ccds_id\"";
-							}
-						}					
-						# add RT
-						unless ( $line =~ /"readthrough_transcript"/ ) {
-							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'} ) {
-								my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'};
-								if ( $extra_tags =~ /readthrough_transcript/ ) {
-									$new_values .= '; tag "readthrough_transcript"';									
-								}							
-							}				
-						}					
-						# add TSL
-						unless ( $line =~ /transcript_support_level/ or $line =~ /\;\s*tsl/ ) {
-							if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
-								my ($extra_val) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
-								if ( $extra_val ne '' ) {
-									$new_values .= "; tsl \"$extra_val\"";									
+						if ( defined $extra_genedata ) {
+							# add CCDS
+							unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+								if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} ) {
+									my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'};
+									$new_values .= "; ccds_id \"$ccds_id\"";
 								}
-							}				
-						}					
-					}					
+							}					
+							# add RT
+							unless ( $line =~ /"readthrough_transcript"/ ) {
+								if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'} ) {
+									my ($extra_tags) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tag'};
+									if ( $extra_tags =~ /readthrough_transcript/ ) {
+										$new_values .= '; tag "readthrough_transcript"';									
+									}							
+								}				
+							}					
+							# add TSL
+							unless ( $line =~ /transcript_support_level/ or $line =~ /\;\s*tsl/ ) {
+								if ( exists $extra_genedata->{$gene_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id} and exists $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'} ) {
+									my ($extra_val) = $extra_genedata->{$gene_id}->{'transcripts'}->{$transc_id}->{'tsl'};
+									if ( $extra_val ne '' ) {
+										$new_values .= "; tsl \"$extra_val\"";									
+									}
+								}				
+							}							
+						}
+					}
+					# for cds track
+					if ( ($fields->{'type'} eq 'CDS') ) {
+						# save the coords of the first
+						if ( $cds_coords_first[0] == 0 and $cds_coords_first[1] == 0 ) {
+							$cds_coords_first[0] = $fields->{'start'};
+							$cds_coords_first[1] = $fields->{'end'};
+						}
+					}						
+					#Êfor utr track
+					if ( ($fields->{'type'} eq 'UTR') ) {
+						# add 3'-5' label
+						if ( $fields->{'strand'} eq '+' ) {
+							if ( $fields->{'end'} <= $cds_coords_first[0] ) {
+								$new_values .= "; utr_type \"five_prime_utr\"";
+							}
+							else {
+								$new_values .= "; utr_type \"three_prime_utr\"";
+							}
+						}
+						elsif ( $fields->{'strand'} eq '-' ) {
+							if ( $fields->{'start'} >= $cds_coords_first[1] ) {
+								$new_values .= "; utr_type \"five_prime_utr\"";
+							}
+							else {
+								$new_values .= "; utr_type \"three_prime_utr\"";
+							}							
+						}
+					}
 				}			
 			}
 		}		
@@ -261,18 +300,21 @@ Script that add the extra values into GTF dataset. Values as readthrought tags, 
 retrieve_exon_data
 
 =head2 Required arguments:
+		
+	--data=  <Current Gene annotation file>
+		
+	--outfile <Output Gene annotation file>	
+	
+=head2 Optional arguments:
 
+	--extra-data=  <Extra Gene annotation file with CCDS, RT values>
+	
+	
 	--ref  <Flag that indicated RefSeq dataset>
 	
 	--xref=  <Xref file between RefSeq and Ensembl>
 	
-	--data=  <Current Gene annotation file>
 	
-	--extra-data=  <Extra Gene annotation file with CCDS, RT values>
-	
-	--outfile <Output Gene annotation file>	
-	
-=head2 Optional arguments:
 
 	--loglevel=LEVEL <define log level (default: NONE)>	
 
@@ -284,7 +326,7 @@ retrieve_exon_data
 
 =head1 EXAMPLE
 
-=head2 GENCODE/Ensembl example
+=head2 GENCODE/Ensembl example1
 
 perl add_extraVals_into_GTF.pl
 	
@@ -293,6 +335,16 @@ perl add_extraVals_into_GTF.pl
 	--extra-data=e83_g24/gencode.v23.annotation.gtf
 	
 	--outfile=e84_g24/Homo_sapiens.GRCh38.84.extra.gtf
+
+
+=head2 GENCODE/Ensembl example2
+
+perl add_extraVals_into_GTF.pl
+	
+	--data=gencode.v23.annotation.gtf
+	
+	--outfile=gencode.v23.annotation.extra.gtf
+
 
 =head2 RefSeq example
 
