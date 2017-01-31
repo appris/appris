@@ -236,6 +236,7 @@ sub main()
 		$line =~ s/\;*\n*$//g;
 		$output .= $line . $new_values . "\n";
 	}
+	close(IN_FILE);
 	
 	# Print output
 	if ($output ne '') {
