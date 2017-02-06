@@ -882,31 +882,33 @@ sub fetch_entity_by_xref_entry {
 					entity_id => $entity_id,
 					datasource_id => $datasource_id
 				);
-				my ($xref_id);
+				
 				if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
-					$xref_id = $xref_id_list->[0]->{'identifier'};
-				}
-				# External name			
-				if ($datasource_name eq 'External_Id' and defined $xref_id) {
-					$external_name = $xref_id;
-				}
-				# Xref identifiers
-				elsif (defined $xref_id) {
-					push(@{$xref_identifies},
-						APPRIS::XrefEntry->new
-						(
-							-id				=> $xref_id,
-							-dbname			=> $datasource_name,
-							-description	=> $datasource_desc
-						)
-					);
-				}
-				# Xref identifiers
-				elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
-					foreach my $xref (@{$xref_id_list}) {
-						push(@{$trans_id_list}, $xref->{'identifier'});
+					# External name			
+					if ($datasource_name eq 'External_Id') {
+						my ($xref_id) = $xref_id_list->[0]->{'identifier'};
+						$external_name = $xref_id;
 					}
-				}							
+					# Xref identifiers
+					elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
+						foreach my $xref (@{$xref_id_list}) {
+							push(@{$trans_id_list}, $xref->{'identifier'});
+						}
+					}							
+					# Xref identifiers
+					else {
+						foreach my $xref (@{$xref_id_list}) {
+							push(@{$xref_identifies},
+								APPRIS::XrefEntry->new
+								(
+									-id				=> $xref->{'identifier'},
+									-dbname			=> $datasource_name,
+									-description	=> $datasource_desc
+								)
+							);
+						}
+					}					
+				}
 			};
 			throw('Wrong xref identify') if ($@);	
 		}

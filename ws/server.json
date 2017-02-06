@@ -1,5 +1,5 @@
 {
-    "version": "2017_01.v20",
+    "version": "2017_02.v20",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -12,6 +12,24 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
+                    "id":   "a1v20",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_84+RefSeq_107+UniProt_201606",
+                        "version": "1"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
                     "id":   "e87v20",
                     "type": "current",
                     "source": {

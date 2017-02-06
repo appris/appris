@@ -282,7 +282,7 @@ sub load_registry {
 						push(@{$registries}, {
 								'species'	=> $species_id,
 								'assembly'	=> $cfg_assembly->{'id'},
-								'source'	=> $cfg_dataset->{'source'}->{'name'},
+								'source'	=> $cfg_dataset->{'source'},
 								'dataset'	=> $cfg_dataset->{'id'},
 								'registry'	=> $registry								
 						});

@@ -113,7 +113,7 @@ module.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', 
             sp: $routeParams.sp,
             ds: $routeParams.ds
         };
-
+        $scope.limitString = 20;
 
         // create search summary
         var specieResult = {};
@@ -127,19 +127,47 @@ module.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', 
                 if ( item.chr !== null && item.start !== null && item.end !== null ) {
                     position = item.chr+':'+item.start+'-'+item.end;
                 }
+                var dblink = {
+                    External_Id:      '-',
+                    Ensembl_Gene_Id:  '-',
+                    Refseq_Gene_Id:   '-',
+                    Uniprot_Gene_Id:  '-'
+                };
+                angular.forEach(item.dblink, function(item) {
+                    if ( angular.isDefined(item.namespace) && item.namespace == 'External_Id' ) { dblink.External_Id += item.id+',' }
+                    if ( angular.isDefined(item.namespace) && item.namespace == 'Ensembl_Gene_Id' ) { dblink.Ensembl_Gene_Id += item.id+',' }
+                    if ( angular.isDefined(item.namespace) && item.namespace == 'Refseq_Gene_Id' ) { dblink.Refseq_Gene_Id += item.id+',' }
+                    if ( angular.isDefined(item.namespace) && item.namespace == 'Uniprot_Gene_Id' ) { dblink.Uniprot_Gene_Id += item.id+',' }
+                });
+                if ( dblink.External_Id != '-' ) {
+                    dblink.External_Id = dblink.External_Id.replace(/,$/g,'');
+                    dblink.External_Id = dblink.External_Id.replace(/^-/g,'');
+                }
+                if ( dblink.Ensembl_Gene_Id != '-' ) {
+                    dblink.Ensembl_Gene_Id = dblink.Ensembl_Gene_Id.replace(/,$/g,'');
+                    dblink.Ensembl_Gene_Id = dblink.Ensembl_Gene_Id.replace(/^-/g,'');
+                }
+                if ( dblink.Refseq_Gene_Id != '-' ) {
+                    dblink.Refseq_Gene_Id = dblink.Refseq_Gene_Id.replace(/,$/g,'');
+                    dblink.Refseq_Gene_Id = dblink.Refseq_Gene_Id.replace(/^-/g,'');
+                }
+                if ( dblink.Uniprot_Gene_Id != '-' ) {
+                    dblink.Uniprot_Gene_Id = dblink.Uniprot_Gene_Id.replace(/,$/g,'');
+                    dblink.Uniprot_Gene_Id = dblink.Uniprot_Gene_Id.replace(/^-/g,'');
+                }
                 var speRst = {
                     "species":      item.species,
                     "assembly": {
                         "id": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].id,
                         "name": $filter('filter')($rootScope.species[item.species].assemblies, { "id": item.assembly })[0].name
                     },
-                    "source":      item.source,
+                    "source":       item.source,
                     "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
                     "label":        item.label,
                     "namespace":    item.namespace,
                     "id":           item.id,
                     "biotype":      item.biotype,
-                    "dblink":       item.dblink,
+                    "dblink":       dblink,
                     "position":     position
                 }
                 specieResult[item.species].push(speRst);

@@ -28,6 +28,7 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', 'consUrl
 
         // init vars
         var rawResults = null;
+        $scope.limitString = 20;
 
         // get route parameters from type of mode
         // EXPORTER mode
@@ -80,22 +81,42 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', 'consUrl
                                 "value": item.id
                             });
                         }
-                        if ( angular.isDefined(speciesInfo.scientific) && speciesInfo.scientific !== null ) {
-                            rst.push({
-                                "label": "Species",
-                                "value": $rootScope.species[specie_id].scientific
-                            });
-                        }
-                        if ( angular.isDefined(item.dblink) && item.dblink !== null && angular.isDefined($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'External_Id' }).length > 0) ) {
-                            rst.push({
-                                "label": "Name",
-                                "value": $filter('filter')(item.dblink, { "namespace": 'External_Id' })[0].id
-                            });
+                        if ( angular.isDefined(item.dblink) && item.dblink !== null ) {
+                            if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' }).length > 0) ) {
+                                rst.push({
+                                    "label": "Ensembl Gene Id",
+                                    "value": $filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                });
+                            }
+                            if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' }).length > 0) ) {
+                                rst.push({
+                                    "label": "RefSeq Gene Id",
+                                    "value": $filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                });
+                            }
+                                if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).length > 0) ) {
+                                rst.push({
+                                    "label": "UniProt Gene Id",
+                                    "value": $filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                });
+                            }
+                            if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'External_Id' }).length > 0) ) {
+                                rst.push({
+                                    "label": "Name",
+                                    "value": $filter('filter')(item.dblink, { "namespace": 'External_Id' }).map(function(e){ return e.id }).join(",")
+                                });
+                            }
                         }
                         if ( angular.isDefined(item.biotype) && item.biotype !== null ) {
                             rst.push({
                                 "label": "Biotype",
                                 "value": item.biotype
+                            });
+                        }
+                        if ( angular.isDefined(speciesInfo.scientific) && speciesInfo.scientific !== null ) {
+                            rst.push({
+                                "label": "Species",
+                                "value": $rootScope.species[specie_id].scientific
                             });
                         }
                         if ( angular.isDefined(speciesInfo.assemblies) && angular.isArray(speciesInfo.assemblies) && (speciesInfo.assemblies.length > 0)) {

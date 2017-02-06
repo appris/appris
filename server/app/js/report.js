@@ -77,7 +77,29 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         $scope.resultMainAnnotHeads.push({
                             id: "transcript_id",
                             label: "Seq. id"
-                        },{
+                        });
+                        if ( angular.isDefined(resultData) && (angular.isArray(resultData) && resultData.length > 0 ) && angular.isDefined(resultData[0][0]) ) {
+                            var ids = resultData[0];
+                            if ( angular.isDefined(ids[0].ensembl_transcript_id)) {
+                                $scope.resultMainAnnotHeads.push({
+                                    id: "ensembl_transcript_id",
+                                    label: "Ensembl id"
+                                });
+                            }
+                            if ( angular.isDefined(ids[0].refseq_transcript_id)) {
+                                $scope.resultMainAnnotHeads.push({
+                                    id: "refseq_transcript_id",
+                                    label: "RefSeq id"
+                                });
+                            }
+                            if ( angular.isDefined(ids[0].uniprot_transcript_id)) {
+                                $scope.resultMainAnnotHeads.push({
+                                    id: "uniprot_transcript_id",
+                                    label: "Uniprot id"
+                                });
+                            }
+                        }
+                        $scope.resultMainAnnotHeads.push({
                             id: "transcript_name",
                             label: "Seq. name"
                         },{
@@ -337,6 +359,18 @@ apprisFilters.filter('convertTransScoreObj', function() {
                     id['id'] = iTrans;
                     if ( angular.isDefined(item.length_aa) ) {
                         id['length_aa'] = item.length_aa;
+                    }
+                    if ( angular.isDefined(item.ensembl_transcript_id) ) {
+                        id['ensembl_transcript_id'] = item.ensembl_transcript_id;
+                        filtered[iTrans]['ensembl_transcript_id'] = item.ensembl_transcript_id;
+                    }
+                    if ( angular.isDefined(item.refseq_transcript_id) ) {
+                        id['refseq_transcript_id'] = item.refseq_transcript_id;
+                        filtered[iTrans]['refseq_transcript_id'] = item.refseq_transcript_id;
+                    }
+                    if ( angular.isDefined(item.uniprot_transcript_id) ) {
+                        id['uniprot_transcript_id'] = item.uniprot_transcript_id;
+                        filtered[iTrans]['uniprot_transcript_id'] = item.uniprot_transcript_id;
                     }
                     idList.push(id);
                 }

@@ -14,7 +14,8 @@
         <tbody>
         <th data-ng-repeat="info in geneInfo">{{info.label}}</th>
         <tr>
-            <td data-ng-repeat="info in geneInfo">{{info.value}}
+            <td
+                    data-ng-repeat="info in geneInfo">{{info.value|limitTo:limitString}}{{info.value.length>limitString ? '...' : ''}}
                 <a class="pull-right" data-ng-if="info.link_source" data-ng-href="{{info.link_source}}"
                    target="_blank">
                     <img data-ng-src="img/{{info.source}}.ico">
