@@ -84,7 +84,7 @@ module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligan
 module.directive('browserSeqTpl', ['$compile', function($compile) {
 
     var resPerLine = 70;
-    var charsTitle = 20;
+    var charsTitle = 35;
     // NOTE: BE CAREFUL HARD-CORE for CORSAIR!!!
     function createSeqLegend() {
         var elem1 = '<h4>Annotations</h4>'+

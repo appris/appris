@@ -942,6 +942,7 @@ sub get_aln_annotations
 		if ( defined $ids ) {
 			foreach my $t ( split(',', $ids) ) {
 				if ( defined $t and ($t ne '') ) {
+					$t = substr( $t, 0, 32);
 					if ( exists $talns->{$t} ) {
 						my ($i) = $talns->{$t};
 						push(@{$report->{'aln'}}, $alns->[$i]);							
