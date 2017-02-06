@@ -1,0 +1,200 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
+
+
+# -----------------------------------------------------------------------------
+# Load external functions
+DIRNAME=`dirname $0`
+source ${DIRNAME}/appris_env
+
+SPECIES=""
+ENSEMBL=""
+INFILE=""
+OUTPUT_DIR=""
+ENSEMBL_PUB_URL="ftp://ftp.ensembl.org/pub/"
+SPECIES_ID=""
+SPECIES_FILENAME=""
+RENAME="FALSE"
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_feat_down_pre-datafiles\n
+\n
+ Description:\n
+\t Download the previous datafiles of Ensembl.\n
+\n
+ Required arguments:\n
+\t -u [-url] {http}\n
+\t\t Initial HTTP direction\n
+\n
+\t -s [-species] {string}\n
+\t\t Scientific name of species + assemmbly version\n
+\t\t Eg: \"Felis_catus.Felis_catus_6.2\", \"Bos_taurus.UMD3.1\"\n
+\t\t (Remember to write with commas)\n
+\t -e [-ensembl] {integer}\n
+\t\t Ensembl release. Eg, 82\n
+\n\tor\n
+\t -i [-infile] {file}\n
+\t\t Input filename with the {species filename} and {ensembl version}\n
+\t\t Eg:\n
+\t\t\t Felis_catus.Felis_catus_6.2\t82\n
+\t\t\t Bos_taurus.UMD3.1\t82\n
+\t\t\t Homo_sapiens.GRCh38\t82\n
+\n
+\t -o [-out] {path}\n
+\t\t Output path\n
+\t\t data/g15.v3.15Jul2013/\n
+\n
+\t -r If it is available we rename the files (server mode)\n
+\n
+\n\t -h [-help]\n
+\n
+\n
+Example:\n
+appris_feat_down_pre-datafiles -u http://www.ebi.ac.uk/~maurel/ -s 'homo_sapiens' -e 88 -o /tmp/
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-u | -url )
+			ENSEMBL_PUB_URL=$2
+			shift
+			;;
+		-s | -species )
+			SPECIES=$2
+			shift
+			;;
+		-e | -ensembl )
+			ENSEMBL=$2
+			shift
+			;;
+		-i | -infile )
+			INFILE=$2
+			shift
+			;;
+		-o | -out )
+        	OUTPUT_DIR=$2
+        	shift
+			;;
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [[ "${SPECIES}" == "" && "${ENSEMBL}" == "" && "${INFILE}" == "" ]]; then
+	echo You must specify at least one config file for SPECIES, with ENSEMBL, or INFILE!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${OUTPUT_DIR}" == "" ]; then
+	echo You must specify at least one config file for OUTPUT_DIR!
+	echo -e $USAGE
+	exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Sub-method
+download_datafile() {
+	local ENSEMBL_URL=$1
+	local SUFFIX=$2
+	local OUTFILE=$3
+	
+	TMPFILE=/tmp/kk.html
+
+	echo download index file...
+	wget "${ENSEMBL_URL}" -O "${TMPFILE}"
+	
+	if [[ -e "${TMPFILE}" ]]; then
+		
+		echo extract data file..
+		DATAFILE=""
+		DATAFILE=$(grep "${SUFFIX}" "${TMPFILE}" | grep -o 'href="[^"]*"' | sed 's/"//g' | sed 's/href=//g')
+		
+		echo dowload data file...
+		wget "${ENSEMBL_URL}/${DATAFILE}" -O "${OUTFILE}"
+		
+		echo delete index...
+		rm "${TMPFILE}"
+	else
+		echo ERROR: index files has not been founded
+		exit 1;	
+	fi
+}
+
+download_species_datafile() {
+	local SPECIES_ID=$1
+	local SPECIES_FILENAME=$2
+	local ENSEMBL=$3
+	local RENAME=$4
+		
+	echo prepare workspace...
+	SPECIES_OUTDIR="${OUTPUT_DIR}/${SPECIES_ID}/e${ENSEMBL}"
+	prepare_workspace "${SPECIES_OUTDIR}"
+	
+	echo download files...	
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}/${SPECIES_ID}.annot.gtf.gz"	
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}/${SPECIES_ID}.transc.fa.gz"	
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}/${SPECIES_ID}.transl.fa.gz"
+	
+	echo uncompress files...
+	gzip -d ${SPECIES_OUTDIR}/*.gz
+}
+
+# -----------------------------------------------------------------------------
+# Main
+
+if [[  "${SPECIES}" != "" ]]; then
+	SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
+	SPECIES_FILENAME="${SPECIES}"
+			
+	download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${OUTPUT_DIR} ${RENAME}
+else
+	if [[  "${INFILE}" != "" ]]; then
+		while IFS='' read -r line || [[ -n "$line" ]]; do
+			SPECIES=$(echo ${line} | cut -d " " -f 1)
+			SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
+			SPECIES_FILENAME="${SPECIES}"
+			ENSEMBL=$(echo ${line} | cut -d " " -f 2)
+			echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
+			download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
+		done < "${INFILE}"
+	fi
+fi
+
