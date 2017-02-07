@@ -43,8 +43,8 @@ my $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" completionStamp = "1">
 
         <Dataset name = "'.$species.'_gene_ensembl" interface = "default" >
-                <Attribute name = "ensembl_gene_id" />
                 <Attribute name = "external_gene_name" />
+                <Attribute name = "ensembl_gene_id" />
                 <Attribute name = "entrezgene" />
                 <Attribute name = "uniprot_swissprot" />
                 <Attribute name = "uniprot_sptrembl" />
