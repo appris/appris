@@ -56,17 +56,26 @@ my $request = HTTP::Request->new("POST",$path,HTTP::Headers->new(),'query='.$xml
 my $ua = LWP::UserAgent->new;
 
 my $response;
-
+my $all_data = '';
 $ua->request($request, 
 	     sub{   
 		 my($data, $response) = @_;
 		 if ($response->is_success) {
-		     print "$data";
+		 	$all_data .= $data;
+		 	#print "$data";
 		 }
 		 else {
 		     warn ("Problems with the web server: ".$response->status_line);
 		 }
 	     },1000);
+
+if ( $all_data =~ /\[success\]\n*$/ ) {
+	$all_data =~ s/\[success\]\n*$//g;
+	print "$all_data";
+}
+else {
+	warn ("Problems retrieving the data: It is not complete");
+}
 
 
 
