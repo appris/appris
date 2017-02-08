@@ -96,7 +96,7 @@ sub main()
 				$gene_name = $xref->{'gene'}->{$id} if ( exists $xref->{'gene'}->{$id} );
 				$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
 				my ($g_id) = ( $gene_name ne '-' ) ? $gene_name : $id;
-				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
+				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$g_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
 							$s_seq."\n";
 			}
 		}
