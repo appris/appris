@@ -88,15 +88,15 @@ sub main()
 	
 	$logger->info("-- create seqdata from ENSEMBL -------\n");
 	my ($ens_seqdata) = appris::create_seqdata($ensembl_seqfile);
-#	$logger->debug("ENS_SEQDATA:\n".Dumper($ens_seqdata)."\n");
+	$logger->debug("ENS_SEQDATA:\n".Dumper($ens_seqdata)."\n");
 	
 	$logger->info("-- create seqdata from REFSEQ -------\n");
 	my ($ref_seqdata) = appris::create_seqdata($refseq_seqfile);
-#	$logger->debug("REF_SEQDATA:\n".Dumper($ref_seqdata)."\n");
+	$logger->debug("REF_SEQDATA:\n".Dumper($ref_seqdata)."\n");
 
 	$logger->info("-- create seqdata from UNIPROT -------\n");
 	my ($uni_seqdata) = appris::create_seqdata($uniprot_seqfile);
-#	$logger->debug("UNI_SEQDATA:\n".Dumper($uni_seqdata)."\n");
+	$logger->debug("UNI_SEQDATA:\n".Dumper($uni_seqdata)."\n");
 	
 	#Ensemb_ID	RefSeq_ID	UniProt_IDs
 	$logger->info("-- create xrefdata -------\n");
