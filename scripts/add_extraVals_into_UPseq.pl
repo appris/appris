@@ -92,9 +92,10 @@ sub main()
 				$db = $1;
 				$isof_id = $2;
 				$name = $3;
-				$id = $isof_id; $id =~ s/\-[0-9]*$//g;
 				$gene_name = $xref->{'gene'}->{$id} if ( exists $xref->{'gene'}->{$id} );
 				$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
+				if ( $gene_name ne '-' ) { $id = $gene_name }
+				else { $id = $isof_id; $id =~ s/\-[0-9]*$//g; }				
 				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
 							$s_seq."\n";
 			}
