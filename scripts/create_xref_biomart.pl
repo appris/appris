@@ -40,7 +40,7 @@ my $species = $ARGV[0];
 
 my $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Query>
-<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" completionStamp = "1">
+<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "1" count = "" datasetConfigVersion = "0.6" completionStamp = "1">
 
         <Dataset name = "'.$species.'_gene_ensembl" interface = "default" >
                 <Attribute name = "external_gene_name" />
