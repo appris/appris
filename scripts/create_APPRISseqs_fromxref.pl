@@ -99,6 +99,7 @@ sub main()
 #	$logger->debug("UNI_SEQDATA:\n".Dumper($uni_seqdata)."\n");
 	
 	#Ensemb_ID	RefSeq_ID	UniProt_IDs
+	$logger->info("-- create xrefdata -------\n");
 	my ($flines) = getTotalStringFromFile($xref_file);
 	for ( my $i=1; $i < scalar(@{$flines}); $i++ ) { # first line is the header
 		my ($fline) = $flines->[$i];
