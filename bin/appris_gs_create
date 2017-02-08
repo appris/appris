@@ -1,0 +1,62 @@
+#!/bin/bash
+
+FEATDIR=${HOME}/projects/APPRIS/features/mus_musculus
+FEATDIR_EN=${FEATDIR}/e87
+FEATDIR_RS=${FEATDIR}/rs106
+FEATDIR_UP=${FEATDIR}/up201610
+OUTDIR=${FEATDIR}/a1
+LOGLEVEL="info"
+
+# Create workspace
+echo "-- create workspace..."
+mkdir $OUTDIR
+cd $OUTDIR
+
+# Add extra values into protein FASTA files
+echo "-- add extra values into protein FASTA files..."
+
+CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_ENseq.pl \
+	-f $FEATDIR_EN/mus_musculus.transl.fa \
+	-d $FEATDIR_EN/mus_musculus.annot.gtf \
+	-o $FEATDIR_EN/mus_musculus.transl.extra.fa \
+	--loglevel=$LOGLEVEL \
+	--logfile=$FEATDIR_EN/add_extraVals_into_ENseq.log"
+#echo $CMD
+#eval $CMD
+
+CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_RSseq.pl \
+	-f $FEATDIR_RS/protein.fa \
+	-d $FEATDIR_RS/protein.gbk \
+	-o $FEATDIR_RS/protein.extra.fa \
+	--loglevel=$LOGLEVEL \
+	--logfile=$FEATDIR_RS/add_extraVals_into_RSseq.log"
+#echo $CMD
+#eval $CMD
+
+CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_UPseq.pl \
+	-f $FEATDIR_UP/uniprot-proteome.fasta \
+	-t $FEATDIR_UP/uniprot-proteome.tab \
+	-d $FEATDIR_UP/uniprot-proteome.txt \
+	-o $FEATDIR_UP/uniprot-proteome.extra.fasta \
+	--loglevel=$LOGLEVEL \
+	--logfile=$FEATDIR_UP/add_extraVals_into_UPseq.log"
+#echo $CMD
+#eval $CMD
+
+# Download Cross reference from BioMart
+CMD="perl $APPRIS_SCRIPTS_DIR/create_xref_biomart.pl mmusculus > $OUTDIR/xref_biomart.tsv"
+#echo $CMD
+#eval $CMD
+
+# Create APPRIS protein sequences from XREFs
+echo "-- create APPRIS protein sequences based on xref..."
+CMD="perl $APPRIS_SCRIPTS_DIR/create_APPRISseqs_fromxref.pl \
+	-x  $OUTDIR/xref_biomart.tsv \
+	-e  $FEATDIR_EN/mus_musculus.transl.extra.fa \
+	-r  $FEATDIR_RS/protein.extra.fa \
+	-u  $FEATDIR_UP/uniprot-proteome.extra.fasta \
+	-o  $OUTDIR/appris_seqs.transl.fa \
+	--loglevel=$LOGLEVEL \
+	--logfile=$OUTDIR/create_APPRISseqs_fromxref.log"
+echo $CMD
+eval $CMD

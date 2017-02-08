@@ -1,0 +1,34 @@
+#!/bin/bash
+
+BINDIR=${HOME}/projects/APPRIS/workspaces/cmpEnsUniRef/scripts
+XREFDIR=${HOME}/projects/APPRIS/workspaces/cmpEnsUniRef/xref
+FEATDIR=${HOME}/projects/APPRIS/features/homo_sapiens
+OUTDIR=${FEATDIR}/a1
+
+mkdir $OUTDIR
+
+# 1. Extract the columns from Excel file of M
+# 	1.1 Select the six columns (HGNC (G24), Ensembl,HGNC, RefSeq, UniProt, UniProt Gene)
+#	1.2 Copy the columns into text editor (as Sublime Text)
+#	1.3 Save file as 'G24.xref.ens84_rs107_UP_edited.out.txt'
+
+# 2. Parse Xref file that has been validated by M
+echo "-- parse xref file that has been validated by M"
+perl $BINDIR/parseXREF.pl \
+	-x $XREFDIR/G24.xref.ens84_rs107_UP_edited.out2.txt \
+	-i1 $FEATDIR/up201606/uniprot-proteome.fasta \
+	-i3 $FEATDIR/up201606/uniprot-proteome.tab \
+	-o  $XREFDIR/xref.ens84_rs107_UPentry-gene.txt \
+	--loglevel=info
+#	--loglevel=debug --logfile=parseXREF.log
+
+# 3. CREATE the APPRIS protein sequences from XREFs
+echo "-- create APPRIS protein sequences based on xref"
+perl $APPRIS_SCRIPTS_DIR/create_APPRISseqs_fromxref.pl \
+	-x  $XREFDIR/xref.ens84_rs107_UPentry-gene.txt \
+	-e  $FEATDIR/e84_g24/Homo_sapiens.GRCh38.pep.all.extra.fa \
+	-r  $FEATDIR/rs107/protein.extra.fa \
+	-u  $FEATDIR/up201606/uniprot-proteome.extra.fasta \
+	-o  $OUTDIR/appris_seqs.transl.fa \
+	--loglevel=info
+# 	--loglevel=debug --logfile=createAPPRISseqs.log
