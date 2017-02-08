@@ -105,33 +105,33 @@ sub main()
 		chomp($fline);
 		my (@cols) = split('\t', $fline);
 		my ($hgnc_en) = $cols[0];
-		my ($ensembl_id) = $cols[1];
-		my ($entrez_id) = $cols[2];
-		my ($uniprot_list_ids) = $cols[3];
+		my ($ensembl_id) = ( defined $cols[1] ) ? $cols[1] : ''; 
+		my ($entrez_id) = ( defined $cols[2] ) ? $cols[2] : '';
+		my ($uniprot_list_ids) = join(',', @cols[3 .. $#cols]);
 		my ($uniprot_id) = '-';
 		$ensembl_id =~ s/\s*//g; $ensembl_id =~ s/\.[0-9]$//g;
 		$entrez_id =~ s/\s*//g;
 		$uniprot_list_ids =~ s/\s*//g;
+		$uniprot_list_ids =~ s/^\,//g; $uniprot_list_ids =~ s/\,$//g;
 		my ($xref_seqid) = join('/', @cols);
 		
 		#ÊCreate report with all the protein sequences from XREF gene
 		my ($seqreport);
-		if ( exists $ens_seqdata->{$ensembl_id} ) {
+		if ( defined $ensembl_id and exists $ens_seqdata->{$ensembl_id} ) {
 			create_seqrep('ensembl', $ens_seqdata->{$ensembl_id}, \$seqreport);
 		}
-		if ( exists $ref_seqdata->{$entrez_id} ) {
+		if ( defined $entrez_id and exists $ref_seqdata->{$entrez_id} ) {
 			create_seqrep('refseq', $ref_seqdata->{$entrez_id}, \$seqreport);
 		}
-		foreach my $uniprot_ids (split('\|', $uniprot_list_ids) ) {
-			if ( $uniprot_ids =~ /([^\>]*)\>([^\$]*)/ ) {
-				foreach my $up_id (split(',', $2) ) {
-					if ( exists $uni_seqdata->{$up_id} ) {
-						create_seqrep('uniprot', $uni_seqdata->{$up_id}, \$seqreport);
-					}
+		foreach my $uniprot_ids (split(';', $uniprot_list_ids) ) {
+			my ($up_ids) = ( $uniprot_ids =~ /([^\>]*)\>([^\$]*)/ ) ? $2 : $uniprot_ids;
+			foreach my $up_id (split(',', $up_ids) ) {
+				if ( exists $uni_seqdata->{$up_id} ) {
+					create_seqrep('uniprot', $uni_seqdata->{$up_id}, \$seqreport);
 				}
 			}
 		}
-						
+								
 		# Create report id
 		my ($seqreport_id) = create_seqrep_ids($seqreport);
 
@@ -363,6 +363,22 @@ perl create_APPRISseqs_fromxref.pl \
 	-u  features/homo_sapiens/up201606/uniprot-proteome.extra.fasta \
 	
 	-o  features/appris_seqs.e84_rs107_up201606.transl.fa \
+	
+	--loglevel=debug --logfile=createAPPRISseqsfromXREF.log		
+
+or
+
+perl create_APPRISseqs_fromxref.pl \
+
+	-x  features/mus_musculus/a1/xref_biomart.tsv \
+	
+	-e  features/mus_musculus/e87/mus_musculus.transl.extra.fa \
+	
+	-r  features/mus_musculus/rs106/protein.extra.fa \
+	
+	-u  features/mus_musculus/up201610/uniprot-proteome.extra.fasta \
+	
+	-o  features/mus_musculus/a1/appris_seqs.transl.fa \
 	
 	--loglevel=debug --logfile=createAPPRISseqsfromXREF.log		
 
