@@ -22,8 +22,8 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_ENseq.pl \
 	-o $FEATDIR_EN/mus_musculus.transl.extra.fa \
 	--loglevel=$LOGLEVEL \
 	--logfile=$FEATDIR_EN/add_extraVals_into_ENseq.log"
-#echo $CMD
-#eval $CMD
+echo $CMD
+eval $CMD
 
 CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_RSseq.pl \
 	-f $FEATDIR_RS/protein.fa \
@@ -31,8 +31,8 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_RSseq.pl \
 	-o $FEATDIR_RS/protein.extra.fa \
 	--loglevel=$LOGLEVEL \
 	--logfile=$FEATDIR_RS/add_extraVals_into_RSseq.log"
-#echo $CMD
-#eval $CMD
+echo $CMD
+eval $CMD
 
 CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_UPseq.pl \
 	-f $FEATDIR_UP/uniprot-proteome.fasta \
@@ -41,8 +41,8 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_UPseq.pl \
 	-o $FEATDIR_UP/uniprot-proteome.extra.fasta \
 	--loglevel=$LOGLEVEL \
 	--logfile=$FEATDIR_UP/add_extraVals_into_UPseq.log"
-#echo $CMD
-#eval $CMD
+echo $CMD
+eval $CMD
 
 # Download Cross reference from BioMart
 CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneset.pl \

@@ -13,8 +13,8 @@ use APPRIS::Utils::File qw( getTotalStringFromFile getStringFromFile printString
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
-use lib $ENV{APPRIS_SCRIPTS_DIR}."/lib";
-use appris;
+#use lib $ENV{APPRIS_SCRIPTS_DIR}."/lib";
+#use appris;
 
 ###################
 # Global variable #
@@ -87,15 +87,15 @@ sub main()
 	my ($outfasta, $outmeta) = 	('','');
 	
 	$logger->info("-- create seqdata from ENSEMBL -------\n");
-	my ($ens_seqdata) = appris::create_seqdata($ensembl_seqfile);
+	my ($ens_seqdata) = create_seqdata($ensembl_seqfile);
 	$logger->debug("ENS_SEQDATA:\n".Dumper($ens_seqdata)."\n");
 	
 	$logger->info("-- create seqdata from REFSEQ -------\n");
-	my ($ref_seqdata) = appris::create_seqdata($refseq_seqfile);
+	my ($ref_seqdata) = create_seqdata($refseq_seqfile);
 	$logger->debug("REF_SEQDATA:\n".Dumper($ref_seqdata)."\n");
 
 	$logger->info("-- create seqdata from UNIPROT -------\n");
-	my ($uni_seqdata) = appris::create_seqdata($uniprot_seqfile);
+	my ($uni_seqdata) = create_seqdata($uniprot_seqfile);
 	$logger->debug("UNI_SEQDATA:\n".Dumper($uni_seqdata)."\n");
 	
 	#Ensemb_ID	RefSeq_ID	UniProt_IDs
@@ -105,7 +105,7 @@ sub main()
 		my ($fline) = $flines->[$i];
 		chomp($fline);
 		my (@cols) = split('\t', $fline);
-		my ($hgnc_en) = $cols[0];
+		my ($hgnc) = $cols[0];
 		my ($ensembl_id) = ( defined $cols[1] ) ? $cols[1] : ''; 
 		my ($entrez_id) = ( defined $cols[2] ) ? $cols[2] : '';
 		my ($uniprot_list_ids) = join(',', @cols[3 .. $#cols]);
@@ -132,7 +132,7 @@ sub main()
 				}
 			}
 		}
-								
+		
 		# Create report id
 		my ($seqreport_id) = create_seqrep_ids($seqreport);
 
@@ -149,6 +149,120 @@ sub main()
 	
 	exit 0;
 }
+
+sub create_seqdata($)
+{
+	my ($file) = @_;
+	my ($data);
+
+	if (-e $file and (-s $file > 0) ) {
+		my ($in) = Bio::SeqIO->new(
+							-file => $file,
+							-format => 'Fasta'
+		);
+		while ( my $seq = $in->next_seq() ) {
+			my ($s_id) = $seq->id;
+			my ($s_desc) = $seq->desc;
+			my ($s_seq) = $seq->seq;
+			my ($isof_id);
+			my ($transl_id);
+			my ($gene_id);
+			my ($gene_name);
+			my ($ccds_id);
+			my ($seq_length);
+			my ($a_gene_ids);
+			my ($a_transc_ids);
+			
+			# At the moment, only for UniProt/neXtProt cases
+			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
+				$isof_id = $2;
+				my (@desc) = split('GN=', $s_desc);
+				if ( scalar(@desc) >= 2 ) {
+					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
+				}				
+			}
+			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
+				$isof_id = $2;
+				my ($name) = $3;
+				$gene_id = $isof_id;
+				$gene_id =~ s/\-[0-9]*$//g; 
+				$gene_name = $5;
+				$ccds_id = $6;
+				$seq_length = $7;
+			}
+			elsif ( $s_id =~ /^ge_a\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # GENCODE sequences with extra values
+				my ($pep_id) = $1;
+				$isof_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;
+				$seq_length = $6;
+			}
+			elsif ( $s_id =~ /^en_a\|([^\s]*)/ ) { # ENSEMBL sequences with extra values
+				my ($pep_id) = $1;
+				if ( $s_desc =~ /gene:([^\s]+).*transcript:([^\s]+).*gene_symbol:([^\s]+).*ccds:([^\s]+)/ ) {
+					$gene_id = $1;
+					$isof_id = $2;
+					$gene_name = $3;
+					$ccds_id = $4;
+				}
+			}
+			elsif ( $s_id =~ /^gi_a\|[^|]*\|[^|]*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values
+				my ($pep_id) = $1;
+				$isof_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;
+				$seq_length = $6;
+			}
+			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
+				$isof_id = $1;
+				my (@desc) = split('Gname=', $s_desc);
+				if ( scalar(@desc) >= 2 ) {
+					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
+				}				
+			}
+			elsif ( $s_id =~ /^appris\|([^|]*)\|([^\s]*)/ ) { # APPRIS sequences FASTA file
+				$isof_id = $1;
+				$gene_id = $2;
+				if ( $s_desc =~ /gene_ids\>([^\s]+)/ ) { $a_gene_ids = $1 }
+				if ( $s_desc =~ /gene_names\>([^\s]+)/ ) { $gene_name = $1 }
+				if ( $s_desc =~ /transc_ids\>([^\s]+)/ ) { $a_transc_ids = $1 }
+				if ( $s_desc =~ /ccds_ids\>([^\s]+)/ ) { $ccds_id = $1 }
+			}
+			if ( defined $isof_id and defined $gene_id ) {
+				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
+				unless ( defined $gene_id ) {
+					$gene_id = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;					
+				}
+				unless ( exists $data->{$gene_id} ) {
+					$data->{$gene_id} = {
+						'id'		=> $gene_id,
+						'varsplic'	=> {}
+					};													
+					if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
+						$data->{$gene_id}->{'name'} = $gene_name;
+					}
+				}
+				$data->{$gene_id}->{'varsplic'}->{$isof_id} = {
+					'desc'		=> $s_desc,
+					'seq' 		=> $s_seq
+				};
+				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' and $ccds_id ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'ccds'} = $ccds_id;
+				}
+				if ( defined $a_gene_ids and $a_gene_ids ne '' and $a_gene_ids ne '-' and $a_gene_ids ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'gene_ids'} = $a_gene_ids;
+				}
+				if ( defined $a_transc_ids and $a_transc_ids ne '' and $a_transc_ids ne '-' and $a_transc_ids ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'transc_ids'} = $a_transc_ids;
+				}
+			}
+		}		
+	}
+	return $data;
+	
+} # End create_seqdata
 
 sub create_seqrep($$\$)
 {
