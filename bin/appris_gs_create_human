@@ -24,7 +24,7 @@ perl $BINDIR/parseXREF.pl \
 
 # 3. CREATE the APPRIS protein sequences from XREFs
 echo "-- create APPRIS protein sequences based on xref"
-perl $APPRIS_SCRIPTS_DIR/create_APPRISseqs_fromxref.pl \
+perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneseqs.pl \
 	-x  $XREFDIR/xref.ens84_rs107_UPentry-gene.txt \
 	-e  $FEATDIR/e84_g24/Homo_sapiens.GRCh38.pep.all.extra.fa \
 	-r  $FEATDIR/rs107/protein.extra.fa \

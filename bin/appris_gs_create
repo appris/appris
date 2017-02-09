@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SPECIES="mmusculus"
 FEATDIR=${HOME}/projects/APPRIS/features/mus_musculus
 FEATDIR_EN=${FEATDIR}/e87
 FEATDIR_RS=${FEATDIR}/rs106
@@ -44,19 +45,23 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_UPseq.pl \
 #eval $CMD
 
 # Download Cross reference from BioMart
-CMD="perl $APPRIS_SCRIPTS_DIR/create_xref_biomart.pl mmusculus > $OUTDIR/xref_biomart.tsv"
-#echo $CMD
-#eval $CMD
+CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneset.pl \
+	-s $SPECIES \
+	-o $OUTDIR/geneset.xref.txt \
+	--loglevel=$LOGLEVEL \
+	--logfile=$OUTDIR/geneset.log"
+echo $CMD
+eval $CMD
 
 # Create APPRIS protein sequences from XREFs
 echo "-- create APPRIS protein sequences based on xref..."
-CMD="perl $APPRIS_SCRIPTS_DIR/create_APPRISseqs_fromxref.pl \
-	-x  $OUTDIR/xref_biomart.tsv \
+CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneseqs.pl \
+	-x  $OUTDIR/geneset.xref.txt \
 	-e  $FEATDIR_EN/mus_musculus.transl.extra.fa \
 	-r  $FEATDIR_RS/protein.extra.fa \
 	-u  $FEATDIR_UP/uniprot-proteome.extra.fasta \
 	-o  $OUTDIR/appris_seqs.transl.fa \
 	--loglevel=$LOGLEVEL \
-	--logfile=$OUTDIR/create_APPRISseqs_fromxref.log"
+	--logfile=$OUTDIR/geneseqs.log"
 echo $CMD
 eval $CMD

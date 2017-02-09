@@ -13,7 +13,7 @@ use APPRIS::Utils::File qw( getTotalStringFromFile getStringFromFile printString
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
-use lib "$FindBin::Bin/lib";
+use lib $ENV{APPRIS_SCRIPTS_DIR}."/lib";
 use appris;
 
 ###################
@@ -327,7 +327,7 @@ __END__
 
 =head1 NAME
 
-create_APPRISseqs_fromxref
+geneseqs
 
 =head1 DESCRIPTION
 
@@ -335,7 +335,7 @@ Create APPRIS fasta file from the Cross Reference Ensembl vs UniProt vs RefSeq
 
 =head1 SYNOPSIS
 
-create_APPRISseqs_fromxref
+geneseqs
 
 =head2 Required arguments:
 
@@ -353,7 +353,7 @@ create_APPRISseqs_fromxref
 
 =head1 EXAMPLE
 
-perl create_APPRISseqs_fromxref.pl \
+perl geneseqs.pl \
 
 	-x  appris/workspaces/cmpEnsUniRef/xref/xref.ens84_rs107_UPentry-gene.txt \
 	
@@ -369,7 +369,7 @@ perl create_APPRISseqs_fromxref.pl \
 
 or
 
-perl create_APPRISseqs_fromxref.pl \
+perl geneseqs.pl \
 
 	-x  features/mus_musculus/a1/xref_biomart.tsv \
 	
