@@ -218,20 +218,12 @@ sub create_xref_refseq(\$\$)
 {
 	my ($ref_report, $ref_unirepot) = @_;
 	my ($report);
-#	my ($refseq_hgnc_file) = $TMPDIR.'/'.'xref.rs.hgnc.txt';
 	my ($refseq_ref_file) = $TMPDIR.'/'.'xref.rs.refseq.txt';
 	my ($refseq_ens_file) = $TMPDIR.'/'.'xref.rs.ensembl.txt';
 	my ($refseq_uni_file) = $TMPDIR.'/'.'xref.rs.uniprot.txt';
 	my ($flines);
 	my ($taxid) = $TAXID->{$species};
 	
-#	# Get HGNC
-#	eval {
-#		my ($cmd) = "wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz -P $TMPDIR && gzip -d $TMPDIR/gene_info.gz && grep '^$taxid' $TMPDIR/gene_info | cut -f 1,2,3,6 > $refseq_hgnc_file";
-##		system($cmd);
-#	};
-#	throw('Exporting xref.rs for hgnc') if ($@);
-
 	# Extract the Cross-Reference with RefSeq
 	eval {
 		my ($cmd) = "wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz -P $TMPDIR && gzip -d $TMPDIR/gene2refseq.gz && grep '^$taxid' $TMPDIR/gene2refseq | cut -f 1,2,3,4,6,16 > $refseq_ref_file";
@@ -253,28 +245,6 @@ sub create_xref_refseq(\$\$)
 	};
 	throw('Exporting xref.rs for uniprot') if ($@);
 	
-
-	# Get Gene Symbols
-#	$flines = undef; $flines = getTotalStringFromFile($refseq_hgnc_file);
-#	foreach my $fline ( @{$flines} ) {
-#		my (@cols) = split('\t', $fline);
-#		my ($tax_id) = $cols[0];
-#		my ($entrez_id) = $cols[1];
-#		my ($gene_name) = $cols[2];
-#		my ($mult_ids) = $cols[3];
-#		my ($ensembl_id) = ( $mult_ids =~ /Ensembl:([^\|]*)/ ) ? $1 : ''; 
-#		$entrez_id =~ s/\s*//g;
-#		$gene_name =~ s/\s*//g;
-#		$ensembl_id =~ s/\s*//g;
-#		
-#		if ( defined $gene_name and $gene_name ne '' ) {
-#			if ( defined $entrez_id and $entrez_id ne '' ) {
-#				if ( !exists $report->{$entrez_id}->{'hgnc'}->{$gene_name} ) {
-#					$report->{$entrez_id}->{'hgnc'}->{$gene_name} = 1;					
-#				}
-#			}
-#		}		
-#	}
 	# Get RefSeq Xref
 	my ($for_uniprot);	
 	$flines = undef; $flines = getTotalStringFromFile($refseq_ref_file);
@@ -396,7 +366,7 @@ sub create_xref_uniprot(\$$)
 	
 	# Extract Xref from UniProt	
 	eval {
-		my ($cmd) = "wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/$filename_idmapping\_idmapping.dat.gz -P $TMPDIR && gzip -d $TMPDIR/$filename_idmapping\_idmapping.dat.gz ".
+		my ($cmd) = "wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/$filename_idmapping\_idmapping.dat.gz -P $TMPDIR && gzip -d $TMPDIR/$filename_idmapping\_idmapping.dat.gz && ".
 					"grep -e 'Gene_Name'       $TMPDIR/$filename_idmapping\_idmapping.dat >  $file && ".
 					"grep -e 'Ensembl'         $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
 					"grep -e 'GeneID\\|RefSeq' $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
