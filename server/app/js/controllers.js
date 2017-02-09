@@ -66,7 +66,7 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', 'consUrl
                                 link_source = consUrlRefSeq + '/' + 'gene/' + item.id
                             }
                             else if ( $routeParams.sc == 'uniprot' ) {
-                                link_source = consUrlUniProt + '/' + 'uniprot/' + item.id
+                                link_source = consUrlUniProt + '/' + 'uniprot/?query=' + item.id + '&fil=organism:' + specie_id;
                             }
                             rst.push({
                                 "label": "Id",
