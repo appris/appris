@@ -95,8 +95,8 @@ sub main()
 	
 	# prepare workspace
 	$logger->info("-- prepare workspace\n");
-#	rm_dir($TMPDIR);
-#	prepare_workspace($TMPDIR);	
+	rm_dir($TMPDIR);
+	prepare_workspace($TMPDIR);	
 	
 	# Create xref report
 	$logger->info("-- create cross reference data based on Ensembl \n");
@@ -110,7 +110,7 @@ sub main()
 	
 	$logger->info("-- create cross reference data based on UniProt \n");
 	create_xref_uniprot(\$gnXref_report, $up_report);
-	$logger->debug("gnXREF_UNI_REPORT:\n".Dumper($gnXref_report)."\n");
+#	$logger->debug("gnXREF_UNI_REPORT:\n".Dumper($gnXref_report)."\n");
 
 	# Create text report	
 	$logger->info("-- create text report \n");
@@ -174,7 +174,7 @@ sub create_xref_ensembl(\$\$)
 	#ÊDownlod xref from biomart
 	eval {
 		my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/create_xref_biomart.pl mmusculus > $file";
-#		system($cmd);
+		system($cmd);
 	};
 	throw('Exporting xref.en from biomart') if ($@);
 	
@@ -238,21 +238,21 @@ sub create_xref_refseq(\$\$)
 	# Extract the Cross-Reference with RefSeq
 	eval {
 		my ($cmd) = "wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz -P $TMPDIR && gzip -d $TMPDIR/gene2refseq.gz && grep '^$taxid' $TMPDIR/gene2refseq | cut -f 1,2,3,4,6,16 > $refseq_ref_file";
-#		system($cmd);
+		system($cmd);
 	};
 	throw('Exporting xref.rs for refseq') if ($@);
  
 	# Extract the Cross-Reference with Ensembl
 	eval {
 		my ($cmd) = "wget ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz -P $TMPDIR && gzip -d $TMPDIR/gene2ensembl.gz && grep '^$taxid' $TMPDIR/gene2ensembl > $refseq_ens_file";
-#		system($cmd);
+		system($cmd);
 	};
 	throw('Exporting xref.rs for ensembl') if ($@);
 
 	# Extract RefSeq proteins (NP_ & YP_ & YP_)
 	eval {
 		my ($cmd) = "wget ftp://ftp.ncbi.nih.gov/gene/DATA/gene_refseq_uniprotkb_collab.gz -P $TMPDIR && gzip -d $TMPDIR/gene_refseq_uniprotkb_collab.gz && grep -e '^NP_\\|^XP_\\|^YP_' $TMPDIR/gene_refseq_uniprotkb_collab  > $refseq_uni_file";
-#		system($cmd);
+		system($cmd);
 	};
 	throw('Exporting xref.rs for uniprot') if ($@);
 	
@@ -404,7 +404,7 @@ sub create_xref_uniprot(\$$)
 					"grep -e 'Ensembl'         $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
 					"grep -e 'GeneID\\|RefSeq' $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
 					"grep -e 'CCDS'            $TMPDIR/$filename_idmapping\_idmapping.dat >>  $file";
-#		system($cmd);
+		system($cmd);
 	};
 	throw('Exporting xref.rs for refseq') if ($@);	
 
