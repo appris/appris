@@ -159,11 +159,12 @@ sub export_xref_biomart($)
 	
 	if ( $report =~ /\[success\]\n*$/ ) {
 		$report =~ s/\[success\]\n*$//g;
+print STDERR "REP: $report\n";
+		printStringIntoFile($report, $file);
 	}
 	else {
 		warn ("Problems retrieving the data: It is not complete");
 	}
-	printStringIntoFile($report, $file);
 	return $report;
 }
 
