@@ -125,6 +125,7 @@ sub main()
 sub export_xref_biomart($)
 {
 	my ($species) = @_;
+	my ($file) = $TMPDIR.'/'.'xref.en.txt';	
 	my ($report) = '';
 	
 	my $xml = '<?xml version="1.0" encoding="UTF-8"?>
@@ -162,6 +163,7 @@ sub export_xref_biomart($)
 	else {
 		warn ("Problems retrieving the data: It is not complete");
 	}
+	printStringIntoFile($report, $file);
 	return $report;
 }
 
@@ -169,14 +171,9 @@ sub create_xref_ensembl(\$\$)
 {
 	my ($ref_report, $ref_unirepot) = @_;
 	my ($report);
-	my ($file) = $TMPDIR.'/'.'xref.en.txt';
 	
 	#ÊDownlod xref from biomart
-	eval {
-		my ($cmd) = "perl $ENV{APPRIS_SCRIPTS_DIR}/create_xref_biomart.pl mmusculus > $file";
-		system($cmd);
-	};
-	throw('Exporting xref.en from biomart') if ($@);
+	my ($file) = export_xref_biomart($species);
 	
 	# Associated Gene Name	Gene ID	EntrezGene ID	UniProt/SwissProt Accession	UniProt/TrEMBL Accession
 	my ($flines) = getTotalStringFromFile($file);
