@@ -125,7 +125,6 @@ sub main()
 sub export_xref_biomart($)
 {
 	my ($species) = @_;
-	my ($file) = $TMPDIR.'/'.'xref.en.txt';	
 	my ($report) = '';
 	
 	my $xml = '<?xml version="1.0" encoding="UTF-8"?>
@@ -159,8 +158,6 @@ sub export_xref_biomart($)
 	
 	if ( $report =~ /\[success\]\n*$/ ) {
 		$report =~ s/\[success\]\n*$//g;
-print STDERR "REP: $report\n";
-		printStringIntoFile($report, $file);
 	}
 	else {
 		warn ("Problems retrieving the data: It is not complete");
@@ -171,10 +168,12 @@ print STDERR "REP: $report\n";
 sub create_xref_ensembl(\$\$)
 {
 	my ($ref_report, $ref_unirepot) = @_;
+	my ($file) = $TMPDIR.'/'.'xref.en.txt';		
 	my ($report);
 	
 	#ÊDownlod xref from biomart
-	my ($file) = export_xref_biomart($species);
+	my ($xref_biomart) = export_xref_biomart($species);
+	printStringIntoFile($xref_biomart, $file);
 	
 	# Associated Gene Name	Gene ID	EntrezGene ID	UniProt/SwissProt Accession	UniProt/TrEMBL Accession
 	my ($flines) = getTotalStringFromFile($file);
