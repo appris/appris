@@ -59,7 +59,7 @@ CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneseqs.pl \
 	-x  $OUTDIR/geneset.xref.txt \
 	-e  $FEATDIR_EN/mus_musculus.transl.extra.fa \
 	-r  $FEATDIR_RS/protein.extra.fa \
-	-u  $FEATDIR_UP/uniprot-proteome.extra.fasta \
+	-u  $FEATDIR_UP/uniprot-proteome.extra.no_genenames.fasta \
 	-o  $OUTDIR/appris_seqs.transl.fa \
 	--loglevel=$LOGLEVEL \
 	--logfile=$OUTDIR/geneseqs.log"
