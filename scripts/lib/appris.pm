@@ -825,6 +825,7 @@ sub create_seqdata($)
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
 				$isof_id = $2;
+				$gene_id = $isof_id; $gene_id =~ s/\-[0-9]+$//g;
 				my (@desc) = split('GN=', $s_desc);
 				if ( scalar(@desc) >= 2 ) {
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					

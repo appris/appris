@@ -454,12 +454,13 @@ sub get_prin_report($)
 			}
 			$report->{$gene_id}->{'num_trans'}++;
 			$report->{$gene_id}->{'gene_name'} = $gene_name;
-			$report->{$gene_id}->{'transcripts'}->{$transcript_id} = $appris_label;
-			unless (exists $report->{$gene_id}->{$appris_label}) {
-				$report->{$gene_id}->{$appris_label} = 1;		
+			$report->{$gene_id}->{'varsplic'}->{$transcript_id} = $appris_label;
+			push( @{$report->{$gene_id}->{'appris'}->{$appris_label}}, $transcript_id);
+			unless (exists $report->{$gene_id}->{'appris_num'}->{$appris_label}) {
+				$report->{$gene_id}->{'appris_num'}->{$appris_label} = 1;
 			}
 			else {
-				$report->{$gene_id}->{$appris_label}++;
+				$report->{$gene_id}->{'appris_num'}->{$appris_label}++;
 			}
 		}
 	}
