@@ -80,19 +80,19 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         });
                         if ( angular.isDefined(resultData) && (angular.isArray(resultData) && resultData.length > 0 ) && angular.isDefined(resultData[0][0]) ) {
                             var ids = resultData[0];
-                            if ( angular.isDefined(ids[0].ensembl_transcript_id)) {
+                            if ( $filter('hasTranscriptId')(ids, 'ensembl_transcript_id') ) {
                                 $scope.resultMainAnnotHeads.push({
                                     id: "ensembl_transcript_id",
                                     label: "Ensembl id"
                                 });
                             }
-                            if ( angular.isDefined(ids[0].refseq_transcript_id)) {
+                            if ( $filter('hasTranscriptId')(ids, 'refseq_transcript_id') ) {
                                 $scope.resultMainAnnotHeads.push({
                                     id: "refseq_transcript_id",
                                     label: "RefSeq id"
                                 });
                             }
-                            if ( angular.isDefined(ids[0].uniprot_transcript_id)) {
+                            if ( $filter('hasTranscriptId')(ids, 'uniprot_transcript_id') ) {
                                 $scope.resultMainAnnotHeads.push({
                                     id: "uniprot_transcript_id",
                                     label: "Uniprot id"
@@ -297,6 +297,22 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
 
 
 /* FILTERS */
+
+// Checks if the transcript of depending dataset
+apprisFilters.filter('hasTranscriptId', function() {
+    return function(input, type) {
+        var hasTypeId = null;
+        if ( angular.isDefined(input) && input.length > 0 ) {
+            hasTypeId = false;
+            angular.forEach(input, function(item) {
+                if ( angular.isDefined(item[type]) ) {
+                    hasTypeId = true;
+                }
+            });
+        }
+        return hasTypeId;
+    };
+});
 
 // Checks if the result is "SeqRUNNER mode"
 apprisFilters.filter('isSeqRunner', function() {
