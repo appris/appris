@@ -1,4 +1,16 @@
 ___
+## 2017_02.v20
+```
+SERVER-RELEASE:   2017_02.v20
+CODE-RELEASE:     4.6.2.13
+```
+
+### Highlights
+- APPRIS annotations for RefSeq mouse (version 106)
+- Creation of APPRIS gene-set for human and mouse (a1) which join the gene datasets of Ensembl, RefSeq, and UniProt.
+
+
+___
 ## 2017_01.v20
 ```
 SERVER-RELEASE:   2017_01.v20

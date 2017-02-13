@@ -1,5 +1,5 @@
 {
-    "version": "2017_01.v20",
+    "version": "2017_02.v20",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -158,12 +158,48 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
+                    "id":   "a1v20",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_87+RefSeq_106+UniProt_201610",
+                        "version": "1"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
                     "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
                         "label": "GencodeM12/Ensembl87",
                         "version": "87"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
+                    "id":   "rs106v20",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq 106",
+                        "version": "106"
                     },
                     "database":   "appris_mus_musculus",
                     "datafiles":   {
