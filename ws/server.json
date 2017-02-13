@@ -12,24 +12,6 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "a1v20",
-                    "type": "current",
-                    "source": {
-                        "name": "appris",
-                        "label": "Ensembl_84+RefSeq_107+UniProt_201606",
-                        "version": "1"
-                    },
-                    "database":   "appris_homo_sapiens",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    }
-                },{
                     "id":   "e87v20",
                     "type": "current",
                     "source": {
@@ -83,6 +65,24 @@
                         "vertebrates_conservation": ["GTF"],
                         "whole_domains":            ["GTF"],
                         "transmembrane_helices":    ["GTF"]
+                    }
+                },{
+                    "id":   "a1v20",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_84+RefSeq_107+UniProt_201606",
+                        "version": "1"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
                     "id":   "e84v20",
@@ -158,24 +158,6 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "a1v20",
-                    "type": "current",
-                    "source": {
-                        "name": "appris",
-                        "label": "Ensembl_87+RefSeq_106+UniProt_201610",
-                        "version": "1"
-                    },
-                    "database":   "appris_mus_musculus",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    }
-                },{
                     "id":   "e87v20",
                     "type": "current",
                     "source": {
@@ -228,6 +210,24 @@
                         "vertebrates_conservation": ["GTF"],
                         "whole_domains":            ["GTF"],
                         "transmembrane_helices":    ["GTF"]
+                    }
+                },{
+                    "id":   "a1v20",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_87+RefSeq_106+UniProt_201610",
+                        "version": "1"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
                     }
                 }]
             }]
