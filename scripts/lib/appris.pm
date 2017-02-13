@@ -821,11 +821,15 @@ sub create_seqdata($)
 			my ($seq_length);
 			my ($a_gene_ids);
 			my ($a_transc_ids);
+			my ($species);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
 				$isof_id = $2;
 				$gene_id = $isof_id; $gene_id =~ s/\-[0-9]+$//g;
+				if ( $s_desc =~ /OS=([^\=]*)=/ ) {
+					$species = $1; $species =~ s/\s+[A-Z]{2}$//;
+				}
 				my (@desc) = split('GN=', $s_desc);
 				if ( scalar(@desc) >= 2 ) {
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
@@ -891,6 +895,9 @@ sub create_seqdata($)
 					};													
 					if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
 						$data->{$gene_id}->{'name'} = $gene_name;
+					}
+					if ( defined $species and $species ne '' and $species ne '-' ) {
+						$data->{$gene_id}->{'species'} = $species;
 					}
 				}
 				$data->{$gene_id}->{'varsplic'}->{$isof_id} = {
