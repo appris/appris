@@ -129,19 +129,33 @@ fi
 
 
 # -----------------------------------------------------------------------------
-# Create database
-echo "---------------------------"
-echo "Create database"
-echo "mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}"
-mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}
-echo ""
+# Check if database already exists
 
+credentialsFile=/tmp/mysql-credentials.cnf
+echo "[client]" > $credentialsFile
+echo "user=${USER}" >> $credentialsFile
+echo "password=${PASSWD}" >> $credentialsFile
+echo "host=${HOST}" >> $credentialsFile
 
-# -----------------------------------------------------------------------------
-# Import database
-echo "---------------------------"
-echo "Import database"
-echo "gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}"
-gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}
-echo ""
+DBS=$(mysql --defaults-extra-file=$credentialsFile -Bse "show databases like '${DATABASE}'")
+if [[ "${DBS}" != "${DATABASE}" ]]; then
+	# -----------------------------------------------------------------------------
+	# Create database
+	echo "---------------------------"
+	echo "Create database"
+	echo "mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}"
+	mysqladmin -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} create ${DATABASE}
+	echo ""
+	
+	
+	# -----------------------------------------------------------------------------
+	# Import database
+	echo "---------------------------"
+	echo "Import database"
+	echo "gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}"
+	gunzip < ${BACKUP_FILE} | mysql ${DATABASE} -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS}
+	echo ""
+else
+	echo "ERROR: ${DATABASE} database exists"	
+fi
 
