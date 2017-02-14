@@ -169,45 +169,26 @@ sub create_seqrep($$\$)
 					'idx'		=> $seq_idx,
 					'seq'		=> $seq_s,
 					'iden'		=> {
-									$db	=> {
-										$gene_id => {
-											'gene_id'	=> $gene_id,
-											'transc'	=> {
-												$transc_id => {
-													'transc_id'	=> $transc_id
-												}
-											}
-										}	
+						$db	=> {
+							$gene_id => {
+								'gene_id'	=> $gene_id,
+								'transc'	=> {
+									$transc_id => {
+										'transc_id'	=> $transc_id
 									}
+								}
+							}	
+						}
 					}
 				};
-#				if ( defined $gene_name ) {
-#					foreach my $g_id ( split(';', $gene_name) ) {
-#						$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'}->{$g_id} = 1;						
-#					}
-#				}
-#				if ( defined $ccds_id ) {
-#					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'ccds_id'} = $ccds_id;
-#				}
 			}
 			else {
 				if ( $seq_s eq $$ref_seqrep->{$seq_idx}->{'seq'} ) {
 					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_id'} = $gene_id;
 					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'transc_id'} = $transc_id;
-#					if ( defined $gene_name ) {
-#						$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'} = $gene_name;
-#					}
-#					if ( defined $ccds_id ) {
-#						$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'transc'}->{$transc_id}->{'ccds_id'} = $ccds_id;
-#					}
 				}
 				else { die "Diff protein sequence with equal MD5 IDX" }
 			}
-#			if ( defined $gene_name ) {
-#				foreach my $g_id ( split(';', $gene_name) ) {
-#					$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'}->{$g_id} = 1;						
-#				}
-#			}
 			if ( defined $gene_name ) {
 				$$ref_seqrep->{$seq_idx}->{'iden'}->{$db}->{$gene_id}->{'gene_name'} = $gene_name;
 			}
@@ -235,8 +216,6 @@ sub create_seqrep_ids($)
 					foreach my $gene_id ( keys(%{$seprep_iden->{$source}}) ) {
 						$sep_rep->{$source}->{'gene_id'}->{$gene_id} = 1;
 						if ( exists $seprep_iden->{$source}->{$gene_id}->{'gene_name'} ) {
-#							my ($gn) = $seprep_iden->{$source}->{$gene_id}->{'gene_name'};
-#							$sep_rep->{'gene_name'}->{$gn} = 1;
 							foreach my $gn ( split(';', $seprep_iden->{$source}->{$gene_id}->{'gene_name'}) ) {
 								$sep_rep->{'gene_name'}->{$gn} = 1;
 							}
