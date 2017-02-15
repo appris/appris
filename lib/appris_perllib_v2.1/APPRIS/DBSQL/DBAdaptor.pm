@@ -1160,6 +1160,42 @@ sub query_xref_identify2 {
 	return $final;
 }
 
+sub query_xref_identify3 {
+	my ($self, %args) = @_;
+	my $dbh = $self->dbh;
+
+	my @args;
+	while (my ($k, $v) = each %args){
+		if(ref $v eq 'ARRAY') {
+			foreach my $v1 (@{$v}) {
+				push @args, ({$k => $v1}, "or"); # OR 
+			}			
+		} else {
+			push @args, ({$k => $v}, "and"); # AND
+		}
+	}
+	if (keys(%args)){ pop @args;}  # remove final "and"
+
+        my $statement = "select
+		x.entity_id as x_entity_id,
+		x.datasource_id as x_datasource_id,
+		x.identifier as x_identifier,
+		y.entity_id as y_entity_id,
+		y.datasource_id as y_datasource_id,
+		y.identifier as y_identifier,
+		y.source as source,
+		y.biotype as biotype,
+		y.tsl as tsl,
+		y.tag as tag
+  
+		from xref_identify as x, entity as y ";
+	my @bindvalues;
+	($statement, @bindvalues) = _add_condition_combine2($statement, @args);
+
+	my $final = _do_query($dbh, $statement, @bindvalues);
+	return $final;
+}
+
 sub query_xref_identify_like {
 	my ($self, %args) = @_;
 	my $dbh = $self->dbh;

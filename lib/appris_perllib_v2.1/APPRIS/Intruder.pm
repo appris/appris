@@ -633,7 +633,7 @@ sub feed_transc_by_gencode {
 	# Check if exits => WARNING
 	eval {
 		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id	=> $datasources->{'Transcript_Id'});
-		throw('Transcript stable id already exists') if(defined $entity_list and scalar(@{$entity_list})>0);
+		warning('Transcript stable id already exists') if(defined $entity_list and scalar(@{$entity_list})>0);
 	};
 	warning('Transcript stable id already exists') if ($@);
 
@@ -1174,7 +1174,7 @@ sub feed_gene_by_analysis {
 	# Insert Method analysis by transcript
 	if ($entity->transcripts) {
 		foreach my $transc (@{$entity->transcripts}) {
-			$self->feed_transc_by_analysis($transc, $type);
+			$self->feed_transc_by_analysis($entity_id, $transc, $type);
 		}	
 	}
 	
@@ -1200,7 +1200,7 @@ sub feed_gene_by_analysis {
 =cut
 
 sub feed_transc_by_analysis {
-	my ($self, $entity, $type) = @_;
+	my ($self, $parent_id, $entity, $type) = @_;
 	
 	# Connection to DBAdaptor
 	unless ( defined $self->dbadaptor ) {
@@ -1219,14 +1219,20 @@ sub feed_transc_by_analysis {
 	my ($datasources) = $self->_fetch_datasources();	
 		
 	# Get Transcript Entity info
+	# If transcript Entity exists => use the gen_id to get the correct entity_id
 	my ($entity_id) = $entity->stable_id;
 	my($internal_entity_id);
 	eval {
-		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id, datasource_id	=> $datasources->{'Transcript_Id'});		
-		unless (defined $entity_list and (scalar(@{$entity_list}) > 0) ) {
-			throw('Argument must be a correct stable id');
-		}			
-		$internal_entity_id = $entity_list->[0]->{'entity_id'};			
+		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $entity_id, datasource_id	=> $datasources->{'Transcript_Id'});
+		if (defined $entity_list and (scalar(@{$entity_list}) > 1) ) {
+			my ($xref_id_list) = $self->dbadaptor->query_xref_identify3( 'x.identifier' => $parent_id, 'y.identifier' => $entity_id );				
+			if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
+				$internal_entity_id = $xref_id_list->[0]->{'x_entity_id'};
+			}
+		}
+		elsif (defined $entity_list and (scalar(@{$entity_list}) == 1) ) {
+			$internal_entity_id = $entity_list->[0]->{'entity_id'};
+		}
 	};
 	throw('Argument must be a correct stable id') if ($@);
 	throw('No a correct stable id') unless (defined $internal_entity_id);
