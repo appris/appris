@@ -630,12 +630,12 @@ sub feed_transc_by_gencode {
 		$types = $self->_fetch_type_seq();
 	}
 	
-	# Check if exits => ERROR
+	# Check if exits => WARNING
 	eval {
 		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id	=> $datasources->{'Transcript_Id'});
 		throw('Transcript stable id already exists') if(defined $entity_list and scalar(@{$entity_list})>0);
 	};
-	throw('Transcript stable id already exists') if ($@);
+	warning('Transcript stable id already exists') if ($@);
 
 	# Insert Entity info
 	eval {
