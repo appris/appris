@@ -33,7 +33,7 @@ CREATE TABLE entity (
 CREATE TABLE xref_identify (
   entity_id INT(11) unsigned NOT NULL,
   datasource_id INT(11) unsigned NOT NULL,
-  identifier TEXT NOT NULL,
+  identifier VARCHAR(150) NOT NULL,
   CONSTRAINT fk_identify_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_identify_datasource FOREIGN KEY (datasource_id) REFERENCES datasource (datasource_id) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY key_identify_entity_id (entity_id),
