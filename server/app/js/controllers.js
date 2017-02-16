@@ -83,21 +83,30 @@ apprisControllers.controller('GeneResultController', ['consUrlEnsembl', 'consUrl
                         }
                         if ( angular.isDefined(item.dblink) && item.dblink !== null ) {
                             if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' }).length > 0) ) {
+                                var id = $filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' }).map(function(e){ return e.id }).join(",");
                                 rst.push({
                                     "label": "Ensembl Gene Id",
-                                    "value": $filter('filter')(item.dblink, { "namespace": 'Ensembl_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                    "value": id,
+                                    "source": "ensembl",
+                                    "link_source":  consUrlEnsembl + '/' + specie_id + '/Gene/Summary?db=core;g=' + id
                                 });
                             }
                             if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' }).length > 0) ) {
+                                var id = $filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' }).map(function(e){ return e.id }).join(",");
                                 rst.push({
                                     "label": "RefSeq Gene Id",
-                                    "value": $filter('filter')(item.dblink, { "namespace": 'Refseq_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                    "value": id,
+                                    "source": "refseq",
+                                    "link_source": consUrlRefSeq + '/' + 'gene/' + id
                                 });
                             }
-                                if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).length > 0) ) {
+                            if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).length > 0) ) {
+                                var id = $filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).map(function(e){ return e.id }).join(",");
                                 rst.push({
                                     "label": "UniProt Gene Id",
-                                    "value": $filter('filter')(item.dblink, { "namespace": 'Uniprot_Gene_Id' }).map(function(e){ return e.id }).join(",")
+                                    "value": id,
+                                    "source": "uniprot",
+                                    "link_source": consUrlUniProt + '/' + 'uniprot/?query=' + id + '&fil=organism:' + specie_id
                                 });
                             }
                             if ( angular.isDefined($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && angular.isArray($filter('filter')(item.dblink, { "namespace": 'External_Id' })) && ($filter('filter')(item.dblink, { "namespace": 'External_Id' }).length > 0) ) {
