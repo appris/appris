@@ -552,12 +552,14 @@ sub feed_gene_by_gencode {
 	eval {
 		if ( $entity->xref_identify ) {
 			foreach my $xref (@{$entity->xref_identify}) {
-				my (%parameters) = (
-								datasource_id	=> $datasources->{$xref->dbname},
-								entity_id		=> $entity_id,
-								identifier		=> $xref->id
-				);
-				$self->dbadaptor->insert_xref_identify(%parameters);					
+				foreach my $r_id ( split(',', $xref->id) ) {
+					my (%parameters) = (
+									datasource_id	=> $datasources->{$xref->dbname},
+									entity_id		=> $entity_id,
+									identifier		=> $r_id
+					);
+					$self->dbadaptor->insert_xref_identify(%parameters);					
+				}
 			}
 		}
 	};
@@ -674,12 +676,14 @@ sub feed_transc_by_gencode {
 	eval {
 		if ( $entity->xref_identify ) {
 			foreach my $xref (@{$entity->xref_identify}) {
-				my (%parameters) = (
-								datasource_id	=> $datasources->{$xref->dbname},
-								entity_id		=> $entity_id,
-								identifier		=> $xref->id
-				);
-				$self->dbadaptor->insert_xref_identify(%parameters);					
+				foreach my $r_id ( split(',', $xref->id) ) {
+					my (%parameters) = (
+									datasource_id	=> $datasources->{$xref->dbname},
+									entity_id		=> $entity_id,
+									identifier		=> $r_id
+					);
+					$self->dbadaptor->insert_xref_identify(%parameters);
+				}					
 			}
 		}
 	};
