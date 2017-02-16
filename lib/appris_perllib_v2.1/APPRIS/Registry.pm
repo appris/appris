@@ -868,7 +868,7 @@ sub fetch_entity_by_xref_entry {
 		throw('Wrong coordinate') if ($@);
 					
 		# Get external name, xref identify
-		my ($external_name);
+		my ($external_name) = '';
 		my ($xref_identifies);
 		my ($trans_id_list);
 		foreach my $datasource (@{$datasource_list})
@@ -887,7 +887,7 @@ sub fetch_entity_by_xref_entry {
 					# External name			
 					if ($datasource_name eq 'External_Id') {
 						my ($xref_id) = $xref_id_list->[0]->{'identifier'};
-						$external_name = $xref_id;
+						$external_name .= $xref_id.',';
 					}
 					# Xref identifiers
 					elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
@@ -912,6 +912,7 @@ sub fetch_entity_by_xref_entry {
 			};
 			throw('Wrong xref identify') if ($@);	
 		}
+		$external_name =~ s/\,$//g;
 		
 		# Get transcript list
 		my ($transcripts);
@@ -952,7 +953,7 @@ sub fetch_entity_by_xref_entry {
 		$entity->version($entity_report->{'version'});
 		$entity->tsl($entity_report->{'tsl'}) if (defined $entity_report->{'tsl'});
 		$entity->tag($entity_report->{'tag'}) if (defined $entity_report->{'tag'});
-		$entity->external_name($external_name) if (defined $external_name);
+		$entity->external_name($external_name) if ($external_name ne '');
 		$entity->xref_identify($xref_identifies) if (defined $xref_identifies);
 		
 		push(@{$entity_list}, $entity) if (defined $entity);
@@ -1029,7 +1030,7 @@ sub fetch_by_gene_stable_id {
 	my ($datasource_list) = $self->dbadaptor->query_datasource();
 	
 	# Get external name, xref identifiers, and transcript id list
-	my ($external_name);
+	my ($external_name) = '';
 	my ($xref_identifies);
 	my ($trans_id_list);	
 	foreach my $datasource (@{$datasource_list}) {
@@ -1047,7 +1048,7 @@ sub fetch_by_gene_stable_id {
 			# External name
 			if (($datasource_name eq 'External_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
 				my ($xref_id) = $xref_id_list->[0]->{'identifier'};
-				$external_name = $xref_id if (defined $xref_id);
+				if (defined $xref_id) { $external_name .= $xref_id.',' }
 			}
 			# Xref identifiers
 			elsif (($datasource_name eq 'UniProtKB_SwissProt') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
@@ -1072,6 +1073,7 @@ sub fetch_by_gene_stable_id {
 		};
 		throw('Wrong xref identify') if ($@);	
 	}
+	$external_name =~ s/\,$//g;
 
 	# Get transcript list
 	my ($transcripts);
@@ -1105,7 +1107,7 @@ sub fetch_by_gene_stable_id {
 		-level		=> $entity->{'level'},
 		-version	=> $entity->{'version'}
 	);
-	$gene->external_name($external_name) if (defined $external_name);
+	$gene->external_name($external_name) if ($external_name ne '');
 	$gene->xref_identify($xref_identifies) if (defined $xref_identifies);
 	$gene->transcripts($transcripts, $index_transcripts);
 	
@@ -1205,7 +1207,7 @@ sub fetch_by_transc_stable_id {
 	my ($datasource_list) = $self->dbadaptor->query_datasource();
 
 	# Get external name, xref identify
-	my ($external_name);
+	my ($external_name) = '';
 	my ($xref_identifies);
 	foreach my $datasource (@{$datasource_list}) {
 		eval {
@@ -1224,7 +1226,7 @@ sub fetch_by_transc_stable_id {
 
 			# External name			
 			if ($datasource_name eq 'External_Id' and defined $xref_id) {
-				$external_name = $xref_id;
+				$external_name .= $xref_id.',';
 			}
 			# Xref identifiers
 			elsif (defined $xref_id) {
@@ -1240,6 +1242,7 @@ sub fetch_by_transc_stable_id {
 		};
 		throw('Wrong xref identify') if ($@);	
 	}
+	$external_name =~ s/\,$//g;
 
 	# Get translation
 	my ($translate) = $self->fetch_by_transl_stable_id($stable_id);
@@ -1295,7 +1298,7 @@ sub fetch_by_transc_stable_id {
 		-tag		=> $entity->{'tag'},
 	);
 	$transcript->sequence($sequence) if (defined $sequence);
-	$transcript->external_name($external_name) if (defined $external_name);
+	$transcript->external_name($external_name) if ($external_name ne '');
 	$transcript->xref_identify($xref_identifies) if (defined $xref_identifies);
 	$transcript->translate($translate) if (defined $translate);
 	$transcript->exons($exons) if (defined $exons);
