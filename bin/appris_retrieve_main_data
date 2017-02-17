@@ -158,6 +158,7 @@ OUTPUT_DATA_PRINCIPAL_ENS_RESULTFILE="${APPRIS_DATA_DIR}/appris_data.principal.f
 # local parameters
 LOG_PARAMETERS=""
 if [ "$LOG_LEVEL" != "" ]; then
+	prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
 	LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/${FILENAME}.${SPECIES_ID}.log"
 	LOG_PARAMETERS="--loglevel=${LOG_LEVEL} --logappend --logfile=${LOG_FILENAME}"
 fi
