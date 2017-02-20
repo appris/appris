@@ -886,8 +886,10 @@ sub fetch_entity_by_xref_entry {
 				if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
 					# External name			
 					if ($datasource_name eq 'External_Id') {
-						my ($xref_id) = $xref_id_list->[0]->{'identifier'};
-						$external_name .= $xref_id.',';
+						foreach my $xref (@{$xref_id_list}) {
+							$external_name .= $xref->{'identifier'}.',';
+						}
+						$external_name =~ s/\,$//g;						
 					}
 					# Xref identifiers
 					elsif (($datasource_name eq 'Transcript_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
@@ -912,7 +914,6 @@ sub fetch_entity_by_xref_entry {
 			};
 			throw('Wrong xref identify') if ($@);	
 		}
-		$external_name =~ s/\,$//g;
 		
 		# Get transcript list
 		my ($transcripts);
@@ -1047,8 +1048,10 @@ sub fetch_by_gene_stable_id {
 			
 			# External name
 			if (($datasource_name eq 'External_Id') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
-				my ($xref_id) = $xref_id_list->[0]->{'identifier'};
-				if (defined $xref_id) { $external_name .= $xref_id.',' }
+				foreach my $xref (@{$xref_id_list}) {
+					$external_name .= $xref->{'identifier'}.',';
+				}
+				$external_name =~ s/\,$//g;				
 			}
 			# Xref identifiers
 			elsif (($datasource_name eq 'UniProtKB_SwissProt') and defined $xref_id_list and (scalar(@{$xref_id_list}) > 0)) {
@@ -1073,8 +1076,7 @@ sub fetch_by_gene_stable_id {
 		};
 		throw('Wrong xref identify') if ($@);	
 	}
-	$external_name =~ s/\,$//g;
-
+	
 	# Get transcript list
 	my ($transcripts);
 	my ($index_transcripts);
@@ -1219,30 +1221,31 @@ sub fetch_by_transc_stable_id {
 				entity_id => $entity->{'entity_id'},
 				datasource_id => $datasource_id
 			);
-			my ($xref_id);
+			
 			if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
-				$xref_id = $xref_id_list->[0]->{'identifier'};
-			}
-
-			# External name			
-			if ($datasource_name eq 'External_Id' and defined $xref_id) {
-				$external_name .= $xref_id.',';
-			}
-			# Xref identifiers
-			elsif (defined $xref_id) {
-				push(@{$xref_identifies},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $xref_id,
-						-dbname			=> $datasource_name,
-						-description	=> $datasource_desc
-					)
-				);
+				# External name			
+				if ($datasource_name eq 'External_Id') {
+					foreach my $xref (@{$xref_id_list}) {
+						$external_name .= $xref->{'identifier'}.',';
+					}
+					$external_name =~ s/\,$//g;						
+				}
+				# Xref identifiers
+				else {
+					my ($xref_id) = $xref_id_list->[0]->{'identifier'};
+					push(@{$xref_identifies},
+						APPRIS::XrefEntry->new
+						(
+							-id				=> $xref_id,
+							-dbname			=> $datasource_name,
+							-description	=> $datasource_desc
+						)
+					);
+				}
 			}
 		};
 		throw('Wrong xref identify') if ($@);	
 	}
-	$external_name =~ s/\,$//g;
 
 	# Get translation
 	my ($translate) = $self->fetch_by_transl_stable_id($stable_id);
