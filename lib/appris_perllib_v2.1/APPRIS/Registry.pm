@@ -1233,14 +1233,16 @@ sub fetch_by_transc_stable_id {
 				# Xref identifiers
 				else {
 					my ($xref_id) = $xref_id_list->[0]->{'identifier'};
-					push(@{$xref_identifies},
-						APPRIS::XrefEntry->new
-						(
-							-id				=> $xref_id,
-							-dbname			=> $datasource_name,
-							-description	=> $datasource_desc
-						)
-					);
+					if (defined $xref_id) {
+						push(@{$xref_identifies},
+							APPRIS::XrefEntry->new
+							(
+								-id				=> $xref_id,
+								-dbname			=> $datasource_name,
+								-description	=> $datasource_desc
+							)
+						);
+					}
 				}
 			}
 		};
