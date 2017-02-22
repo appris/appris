@@ -9,10 +9,10 @@
                         <tr>
                             <th>Source</th>
                             <th>Gene Entry</th>
-                            <th>Ensembl Gene Id</th>
-                            <th>RefSeq Gene Id</th>
-                            <th>UniProt Gene Id</th>
                             <th>Gene Name</th>
+                            <!--<th>Ensembl Gene Id</th>-->
+                            <!--<th>RefSeq Gene Id</th>-->
+                            <!--<th>UniProt Gene Id</th>-->
                             <th>Assembly</th>
                         </tr>
                         <tr
@@ -20,10 +20,10 @@
                             <td>{{queryRst.source.label}}</td>
                             <td><a
                                     data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source.name}}&ds={{queryRst.dataset}}">{{queryRst.id | limitTo:limitString}}{{queryRst.id.length > limitString ? '...' : ''}}</a></td>
-                            <td>{{queryRst.dblink.Ensembl_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Ensembl_Gene_Id.length > limitString ? '...' : ''}}</td>
-                            <td>{{queryRst.dblink.Refseq_Gene_Id  | limitTo:limitString}}{{queryRst.dblink.Refseq_Gene_Id.length > limitString ? '...' : ''}}</td>
-                            <td>{{queryRst.dblink.Uniprot_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Uniprot_Gene_Id.length > limitString ? '...' : ''}}</td>
-                            <td>{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</td>
+                            <!--<td>{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</td>-->
+                            <!--<td>{{queryRst.dblink.Ensembl_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Ensembl_Gene_Id.length > limitString ? '...' : ''}}</td>-->
+                            <!--<td>{{queryRst.dblink.Refseq_Gene_Id  | limitTo:limitString}}{{queryRst.dblink.Refseq_Gene_Id.length > limitString ? '...' : ''}}</td>-->
+                            <!--<td>{{queryRst.dblink.Uniprot_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Uniprot_Gene_Id.length > limitString ? '...' : ''}}</td>-->
                             <td>{{queryRst.assembly.name}}</td>
                         </tr>
                         </tbody>
