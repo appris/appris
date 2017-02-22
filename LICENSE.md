@@ -1,6 +1,6 @@
 #LICENSE
 
-APPRIS by Jose Manuel Rodr’guez is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License
+APPRIS by Jose Manuel Rodriguez is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License
 https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 
