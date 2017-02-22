@@ -289,6 +289,15 @@ apprisDirectives.directive('resultInfoBrowserGenTpl', function() {
     };
 });
 
+apprisDirectives.directive('license', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/license.html'
+    };
+});
+
+
 /* CLEVER DIRECTIVES */
 
 apprisDirectives.directive('validateRunnerForm',function(){
