@@ -86,7 +86,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
     var resPerLine = 70;
     var charsTitle = 40;
     // NOTE: BE CAREFUL HARD-CORE for CORSAIR!!!
-    function createSeqLegend() {
+    function createSeqLegend(query) {
         var elem1 = '<h4>Annotations</h4>'+
                     '<span class="{{method.class}}" data-ng-repeat="(morder, method) in methods" data-ng-if=" (method.name != \'corsair\' && method.name != \'appris\') " >'+
                     '<input type="checkbox" id="checkbox-{{method.id}}" class="pseudo-checkbox sr-only" data-ng-model="checkmethods[method.id]" data-ng-change="printSeq(sequences,residues,checkmethods,resmetseqs,checkmetseqs)" >'+
@@ -97,7 +97,12 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
             '<input type="checkbox" id="checkbox-{{metseq.id}}" class="pseudo-checkbox sr-only" data-ng-model="checkmetseqs[metseq.id]" data-ng-change="printSeq(sequences,residues,checkmethods,resmetseqs,checkmetseqs)" >'+
             '<label for="checkbox-{{metseq.id}}" class="pointer fancy-checkbox-label">{{metseq.desc}}</label>'+
             '</span>';
-        var elem = '<div class="browser-seq-legend">'+'<h4>Highlight</h4>'+ elem1 + elem2 + '</div>';
+        var elem = '<div class="browser-seq-legend">';
+        elem += '<h4>Highlight</h4>'+ elem1;
+        if ( angular.isDefined(query.sc) && query.sc !== 'uniprot' && query.sc !== 'appris' ) {
+            elem += elem2;
+        }
+        elem += '</div>';
         return elem;
     }
 
@@ -299,7 +304,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
             scope.printSeq = function(sequences, residues, methods, resmetseqs, metseqs) {
                 if ( angular.isDefined(sequences) && angular.isDefined(residues) && angular.isDefined(methods) && angular.isDefined(resmetseqs) && angular.isDefined(metseqs) ) {
                     var seqs   = createSeqReferences(sequences, residues, methods, resmetseqs, metseqs);
-                    var legend = createSeqLegend();
+                    var legend = createSeqLegend(scope.query);
                     var h = '<div class="browser-seq-tpl">'+
                         '<div class="browser-seq-legends pull-right">'+legend+'</div>'+
                         '<div class="browser-seq-seqs pull-left">'+seqs+'</div>'+
