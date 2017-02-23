@@ -736,7 +736,7 @@ sub fetch_by_stable_id {
 	
 	# Flag of 'get_analysis' is active. By default 'all'
 	unless ( defined $sources ) { $sources = 'all' }
-			
+		
 	if ($type eq 'gene') {
 		$entity = $self->fetch_by_gene_stable_id($stable_id, $sources); 
 	} elsif ($type eq 'transcript') {
@@ -859,10 +859,6 @@ sub fetch_entity_by_xref_entry {
 			my ($coordinate_list) = $self->dbadaptor->query_coordinate(entity_id => $entity_id);
 			if (defined $coordinate_list and defined $coordinate_list->[0]) {
 				$coordinate = $coordinate_list->[0];
-			}
-			else {
-				#throw('Wrong coordinate');
-				warning('No coordinate');
 			}
 		};
 		throw('Wrong coordinate') if ($@);
@@ -1020,11 +1016,7 @@ sub fetch_by_gene_stable_id {
 		if (defined $coordinate_list and defined $coordinate_list->[0]) {
 			$coordinate = $coordinate_list->[0];
 		}
-		else {
-			throw('Wrong coordinate');
-		}
 	};
-	#throw('Wrong coordinate') if ($@);
 	warning('Wrong coordinate') if ($@);
 
 	# Get the list of datasources for this gene
@@ -1077,6 +1069,12 @@ sub fetch_by_gene_stable_id {
 		throw('Wrong xref identify') if ($@);	
 	}
 	
+	# Give the gene identifier for the query in transcript.
+	# In the case of APPRIS gene data-set, there are entities with the same identifier
+	unless ( defined $region ) {
+		$region->{'gene_id'} = $entity->{'identifier'};
+	}
+		
 	# Get transcript list
 	my ($transcripts);
 	my ($index_transcripts);
@@ -1162,28 +1160,45 @@ sub fetch_by_transc_stable_id {
 	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
+	# If there are multiple entities for one identifier (cases in APPRIS gene data-set), we use the gene_id to disambiguate but
+	# If we don't have the gene_id, then try luck with the first entity.
 	my ($entity);
 	eval {
 		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
-		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
+		if (defined $entity_list and scalar(@{$entity_list}) == 1) {
 			$entity = $entity_list->[0];
 		}
+		elsif (defined $entity_list and scalar(@{$entity_list}) > 1) {
+			if ( defined $region and exists $region->{'gene_id'} ) {
+				foreach my $e ( @{$entity_list} ) {
+					my ($xref_id_list) = $self->dbadaptor->query_xref_identify
+					(
+						entity_id => $e->{'entity_id'},
+						datasource_id => $gene_datasource_id
+					);
+					if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
+						if ( $xref_id_list->[0]->{'identifier'} eq $region->{'gene_id'} ) {
+							$entity = $e; last;
+						}
+					}
+				}
+			}
+			else {
+				$entity = $entity_list->[0]; # Try your Luck. We choose the first one.
+			}
+		}
 		else {
-			warning('Argument must be a correct stable id');
+			throw('Argument must be a correct stable id');
 		}
 	};
 	return undef if ( $@ or !(defined $entity) );
 	
-	# Get coordinate of entity
+	# Get coordinate of entity, if exists
 	my ($coordinate);
 	eval {
 		my ($coordinate_list) = $self->dbadaptor->query_coordinate(entity_id => $entity->{'entity_id'});
 		if (defined $coordinate_list and defined $coordinate_list->[0]) {
 			$coordinate = $coordinate_list->[0];
-		}
-		else {
-			#throw('Wrong coordinate');
-			warning('No coordinate');
 		}
 	};
 	throw('Wrong coordinate') if ($@);
@@ -1250,7 +1265,7 @@ sub fetch_by_transc_stable_id {
 	}
 
 	# Get translation
-	my ($translate) = $self->fetch_by_transl_stable_id($stable_id);
+	my ($translate) = $self->fetch_by_transl_stable_id($stable_id, $region);
 
 	# Get exons
 	my ($exons);
@@ -1329,7 +1344,7 @@ sub fetch_by_transc_stable_id {
 =cut
 
 sub fetch_by_transl_stable_id {
-	my ($self, $stable_id) = @_;
+	my ($self, $stable_id, $region) = @_;
 	
 	# Connection to DBAdaptor
 	unless ( defined $self->dbadaptor ) {
@@ -1356,11 +1371,32 @@ sub fetch_by_transl_stable_id {
 	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
+	# If there are multiple entities for one identifier (cases in APPRIS gene data-set), we use the gene_id to disambiguate but
+	# If we don't have the gene_id, then try luck with the first entity.
 	my ($entity);
 	eval {
 		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
-		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
+		if (defined $entity_list and scalar(@{$entity_list}) == 1) {
 			$entity = $entity_list->[0];
+		}
+		elsif (defined $entity_list and scalar(@{$entity_list}) > 1) {
+			if ( defined $region and exists $region->{'gene_id'} ) {
+				foreach my $e ( @{$entity_list} ) {
+					my ($xref_id_list) = $self->dbadaptor->query_xref_identify
+					(
+						entity_id => $e->{'entity_id'},
+						datasource_id => $gene_datasource_id
+					);
+					if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
+						if ( $xref_id_list->[0]->{'identifier'} eq $region->{'gene_id'} ) {
+							$entity = $e; last;
+						}
+					}
+				}
+			}
+			else {
+				$entity = $entity_list->[0]; # Try your Luck. We choose the first one.
+			}
 		}
 		else {
 			throw('Argument must be a correct stable id');
@@ -1545,11 +1581,32 @@ sub fetch_analysis_by_stable_id {
 	throw('Wrong datasource') if ($@);	
 
 	# Get entity report
+	# If there are multiple entities for one identifier (cases in APPRIS gene data-set), we use the gene_id to disambiguate but
+	# If we don't have the gene_id, then try luck with the first entity.
 	my ($entity);
 	eval {
 		my ($entity_list) = $self->dbadaptor->query_entity(identifier => $stable_id, datasource_id => $transcript_datasource_id);
-		if (defined $entity_list and scalar(@{$entity_list}) > 0) {
+		if (defined $entity_list and scalar(@{$entity_list}) == 1) {
 			$entity = $entity_list->[0];
+		}
+		elsif (defined $entity_list and scalar(@{$entity_list}) > 1) {
+			if ( defined $region and exists $region->{'gene_id'} ) {
+				foreach my $e ( @{$entity_list} ) {
+					my ($xref_id_list) = $self->dbadaptor->query_xref_identify
+					(
+						entity_id => $e->{'entity_id'},
+						datasource_id => $gene_datasource_id
+					);
+					if (defined $xref_id_list and scalar(@{$xref_id_list}) > 0) {
+						if ( $xref_id_list->[0]->{'identifier'} eq $region->{'gene_id'} ) {
+							$entity = $e; last;
+						}
+					}
+				}
+			}
+			else {
+				$entity = $entity_list->[0]; # Try your Luck. We choose the first one
+			}
 		}
 		else {
 			throw('Argument must be a correct stable id');
@@ -1572,7 +1629,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No firestar analysis') if ($@);
 			eval {
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_firestar_residues(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {

@@ -350,7 +350,6 @@ sub get_features
 						push(@{$features}, $feat) ;
 					}
 				}
-
 			}
 			elsif ( ($type eq 'name') and $inputs ) {
 				foreach my $input (split(',', $inputs)) {
