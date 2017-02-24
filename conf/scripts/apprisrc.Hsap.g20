@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/e76_g20"
 
-export APPRIS_WS_DATE="homo_sapiens/e76v20"
+export APPRIS_WS_DATE="homo_sapiens/e76v21"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -45,11 +45,11 @@ export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
 
 #export APPRIS_E_VERSION=81
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v20.annotation.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v21.annotation.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.v20.pc_transcripts.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.v21.pc_transcripts.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v20.pc_translations.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v21.pc_translations.fa"
 
 #export APPRIS_GENE_LIST=""
 

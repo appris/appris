@@ -8,39 +8,39 @@
 [HOMO_SAPIENS_DB]
   specie_name=Human  
   specie=homo_sapiens
-  db=appris_homo_sapiens_rs107v20
+  db=appris_homo_sapiens_rs107v21
 
 [MUS_MUSCULUS_DB]
   specie_name=Mouse
   specie=mus_musculus
-  db=appris_mus_musculus_rs106v20
+  db=appris_mus_musculus_rs106v21
   
 [RATTUS_NORVEGICUS_DB]
   specie_name=Rat
   specie=rattus_norvegicus
-  db=appris_rattus_norvegicus_rs106v20
+  db=appris_rattus_norvegicus_rs106v21
   
 [DANIO_RERIO_DB]
   specie_name=Zebrafish
   specie=danio_rerio
-  db=appris_danio_rerio_rs106v20
+  db=appris_danio_rerio_rs106v21
 
 [SUS_SCROFA_DB]
   specie_name=Pig
   specie=sus_scrofa
-  db=appris_sus_scrofa_rs106v20
+  db=appris_sus_scrofa_rs106v21
   
 [PAN_TROGLODYTES_DB]
   specie_name=Chimp
   specie=pan_troglodytes
-  db=appris_pan_troglodytes_rs106v20
+  db=appris_pan_troglodytes_rs106v21
   
 [DROSOPHILA_MELANOGASTER_DB]
   specie_name=Fruitfly
   specie=drosophila_melanogaster
-  db=appris_drosophila_melanogaster_rs106v20
+  db=appris_drosophila_melanogaster_rs106v21
  
 [CAENORHABDITIS_ELEGANS_DB]
   specie_name=WormBase
   specie=caenorhabditis_elegans
-  db=appris_caenorhabditis_elegans_rs106v20
+  db=appris_caenorhabditis_elegans_rs106v21
