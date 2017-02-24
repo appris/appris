@@ -287,6 +287,7 @@ sub find_highest_scoring_domains_combinations{
 		
 		# Transfer to other isoforms with the same sequence if there no a other domain that covers this subsequence
 		my $domain_seq = substr($gene->{$isoform}{seq}, $start - 1, $end - $start + 1);
+		unless ( defined $domain_seq ) { next; }
 		
 		foreach my $other_isoform (keys %$gene){
 			if($other_isoform eq $isoform){
