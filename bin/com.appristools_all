@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#appristools -p 1234 -c conf/scripts/apprisrc.Hsap.appris -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.a1v21.log &
+
+#appristools -p 1234 -c conf/scripts/apprisrc.Mmus.appris -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Mmus.a1v21.log &
+
+appristools -p 1234 -c conf/scripts/apprisrc.Cele -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Cele.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Dmel -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Dmel.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Drer -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Drer.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Drer.e77 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Drer.e77v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Drer.uniprot -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Drer.up201610v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.g19 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.g19v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.g20 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.g20v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.g22 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.g22v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.g23 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.g23v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.g24 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.g24v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.refseq -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.rs107v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.rs105 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.rs105v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Hsap.uniprot -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Hsap.up201606v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Mmus -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Mmus.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Mmus.refseq -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Mmus.rs106v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Mmus.uniprot -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Mmus.up201610v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Ptro -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Ptro.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Rnor -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Rnor.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Rnor.e77 -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Rnor.e87v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Rnor.uniprot -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Rnor.up201610v21.log &
+appristools -p 1234 -c conf/scripts/apprisrc.Sscr -f 'gtf,bed,bed12' -l info &>> tmp/logs/appristools.Sscr.e87v21.log &
+
