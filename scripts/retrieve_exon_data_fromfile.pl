@@ -20,11 +20,10 @@ use common;
 ###################
 use vars qw(
 	$LOCAL_PWD
-	$GENCODE_TSL_FILE
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens76.v7.9Feb2015/gencode.tsl.e78.txt';
+#$GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens76.v7.9Feb2015/gencode.tsl.e78.txt';
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
@@ -77,7 +76,8 @@ sub extract_gencode_tsl($);
 sub get_exon_data($$);
 
 # extract GENCODE/TSL info
-my ($GEN_TSL_REPORT) = extract_gencode_tsl($GENCODE_TSL_FILE);
+my ($GEN_TSL_REPORT);
+#my ($GEN_TSL_REPORT) = extract_gencode_tsl($GENCODE_TSL_FILE);
 #$logger->debug("GENCODE_TSL_REPORT:\n".Dumper($GEN_TSL_REPORT)."\n");
 
 #################
@@ -146,9 +146,16 @@ sub main()
 
 	# get the overlap regions PI+NPI
 	$logger->info("-- get the overlapping regions PI+NPI -------\n");
-	my ($outfile_OVER) = $outpath.'/appris_data.exons.OVER.gff';
+	my ($outfile_OVER_txt) = $outpath.'/appris_data.exons.OVER.txt';
 	eval {
-		my ($cmd) = "intersectBed -a $outfile_prin -b $outfile_alt -wb > $outfile_OVER";
+		my ($cmd) = "intersectBed -a $outfile_prin -b $outfile_alt -wb > $outfile_OVER_txt";
+		$logger->debug("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	throw("getting over regions") if($@);
+	my ($outfile_OVER_gff) = $outpath.'/appris_data.exons.OVER.gff';
+	eval {
+		my ($cmd) = "cut -f 1-9 $outfile_OVER_txt > $outfile_OVER_gff";
 		$logger->debug("\n** script: $cmd\n");
 		system ($cmd);
 	};
@@ -234,7 +241,8 @@ sub get_exon_data($$)
 
 		#my ($g_report);		
 		my ($e_report);
-		my ($num_transc) = 0;
+		my ($num_transc) = $labelset->{$gene_id}->{'num_trans'};
+		my ($num_isof) = $labelset->{$gene_id}->{'num_isof'};
 		my ($g_appris_annot) = 'REJECTED';
 		my ($g_appris_transc_list) = '';
 		
@@ -346,7 +354,6 @@ sub get_exon_data($$)
 						# save trans report
 						#$g_report->{'chr'}								= $chr;					
 						#$g_report->{'transcripts'}->{$transcript_id}	= $t_report if ( defined $t_report );
-						$num_transc++;
 					}											
 				}
 			}
@@ -391,12 +398,12 @@ sub get_exon_data($$)
 					}
 				}				
 				# extract GENCODE/TSL info
-				if ( exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'gencode'} ) {
+				if ( defined $GEN_TSL_REPORT and exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'gencode'} ) {
 					if ( $g_annot eq '-' ) {
 						$g_annot = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'gencode'};
 					}
 				}
-				if ( exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'} ) {
+				if ( defined $GEN_TSL_REPORT and exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'} ) {
 					# get the best TSL
 					if ( $t_annot eq '-' ) {
 						$t_annot = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'};
@@ -427,6 +434,8 @@ sub get_exon_data($$)
 						'exon_id "'.$exon_id.'"'."; ".
 						'gene_id "'.$gene_id.'"'."; ".
 						'gene_name "'.$gene_name.'"'."; ".
+						'num_transc "'.$num_transc.'"'."; ".
+						'num_isof "'.$num_isof.'"'."; ".
 						'transc_list "'.$transc_list.'"'."; ".
 						'biotype_list "'.$biotype_list.'"'."; ".
 						'appris_gene_annot "'.$g_appris_annot.'"'."; ".
