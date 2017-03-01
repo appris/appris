@@ -225,6 +225,15 @@ sub get_main_report($$;$)
 				$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'no_codons'}=$no_codons;
 			}
 			
+			# add the list of proteins
+			my ($seq) = undef;
+			if ( exists $seq_report->{$gene_id} and exists $seq_report->{$gene_id}->{'transcripts'}->{$transcript_id} ) {
+				$seq = $seq_report->{$gene_id}->{'transcripts'}->{$transcript_id};
+				unless ( exists $report->{$gene_id}->{'isof_seqs'}->{$seq} ) {
+					push(@{$report->{$gene_id}->{'isof_seqs'}->{$seq}}, $transcript_id); $report->{$gene_id}->{'num_isof'}++;
+				}
+			}
+
 			# add the protein length
 			$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'aa_length'}=$prot_len;
 
@@ -232,29 +241,19 @@ sub get_main_report($$;$)
 			# then we add new ccds if the seq is unique.				
 			if($ccds_id ne '-') {
 				$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'ccds_id'}=$ccds_id;
-				my ($g_transl_seq);
-				if ( exists $seq_report->{$gene_id} ) {
-					$g_transl_seq = $seq_report->{$gene_id};
-				}
-				if ( defined $g_transl_seq and
-					 exists $g_transl_seq->{'transcripts'} and 
-					 exists $g_transl_seq->{'transcripts'}->{$transcript_id} and defined $g_transl_seq->{'transcripts'}->{$transcript_id} )
-				{
-					my ($new_seq) = $g_transl_seq->{'transcripts'}->{$transcript_id};
-					unless ( exists $report->{$gene_id}->{'isof_seqs'}->{$new_seq} ) {
-						push(@{$report->{$gene_id}->{'isof_seqs'}->{$new_seq}}, $transcript_id); $report->{$gene_id}->{'num_isof'}++;
-					}					
+				if ( defined $seq ) {
 					if (exists $report->{$gene_id}->{'ccds_id'} and
 						exists $report->{$gene_id}->{'ccds_id'}->{$ccds_id} and 
-						defined $report->{$gene_id}->{'ccds_id'}->{$ccds_id}) {
-							my ($old_seq) = $report->{$gene_id}->{'ccds_id'}->{$ccds_id};
-							if ($old_seq ne $new_seq) { # add new ccds if the seq is different
-								my $key = $ccds_id.'-'.$transcript_id;
-								$report->{$gene_id}->{'ccds_id'}->{$key} = $new_seq;
-							}
+						defined $report->{$gene_id}->{'ccds_id'}->{$ccds_id}
+					){
+						my ($old_seq) = $report->{$gene_id}->{'ccds_id'}->{$ccds_id};
+						if ($old_seq ne $seq) { # add new ccds if the seq is different
+							my $key = $ccds_id.'-'.$transcript_id;
+							$report->{$gene_id}->{'ccds_id'}->{$key} = $seq;
+						}
 					}
 					else {
-						$report->{$gene_id}->{'ccds_id'}->{$ccds_id} = $new_seq;
+						$report->{$gene_id}->{'ccds_id'}->{$ccds_id} = $seq;
 					}
 				}
 			}
@@ -390,31 +389,6 @@ sub get_label_report($$;$)
 			# then we add new ccds if the seq is unique.				
 			if($ccds_id ne '-') {
 				$report->{$gene_id}->{'transcripts'}->{$transcript_id}->{'ccds_id'}=$ccds_id;
-#				my ($g_transl_seq);
-#				if ( exists $seq_report->{$gene_id} ) {
-#					$g_transl_seq = $seq_report->{$gene_id};
-#				}
-#				if ( defined $g_transl_seq and
-#					 exists $g_transl_seq->{'transcripts'} and 
-#					 exists $g_transl_seq->{'transcripts'}->{$transcript_id} and defined $g_transl_seq->{'transcripts'}->{$transcript_id} )
-#				{
-#					my ($new_seq) = $g_transl_seq->{'transcripts'}->{$transcript_id};
-#					unless ( exists $report->{$gene_id}->{'isof_seqs'}->{$new_seq} ) {
-#						push(@{$report->{$gene_id}->{'isof_seqs'}->{$new_seq}}, $transcript_id); $report->{$gene_id}->{'num_isof'}++;
-#					}
-#					if (exists $report->{$gene_id}->{'ccds_id'} and
-#						exists $report->{$gene_id}->{'ccds_id'}->{$ccds_id} and 
-#						defined $report->{$gene_id}->{'ccds_id'}->{$ccds_id}) {
-#							my ($old_seq) = $report->{$gene_id}->{'ccds_id'}->{$ccds_id};
-#							if ($old_seq ne $new_seq) { # add new ccds if the seq is different
-#								my $key = $ccds_id.'-'.$transcript_id;
-#								$report->{$gene_id}->{'ccds_id'}->{$key} = $new_seq;
-#							}
-#					}
-#					else {
-#						$report->{$gene_id}->{'ccds_id'}->{$ccds_id} = $new_seq;
-#					}
-#				}
 				if ( defined $seq ) {
 					if (exists $report->{$gene_id}->{'ccds_id'} and
 						exists $report->{$gene_id}->{'ccds_id'}->{$ccds_id} and 

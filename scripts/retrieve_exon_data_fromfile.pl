@@ -23,16 +23,12 @@ use vars qw(
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-#$GENCODE_TSL_FILE			= '/Users/jmrodriguez/projects/APPRIS/data/homo_sapiens/ens76.v7.9Feb2015/gencode.tsl.e78.txt';
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
 my ($data_file) = undef;
 my ($translations_file) = undef;
 my ($input_main_file) = undef;
-my ($input_label_file) = undef;
-my ($input_seq_file) = undef;
-my ($input_data_file) = undef;
 my ($outpath) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -41,7 +37,7 @@ my ($loglevel) = undef;
 &GetOptions(
 	'data=s'			=> \$data_file,
 	'transl=s'			=> \$translations_file,
-	'label=s'			=> \$input_label_file,
+	'main=s'			=> \$input_main_file,
 	'outpath=s'			=> \$outpath,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -50,7 +46,7 @@ my ($loglevel) = undef;
 );
 
 # Required arguments
-unless ( defined $data_file and defined $translations_file and defined $input_label_file and defined $outpath )
+unless ( defined $data_file and defined $translations_file and defined $input_main_file and defined $outpath )
 {
 	print `perldoc $0`;
 	exit 1;
@@ -72,13 +68,8 @@ $logger->init_log($str_params);
 #####################
 # Method prototypes #
 #####################
-sub extract_gencode_tsl($);
 sub get_exon_data($$);
-
-# extract GENCODE/TSL info
-my ($GEN_TSL_REPORT);
-#my ($GEN_TSL_REPORT) = extract_gencode_tsl($GENCODE_TSL_FILE);
-#$logger->debug("GENCODE_TSL_REPORT:\n".Dumper($GEN_TSL_REPORT)."\n");
+sub add_codons($$);
 
 #################
 # Method bodies #
@@ -91,14 +82,14 @@ sub main()
 	$logger->debug("DATA_REPORT:\n".Dumper($data_report)."\n");
 
 	# Get data from file
-	$logger->info("-- get label data from files -------\n");
-	my ($label_report) = common::get_label_report($input_label_file, $translations_file, $data_file);	
-	$logger->debug("MAIN_REPORT:\n".Dumper($label_report)."\n");
+	$logger->info("-- get main data from files -------\n");
+	my ($main_report) = common::get_main_report($input_main_file, $translations_file, $data_file);	
+	$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
 	
 	# Get data by region
 	$logger->info("-- get exon data -------\n");
 	my ($outfile) = $outpath.'/appris_data.exons.gff';
-	my ($output_content) = get_exon_data($data_report, $label_report);	
+	my ($output_content) = get_exon_data($data_report, $main_report);	
 	if ($output_content ne '') {
 		my ($printing_file_log) = printStringIntoFile($output_content, $outfile);
 		$logger->error("printing") unless(defined $printing_file_log);		
@@ -170,58 +161,6 @@ sub main()
 #		my ($printing_file_log) = printStringIntoFile($outcont_NPI_wCodons, $outfile_NPI_wCodons);
 #		$logger->error("printing") unless(defined $printing_file_log);		
 #	}
-		
-	
-#	# get the specific principal exons (that do not overlap with alternative exons)
-#	$logger->info("-- get the specific principal exons -------\n");
-#	my ($outfile_PI) = $outpath.'/appris_data.exons.PI.gff';
-#	eval {
-#		my ($cmd) = "intersectBed -v -a $outfile_prin -b $outfile_alt > $outfile_PI";
-#		$logger->debug("\n** script: $cmd\n");
-#		system ($cmd);
-#	};
-#	throw("getting prin exons that do not overlap") if($@);
-#		
-#	# get the specific alternative exons (that do not overlap with principal exons)
-#	$logger->info("-- get the specific alternative exons -------\n");
-#	my ($outfile_NPI) = $outpath.'/appris_data.exons.NPI.gff';
-#	eval {
-#		my ($cmd) = "intersectBed -v -a $outfile_alt -b $outfile_prin > $outfile_NPI";
-#		$logger->debug("\n** script: $cmd\n");
-#		system ($cmd);
-#	};
-#	throw("getting alt exons that do not overlap") if($@);
-
-
-#	$logger->info("-- merge over regions -------\n");
-#	my ($outfile_OVER) = $outpath.'/appris_data.exons.OVER.gff';
-#	eval {
-#		#my ($cmd) = "bedtools merge -i $outfile_aOVER -c 4,5,6,7,8,9 -o collapse -delim '|' > $outfile_OVER ";
-#		my ($cmd) = "bedtools merge -i $outfile_aOVER -c 9 -o collapse -delim '|' > $outfile_OVER ";
-#		$logger->debug("\n** script: $cmd\n");
-#		system ($cmd);
-#	};
-#	throw("mergging over regions") if($@);
-	
-	
-#	# get prin transc
-#	$logger->info("-- get count bp of principal exons -------\n");
-#	eval {
-#		my ($cmd) = "bedtools coverage -a $outfile_prin -b $outfile_prin | cut -f 12 | awk '{s+=$1} END {printf \"%.0f\", s}'";
-#		$logger->debug("\n** script: $cmd\n");
-#		system ($cmd);
-#	};
-#	throw("getting principal exons") if($@);
-#		
-#	# get prin transc
-#	$logger->info("-- get count bp of alternative exons -------\n");
-#	eval {
-#		my ($cmd) = "bedtools coverage -a $outfile_alt -b $outfile_alt | cut -f 12 | awk '{s+=$1} END {printf \"%.0f\", s}'";
-#		$logger->debug("\n** script: $cmd\n");
-#		system ($cmd);
-#	};
-#	throw("getting principal exons") if($@);
-
 	
 	$logger->finish_log();
 	
@@ -230,8 +169,7 @@ sub main()
 
 sub get_exon_data($$)
 {
-	my ($dataset, $labelset) = @_;
-	#my ($c_report);
+	my ($dataset, $mainset) = @_;
 	my ($output) = '';
 	
 	foreach my $gene (@{$dataset}) {
@@ -239,10 +177,9 @@ sub get_exon_data($$)
 		my ($gene_name) = $gene->external_name;
 		my ($chr) = $gene->chromosome;
 
-		#my ($g_report);		
 		my ($e_report);
-		my ($num_transc) = $labelset->{$gene_id}->{'num_trans'};
-		my ($num_isof) = $labelset->{$gene_id}->{'num_isof'};
+		my ($num_transc) = $mainset->{$gene_id}->{'num_trans'};
+		my ($num_isof) = $mainset->{$gene_id}->{'num_isof'};
 		my ($g_appris_annot) = 'REJECTED';
 		my ($g_appris_transc_list) = '';
 		
@@ -254,7 +191,6 @@ sub get_exon_data($$)
 
 			if ($transcript->translate and $transcript->translate->cds) {
 				my ($translate) = $transcript->translate;
-				#my ($cds) = $translate->cds;			
 				my ($ccds_id) = '-';				
 				if ( $transcript->xref_identify ) {
 					foreach my $xref_identify (@{$transcript->xref_identify}) {								
@@ -264,25 +200,10 @@ sub get_exon_data($$)
 					}					
 				}
 				my ($t_biotype) = $transcript->biotype;
+				my ($t_tsl) = $transcript->tsl;
 				# get appris annotation
-				#my ($a_analysis) = $registry->fetch_analysis_by_stable_id($transcript_id,'appris');
-				my ($a_analysis) = $labelset->{$gene_id}->{'transcripts'}->{$transcript_id}->{'annotations'};
+				my ($a_analysis) = $mainset->{$gene_id}->{'transcripts'}->{$transcript_id}->{'annotations'};
 				if ( defined $a_analysis and (scalar(@{$a_analysis}) >= 10) ) {
-					#my ($appris_annot) = $a_analysis->[9];
-					#my ($a_annot);
-					#if ( $appris_annot eq 'YES' ) {
-					#	$a_annot = 'PRINCIPAL';
-					#	$g_appris_annot = 'PRINCIPAL';
-					#	$g_appris_transc_list .= $transcript_id.',';
-					#}
-					#elsif ( $appris_annot eq 'UNKNOWN' ) {
-					#	$a_annot = 'ALTERNATIVE';
-					#	$g_appris_annot = 'ALTERNATIVE';
-					#	$g_appris_transc_list .= $transcript_id.',';	
-					#}
-					#elsif ( $appris_annot eq 'NO' ) {
-					#	$a_annot = 'REJECTED';					
-					#}					
 					my ($appris_annot) = $a_analysis->[10];
 					my ($a_annot);
 					if ( $appris_annot =~ /PRINCIPAL/ ) {
@@ -292,38 +213,23 @@ sub get_exon_data($$)
 					}
 					elsif ( $appris_annot =~ /ALTERNATIVE/ ) {
 						$a_annot = $appris_annot;
-						#$g_appris_annot = $appris_annot;
-						#$g_appris_transc_list .= $transcript_id.',';
 					}
 					elsif ( $appris_annot eq 'MINOR' ) {
 						$a_annot = $appris_annot;					
 					}					
-					if ( defined $a_annot ) {
-						
+					if ( defined $a_annot ) {						
 						# get isoform annotation (appris)
 						$t_report->{'name'}				= $transcript_name;
 						$t_report->{'ccds_id'}			= $ccds_id;
 						$t_report->{'biotype'}			= $t_biotype;
+						$t_report->{'tsl'}				= $t_tsl;
 						$t_report->{'appris_annot'}		= $a_annot;
-						#$g_report->{'cds'}				= $cds;
 						
 						# get specie conservation (corsair)
-						#my ($c_analysis) = $registry->fetch_analysis_by_stable_id($transcript_id,'corsair');						
-						#if ( $c_analysis and $c_analysis->corsair and defined $c_analysis->corsair->score ) {
-						#	$t_report->{'corsair_score'} = $c_analysis->corsair->score;								
-						#}
-						my ($corsair_annot) = $a_analysis->[2];;
-						my ($c_annot);
-						if ( ($corsair_annot eq 'YES') or ($corsair_annot eq 'UNKNOWN') ) {
-							$c_annot = 'CONSERVE';						
-						}
-						elsif ( $corsair_annot eq 'NO' ) {
-							$c_annot = 'NO_CONSERVE';
-						}
-						if ( defined $c_annot ) {
-							$t_report->{'corsair_annot'} = $c_annot;
+						my ($corsair_annot) = $a_analysis->[2];
+						if ( defined $corsair_annot ) {
+							$t_report->{'corsair_score'} = $corsair_annot;
 						}						
-						
 						# cds annotation
 						for (my $icds = 0; $icds < scalar(@{$translate->cds}); $icds++) {
 							my ($cds) = $translate->cds->[$icds];	
@@ -340,26 +246,21 @@ sub get_exon_data($$)
 							if ( exists $t_report->{'appris_annot'} and defined $t_report->{'appris_annot'} ) {
 								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'appris_annot'} = $t_report->{'appris_annot'};
 							}
-							#if ( exists $t_report->{'corsair_score'} and defined $t_report->{'corsair_score'} ) {
-							#	$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'corsair_score'} = $t_report->{'corsair_score'};
-							#}							
-							if ( exists $t_report->{'corsair_annot'} and defined $t_report->{'corsair_annot'} ) {
-								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'corsair_annot'} = $t_report->{'corsair_annot'};
+							if ( exists $t_report->{'corsair_score'} and defined $t_report->{'corsair_score'} ) {
+								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'corsair_score'} = $t_report->{'corsair_score'};
 							}
 							if ( exists $t_report->{'biotype'} and defined $t_report->{'biotype'} ) {
 								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'biotype'} = $t_report->{'biotype'};
 							}
+							if ( exists $t_report->{'tsl'} and defined $t_report->{'tsl'} ) {
+								$e_report->{$cds_index}->{'trans'}->{$transcript_id}->{'tsl'} = $t_report->{'tsl'};
+							}
 						}							
-																		
-						# save trans report
-						#$g_report->{'chr'}								= $chr;					
-						#$g_report->{'transcripts'}->{$transcript_id}	= $t_report if ( defined $t_report );
 					}											
 				}
 			}
 		}
 		}
-		#$c_report->{$gene_id} = $g_report if ( defined $g_report );
 		
 		# print sorted exons per gene
 		foreach my $cds_index (sort { $a cmp $b } keys %{$e_report} )
@@ -373,51 +274,44 @@ sub get_exon_data($$)
 			if ( exists $cds_report->{'exon_id'} and defined $cds_report->{'exon_id'} ) {
 				$exon_id = $cds_report->{'exon_id'};
 			}
+			my ($appris_type) = '-';
 			my ($t_appris_annot) = '-';
 			my ($c_annot) = '-';
 			my ($transc_list) = '';
 			my ($biotype_rep);
 			my ($biotype_list) = '';
-			my ($g_annot) = '-';
-			my ($t_annot) = '-';
+			my ($tsl_rep);
+			my ($tsl_list) = '';
 			while ( my ($transc_id, $trans_report) = each(%{$cds_report->{'trans'}}) ) {
-				if ( $trans_report->{'appris_annot'} =~ /^PRINCIPAL/ ) {
-					$t_appris_annot = $trans_report->{'appris_annot'};					
-				}
 				$transc_list .= $transc_id.',';
-				#if ( exists $trans_report->{'corsair_score'} and defined $trans_report->{'corsair_score'} and ($trans_report->{'corsair_score'} > 0) ) {
-				#	$c_annot = $trans_report->{'corsair_score'};
-				#}				
-				if ( exists $trans_report->{'corsair_annot'} and defined $trans_report->{'corsair_annot'} ) {
-						$c_annot = $trans_report->{'corsair_annot'};
-				}				
+				if ( $trans_report->{'appris_annot'} =~ /^PRINCIPAL/ ) {
+					$t_appris_annot = $trans_report->{'appris_annot'};
+					if    ( $appris_type eq '-' ) { $appris_type = 'uniqPI' }
+					elsif ( $appris_type ne 'uniqPI' ) { $appris_type = 'overPI-NPI' }
+				}
+				else {
+					if    ( $appris_type eq '-' ) { $appris_type = 'uniqNPI' }
+					elsif ( $appris_type ne 'uniqNPI' ) { $appris_type = 'overPI-NPI' }
+				}
+				if ( exists $trans_report->{'corsair_score'} and defined $trans_report->{'corsair_score'} and ($trans_report->{'corsair_score'} > 0) ) {
+					$c_annot = $trans_report->{'corsair_score'};
+				}
 				if ( exists $trans_report->{'biotype'} and defined $trans_report->{'biotype'} ) {
 					my ($t) = $trans_report->{'biotype'};
 					unless ( exists $biotype_rep->{$t} ) {
 						$biotype_rep->{$t} = 1;
 					}
 				}				
-				# extract GENCODE/TSL info
-				if ( defined $GEN_TSL_REPORT and exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'gencode'} ) {
-					if ( $g_annot eq '-' ) {
-						$g_annot = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'gencode'};
-					}
-				}
-				if ( defined $GEN_TSL_REPORT and exists $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'} ) {
-					# get the best TSL
-					if ( $t_annot eq '-' ) {
-						$t_annot = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'};
-					}
-					else {
-						my ($new) = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'};
-						if ( ( ($new ne 'NA') and ($t_annot eq 'NA') ) or ( ($new ne 'NA') and ($t_annot ne 'NA') and ($new < $t_annot) ) ) {
-							$t_annot = $GEN_TSL_REPORT->{$gene_id}->{$transc_id}->{'tsl'};
-						}
+				if ( exists $trans_report->{'tsl'} and defined $trans_report->{'tsl'} ) {
+					my ($t) = $trans_report->{'tsl'};
+					unless ( exists $tsl_rep->{$t} ) {
+						$tsl_rep->{$t} = 1;
 					}
 				}				
 			}
 			$transc_list =~ s/\,$//mg;
 			$biotype_list = join(',', keys(%{$biotype_rep}) );
+			$tsl_list = join(',', keys(%{$tsl_rep}) );
 
 			$t_appris_annot = 'ALTERNATIVE' if ( $t_appris_annot eq '-');
 			
@@ -440,48 +334,13 @@ sub get_exon_data($$)
 						'biotype_list "'.$biotype_list.'"'."; ".
 						'appris_gene_annot "'.$g_appris_annot.'"'."; ".
 						'appris_annot "'.$t_appris_annot.'"'."; ".
-						'gencode "'.$g_annot.'"'."; ".
-						'tsl "'.$t_annot.'"'."\n";
+						'appris_type "'.$appris_type.'"'."; ".
+						'corsair_sc "'.$c_annot.'"'."; ".
+						'tsl "'.$tsl_list.'"'."\n";
 			}			
 		}
 	}
 	return $output;
-}
-
-sub extract_gencode_tsl($) {
-	my ($file) = @_;
-	my ($report);
-	
-	local(*FILE);
-	open(FILE,$file) or return undef;
-	my(@string)=<FILE>;
-	close(FILE);
-	
-	#Ensembl Gene ID Ensembl Transcript ID   GENCODE basic annotation        Transcript Support Level (TSL)
-	#ENSG00000276385 ENST00000618935 GENCODE basic   tslNA
-	#ENSG00000197468 ENST00000508957 GENCODE basic   tslNA
-	#ENSG00000275151 ENST00000614589 GENCODE basic   tslNA
-	#ENSG00000231049 ENST00000435337 GENCODE basic   tslNA
-	#ENSG00000280296 ENST00000624531 GENCODE basic	
-	for (my $i = 1; $i <= scalar(@string); $i++) {
-		my ($line) = $string[$i];
-		if ( defined $line and ($line ne '') ) {
-			my (@cols) = split("\t", $line);
-			my ($g_id) = $cols[0];
-			my ($t_id) = $cols[1];
-			my ($g_label) = $cols[2];
-			my ($t_label) = $cols[3];
-			$g_id =~ s/\s*//mg; $g_id =~ s/\.\d*$//;
-			$t_id =~ s/\s*//mg; $t_id =~ s/\.\d*$//;			
-			if ( ($g_label ne '') and ($g_label =~ /GENCODE basic/) ) {
-				$report->{$g_id}->{$t_id}->{'gencode'} = 'GENCODE';				
-			}
-			if ( ($t_label ne '') and ($t_label =~ /tsl([^\s]*)/) ) {
-				$report->{$g_id}->{$t_id}->{'tsl'} = $1;				
-			}
-		}
-	}
-	return $report;
 }
 
 sub get_codon_data($)
@@ -590,7 +449,7 @@ retrieve_exon_data
 	
 	--transl= <Translation sequences file>
 	
-	--label <Result file of APPRIS's labels>
+	--main <Result file of APPRIS's scores>
 	
 	--outpath <Output path to save files>	
 	
@@ -613,7 +472,7 @@ perl retrieve_exon_data_fromfile.pl
 	
 	--transl=data/appris_data.transl.fa
 	
-	--label=data/appris_data.appris_label.txt
+	--main=data/appris_data.appris.txt
 
 	--outpath=data/
 	
