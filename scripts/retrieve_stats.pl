@@ -49,6 +49,7 @@ use vars qw(
 );
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($input_main_file) = undef;
 my ($input_label_file) = undef;
 my ($input_prin_file) = undef;
@@ -92,7 +93,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 #####################
 # Method prototypes #

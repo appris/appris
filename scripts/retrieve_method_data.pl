@@ -25,6 +25,7 @@ $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
 $CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 
 # Input parameters
+my ($str_params) = join "\n", @ARGV;
 my ($species) = undef;
 my ($chr) = undef;
 my ($methods) = undef;
@@ -66,7 +67,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGAPPEND    => $logappend,
 	-LOGLEVEL     => $loglevel,
 );
-$logger->init_log();
+$logger->init_log($str_params);
 
 
 #####################
