@@ -1736,7 +1736,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No matador analysis') if ($@);
 			eval {	
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_matador3d_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
@@ -1788,7 +1788,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No spade analysis') if ($@);
 			eval {
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_spade_alignments(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
@@ -2043,7 +2043,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No crash analysis') if ($@);
 			eval {
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_crash_residues(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
@@ -2098,7 +2098,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No thump analysis') if ($@);
 			eval {
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_thump_helixes(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
@@ -2171,7 +2171,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No proteo analysis') if ($@);
 			eval {	
 				my ($list);
-				if (defined $region) {
+				if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
 					$list = $self->dbadaptor->query_proteo_peptides(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
 				}
 				else {
