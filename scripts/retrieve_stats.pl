@@ -346,7 +346,7 @@ sub _get_prin_stats($$)
 	foreach my $gene_id (keys %{$main_report}) {
 		my ($gene_report) = $main_report->{$gene_id};
 		my ($gene_prin_report) = $prin_report->{$gene_id}->{'appris_num'};
-		my ($num_trans) = scalar(keys %{$gene_report->{'varsplic'}} );
+		my ($num_trans) = scalar(keys %{$gene_report->{'transcripts'}} );
 		# the order is important!!!
 		if ( $num_trans == 1 ) {
 			$report->{'single'}++;
