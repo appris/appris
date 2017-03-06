@@ -37,6 +37,7 @@ export APPRIS_CHR_LIST=""
 # --------------------------------------#
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/uniprot-proteome.extra.fasta"
+#export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/uniprot-proteome.extra.no_genenames.fasta"
 
 export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg38.chrom.sizes"
 
