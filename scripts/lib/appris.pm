@@ -771,10 +771,10 @@ sub create_indata($;$;$)
 	my ($data_file, $transcripts_file, $translations_file) = @_;
 	my ($data);
 	if ( defined $data_file ) {
-		$data = parse_infiles($data_file, $transcripts_file, $translations_file);
+		($data) = parse_infiles($data_file, $transcripts_file, $translations_file);
 	}
 	elsif ( defined $translations_file ) {
-		$data = parse_transl_data($translations_file);
+		($data) = parse_transl_data($translations_file);
 	}
 	unless ( defined $data ) {
 		throw("can not create gencode object\n");
