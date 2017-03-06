@@ -30,7 +30,7 @@ use File::Temp;
 use Config::IniFiles;
 use MIME::Lite;
 
-use APPRIS::Parser qw( parse_gencode parse_infiles );
+use APPRIS::Parser qw( parse_gencode parse_infiles parse_transl_data );
 use APPRIS::Utils::File qw( getTotalStringFromFile printStringIntoFile );
 use APPRIS::Utils::Argument qw( rearrange );
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
@@ -769,8 +769,13 @@ sub create_gencode_data($;$;$)
 sub create_indata($;$;$)
 {
 	my ($data_file, $transcripts_file, $translations_file) = @_;
-	
-	my ($data) = parse_infiles($data_file, $transcripts_file, $translations_file);
+	my ($data);
+	if ( defined $data_file ) {
+		$data = parse_infiles($data_file, $transcripts_file, $translations_file);
+	}
+	elsif ( defined $translations_file ) {
+		$data = parse_transl_data($translations_file);
+	}
 	unless ( defined $data ) {
 		throw("can not create gencode object\n");
 	}
