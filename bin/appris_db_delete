@@ -138,8 +138,8 @@ else if [ "${DATABASE_VERSION}" != ""  ]; then
 	echo "password=${PASSWD}" >> $credentialsFile
 	echo "host=${HOST}" >> $credentialsFile
 
-	echo "mysql --defaults-extra-file=$credentialsFile -Bse \"show databases like '%${DATABASE_VERSION}'\""
-	DBS=$(mysql --defaults-extra-file=$credentialsFile -Bse "show databases like '%${DATABASE_VERSION}'")
+	echo "mysql --defaults-extra-file=$credentialsFile -Bse \"show databases like 'appris_%${DATABASE_VERSION}'\""
+	DBS=$(mysql --defaults-extra-file=$credentialsFile -Bse "show databases like 'appris_%${DATABASE_VERSION}'")
 	rm $credentialsFile
 	for DB in $DBS; do
 		echo "mysql -h ${HOST} -u ${USER} ${PASSWD_PARAMETERS} -e 'DROP DATABASE IF EXISTS ${DB}'"
