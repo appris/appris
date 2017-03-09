@@ -1,5 +1,5 @@
 {
-    "version": "2017_02.v20",
+    "version": "2017_03.v21",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -12,7 +12,7 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -31,7 +31,7 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs107v20",
+                    "id":   "rs107v21",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -49,7 +49,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201606v20",
+                    "id":   "up201606v21",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -67,7 +67,7 @@
                         "transmembrane_helices":    ["GTF"]
                     }
                 },{
-                    "id":   "a1v20",
+                    "id":   "a1v21",
                     "type": "current",
                     "source": {
                         "name": "appris",
@@ -85,7 +85,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "e84v20",
+                    "id":   "e84v21",
                     "type": "archive",
                     "source": {
                         "name": "ensembl",
@@ -108,7 +108,7 @@
                 "id":       "hg19",
                 "name":     "GRCh37",
                 "datasets": [{
-                    "id":   "g19v20",
+                    "id":   "g19v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -127,7 +127,7 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs105v20",
+                    "id":   "rs105v21",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -158,7 +158,7 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -176,7 +176,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs106v20",
+                    "id":   "rs106v21",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -194,7 +194,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v20",
+                    "id":   "up201610v21",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -212,7 +212,7 @@
                         "transmembrane_helices":    ["GTF"]
                     }
                 },{
-                    "id":   "a1v20",
+                    "id":   "a1v21",
                     "type": "current",
                     "source": {
                         "name": "appris",
@@ -243,7 +243,7 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -261,7 +261,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v20",
+                    "id":   "up201610v21",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -283,7 +283,7 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "e77v20",
+                    "id":   "e77v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -314,7 +314,7 @@
                 "id":       "rn6",
                 "name":     "Rnor_6.0",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -332,7 +332,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v20",
+                    "id":   "up201610v21",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -354,7 +354,7 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "e77v20",
+                    "id":   "e77v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -385,7 +385,7 @@
                 "id":       "susScr3",
                 "name":     "Sscrofa10.2",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -416,7 +416,7 @@
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -447,7 +447,7 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -478,7 +478,7 @@
                 "id":       "ce10",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e87v20",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
