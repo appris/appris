@@ -1,0 +1,70 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+
+# ------------------------------------------#
+# Setting up vars of workspaces directories #
+# ------------------------------------------#
+
+export APPRIS_WS_NAME="sus_scrofa/rs105"
+
+export APPRIS_WS_DATE="sus_scrofa/rs105v21"
+
+export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
+
+export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
+
+export APPRIS_DATA_DIR="${APPRIS_WORKSPACE}/data/${APPRIS_WS_DATE}"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
+
+# -----------------------------------------#
+# Setting up the vars for specie workspace #
+# -----------------------------------------#
+
+export APPRIS_SPECIES="Sus scrofa"
+
+export APPRIS_ASSEMBLY="Sscrofa10.2"
+
+export APPRIS_CHR_LIST="NC_010443.4 NC_010444.3 NC_010445.3 NC_010446.4 NC_010447.4 NC_010448.3 NC_010449.4 NC_010450.3 NC_010451.3 NC_010452.3 NC_010453.4 NC_010454.3 NC_010455.4 NC_010456.4 NC_010457.4 NC_010458.3 NC_010459.4 NC_010460.3 NC_010461.4 NC_010462.2 NC_000845.1"
+
+# --------------------------------------#
+# Setting up vars of origin of data set #
+# --------------------------------------#
+
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.annot.gtf"
+
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.transc.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.transl.fa"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/susScr3.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.refseq"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+export APPRIS_NUM_PARALLEL_PROC=4
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+

@@ -23,17 +23,17 @@
 [DANIO_RERIO_DB]
   specie_name=Zebrafish
   specie=danio_rerio
-  db=appris_danio_rerio_rs106v21
+  db=appris_danio_rerio_rs105v21
 
 [SUS_SCROFA_DB]
   specie_name=Pig
   specie=sus_scrofa
-  db=appris_sus_scrofa_rs106v21
+  db=appris_sus_scrofa_rs105v21
   
 [PAN_TROGLODYTES_DB]
   specie_name=Chimp
   specie=pan_troglodytes
-  db=appris_pan_troglodytes_rs106v21
+  db=appris_pan_troglodytes_rs104v21
   
 [DROSOPHILA_MELANOGASTER_DB]
   specie_name=Fruitfly
