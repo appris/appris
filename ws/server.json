@@ -35,7 +35,7 @@
                     "type": "current",
                     "source": {
                         "name": "refseq",
-                        "label": "RefSeq 107",
+                        "label": "RefSeq107",
                         "version": "107"
                     },
                     "database":   "appris_homo_sapiens",
@@ -131,7 +131,7 @@
                     "type": "current",
                     "source": {
                         "name": "refseq",
-                        "label": "RefSeq 105",
+                        "label": "RefSeq105",
                         "version": "105"
                     },
                     "database":   "appris_homo_sapiens",
@@ -180,7 +180,7 @@
                     "type": "current",
                     "source": {
                         "name": "refseq",
-                        "label": "RefSeq 106",
+                        "label": "RefSeq106",
                         "version": "106"
                     },
                     "database":   "appris_mus_musculus",
@@ -249,6 +249,24 @@
                         "name": "ensembl",
                         "label": "Ensembl87",
                         "version": "87"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
+                    "id":   "rs105v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq105",
+                        "version": "105"
                     },
                     "database":   "appris_danio_rerio",
                     "datafiles":   {
@@ -332,6 +350,24 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
+                    "id":   "rs106v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq106",
+                        "version": "106"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                },{
                     "id":   "up201610v21",
                     "type": "current",
                     "source": {
@@ -402,6 +438,24 @@
                         "whole_domains":            ["GTF","BED","BED12"],
                         "transmembrane_helices":    ["GTF","BED","BED12"]
                     }
+                },{
+                    "id":   "rs105v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq105",
+                        "version": "105"
+                    },
+                    "database":   "appris_sus_scrofa",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED","BED12"],
+                        "tertiary_structure":       ["GTF","BED","BED12"],
+                        "vertebrates_conservation": ["GTF","BED","BED12"],
+                        "whole_domains":            ["GTF","BED","BED12"],
+                        "transmembrane_helices":    ["GTF","BED","BED12"]
+                    }
                 }]
             }]
         },
@@ -413,6 +467,28 @@
             "category":     "houses",
             "official":     "panTro4",
             "assemblies":   [{
+                "id":       "panTro5",
+                "name":     "Pan_tro_3.0",
+                "datasets": [{
+                    "id":   "rs104v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq104",
+                        "version": "104"
+                    },
+                    "database":   "appris_pan_troglodytes",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    }
+                }]
+            },{
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
@@ -473,9 +549,9 @@
             "common":       "C.elegans",
             "group":        "invertebrates",
             "category":     "houses",
-            "official":     "ce10",
+            "official":     "ce11",
             "assemblies":   [{
-                "id":       "ce10",
+                "id":       "ce11",
                 "name":     "WBcel235",
                 "datasets": [{
                     "id":   "e87v21",

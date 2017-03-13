@@ -52,6 +52,7 @@ use vars qw(
 	$APPRIS_FEATURES_DIR
 	
 	$FTP_ENSEMBL_PUB
+	$FTP_REFSEQ_PUB
 );
 
 $SRV_NAME				= 'appris@appris';
@@ -71,6 +72,7 @@ $APPRIS_DATA_DIR		= '/home/jmrodriguez/projects/APPRIS/data';
 $APPRIS_FEATURES_DIR	= '/home/jmrodriguez/projects/APPRIS/features';
 
 $FTP_ENSEMBL_PUB		= 'ftp://ftp.ensembl.org/pub';
+$FTP_REFSEQ_PUB			= 'ftp://ftp.ncbi.nlm.nih.gov';
 
 # Extract Server config file
 my ($server_json) = JSON->new();
@@ -273,7 +275,16 @@ sub copy_genefiles()
 					if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {						
 						eval {
 							my ($datadir) = "e$ds_v";
-							my ($cmd) = "cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+							my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+							info($cmd);
+							system($cmd);
+						};
+						throw("creating data workspace") if($@);
+					}					
+					elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {						
+						eval {
+							my ($datadir) = "rs$ds_v";
+							my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
 							info($cmd);
 							system($cmd);
 						};
@@ -307,8 +318,11 @@ sub download_genefiles()
 					throw("creating data workspace") if($@);
 					
 					# download genefiles from data source
-					if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {						
+					if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {
 						_download_genefiles_ensembl($ds_v, $species_id, $as_name, $relspe_dir);
+					}
+					elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {
+						_download_genefiles_refseq($ds_v, $species_id, $as_name, $relspe_dir);
 					}
 				}
 			}			
@@ -352,6 +366,79 @@ sub _download_genefiles_ensembl($$$$)
 		system($cmd);
 	};
 	throw("downloading genefile: ensembl pep") if($@);						
+	 
+	# uncompress files
+	eval {
+		my ($cmd) = "cd $datadir && gzip -d *.gz";
+		info($cmd);
+		system($cmd);
+	};
+	throw("uncompressing genefiles") if($@);						
+}
+sub _download_genefiles_refseq($$$$)
+{
+	# declare local variables
+	my ($r_version, $species_id, $as_name, $outdir) = @_;
+	my ($species_name) = ucfirst($species_id);
+	my ($datadir) = $outdir.'/'."rs$r_version";
+	my ($outfile_data)   = $species_id.'.annot.gtf';
+	my ($outfile_transc) = $species_id.'.transc.fa';
+	my ($outfile_transl) = $species_id.'.transl.fa';
+	
+	#Êcreate data workspace
+	eval {
+		my ($cmd) = "mkdir -p $datadir";
+		info($cmd);
+		system($cmd);
+	};
+	throw("creating genedata workspace") if($@);
+	
+	#Êdownload files	
+	eval {
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/README_CURRENT_RELEASE                  -P $datadir";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq readme file") if($@);			
+	eval {
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/Assembled_chromosomes/chr_accessions_$as_name -P $datadir";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq data") if($@);						
+	eval {
+		my ($i) = "ref_$as_name\_top_level.gff3";
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/GFF/$i.gz        -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq data") if($@);						
+	eval {
+		my ($i) = "rna.fa";
+ 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/RNA/$i.gz       -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq cdna") if($@);						
+	eval {
+		my ($i) = "protein.fa";
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/$i.gz   -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq pep") if($@);						
+	eval {
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/protein.gbk.gz                  -P $datadir";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq pep data") if($@);
+	eval {
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/gene/DATA/gene2ensembl.gz                                     -P $datadir";
+		info($cmd);
+		system($cmd);
+	};
+	throw("downloading genefile: refseq xref with ensembl") if($@);						
 	 
 	# uncompress files
 	eval {
