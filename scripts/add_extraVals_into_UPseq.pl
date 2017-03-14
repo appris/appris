@@ -149,12 +149,24 @@ sub create_xreference($$$) {
 	# Add genename into output report
 	my ($prot_ccds);
 	my ($xref_list) = getTotalStringFromFile($tab_file);
+	# extract the idenx of name of columns
+	my $index_cols = sub {
+		my ($coltxt) = @_;
+		my ($idx);
+		my (@cs) = split("\t", $coltxt);
+		for ( my $i=0; $i < scalar(@cs); $i++ ) {
+			my ($c) = $cs[$i];
+			$idx->{$c} = $i;
+		}
+		return $idx;
+	};
+	my ($idx_cols) = $index_cols->($xref_list->[0]) if ( scalar($xref_list) > 0 );	
 	for ( my $i=1; $i < scalar(@{$xref_list}); $i++ ) { # first line is comment
 		my (@cols) = split('\t', $xref_list->[$i]);
-		my ($id) = $cols[0];
-		my ($name) = $cols[1];
-		my ($gene_name) = $cols[2];
-		my ($ccds_str) = $cols[3];
+		my ($id)        = (exists $idx_cols->{'Entry'})                  ? $cols[$idx_cols->{'Entry'}] : undef;
+		my ($name)      = (exists $idx_cols->{'Entry name'})             ? $cols[$idx_cols->{'Entry name'}] : undef;
+		my ($gene_name) = (exists $idx_cols->{'Gene names  (primary )'}) ? $cols[$idx_cols->{'Gene names  (primary )'}] : undef;
+		my ($ccds_str)  = (exists $idx_cols->{'Cross-reference (CCDS)'}) ? $cols[$idx_cols->{'Cross-reference (CCDS)'}] : undef;
 		if ( defined $ccds_str and $ccds_str ne '' ) {
 			my (@ccds_list) = split(';', $ccds_str);
 			foreach my $ccds_id ( @ccds_list ) {
