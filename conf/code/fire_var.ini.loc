@@ -2,7 +2,7 @@
 home=/local/jmrodriguez/appris/code/src/firestar/source
 lib=/local/jmrodriguez/appris/code/src/firestar/source/lib
 faatmp=/local/jmrodriguez/appris/code/src/firestar/source/tmp/faatmp
-chads=/local/jmrodriguez/appris/db
+chads=/local/jmrodriguez/appris/db/firestar
 [MYSQL]
 dbHost=localhost
 dbName=FireDB
@@ -13,8 +13,8 @@ release=22Aug2013
 nrdb=sprot_clean_trembl_clean_70
 hhbdb=hhblits_
 hhprof=nr20_12Aug11
-blast_path=/local/jmrodriguez/appris/db
-hhdb_path=/local/jmrodriguez/appris/db
+blast_path=/local/jmrodriguez/appris/db/firestar
+hhdb_path=/local/jmrodriguez/appris/db/firestar
 [PROGRAMS]
 square=/local/jmrodriguez/appris/code/src/firestar/source/Square/another_fire_mess_web
 square_test=/local/jmrodriguez/appris/code/src/firestar/source/Square/another_fire_mess_test
