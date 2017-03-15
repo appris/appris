@@ -1,0 +1,143 @@
+##########################################################
+# SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
+##########################################################
+
+# --------------------------------------#
+# Setting up structure global variables #
+# --------------------------------------#
+
+export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
+
+export APPRIS_PROGRAMS_CACHE_DIR="/home/jmrodriguez/projects/APPRIS/appriscache/md5"
+
+export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"
+
+export APPRIS_BIN_DIR="${APPRIS_HOME}/bin"
+
+export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
+
+export APPRIS_FEATURES_DIR="${APPRIS_HOME}/features"
+
+export APPRIS_ANNOT_DIR="${APPRIS_HOME}/annotations"
+
+export APPRIS_DATA_DIR="${APPRIS_HOME}/data"
+
+export APPRIS_TEST_DIR="${APPRIS_HOME}/test"
+
+export APPRIS_TMP_DIR="${APPRIS_HOME}/tmp"
+
+export APPRIS_LOG_DIR="${APPRIS_TMP_DIR}/logs"
+
+export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}"
+
+export APPRIS_CONF_DIR="${APPRIS_HOME}/conf"
+
+export APPRIS_CODE_CONF_DIR="${APPRIS_CONF_DIR}/code"
+
+export APPRIS_WSERVER_CONF_DIR="${APPRIS_CONF_DIR}/ws"
+
+export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_CONF_DIR}/scripts"
+
+export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_BIN_DIR}"
+
+# -------------------------------------#
+# Setting up vars of APPRIS's programs #
+# -------------------------------------#
+
+export APPRIS_PROGRAMS_SRC_DIR="${APPRIS_CODE_DIR}/src"
+
+export APPRIS_PROGRAMS_OPT_DIR="${APPRIS_CODE_DIR}/opt"
+
+export APPRIS_METHODS="firestar,matador3d,spade,corsair,thump,crash,proteo,appris"
+
+# --------------------------------#
+# Setting up the vars for cluster #
+# --------------------------------#
+
+export APPRIS_NUM_PARALLEL_PROC=1
+
+#export APPRIS_SCRIPTS_CLUSTER_INI="${APPRIS_SCRIPTS_CONF_DIR}/cluster.ini"
+
+# ----------------------------------------------------#
+# Setting up vars of external programs used by APPRIS #
+# ----------------------------------------------------#
+
+export APPRIS_PRG_OPT_BLAST_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/blast-2.2.26/bin"
+
+export APPRIS_PRG_OPT_HHSUITE_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/hhsuite-2.0.16-linux-x86_64/bin"
+
+export APPRIS_PRG_OPT_HHSUITE_SCRIPTS_DIR="${APPRIS_PROGRAMS_OPT_DIR}/hhsuite-2.0.16-linux-x86_64/lib/hh/scripts"
+
+export APPRIS_PRG_OPT_PSIPRED_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/psipred3.3/bin"
+
+export APPRIS_PRG_OPT_HMMER_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/hmmer-3.0-linux-intel-x86_64/binaries/"
+
+export APPRIS_PRG_OPT_HMMER_31b2_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/hmmer-3.1b2-linux-intel-x86_64/binaries/"
+
+export APPRIS_PRG_OPT_PFAMSCAN_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/PfamScan"
+
+export APPRIS_PRG_OPT_TMHMM_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/tmhmm-2.0c"
+
+export APPRIS_PRG_OPT_PHOBIUS_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/phobius"
+
+export APPRIS_PRG_OPT_MEMSAT_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/memsat3"
+
+export APPRIS_PRG_OPT_PRODIV_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/prodiv"
+
+export APPRIS_PRG_OPT_KALIGN_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/kalign2/bin"
+
+export APPRIS_PRG_OPT_SIGNALP_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/signalp-3.0"
+
+export APPRIS_PRG_OPT_TARGETP_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/targetp-1.1"
+
+export APPRIS_PRG_OPT_PRANK_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/prank/bin"
+
+export APPRIS_PRG_OPT_SLR_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/slr-1.4.3/bin:${APPRIS_PROGRAMS_OPT_DIR}/slr-1.2/bin"
+
+export APPRIS_PRG_OPT_CLUSTALW_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/clustalw-2.1/bin"
+
+#export APPRIS_PRG_OPT_R_BIN_DIR="${APPRIS_PROGRAMS_OPT_DIR}/R-3.0.1-linux-atris90-x86_64/bin"
+
+export APPRIS_PROGRAMS_OPT_BIN_DIR="${APPRIS_PRG_OPT_BLAST_BIN_DIR}:${APPRIS_PRG_OPT_HHSUITE_BIN_DIR}:${APPRIS_PRG_OPT_HHSUITE_SCRIPTS_DIR}:${APPRIS_PRG_OPT_PSIPRED_BIN_DIR}:${APPRIS_PRG_OPT_HMMER_BIN_DIR}:${APPRIS_PRG_OPT_PFAMSCAN_BIN_DIR}:${APPRIS_PRG_OPT_TMHMM_BIN_DIR}:${APPRIS_PRG_OPT_PHOBIUS_BIN_DIR}:${APPRIS_PRG_OPT_MEMSAT_BIN_DIR}:${APPRIS_PRG_OPT_PRODIV_BIN_DIR}:${APPRIS_PRG_OPT_KALIGN_BIN_DIR}:${APPRIS_PRG_OPT_SIGNALP_BIN_DIR}:${APPRIS_PRG_OPT_TARGETP_BIN_DIR}:${APPRIS_PRG_OPT_PRANK_BIN_DIR}:${APPRIS_PRG_OPT_SLR_BIN_DIR}:${APPRIS_PRG_OPT_CLUSTALW_BIN_DIR}"
+
+export BLASTMAT="${APPRIS_PROGRAMS_DB_DIR}"
+
+export HHLIB="${APPRIS_PROGRAMS_OPT_DIR}/hhsuite-2.0.16-linux-x86_64/lib/hh"
+#export HHLIB="${APPRIS_PROGRAMS_OPT_DIR}/hhsuite-3.0.0"
+
+export PERL5LIB="${APPRIS_PROGRAMS_OPT_DIR}/PfamScan:${PERL5LIB}"
+
+export PATH="${APPRIS_PROGRAMS_OPT_BIN_DIR}:${PATH}"
+
+# ------------------------------#
+# Setting up PERL LIBRARY PATH  #
+# ------------------------------#
+
+export APPRIS_PERL_LIB="${APPRIS_HOME}/lib/appris_perllib"
+
+export APPRIS_PROGRAMS_MODULES_DIR="${APPRIS_HOME}/modules"
+
+export APPRIS_MODULES_PERL_LIB="${APPRIS_PROGRAMS_MODULES_DIR}/lib/perl5"
+
+export PERL5LIB="${PERL5LIB}:${APPRIS_PERL_LIB}:${APPRIS_MODULES_PERL_LIB}"
+
+# ---------------------------#
+# Setting up the ENSEMBL API #
+# ---------------------------#
+
+#module load ensembl/ensembl81
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-compara/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-variation/modules/:${PERL5LIB}"
+
+export PERL5LIB="${APPRIS_PROGRAMS_MODULES_DIR}/ensembl81/ensembl-functgenomics/modules/:${PERL5LIB}"
+
+# ------------------#
+# Add bin into path #
+# ------------------#
+
+export PATH=${APPRIS_HOME}/bin:${PATH}
+
