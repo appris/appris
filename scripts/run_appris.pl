@@ -743,10 +743,10 @@ sub run_cluster_appris($$$)
 				elsif ( ($k eq 'data') or ($k eq 'transc') or ($k eq 'transl') or ($k eq 'outpath') ) {
 					my ($v2) = $v;
 					$v2 =~ s/$ENV{APPRIS_WORKSPACE}/$c_wsbase/;
-					$c_parameters .= " --$k=$v2 ";
+					$c_parameters .= " --$k='$v2' ";
 				}
 				else {
-					$c_parameters .= " --$k=$v ";
+					$c_parameters .= " --$k='$v' ";
 				}
 			}
 			# DEPRECATED: we always use a path as input when execute in a cluster!!! Except we want to run ENSEMBL choice
@@ -775,7 +775,7 @@ sub run_cluster_appris($$$)
 					# do nothing => delete parameters for running on a cluster
 				}
 				else {
-					$c_parameters .= " --$k=$v ";
+					$c_parameters .= " --$k='$v' ";
 				}
 			}
 		}
@@ -863,7 +863,7 @@ sub run_appris($$$)
 	my ($parameters) = '';
 	if ( defined $params ) {
 		while ( my ($k,$v) = each(%{$params}) ) {
-			$parameters .= " --$k=$v ";
+			$parameters .= " --$k='$v' ";
 		}
 	}
 	
