@@ -364,7 +364,7 @@ sub run_getgtf($$$$)
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ensembl/getGTF.pl ".
 							"--id=$id ".
-							"--species=$species ".
+							"--species='$species' ".
 							"--e-version=$e_version ".
 							"--out-data=$data_file ".
 							"--out-pdata=$pdata_file ".
@@ -406,7 +406,7 @@ sub run_getmafucsc($$$$)
 	if ( (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.faa | wc -l`) or (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.nh | wc -l`) ) {
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ucsc/getUCSCAlign.pl ".
-							"--species=$species ".
+							"--species='$species' ".
 							"--data=$data_file ".
 							"--translations=$transl_file ".
 							"--outpath=$datadir ".
@@ -446,7 +446,7 @@ sub run_getecompara($$$$$)
 	if ( (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.faa | wc -l`) or (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.nh | wc -l`) ) {
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ensembl/getEComparaAlign.pl ".
-							"--species=$species ".
+							"--species='$species' ".
 							"--e-version=$e_version ".
 							"--data=$data_file ".
 							"--transcripts=$transc_file ".
@@ -503,7 +503,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> $species
+			'species'		=> "'$species'"
 		};
 		my ($ifiles) = {
 			'annot'			=> $inpath.'/'.'annot.gtf',
@@ -521,7 +521,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> $species,
+			'species'		=> "'$species'",
 			'annot'			=> $data_file,
 			'pannot'		=> $pdata_file,
 			'transc'		=> $transc_file,
@@ -532,7 +532,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> $species,
+			'species'		=> "'$species'",
 			'transl'		=> $transl_file,
 		};		
 	}	

@@ -157,7 +157,7 @@ METHOD_SCRIPT="run_appris"
 # Required var declarations
 OUTPATH_PARAMETERS=""
 if [ "${APPRIS_ANNOT_DIR}" != "" ]; then
-	OUTPATH_PARAMETERS=" --outpath='${APPRIS_ANNOT_DIR}'"
+	OUTPATH_PARAMETERS=" --outpath=${APPRIS_ANNOT_DIR}"
 else
 	echo Error within env variables: APPRIS_ANNOT_DIR!
 	exit 1
@@ -174,15 +174,15 @@ fi
 ENSEMBL_PARAMETERS=""
 GENCODE_PARAMETERS=""
 if [[ "${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" && "${GENCODE_TRANSLATION_FILE}" != "" ]]; then
-	GENCODE_PARAMETERS=" --data='${GENCODE_ANNOTATION_FILE}'"
-	GENCODE_PARAMETERS+=" --transc='${GENCODE_TRANSCRIPT_FILE}'"
-	GENCODE_PARAMETERS+=" --transl='${GENCODE_TRANSLATION_FILE}'"
+	GENCODE_PARAMETERS=" --data=${GENCODE_ANNOTATION_FILE}"
+	GENCODE_PARAMETERS+=" --transc=${GENCODE_TRANSCRIPT_FILE}"
+	GENCODE_PARAMETERS+=" --transl=${GENCODE_TRANSLATION_FILE}"
 else
 	if [ "${APPRIS_E_VERSION}" != "" ]; then
-		ENSEMBL_PARAMETERS=" --e-version='${APPRIS_E_VERSION}'"
+		ENSEMBL_PARAMETERS=" --e-version=${APPRIS_E_VERSION}"
 	else
 		if [ "${GENCODE_TRANSLATION_FILE}" != "" ]; then
-			GENCODE_PARAMETERS=" --transl='${GENCODE_TRANSLATION_FILE}'"
+			GENCODE_PARAMETERS=" --transl=${GENCODE_TRANSLATION_FILE}"
 		else	
 			echo Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!
 			exit 1
@@ -191,30 +191,30 @@ else
 fi
 GENE_LIST_PARAMETERS=""
 if [ "${APPRIS_GENE_LIST}" != "" ]; then
-	GENE_LIST_PARAMETERS=" --gene-list='${APPRIS_GENE_LIST}'"
+	GENE_LIST_PARAMETERS=" --gene-list=${APPRIS_GENE_LIST}"
 fi
 METHOD_PARAMETERS=""
 if [ "${METHODS}" != "" ]; then
-	METHOD_PARAMETERS=" --methods='${METHODS}'"
+	METHOD_PARAMETERS=" --methods=${METHODS}"
 fi
 T_ALIGN_PARAMETERS=""
 if [[ "${APPRIS_TYPE_ALIGN}" != "" && "${APPRIS_E_VERSION}" != "" ]]; then
-	T_ALIGN_PARAMETERS=" --t-align='${APPRIS_TYPE_ALIGN}'"
-	ENSEMBL_PARAMETERS=" --e-version='${APPRIS_E_VERSION}'"
+	T_ALIGN_PARAMETERS=" --t-align=${APPRIS_TYPE_ALIGN}"
+	ENSEMBL_PARAMETERS=" --e-version=${APPRIS_E_VERSION}"
 fi
 if [ "${OUTPUT_DIR}" != "" ]; then
 	APPRIS_ANNOT_DIR="${OUTPUT_DIR}"
 fi
 EMAIL_PARAMETERS=""
 if [ "${EMAIL}" != "" ]; then
-	EMAIL_PARAMETERS=" --email='${EMAIL}'"
+	EMAIL_PARAMETERS=" --email=${EMAIL}"
 fi  
 
 # -----------------------------------------------------------------------------
 # Cached declarations
 CACHED_PARAMETERS=""
 if [ "${APPRIS_CACHED_PATH}" != "" ]; then
-	CACHED_PARAMETERS=" --cached-path='${APPRIS_CACHED_PATH}'"
+	CACHED_PARAMETERS=" --cached-path=${APPRIS_CACHED_PATH}"
 fi
 
 # -----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ if [ "${APPRIS_NUM_PARALLEL_PROC}" != "" ]; then
 fi
 CLUSTER_PARAMETERS=""
 if [ "${APPRIS_SCRIPTS_CLUSTER_INI}" != "" ]; then
-	CLUSTER_PARAMETERS=" --cluster-conf='${APPRIS_SCRIPTS_CLUSTER_INI}'"
+	CLUSTER_PARAMETERS=" --cluster-conf=${APPRIS_SCRIPTS_CLUSTER_INI}"
 fi
 
 # -----------------------------------------------------------------------------
@@ -251,8 +251,8 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 		if [ "${CHROMOSOME[${i}]}" != "" ]; then
 			CHR="${CHROMOSOME[${i}]}"
 			POSITION="${CHR}"
-			POS_PARAMETERS=" --position='${POSITION}'"
-			OUTPATH_PARAMETERS=" --outpath='${APPRIS_ANNOT_DIR}/${POSITION}'"			
+			POS_PARAMETERS=" --position=${POSITION}"
+			OUTPATH_PARAMETERS=" --outpath=${APPRIS_ANNOT_DIR}/${POSITION}"			
 			LOG_POS=".${POSITION}"
 		fi
 		# local parameters
@@ -266,7 +266,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 		# print trace
 		echo "================="
 		echo "perl ${SCRIPT}"
-		echo " --species='${APPRIS_SPECIES}'"
+		echo " --species="${APPRIS_SPECIES}""
 		echo " ${POS_PARAMETERS}"
 		echo " ${GENCODE_PARAMETERS}"
 		echo " ${ENSEMBL_PARAMETERS}"
@@ -282,7 +282,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 	
 		# run method
 		perl ${SCRIPT} \
-			--species='${APPRIS_SPECIES}' \
+			--species="${APPRIS_SPECIES}" \
 			${POS_PARAMETERS} \
 			${GENCODE_PARAMETERS} \
 			${ENSEMBL_PARAMETERS} \
@@ -314,7 +314,7 @@ else
 		# print trace
 		echo "================="
 		echo "perl ${SCRIPT}"
-		echo " --species='${APPRIS_SPECIES}'"
+		echo " --species="${APPRIS_SPECIES}""
 		echo " ${GENCODE_PARAMETERS}"
 		echo " ${ENSEMBL_PARAMETERS}"
 		echo " ${GENE_LIST_PARAMETERS}"
@@ -329,7 +329,7 @@ else
 	
 		# run method
 		perl ${SCRIPT} \
-			--species='${APPRIS_SPECIES}' \
+			--species="${APPRIS_SPECIES}" \
 			${GENCODE_PARAMETERS} \
 			${ENSEMBL_PARAMETERS} \
 			${GENE_LIST_PARAMETERS} \

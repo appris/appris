@@ -333,7 +333,7 @@ sub run_pipeline($$;$;$)
 	# create parameters
 	$logger->info("\t-- create parameters ");
 	my ($params) = {
-		'species'		=> "'$species'"
+		'species'		=> $species
 	};
 	# datafile mode
 	if ( $type_of_input =~ /datafile/ ) {
@@ -438,7 +438,7 @@ sub prepare_appris_seq_params($$)
 	
 	# require parameter
 	my ($params) = {
-		'species'		=> "'$species'",
+		'species'		=> $species,
 		'outpath'		=> $workspace,
 	};
 	
@@ -465,7 +465,7 @@ sub prepare_appris_params($$)
 	
 	# require parameter
 	my ($params) = {
-		'species'		=> "'$species'",
+		'species'		=> $species,
 		'outpath'		=> $workspace,
 	};
 	
