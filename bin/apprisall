@@ -266,7 +266,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 		# print trace
 		echo "================="
 		echo "perl ${SCRIPT}"
-		echo " --species="${APPRIS_SPECIES}""
+		echo " --species='${APPRIS_SPECIES}'"
 		echo " ${POS_PARAMETERS}"
 		echo " ${GENCODE_PARAMETERS}"
 		echo " ${ENSEMBL_PARAMETERS}"
@@ -282,7 +282,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 	
 		# run method
 		perl ${SCRIPT} \
-			--species="${APPRIS_SPECIES}" \
+			--species='${APPRIS_SPECIES}' \
 			${POS_PARAMETERS} \
 			${GENCODE_PARAMETERS} \
 			${ENSEMBL_PARAMETERS} \
@@ -314,7 +314,7 @@ else
 		# print trace
 		echo "================="
 		echo "perl ${SCRIPT}"
-		echo " --species="${APPRIS_SPECIES}""
+		echo " --species='${APPRIS_SPECIES}'"
 		echo " ${GENCODE_PARAMETERS}"
 		echo " ${ENSEMBL_PARAMETERS}"
 		echo " ${GENE_LIST_PARAMETERS}"
@@ -329,7 +329,7 @@ else
 	
 		# run method
 		perl ${SCRIPT} \
-			--species="${APPRIS_SPECIES}" \
+			--species='${APPRIS_SPECIES}' \
 			${GENCODE_PARAMETERS} \
 			${ENSEMBL_PARAMETERS} \
 			${GENE_LIST_PARAMETERS} \
