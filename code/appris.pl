@@ -143,9 +143,9 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGLEVEL     => $loglevel,
 );
 $logger->init_log($str_params);
-$LOGGER_CONF .= " --loglevel='$loglevel' " if ( defined $loglevel );
-$LOGGER_CONF .= " --logpath='$logpath' " if ( defined $logpath );
-$LOGGER_CONF .= " --logfile='$logfile' " if ( defined $logfile );
+$LOGGER_CONF .= " --loglevel=$loglevel " if ( defined $loglevel );
+$LOGGER_CONF .= " --logpath=$logpath " if ( defined $logpath );
+$LOGGER_CONF .= " --logfile=$logfile " if ( defined $logfile );
 $LOGGER_CONF .= " --logappend " if ( defined $logappend );
 
 
@@ -363,13 +363,13 @@ sub run_getgtf($$$$)
 	) {	
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ensembl/getGTF.pl ".
-							"--id='$id' ".
-							"--species='$species' ".
-							"--e-version='$e_version' ".
-							"--out-data='$data_file' ".
-							"--out-pdata='$pdata_file' ".
-							"--out-transcripts='$transc_file' ".
-							"--out-translations='$transl_file' ".
+							"--id=$id ".
+							"--species=$species ".
+							"--e-version=$e_version ".
+							"--out-data=$data_file ".
+							"--out-pdata=$pdata_file ".
+							"--out-transcripts=$transc_file ".
+							"--out-translations=$transl_file ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -406,10 +406,10 @@ sub run_getmafucsc($$$$)
 	if ( (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.faa | wc -l`) or (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.nh | wc -l`) ) {
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ucsc/getUCSCAlign.pl ".
-							"--species='$species' ".
-							"--data='$data_file' ".
-							"--translations='$transl_file' ".
-							"--outpath='$datadir' ".
+							"--species=$species ".
+							"--data=$data_file ".
+							"--translations=$transl_file ".
+							"--outpath=$datadir ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -446,12 +446,12 @@ sub run_getecompara($$$$$)
 	if ( (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.faa | wc -l`) or (`grep -c '>' $transl_file` ne `ls -1 $datadir/*.$t_align.nh | wc -l`) ) {
 		eval {
 			my ($cmd) = "perl $SRC_DIR/ensembl/getEComparaAlign.pl ".
-							"--species='$species' ".
-							"--e-version='$e_version' ".
-							"--data='$data_file' ".
-							"--transcripts='$transc_file' ".
-							"--translations='$transl_file' ".
-							"--outpath='$datadir' ".
+							"--species=$species ".
+							"--e-version=$e_version ".
+							"--data=$data_file ".
+							"--transcripts=$transc_file ".
+							"--translations=$transl_file ".
+							"--outpath=$datadir ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -503,7 +503,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> "'$species'"
+			'species'		=> $species
 		};
 		my ($ifiles) = {
 			'annot'			=> $inpath.'/'.'annot.gtf',
@@ -521,7 +521,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> "'$species'",
+			'species'		=> $species,
 			'annot'			=> $data_file,
 			'pannot'		=> $pdata_file,
 			'transc'		=> $transc_file,
@@ -532,7 +532,7 @@ sub create_inputs($)
 		$logger->info("from $type_of_input\n");
 		$input_files = {
 			'id'			=> $id,
-			'species'		=> "'$species'",
+			'species'		=> $species,
 			'transl'		=> $transl_file,
 		};		
 	}	
@@ -596,9 +596,9 @@ sub run_pipeline($$$)
 		my ($m) = 'firestar';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/firestar/firestar.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -609,10 +609,10 @@ sub run_pipeline($$$)
 #		my ($m) = 'matador3d';
 #		eval {
 #			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
-#							"--conf='".$config_file."' ".
-#							"--gff='".$files->{'annot'}."' ".
-#							"--input='".$files->{'transl'}."' ".
-#							"--output='".$files->{$m}."' ".
+#							"--conf=".$config_file." ".
+#							"--gff=".$files->{'annot'}." ".
+#							"--input=".$files->{'transl'}." ".
+#							"--output=".$files->{$m}." ".
 #							"$LOGGER_CONF ";
 #			$logger->info("\n** script: $cmd\n");
 #			system ($cmd);
@@ -623,9 +623,9 @@ sub run_pipeline($$$)
 		my ($m) = 'matador3d';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/matador3d2/matador3d.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -636,9 +636,9 @@ sub run_pipeline($$$)
 		my ($m) = 'spade';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/spade/spade.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -649,10 +649,10 @@ sub run_pipeline($$$)
 		my ($m) = 'corsair';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/corsair/corsair.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--gff='".$files->{'pannot'}."' ".
-							"--output='".$files->{$m}."' ".							
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--gff=".$files->{'pannot'}." ".
+							"--output=".$files->{$m}." ".							
 							"$LOGGER_CONF ";
 							#if ( exists $files->{'pannot'} ) {
 							#	$cmd .= "--gff=".$files->{'pannot'}." ";								
@@ -666,9 +666,9 @@ sub run_pipeline($$$)
 		my ($m) = 'thump';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/thump/thump.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -679,9 +679,9 @@ sub run_pipeline($$$)
 		my ($m) = 'crash';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/crash/crash.pl ".
-							"--conf='".$config_file."' ".
-							"--input='".$files->{'transl'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--input=".$files->{'transl'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -692,10 +692,10 @@ sub run_pipeline($$$)
 		my ($m) = 'inertia';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/inertia/inertia.pl ".
-							"--conf='".$config_file."' ".
-							"--gff='".$files->{'annot'}."' ".
-							"--inpath='".$files->{'alignpath'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--gff=".$files->{'annot'}." ".
+							"--inpath=".$files->{'alignpath'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -706,9 +706,9 @@ sub run_pipeline($$$)
 		my ($m) = 'proteo';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/proteo/proteo.pl ".
-							"--conf='".$config_file."' ".
-							"--data='".$files->{'annot'}."' ".
-							"--output='".$files->{$m}."' ".
+							"--conf=".$config_file." ".
+							"--data=".$files->{'annot'}." ".
+							"--output=".$files->{$m}." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -719,23 +719,23 @@ sub run_pipeline($$$)
 	my ($m) = 'appris';
 	eval {
 		my ($cmd) = "perl $SRC_DIR/appris/appris.pl ".
-						"--conf='".$config_file."' ".
-						"--data='".$files->{'annot'}."' ".
-						"--transcripts='".$files->{'transc'}."' ".
-						"--translations='".$files->{'transl'}."' ".
+						"--conf=".$config_file." ".
+						"--data=".$files->{'annot'}." ".
+						"--transcripts=".$files->{'transc'}." ".
+						"--translations=".$files->{'transl'}." ".
 
-						"--firestar='".$files->{$m}->{'firestar'}."' ".
-						"--matador3d='".$files->{$m}->{'matador3d'}."' ".
-						"--spade='".$files->{$m}->{'spade'}."' ".
-						"--corsair='".$files->{$m}->{'corsair'}."' ".
-						"--thump='".$files->{$m}->{'thump'}."' ".
-						"--crash='".$files->{$m}->{'crash'}."' ".
-						"--inertia='".$files->{$m}->{'inertia'}."' ".
-						"--proteo='".$files->{$m}->{'proteo'}."' ".
+						"--firestar=".$files->{$m}->{'firestar'}." ".
+						"--matador3d=".$files->{$m}->{'matador3d'}." ".
+						"--spade=".$files->{$m}->{'spade'}." ".
+						"--corsair=".$files->{$m}->{'corsair'}." ".
+						"--thump=".$files->{$m}->{'thump'}." ".
+						"--crash=".$files->{$m}->{'crash'}." ".
+						"--inertia=".$files->{$m}->{'inertia'}." ".
+						"--proteo=".$files->{$m}->{'proteo'}." ".
 
-						"--output='".$files->{$m}->{'appris'}."' ".
-						"--output_nscore='".$files->{$m}->{'appris'}.".nscore' ".
-						"--output_label='".$files->{$m}->{'appris'}.".label' ".
+						"--output=".$files->{$m}->{'appris'}." ".
+						"--output_nscore=".$files->{$m}->{'appris'}.".nscore ".
+						"--output_label=".$files->{$m}->{'appris'}.".label ".
 						"$LOGGER_CONF ";
 		$logger->info("\n** script: $cmd\n");
 		system ($cmd);
