@@ -10,6 +10,7 @@ CODE-RELEASE:     4.6.2.14
 - Creation of APPRIS gene-set for human and mouse (a1) which join the gene datasets of Ensembl, RefSeq, and UniProt.
 
 ### Code (2.14)
+- Fixed bug reportint the APPRIS annotations for UniProt
 - Matador3D v2: Fixing a bug when a domain sequences was not defined, it creates very high scores.
 
 ___
