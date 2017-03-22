@@ -268,7 +268,7 @@ sub insert_pipeline($$;$)
 		$logger->info("\t-- prepare params\n");	
 		$params = {
 			'id'				=> $gene_id,
-			'species'			=> "'$species'",
+			'species'			=> $species,
 			'inpath'			=> $workspace,
 		};
 	}
@@ -280,7 +280,7 @@ sub insert_pipeline($$;$)
 		$logger->info("\t-- prepare params\n");		
 		$params = {
 			'id'				=> $gene_id,
-			'species'			=> "'$species'",
+			'species'			=> $species,
 			'inpath'			=> $workspace,
 		};
 	}	
