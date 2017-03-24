@@ -153,6 +153,9 @@ Tabular file that prints the scores of APPRIS methods. The description of the co
 * Reliability score for signal peptides and mitochondrial signal sequences (CRASH): 
 	We use a score of 3 or above as a reliable signal peptide, and mitochondrial signal sequences (separated by comma).
 
+* The number of exons with unusual evolutionary rats (INERTIA): DEPRECATED!! 
+	INERTIA uses three alignment methods to generate cross-species alignments, from which SLR (9) identifies exons with unusual evolutionary rates.
+	
 * APPRIS score:
 	Reliability score for the variants based on the scores of methods and a weight for them.
 	
