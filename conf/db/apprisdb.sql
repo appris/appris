@@ -16,7 +16,6 @@ CREATE TABLE entity (
   entity_id INT(11) unsigned NOT NULL auto_increment,
   datasource_id INT(11) unsigned NOT NULL,
   identifier VARCHAR(50) DEFAULT NULL,
-  alias VARCHAR(50) DEFAULT NULL,
   source VARCHAR(50) DEFAULT NULL,
   biotype VARCHAR(50) DEFAULT NULL,
   tsl INT(1) DEFAULT NULL,
@@ -25,9 +24,7 @@ CREATE TABLE entity (
   PRIMARY KEY (entity_id),
   UNIQUE KEY unique_key_entity_entity_id (entity_id),
   KEY key_entity_identifier (identifier),
-  KEY key_entity_alias (alias),
-  INDEX index_xref_entity_id_identifier (entity_id,identifier),
-  INDEX index_xref_entity_id_alias (entity_id,alias)
+  INDEX index_xref_entity_id_identifier (entity_id,identifier)
 ) ENGINE=InnoDB CHARSET=utf8;
 
 --
