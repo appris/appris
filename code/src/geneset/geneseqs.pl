@@ -238,13 +238,16 @@ sub create_seqrep_ids($)
 	if ( exists $sep_rep->{'gene_name'} ) {
 		 $seqreport_gn = join(',', sort {$a cmp $b} keys(%{$sep_rep->{'gene_name'}}) );
 	}
-	my ($seqreport_gidx) = '';
-	eval {
-		my ($ctx) = Digest::MD5->new;
-		$ctx->add($seqreport_gid);
-		($seqreport_gidx) = $ctx->hexdigest;
-	};
-	throw('Creating md5') if ($@);	
+#	my ($seqreport_gidx) = '';
+#	eval {
+#		my ($ctx) = Digest::MD5->new;
+#		$ctx->add($seqreport_gid);
+#		($seqreport_gidx) = $ctx->hexdigest;
+#	};
+#	throw('Creating md5') if ($@);
+	my ($seqreport_gidx) = $seqreport_gid;
+	if ( $seqreport_gid =~ /^ensembl\:\+refseq\:\+/ ) { $seqreport_gidx =~ s/^ensembl\:\+refseq\:\+//g } 
+	else { $seqreport_gidx =~ s/\+uniprot\:.*$//g }
 	$seqreport_ids->{'gene_idx'} = $seqreport_gidx if ( $seqreport_gidx ne '' );
 	$seqreport_ids->{'gene_id'} = $seqreport_gid;
 	$seqreport_ids->{'gene_name'} = $seqreport_gn; 
