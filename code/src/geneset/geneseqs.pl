@@ -230,7 +230,7 @@ sub create_seqrep_ids($)
 		if ( exists $sep_rep->{$source} ) {
 			foreach my $g ( sort {$a cmp $b} keys(%{$sep_rep->{$source}->{'gene_id'}}) ) { $sr_i .= $g.',' }
 		}
-		else { $sr_i = '?'  }
+		#else { $sr_i = '?'  }
 		$sr_i =~ s/\,$//g;
 		$seqreport_gid .= $source.':'.$sr_i.'+';
 	}
@@ -283,7 +283,7 @@ sub extract_seqfasta($$$)
 						}
 					}
 				}
-				else { $sr_tid = '?' }
+				#else { $sr_tid = '?' }
 				$sr_tid =~ s/\,$//g;		
 				$seqrep_transc_id .= $source.':'.$sr_tid.'+';
 			}
