@@ -246,8 +246,8 @@ sub create_seqrep_ids($)
 #	};
 #	throw('Creating md5') if ($@);
 	my ($seqreport_gidx) = $seqreport_gid;
-	if ( $seqreport_gid =~ /^ensembl\:\+refseq\:\+/ ) { $seqreport_gidx =~ s/^ensembl\:\+refseq\:\+//g } 
-	else { $seqreport_gidx =~ s/\+uniprot\:.*$//g }
+	if ( $seqreport_gidx =~ /^ensembl\:\+refseq\:\+/ ) { $seqreport_gidx =~ s/^ensembl\:\+refseq\:\+// } 
+	else { $seqreport_gidx =~ s/\+uniprot\:.*$// }
 	$seqreport_ids->{'gene_idx'} = $seqreport_gidx if ( $seqreport_gidx ne '' );
 	$seqreport_ids->{'gene_id'} = $seqreport_gid;
 	$seqreport_ids->{'gene_name'} = $seqreport_gn; 
