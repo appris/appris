@@ -6,6 +6,7 @@ use Getopt::Long;
 use FindBin;
 use Bio::SeqIO;
 use LWP::UserAgent;
+use File::Basename;
 use Data::Dumper;
 
 use APPRIS::Utils::File qw( prepare_workspace rm_dir getTotalStringFromFile getStringFromFile printStringIntoFile );
@@ -22,14 +23,20 @@ use vars qw(
 );
 $TMPDIR = '/tmp/appris_xref';
 $TAXID = {
-	'hsapiens'	=> 9606,
-	'mmusculus'	=> 10090,
-	'drerio'	=> 7955 
+	'hsapiens'		=> 9606,
+	'mmusculus'		=> 10090,
+	'drerio'		=> 7955,
+	'rnorvegicus'	=> 10116,	
+	'sscrofa'		=> 9823,	
+	'ptroglodytes'	=> 9598,
 };
 $FTP_NAME_UP_IDMAP = {
-	'hsapiens'	=> 'HUMAN_9606',
-	'mmusculus'	=> 'MOUSE_10090',
-	'drerio'	=> 'DANRE_7955' 
+	'hsapiens'		=> 'HUMAN_9606',
+	'mmusculus'		=> 'MOUSE_10090',
+	'drerio'		=> 'DANRE_7955',
+	'rnorvegicus'	=> 'RAT_10116',	
+	'sscrofa'		=> '',	
+	'ptroglodytes'	=> '',
 };
 
 # Input parameters
@@ -106,7 +113,7 @@ sub main()
 	$logger->info("-- create cross reference data based on RefSeq \n");
 	create_xref_refseq(\$gnXref_report, \$up_report);
 #	$logger->debug("gnXREF_REF_REPORT:\n".Dumper($gnXref_report)."\n");
-	$logger->debug("UNI_REPORT:\n".Dumper($up_report)."\n");
+#	$logger->debug("UNI_REPORT:\n".Dumper($up_report)."\n");
 	
 	$logger->info("-- create cross reference data based on UniProt \n");
 	create_xref_uniprot(\$gnXref_report, $up_report);
@@ -362,15 +369,20 @@ sub create_xref_uniprot(\$$)
 	my ($report);
 	my ($for_uniprot);
 	my ($file) = $TMPDIR.'/'.'xref.up.txt';
-	my ($filename_idmapping) = $FTP_NAME_UP_IDMAP->{$species};
+	my ($filename_idmapping) =  ( $FTP_NAME_UP_IDMAP->{$species} ne '') ? $FTP_NAME_UP_IDMAP->{$species}.'_idmapping.dat' : 'idmapping.dat';
 	
-	# Extract Xref from UniProt	
+	# Extract Xref from UniProt
+	my ($cmd_wget_fidmap) = '';
+	unless ( -e "$TMPDIR/$filename_idmapping" ) {
+		my ($path) = ( $FTP_NAME_UP_IDMAP->{$species} ne '') ? 'by_organism/'.$filename_idmapping.'.gz' : $filename_idmapping.'.gz';
+		$cmd_wget_fidmap .= "wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/$path -P $TMPDIR && gzip -d $TMPDIR/$filename_idmapping.gz && ";
+	}
 	eval {
-		my ($cmd) = "wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/$filename_idmapping\_idmapping.dat.gz -P $TMPDIR && gzip -d $TMPDIR/$filename_idmapping\_idmapping.dat.gz && ".
-					"grep -e 'Gene_Name'       $TMPDIR/$filename_idmapping\_idmapping.dat >  $file && ".
-					"grep -e 'Ensembl'         $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
-					"grep -e 'GeneID\\|RefSeq' $TMPDIR/$filename_idmapping\_idmapping.dat >> $file && ".
-					"grep -e 'CCDS'            $TMPDIR/$filename_idmapping\_idmapping.dat >>  $file";
+		my ($cmd) = $cmd_wget_fidmap.
+					"grep -e 'Gene_Name'       $TMPDIR/$filename_idmapping >  $file && ".
+					"grep -e 'Ensembl'         $TMPDIR/$filename_idmapping >> $file && ".
+					"grep -e 'GeneID\\|RefSeq' $TMPDIR/$filename_idmapping >> $file && ".
+					"grep -e 'CCDS'            $TMPDIR/$filename_idmapping >>  $file";
 		system($cmd);
 	};
 	throw('Exporting xref.rs for refseq') if ($@);	

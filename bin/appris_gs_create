@@ -1,26 +1,163 @@
 #!/bin/bash
 
-SPECIES="mmusculus"
-FEATDIR=${HOME}/projects/APPRIS/features/mus_musculus
-FEATDIR_EN=${FEATDIR}/e87
-FEATDIR_RS=${FEATDIR}/rs106
-FEATDIR_UP=${FEATDIR}/up201610
-OUTDIR=${FEATDIR}/a1
-LOGLEVEL="info"
+# -----------------------------------------------------------------------------
+# Load environmental variables
+# If you do not trust the path, configure below:
+SYSTEM=`uname -s`
+if [ "$SYSTEM" = Darwin ]
+then
+	source /etc/bashrc
+	source /etc/profile
+	source ${HOME}/.bash_profile
+elif [ "$SYSTEM" = Linux ]
+then
+	source /etc/profile
+	source /etc/bash.bashrc
+	source ${HOME}/.bashrc
+fi
 
+SPECIES=""
+FEATDIR_EN=""
+FEATDIR_RS=""
+FEATDIR_UP=""
+OUTPUT_DIR=""
+LOG_LEVEL="info"
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ Create gene data-set.\n
+\n
+ Name:\n
+\t appris_gs_create\n
+\n
+ Description:\n
+\t create the gene dataset for APPRIS with the join of Ensembl, RegfSeq and UniProt.\n
+\n
+Required arguments:\n
+\t -s [-species]\n
+\t\t homo_sapiens -\n
+\t\t mus_musculus -\n
+\t\t rattus_norvegicus -\n
+\t\t danio_rerio -\n
+\t\t sus_scrofa -\n
+\t\t pan_troglodytes -\n
+\t\t drosophila_melanogaster -\n
+\t\t caenorhabditis_elegans -\n
+\n
+\t -ie\n
+\t\t Input path with the features files of Ensembl\n
+\n
+\t -ir\n
+\t\t Input path with the features files of RefSeq\n
+\n
+\t -iu\n
+\t\t Input path with the features files of UniProt\n
+\n
+\t -o [-out]\n
+\t\t Output path\n
+\n
+Optional arguments:\n
+\t -l [-loglevel]\n
+\t\t info\n
+\t\t debug\n
+\n
+\t -v [-version]\n
+\t -h [-help]\n
+\n
+ Example:\n
+appris_gs_create \\ \n
+-s  danio_rerio \\ \n
+-ie /home/jmrodriguez/projects/APPRIS/features/danio_rerio/e87 \\ \n
+-ir /home/jmrodriguez/projects/APPRIS/features/danio_rerio/rs105 \\ \n
+-iu /home/jmrodriguez/projects/APPRIS/features/danio_rerio/up201610 \\ \n
+-o /home/jmrodriguez/projects/APPRIS/features/danio_rerio/a1 \n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-s | -species )
+			SPECIES=$2
+			shift
+			;;
+		-ie )
+        	FEATDIR_EN=$2
+        	shift
+			;;
+		-ir )
+        	FEATDIR_RS=$2
+        	shift
+			;;
+		-iu )
+        	FEATDIR_UP=$2
+        	shift
+			;;
+		-o | -out )
+        	OUTPUT_DIR=$2
+        	shift
+			;;
+		-l | -loglevel )
+			case "$2" in
+				info | debug )
+		        	LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;			
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [[ "${SPECIES}" == "" || "${FEATDIR_EN}" == "" || "${FEATDIR_RS}" == "" || "${FEATDIR_UP}" == "" || "${OUTPUT_DIR}" == "" ]]; then
+	echo You must specify required parameters
+	echo -e $USAGE
+	exit 1
+fi
+
+C=${SPECIES:0:1}
+SPECIES_ID=$(echo ${SPECIES} | tr "[:upper:]" "[:lower:]" | sed "s/^[^\_]*\_/$C/")
+
+
+# -----------------------------------------------------------------------------
 # Create workspace
 echo "-- create workspace..."
-mkdir $OUTDIR
-cd $OUTDIR
+mkdir $OUTPUT_DIR
+cd $OUTPUT_DIR
 
+
+# -----------------------------------------------------------------------------
 # Add extra values into protein FASTA files
+echo ""
 echo "-- add extra values into protein FASTA files..."
 
 CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_ENseq.pl \
-	-f $FEATDIR_EN/mus_musculus.transl.fa \
-	-d $FEATDIR_EN/mus_musculus.annot.gtf \
-	-o $FEATDIR_EN/mus_musculus.transl.extra.fa \
-	--loglevel=$LOGLEVEL \
+	-f $FEATDIR_EN/${SPECIES}.transl.fa \
+	-d $FEATDIR_EN/${SPECIES}.annot.gtf \
+	-o $FEATDIR_EN/${SPECIES}.transl.extra.fa \
+	--loglevel=$LOG_LEVEL \
 	--logfile=$FEATDIR_EN/add_extraVals_into_ENseq.log"
 echo $CMD
 eval $CMD
@@ -29,7 +166,7 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_RSseq.pl \
 	-f $FEATDIR_RS/protein.fa \
 	-d $FEATDIR_RS/protein.gbk \
 	-o $FEATDIR_RS/protein.extra.fa \
-	--loglevel=$LOGLEVEL \
+	--loglevel=$LOG_LEVEL \
 	--logfile=$FEATDIR_RS/add_extraVals_into_RSseq.log"
 echo $CMD
 eval $CMD
@@ -39,29 +176,36 @@ CMD="perl $APPRIS_SCRIPTS_DIR/add_extraVals_into_UPseq.pl \
 	-t $FEATDIR_UP/uniprot-proteome.tab \
 	-d $FEATDIR_UP/uniprot-proteome.txt \
 	-o $FEATDIR_UP/uniprot-proteome.extra.fasta \
-	--loglevel=$LOGLEVEL \
+	--loglevel=$LOG_LEVEL \
 	--logfile=$FEATDIR_UP/add_extraVals_into_UPseq.log"
 echo $CMD
 eval $CMD
 
+# -----------------------------------------------------------------------------
 # Download Cross reference from BioMart
+echo ""
+echo "-- create APPRIS protein sequences based on xref..."
 CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneset.pl \
-	-s $SPECIES \
-	-o $OUTDIR/geneset.xref.txt \
-	--loglevel=$LOGLEVEL \
-	--logfile=$OUTDIR/geneset.log"
+	-s $SPECIES_ID \
+	-o $OUTPUT_DIR/geneset.xref.txt \
+	--loglevel=$LOG_LEVEL \
+	--logfile=$OUTPUT_DIR/geneset.log"
 echo $CMD
 eval $CMD
 
+# -----------------------------------------------------------------------------
 # Create APPRIS protein sequences from XREFs
+echo ""
 echo "-- create APPRIS protein sequences based on xref..."
 CMD="perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneseqs.pl \
-	-x  $OUTDIR/geneset.xref.txt \
-	-e  $FEATDIR_EN/mus_musculus.transl.extra.fa \
+	-x  $OUTPUT_DIR/geneset.xref.txt \
+	-e  $FEATDIR_EN/${SPECIES}.transl.extra.fa \
 	-r  $FEATDIR_RS/protein.extra.fa \
 	-u  $FEATDIR_UP/uniprot-proteome.extra.no_genenames.fasta \
-	-o  $OUTDIR/appris_seqs.transl.fa \
-	--loglevel=$LOGLEVEL \
-	--logfile=$OUTDIR/geneseqs.log"
+	-o  $OUTPUT_DIR/appris_seqs.transl.fa \
+	--loglevel=$LOG_LEVEL \
+	--logfile=$OUTPUT_DIR/geneseqs.log"
 echo $CMD
 eval $CMD
+
+echo ""

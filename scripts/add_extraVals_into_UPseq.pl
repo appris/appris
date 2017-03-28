@@ -71,6 +71,7 @@ sub main()
 
 	$logger->info("-- scan fasta sequence -------\n");
 	my ($output) = "";
+	my ($output_no_gnames) = "";
 	if (-e $fasta_file and (-s $fasta_file > 0) ) {
 		my ($in) = Bio::SeqIO->new(
 							-file => $fasta_file,
@@ -96,7 +97,9 @@ sub main()
 				$gene_name = $xref->{'gene'}->{$id} if ( exists $xref->{'gene'}->{$id} );
 				$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
 				my ($g_id) = ( $gene_name ne '-' ) ? $gene_name : $id;
-				$output .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$g_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
+				$output .= 	">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$g_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
+							$s_seq."\n";
+				$output_no_gnames .= ">".$db.'_a'.'|'.$isof_id.'|'.$name.'|'.$id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
 							$s_seq."\n";
 			}
 		}
@@ -104,8 +107,15 @@ sub main()
 	
 	# Print output
 	if ($output ne '') {
-		$logger->info("-- print output -------\n");
+		$logger->info("-- print output (group by gene names) -------\n");
 		my ($printing_file_log) = printStringIntoFile($output, $out_file);
+		$logger->error("printing") unless(defined $printing_file_log);		
+	}
+	if ($output_no_gnames ne '') {
+		$logger->info("-- print output (group by uniprot entries) -------\n");
+		my ($out_file2) = $out_file;
+		$out_file2 =~ s/\.fasta$//g; $out_file2 .= '.no_genenames.fasta'; 
+		my ($printing_file_log) = printStringIntoFile($output_no_gnames, $out_file2);
 		$logger->error("printing") unless(defined $printing_file_log);		
 	}
 	
