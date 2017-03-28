@@ -335,9 +335,9 @@ sub _download_genefiles_ensembl($$$$)
 	my ($e_version, $species_id, $as_name, $outdir) = @_;
 	my ($species_filename) = ucfirst($species_id).'.'.$as_name;
 	my ($datadir) = $outdir.'/'."e$e_version";
-	my ($outfile_data) = $datadir.'/'.$species_id.'.annot.gtf.gz';
-	my ($outfile_transc) = $datadir.'/'.$species_id.'.transc.fa.gz';
-	my ($outfile_transl) = $datadir.'/'.$species_id.'.transl.fa.gz';
+	my ($outfile_data)   = $species_id.'.annot.gtf';
+	my ($outfile_transc) = $species_id.'.transc.fa';
+	my ($outfile_transl) = $species_id.'.transl.fa';
 	
 	#Êcreate data workspace
 	eval {
@@ -349,31 +349,26 @@ sub _download_genefiles_ensembl($$$$)
 	
 	#Êdownload files	
 	eval {
-		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/gtf/$species_id/$species_filename.$e_version.gtf.gz        -O $outfile_data";
+		my ($i) = "$species_filename.$e_version.gtf";
+		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/gtf/$species_id/$i.gz           -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
 		info($cmd);
 		system($cmd);
 	};
 	throw("downloading genefile: ensembl data") if($@);						
 	eval {
- 		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/cdna/$species_filename.cdna.all.fa.gz    -O $outfile_transc";
+		my ($i) = "$species_filename.cdna.all.fa";
+ 		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/cdna/$i.gz    -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
 		info($cmd);
 		system($cmd);
 	};
 	throw("downloading genefile: ensembl cdna") if($@);						
 	eval {
-		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/pep/$species_filename.pep.all.fa.gz      -O $outfile_transl";
+		my ($i) = "$species_filename.pep.all.fa";
+		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/pep/$i.gz      -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
 		info($cmd);
 		system($cmd);
 	};
-	throw("downloading genefile: ensembl pep") if($@);						
-	 
-	# uncompress files
-	eval {
-		my ($cmd) = "cd $datadir && gzip -d *.gz";
-		info($cmd);
-		system($cmd);
-	};
-	throw("uncompressing genefiles") if($@);						
+	throw("downloading genefile: ensembl pep") if($@);	 
 }
 sub _download_genefiles_refseq($$$$)
 {
