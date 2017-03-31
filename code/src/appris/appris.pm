@@ -1153,7 +1153,7 @@ sub get_nscore_output($$)
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
-		my ($biotype) = '-';
+		my ($tranlation_id) = '-';
 		my ($flags) = '-';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
@@ -1168,9 +1168,10 @@ sub get_nscore_output($$)
 		my ($proteo_annot) = '-';
 		my ($inertia_annot) = '-';
 		my ($appris_annot) = '-';
-		$biotype = $transcript->biotype if ( defined $transcript->biotype);
 		$flags = $transcript->biotype if ( defined $transcript->biotype);		
 		if ( $transcript->translate and $transcript->translate->sequence ) {
+			$tranlation_id = $transcript->translate->stable_id;
+						
 			$firestar_annot = $nscores->{$transcript_id}->{'firestar'} if ( exists $nscores->{$transcript_id}->{'firestar'} );
 			$matador3d_annot = $nscores->{$transcript_id}->{'matador3d'} if ( exists $nscores->{$transcript_id}->{'matador3d'} );
 			$corsair_annot = $nscores->{$transcript_id}->{'corsair'} if ( exists $nscores->{$transcript_id}->{'corsair'} );		
@@ -1208,7 +1209,7 @@ sub get_nscore_output($$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						#$biotype."\t".
+						$tranlation_id."\t".
 						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
@@ -1240,7 +1241,7 @@ sub get_label_output($$)
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
-		my ($biotype) = '-';
+		my ($tranlation_id) = '-';
 		my ($flags) = '-';
 		my ($flag_transl) = 'TRANSLATION';
 		my ($ccds_id) = '-';
@@ -1258,9 +1259,9 @@ sub get_label_output($$)
 		my ($proteo_annot) = '-';
 		my ($appris_annot) = '-';
 		my ($appris_relia) = '-';
-		$biotype = $transcript->biotype if ( defined $transcript->biotype);
 		$flags = $transcript->biotype if ( defined $transcript->biotype);
 		if ( $transcript->translate and $transcript->translate->sequence ) {
+			$tranlation_id = $transcript->translate->stable_id;
 			
 			$firestar_annot = $annots->{$transcript_id}->{'functional_residue'} if ( exists $annots->{$transcript_id}->{'functional_residue'} );
 			$matador3d_annot = $annots->{$transcript_id}->{'conservation_structure'}if ( exists $annots->{$transcript_id}->{'conservation_structure'} );
@@ -1302,8 +1303,8 @@ sub get_label_output($$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
+						$tranlation_id."\t".
 						$flag_transl."\t".						
-						#$biotype."\t".
 						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
@@ -1325,7 +1326,9 @@ sub get_label_output($$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$flag_transl."\n";					
+						$tranlation_id."\t".
+						$flag_transl."\t".
+						$flags."\n";
 		}
 	}
 	
