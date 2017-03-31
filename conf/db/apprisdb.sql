@@ -15,7 +15,7 @@ CREATE TABLE datasource (
 CREATE TABLE entity (
   entity_id INT(11) unsigned NOT NULL auto_increment,
   datasource_id INT(11) unsigned NOT NULL,
-  identifier VARCHAR(50) DEFAULT NULL,
+  identifier VARCHAR(150) DEFAULT NULL,
   source VARCHAR(50) DEFAULT NULL,
   biotype VARCHAR(50) DEFAULT NULL,
   tsl INT(1) DEFAULT NULL,

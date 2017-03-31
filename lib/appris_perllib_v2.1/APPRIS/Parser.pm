@@ -83,7 +83,6 @@ use vars qw(@ISA @EXPORT);
 @ISA = qw(Exporter);
 @EXPORT = qw(
 	parse_infiles
-	parse_gencode
 	parse_transl_data
 	parse_firestar_rst
 	parse_firestar
@@ -109,15 +108,10 @@ use vars qw(@ISA @EXPORT);
 sub parse_infiles($;$;$);
 sub _parse_dataline($);
 sub _parse_indata($);
-sub _parse_refseq_gbk($);
 sub _parse_inseq_transc($);
 sub _parse_inseq_transl($);
-sub parse_gencode($;$;$);
 sub parse_transl_data($);
 sub _get_id_version($);
-sub _parse_gencode_data($);
-sub _parse_gencode_seq_transc($);
-sub _parse_gencode_seq_transl($);
 sub _parse_seq_data($);
 sub _fetch_transc_objects($$;$;$);
 sub _fetch_transl_objects($$;$);
@@ -233,164 +227,6 @@ sub parse_infiles($;$;$)
 	return ($entity_list, $index_genes, $raw_data_list);
 }
 
-=head2 parse_refseq
-
-  Arg [1]    : string $data_file
-               File of refseq data as GenBank format
-  Arg [2]    : string $transc_file (optional)
-               File of refseq transcript sequence as Fasta format
-  Arg [3]    : string $transl_file (optional)
-               File of refseq translation sequence as Fasta format
-  Example    : use APPRIS::Parser qw(parse_refseq);
-               parse_refseq($data_file, $transc_file, $transl_file);
-  Description: Parse data of refseq.
-  Returntype : Listref of APPRIS::Gene or undef
-  Exceptions : return undef
-  Caller     : generally on error
-
-=cut
-
-sub parse_refseq($)
-{
-	my ($data_file, $transc_file, $transl_file) = @_;
-	my ($entity_list, $raw_data_list);
-	my ($data_cont);
-	my ($transc_cont);
-	my ($transl_cont);
-	my ($index_genes);
-	my ($index) = 0;	
-		
-	# Parse data/sequences
-	$data_cont = _parse_refseq_gbk($data_file);
-	$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
-	$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
-
-	# Scan genes
-	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
-	{
-		my ($xref_identities);
-		my ($transcripts, $index_transcripts) = _fetch_transc_objects($gene_id, $gene_features->{'transcripts'}, $transc_cont, $transl_cont);
-		
-		# Create gene object
-		my ($gene) = APPRIS::Gene->new
-		(
-			-stable_id	=> $gene_id,
-			-chr		=> $gene_features->{'chr'},
-			-start		=> $gene_features->{'start'},
-			-end		=> $gene_features->{'end'},
-			-strand		=> $gene_features->{'strand'},
-			-biotype	=> $gene_features->{'biotype'},
-			-status		=> $gene_features->{'status'},
-			-source		=> $gene_features->{'source'},
-			-level		=> $gene_features->{'level'},
-			-version	=> $gene_features->{'version'}
-		);
-
-		# Xref identifiers
-		if ( exists $gene_features->{'external_id'} and defined $gene_features->{'external_id'} ) {
-			push(@{$xref_identities},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $gene_features->{'external_id'},
-						-dbname			=> 'External_Id'
-					)
-			);
-		}
-		$gene->xref_identify($xref_identities) if (defined $xref_identities);
-		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-		push(@{$entity_list},$gene) if (defined $gene);
-		
-		# Get raw data
-		if ( exists $gene_features->{'raw'} and ($gene_features->{'raw'} ne '') ) {
-			$raw_data_list->{$gene_id} =  $gene_features->{'raw'};					
-		}
-		
-		# Get index genes
-		$index_genes->{$gene_id} = $index; $index++; # Index the list of transcripts
-	}
-		
-	return ($entity_list, $index_genes, $raw_data_list);
-}
-
-=head2 parse_gencode
-
-  Arg [1]    : string $data_file
-               File of gencode data as GTF format
-  Arg [2]    : string $transc_file (optional)
-               File of gencode transcript sequence as Fasta format
-  Arg [3]    : string $transl_file (optional)
-               File of gencode translation sequence as Fasta format
-  Example    : use APPRIS::Parser qw(parse_gencode);
-               parse_gencode($data_file, $transc_file, $transl_file);
-  Description: Parse data of gencode.
-  Returntype : Listref of APPRIS::Gene or undef
-  Exceptions : return undef
-  Caller     : generally on error
-
-=cut
-
-sub parse_gencode($;$;$)
-{
-	my ($data_file, $transc_file, $transl_file) = @_;
-	my ($entity_list, $raw_data_list);
-	my ($data_cont);
-	my ($transc_cont);
-	my ($transl_cont);
-	my ($index_genes);
-	my ($index) = 0;	
-		
-	# Parse data/sequences
-	$data_cont = _parse_gencode_data($data_file);
-	$transc_cont = _parse_gencode_seq_transc($transc_file) if (defined $transc_file);
-	$transl_cont = _parse_gencode_seq_transl($transl_file) if (defined $transl_file);
-
-	# Scan genes
-	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
-	{
-		my ($xref_identities);
-		my ($transcripts, $index_transcripts) = _fetch_transc_objects($gene_id, $gene_features->{'transcripts'}, $transc_cont, $transl_cont);
-		
-		# Create gene object
-		my ($gene) = APPRIS::Gene->new
-		(
-			-stable_id	=> $gene_id,
-			-chr		=> $gene_features->{'chr'},
-			-start		=> $gene_features->{'start'},
-			-end		=> $gene_features->{'end'},
-			-strand		=> $gene_features->{'strand'},
-			-biotype	=> $gene_features->{'biotype'},
-			-status		=> $gene_features->{'status'},
-			-source		=> $gene_features->{'source'},
-			-level		=> $gene_features->{'level'},
-			-version	=> $gene_features->{'version'}
-		);
-
-		# Xref identifiers
-		if ( exists $gene_features->{'external_id'} and defined $gene_features->{'external_id'} ) {
-			push(@{$xref_identities},
-					APPRIS::XrefEntry->new
-					(
-						-id				=> $gene_features->{'external_id'},
-						-dbname			=> 'External_Id'
-					)
-			);
-		}
-		$gene->xref_identify($xref_identities) if (defined $xref_identities);
-		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-		push(@{$entity_list},$gene) if (defined $gene);
-		
-		# Get raw data
-		if ( exists $gene_features->{'raw'} and ($gene_features->{'raw'} ne '') ) {
-			$raw_data_list->{$gene_id} =  $gene_features->{'raw'};					
-		}
-		
-		# Get index genes
-		$index_genes->{$gene_id} = $index; $index++; # Index the list of transcripts
-	}
-		
-	return ($entity_list, $index_genes, $raw_data_list);
-}
-
 =head2 parse_transl_data
 
   Arg [1]    : string $transl_file
@@ -411,7 +247,7 @@ sub parse_transl_data($)
 		
 	# Parse data/sequences
 	my ($data_cont) = _parse_seq_data($transl_file) if (defined $transl_file);
-	
+		
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
@@ -421,15 +257,16 @@ sub parse_transl_data($)
 		
 		# Scan transcripts
 		if ( exists $gene_features->{'transcripts'} ) {
-			while (my ($transcript_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
+			while (my ($sequence_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
 			{
 				my ($xref_identities);				
+				my ($transcript_id) = ( exists $transcript_features->{'transc_id'} ) ? $transcript_features->{'transc_id'} : $sequence_id;
 				
 				# Create transcript object
 				my ($transcript) = APPRIS::Transcript->new
 				(
-					-stable_id	=> $transcript_id,
-					-source		=> $gene_features->{'source'}
+					-stable_id		=> $transcript_id,
+					-source			=> $gene_features->{'source'}
 				);
 				
 				# add gene id
@@ -443,6 +280,28 @@ sub parse_transl_data($)
 					);
 				}
 				
+				# add Xref
+				if ( exists $transcript_features->{'transc_id'} and defined $transcript_features->{'transc_id'} ) {
+					foreach my $tids ( split(/\+/, $transcript_features->{'transc_id'}) ) {
+						if ( $tids =~ /^([^\:]+)\:([^\$]+)$/ ) {
+							my ($source) = $1;
+							my ($ids) = $2;
+							foreach my $id ( split(/\,/, $ids) ) {
+								if ( $id ne '' and $id ne '-' and $id ne '?' ) {
+									push(@{$xref_identities},
+											APPRIS::XrefEntry->new
+											(
+												-id				=> $id,
+												-dbname			=> ucfirst($source).'_Transcript_Id'
+											)
+									);
+								}
+							}
+						}
+					}
+				}
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
+
 				# add Xref
 				if ( exists $transcript_features->{'name'} and defined $transcript_features->{'name'} ) {
 					push(@{$xref_identities},
@@ -467,37 +326,16 @@ sub parse_transl_data($)
 				}
 				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
 
-				# add Xref
-				if ( exists $transcript_features->{'transc_ids'} and defined $transcript_features->{'transc_ids'} ) {
-					foreach my $tids ( split(/\+/, $transcript_features->{'transc_ids'}) ) {
-						if ( $tids =~ /^([^\:]+)\:([^\$]+)$/ ) {
-							my ($source) = $1;
-							my ($ids) = $2;
-							foreach my $id ( split(/\,/, $ids) ) {
-								if ( $id ne '' and $id ne '-' and $id ne '?' ) {
-									push(@{$xref_identities},
-											APPRIS::XrefEntry->new
-											(
-												-id				=> $id,
-												-dbname			=> ucfirst($source).'_Transcript_Id'
-											)
-									);
-								}
-							}
-						}
-					}
-				}
-				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
-
 				# Add translation
 				my ($translate);
 				if ( exists $transcript_features->{'seq'} and defined $transcript_features->{'seq'} ) {
 					my ($translation_seq) = $transcript_features->{'seq'};
-					
+					my ($translation_id) = ( exists $transcript_features->{'transl_id'} ) ? $transcript_features->{'transl_id'} : $transcript_id;
+										
 					# Create translation object
 					$translate = APPRIS::Translation->new
 					(
-						-stable_id	=> $transcript_id,
+						-stable_id	=> $translation_id,
 					);			
 					$translate->sequence($translation_seq);
 				}
@@ -556,7 +394,7 @@ sub parse_transl_data($)
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);		
 	}
-
+	
 	return $entity_list;
 }
 
@@ -2933,7 +2771,7 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 	if ( defined $appris_result ) {
 		$appris = parse_appris($gene, $appris_result, $appris_lb_result);
 	}
-
+	
 	# get the results for each transcript
 	foreach my $transcript (@{$gene->transcripts}) {			
 		my ($transcript_id) = $transcript->stable_id;
@@ -3946,11 +3784,6 @@ sub _parse_indata_refseq($)
 	
 } # End _parse_indata_refseq
 
-sub _parse_refseq_gbk($)
-{
-	
-} # End _parse_refseq_gbk
-
 sub _parse_inseq_transc($)
 {
 	my ($file) = @_;
@@ -3998,14 +3831,9 @@ sub _parse_inseq_transc($)
 					throw("Duplicated sequence: $sequence_id");
 				}
 				else {
-					my ($sequence) = $seq->seq; # control short sequences
+					my ($sequence) = $seq->seq;
 					my ($seq_len) = length($sequence);
-					if ( $seq_len > 2 ) {
-						$data->{$sequence_id} = $seq->seq;						
-					}
-					else {
-						warning("Short sequence: $sequence_id");
-					}
+					$data->{$sequence_id} = $seq->seq;						
 				}				
 			}
 		}		
@@ -4077,14 +3905,9 @@ sub _parse_inseq_transl($)
 					#return undef;
 				}
 				else {
-					my ($sequence) = $seq->seq; # control short sequences
+					my ($sequence) = $seq->seq;
 					my ($seq_len) = length($sequence);
-					if ( $seq_len > 2 ) {
-						$data->{$sequence_id} = $seq->seq;						
-					}
-					else {
-						warning("Short sequence: $sequence_id");
-					}
+					$data->{$sequence_id} = $seq->seq;						
 				}				
 			}
 		}		
@@ -4119,11 +3942,11 @@ sub _parse_seq_data($)
 					my ($sequence_id) = $1;
 					$source = 'sequence';
 					
-					my ($transc_id, $transl_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);
+					my ($transl_id, $transc_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);
 					my (@ids) = split('\|', $seq->id);
 					if ( scalar(@ids) > 4 ) {
-						$transc_id = $ids[0];
-						$transl_id = $ids[1];
+						$transl_id = $ids[0];
+						$transc_id = $ids[1];
 						$gene_id = $ids[2];
 						$gene_name = $ids[3];
 						$ccds_id = $ids[4];
@@ -4131,9 +3954,8 @@ sub _parse_seq_data($)
 						$main_id = $gene_id;
 					}
 					
-					my ($gene_ids, $transc_ids) = (undef,undef);
+					my ($gene_ids);
 					if ( $seq->desc =~ /gene_ids\>([^\s]+)/ ) { $gene_ids = $1 }
-					if ( $seq->desc =~ /transc_ids\>([^\s]+)/ ) { $transc_ids = $1 }
 					
 					unless ( exists $data->{$main_id} ) {
 						$data->{$main_id}->{'source'} = $source;
@@ -4148,21 +3970,18 @@ sub _parse_seq_data($)
 					else {
 						my ($sequence) = $seq->seq;
 						my ($seq_len) = length($sequence);
-
-						if ( $seq_len > 2 ) { # control short sequences
-							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'seq'} = $sequence;
-							if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
-								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'ccdsid'} = $ccds_id
-							}
-							if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
-								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'name'} = $gene_name;
-							}
-							if ( defined $transc_ids and $transc_ids ne '' and $transc_ids ne '-' ) {
-								$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'transc_ids'} = $transc_ids;
-							}
+						$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'seq'} = $sequence;
+						if ( defined $transc_id and $transc_id ne '' and $transc_id ne '-' ) {
+							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'transc_id'} = $transc_id;
 						}
-						else {
-							warning("Short sequence: $sequence_id");
+						if ( defined $transl_id and $transl_id ne '' and $transl_id ne '-' ) {
+							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'transl_id'} = $transl_id;
+						}
+						if ( defined $gene_name and $gene_name ne '' and $gene_name ne '-' ) {
+							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'name'} = $gene_name;
+						}
+						if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
+							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'ccdsid'} = $ccds_id
 						}
 					}						
 				}
@@ -4304,6 +4123,9 @@ sub _fetch_transl_objects($$;$)
 	if ( exists $transcript_features->{'protein_id'} and defined $transcript_features->{'protein_id'} ) {
 			$protein_id = $transcript_features->{'protein_id'};
 	}
+	else {
+		$protein_id = $transcript_id;
+	}
 
 	# Get translate sequence
 	if ( defined $transl_seq ) {
@@ -4362,7 +4184,7 @@ sub _fetch_transl_objects($$;$)
 		# Create object
 		$translate = APPRIS::Translation->new
 		(
-			-stable_id	=> $transcript_id,
+			-stable_id	=> $protein_id,
 		);			
 		$translate->sequence($sequence);
 		$translate->protein_id($protein_id) if (defined $protein_id);

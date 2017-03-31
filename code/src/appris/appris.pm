@@ -96,7 +96,7 @@ sub get_method_scores($$)
 	my ($gene, $reports) = @_;
 	my ($stable_id) = $gene->stable_id;
 	my ($scores, $s_scores);
-	
+		
 	# get annotations for each method (or group of method) -------------------
 	foreach my $transcript (@{$gene->transcripts}) {	
 		my ($transcript_id) = $transcript->stable_id;
@@ -1042,13 +1042,14 @@ sub get_score_output($$$)
 	my ($stable_id) = $gene->stable_id;
 	my ($gene_name) = $gene->external_name;
 	my ($content) = '';
-
+	
 	foreach my $transcript (@{$gene->transcripts})
 	{	
 		my ($transcript_id) = $transcript->stable_id;
+		my ($tranlation_id) = '-';
 		my ($biotype) = '-';
 		my ($flags) = '-';
-		my ($translation) = 'TRANSLATION';
+		my ($flag_transl) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
 		my ($no_codons) = '-';
@@ -1067,6 +1068,7 @@ sub get_score_output($$$)
 		$biotype = $transcript->biotype if ( defined $transcript->biotype);
 		$flags = $transcript->biotype if ( defined $transcript->biotype);
 		if ( $transcript->translate and $transcript->translate->sequence ) {
+			$tranlation_id = $transcript->translate->stable_id;
 			
 			$firestar_annot = $scores->{$transcript_id}->{'num_functional_residues'} if ( exists $scores->{$transcript_id}->{'num_functional_residues'} );
 			$matador3d_annot = $scores->{$transcript_id}->{'score_homologous_structure'} if ( exists $scores->{$transcript_id}->{'score_homologous_structure'} );
@@ -1108,8 +1110,8 @@ sub get_score_output($$$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\t".						
-						#$biotype."\t".
+						$tranlation_id."\t".
+						$flag_transl."\t".						
 						$flags."\t".
 						$no_codons."\t".
 						$ccds_id."\t".
@@ -1127,11 +1129,13 @@ sub get_score_output($$$)
 						$appris_relia."\n";
 		}
 		else {
-			$translation = 'NO_TRANSLATION';
+			$flag_transl = 'NO_TRANSLATION';
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\n";
+						$tranlation_id."\t".
+						$flag_transl."\t".
+						$flags."\n";
 		}
 	}
 	
@@ -1238,7 +1242,7 @@ sub get_label_output($$)
 		my ($transcript_id) = $transcript->stable_id;
 		my ($biotype) = '-';
 		my ($flags) = '-';
-		my ($translation) = 'TRANSLATION';
+		my ($flag_transl) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
 		my ($no_codons) = '-';
@@ -1298,7 +1302,7 @@ sub get_label_output($$)
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\t".						
+						$flag_transl."\t".						
 						#$biotype."\t".
 						$flags."\t".
 						$no_codons."\t".
@@ -1317,11 +1321,11 @@ sub get_label_output($$)
 						$appris_relia."\n";
 		}
 		else {
-			$translation = 'NO_TRANSLATION';
+			$flag_transl = 'NO_TRANSLATION';
 			$content .= $stable_id."\t".
 						$gene_name."\t".
 						$transcript_id."\t".
-						$translation."\n";					
+						$flag_transl."\n";					
 		}
 	}
 	

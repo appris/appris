@@ -30,7 +30,7 @@ use File::Temp;
 use Config::IniFiles;
 use MIME::Lite;
 
-use APPRIS::Parser qw( parse_gencode parse_infiles parse_transl_data );
+use APPRIS::Parser qw( parse_infiles parse_transl_data );
 use APPRIS::Utils::File qw( getTotalStringFromFile printStringIntoFile );
 use APPRIS::Utils::Argument qw( rearrange );
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
@@ -49,7 +49,6 @@ use vars qw(@ISA @EXPORT);
 	create_ensembl_input
 	create_appris_seqinput
 	reduce_input
-	create_gencode_data
 	create_indata
 	create_seqdata
 	send_email
@@ -334,6 +333,7 @@ sub create_appris_input($$)
 			my ($t_phase) = '.';
 			my ($transcript_name) = $transcript->external_name ? $transcript->external_name : $transcript_id;
 			my ($data_transc_attrs) = "gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; transcript_name \"$transcript_name\"";
+			if ( $transcript->translate and $transcript->translate->sequence and $transcript->translate->stable_id ) { $data_transc_attrs .= '; protein_id "'.$transcript->translate->stable_id.'"' }
 			my ($ccds_id) = '-';				
 			if ( $transcript->xref_identify ) {
 				foreach my $xref_identify (@{$transcript->xref_identify}) {								
@@ -387,9 +387,7 @@ sub create_appris_input($$)
 					my ($len) = length($translate->sequence);
 					my ($translate_id) = $transcript_eid;
 					$translate_id = $translate->protein_id if ( defined $translate->protein_id );
-					# mask short sequences
-					#if ( $len <= 2 ) { $seq .= 'X'; }
-					$transl_cont .= ">$transcript_eid|$translate_id|$gene_id|$gene_name|$ccds_id|$len\n";
+					$transl_cont .= ">$translate_id|$transcript_eid|$gene_id|$gene_name|$ccds_id|$len\n";
 					$transl_cont .= $seq."\n";					
 				}
 				if ( $translate->cds and $translate->cds_sequence ) {
@@ -613,23 +611,23 @@ sub create_appris_seqinput($$)
 	my ($gene,$in_files) = @_;
 	my ($create) = undef;
 	my ($transl_cont) = '';
-	
+		
 	# gene vars
 	my ($gene_id) = $gene->{'id'};
-	my ($gene_name) = ( exists $gene->{'name'} ) ? $gene->{'name'} : $gene_id;
+	my ($gene_name) = ( exists $gene->{'name'} ) ? $gene->{'name'} : '-';
 	
 	# scan translation info
 	if ( exists $gene->{'varsplic'} ) {
-		foreach my $isof_id (sort( keys(%{$gene->{'varsplic'}}) ) ) {
-			my ($isof) = $gene->{'varsplic'}->{$isof_id};
+		foreach my $transl_id (sort( keys(%{$gene->{'varsplic'}}) ) ) {
+			my ($isof) = $gene->{'varsplic'}->{$transl_id};
 			if ( exists $isof->{'seq'} ) {
+				my ($transc_id) = ( exists $isof->{'transc_id'} ) ? $isof->{'transc_id'} : $transl_id;
 				my ($ccds_id) = ( exists $isof->{'ccds'} ) ? $isof->{'ccds'} : '-';
 				my ($seq) = $isof->{'seq'};
 				my ($len) = length($seq);
-				my ($id) = "$isof_id|$isof_id|$gene_id|$gene_name|$ccds_id|$len";
+				my ($id) = "$transl_id|$transc_id|$gene_id|$gene_name|$ccds_id|$len";
 				my ($desc) = '';
 				($desc) .= ( exists $isof->{'gene_ids'} ) ? ' gene_ids>'.$isof->{'gene_ids'} : '';
-				($desc) .= ( exists $isof->{'transc_ids'} ) ? ' transc_ids>'.$isof->{'transc_ids'} : '';
 				$transl_cont .= '>'.$id.$desc."\n";
 				$transl_cont .= $seq."\n";				
 			}
@@ -713,39 +711,6 @@ sub reduce_input($;$;$)
 	
 } # end reduce_input
 
-=head2 create_gencode_data
-
-  Arg[1]      : (optional) String $text - notification text to present to user
-  Example     : # run a code snipped conditionally
-                if ($support->user_proceed("Run the next code snipped?")) {
-                    # run some code
-                }
-
-                # exit if requested by user
-                exit unless ($support->user_proceed("Want to continue?"));
-  Description : If running interactively, the user is asked if he wants to
-                perform a script action. If he doesn't, this section is skipped
-                and the script proceeds with the code. When running
-                non-interactively, the section is run by default.
-  Return type : TRUE to proceed, FALSE to skip.
-  Exceptions  : none
-  Caller      : general
-
-=cut
-
-sub create_gencode_data($;$;$)
-{
-	my ($data_file, $transcripts_file, $translations_file) = @_;
-	
-	my ($data) = parse_gencode($data_file, $transcripts_file, $translations_file);
-	unless ( defined $data ) {
-		throw("can not create gencode object\n");
-	}
-	
-	return $data;
-	
-} # end create_gencode_data
-
 =head2 create_indata
 
   Arg[1]      : (optional) String $text - notification text to present to user
@@ -818,20 +783,20 @@ sub create_seqdata($)
 			my ($s_id) = $seq->id;
 			my ($s_desc) = $seq->desc;
 			my ($s_seq) = $seq->seq;
-			my ($isof_id);
 			my ($transl_id);
+			my ($transc_id);
 			my ($gene_id);
 			my ($gene_name);
 			my ($ccds_id);
 			my ($seq_length);
-			my ($a_gene_ids);
-			my ($a_transc_ids);
+			my ($gene_ids);
 			my ($species);
 			
 			# At the moment, only for UniProt/neXtProt cases
 			if ( $s_id =~ /^(sp|tr)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences
-				$isof_id = $2;
-				$gene_id = $isof_id; $gene_id =~ s/\-[0-9]+$//g;
+				$transl_id  = $2;
+				$transc_id = $2;
+				$gene_id = $transc_id; $gene_id =~ s/\-[0-9]+$//g;
 				if ( $s_desc =~ /OS=([^\=]*)=/ ) {
 					$species = $1; $species =~ s/\s+[A-Z]{2}$//;
 				}
@@ -841,7 +806,8 @@ sub create_seqdata($)
 				}				
 			}
 			elsif ( $s_id =~ /^(sp_a|tr_a)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # UniProt sequences with extra values
-				$isof_id = $2;
+				$transl_id  = $2;
+				$transc_id = $2;
 				my ($name) = $3;
 				$gene_id = $4;
 				$gene_name = $5;
@@ -849,50 +815,47 @@ sub create_seqdata($)
 				$seq_length = $7;
 			}
 			elsif ( $s_id =~ /^ge_a\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\$]*)$/ ) { # GENCODE sequences with extra values
-				my ($pep_id) = $1;
-				$isof_id = $2;
+				$transl_id  = $1;
+				$transc_id = $2;
 				$gene_id = $3;
 				$gene_name = $4;
 				$ccds_id = $5;
 				$seq_length = $6;
 			}
 			elsif ( $s_id =~ /^en_a\|([^\s]*)/ ) { # ENSEMBL sequences with extra values
-				my ($pep_id) = $1;
+				$transl_id = $1;
 				if ( $s_desc =~ /gene:([^\s]+).*transcript:([^\s]+).*gene_symbol:([^\s]+).*ccds:([^\s]+)/ ) {
 					$gene_id = $1;
-					$isof_id = $2;
+					$transc_id = $2;
 					$gene_name = $3;
 					$ccds_id = $4;
 				}
 			}
 			elsif ( $s_id =~ /^gi_a\|[^|]*\|[^|]*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values
-				my ($pep_id) = $1;
-				$isof_id = $2;
+				$transl_id  = $1;
+				$transc_id = $2;
 				$gene_id = $3;
 				$gene_name = $4;
 				$ccds_id = $5;
 				$seq_length = $6;
 			}
 			elsif ( $s_id =~ /^nxp:([^\s]*)/ ) { # neXtProt sequences
-				$isof_id = $1;
+				$transc_id = $1;
 				my (@desc) = split('Gname=', $s_desc);
 				if ( scalar(@desc) >= 2 ) {
 					if ( $desc[1] =~ /([^\s]*)/ ) { $gene_name = $1 }					
 				}				
 			}
-			elsif ( $s_id =~ /^appris\|([^|]*)\|([^\s]*)/ ) { # APPRIS sequences FASTA file
-				$isof_id = $1;
-				$gene_id = $2;
-				if ( $s_desc =~ /gene_ids\>([^\s]+)/ ) { $a_gene_ids = $1 }
+			elsif ( $s_id =~ /^appris\|([^|]*)\|([^|]*)\|([^\s]*)/ ) { # APPRIS sequences FASTA file
+				$transl_id = $1;
+				$transc_id = $2;
+				$gene_id = $3;
+				if ( $s_desc =~ /gene_ids\>([^\s]+)/ ) { $gene_ids = $1 }
 				if ( $s_desc =~ /gene_names\>([^\s]+)/ ) { $gene_name = $1 }
-				if ( $s_desc =~ /transc_ids\>([^\s]+)/ ) { $a_transc_ids = $1 }
 				if ( $s_desc =~ /ccds_ids\>([^\s]+)/ ) { $ccds_id = $1 }
 			}
-			if ( defined $isof_id and defined $gene_id ) {
-				$gene_id =~ s/\.[0-9]+$//g; $isof_id =~ s/\.[0-9]+$//g; # delete version suffix
-				unless ( defined $gene_id ) {
-					$gene_id = ( $isof_id =~ /([^\-]*)/ ) ? $1 : $isof_id;					
-				}
+			if ( defined $transl_id and defined $transc_id and defined $gene_id ) {
+				$transl_id =~ s/\.[0-9]+$//g; $transc_id =~ s/\.[0-9]+$//g; $gene_id =~ s/\.[0-9]+$//g; # delete version suffix
 				unless ( exists $data->{$gene_id} ) {
 					$data->{$gene_id} = {
 						'id'		=> $gene_id,
@@ -905,18 +868,19 @@ sub create_seqdata($)
 						$data->{$gene_id}->{'species'} = $species;
 					}
 				}
-				$data->{$gene_id}->{'varsplic'}->{$isof_id} = {
+				$data->{$gene_id}->{'varsplic'}->{$transl_id} = {
+					'transl_id'	=> $transl_id,
 					'desc'		=> $s_desc,
 					'seq' 		=> $s_seq
 				};
+				if ( defined $transc_id and $transc_id ne '' and $transc_id ne '-' and $transc_id ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$transl_id}->{'transc_id'} = $transc_id;
+				}
+				if ( defined $gene_ids and $gene_ids ne '' and $gene_ids ne '-' and $gene_ids ne '?' ) {
+					$data->{$gene_id}->{'varsplic'}->{$transl_id}->{'gene_ids'} = $gene_ids;
+				}
 				if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' and $ccds_id ne '?' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'ccds'} = $ccds_id;
-				}
-				if ( defined $a_gene_ids and $a_gene_ids ne '' and $a_gene_ids ne '-' and $a_gene_ids ne '?' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'gene_ids'} = $a_gene_ids;
-				}
-				if ( defined $a_transc_ids and $a_transc_ids ne '' and $a_transc_ids ne '-' and $a_transc_ids ne '?' ) {
-					$data->{$gene_id}->{'varsplic'}->{$isof_id}->{'transc_ids'} = $a_transc_ids;
+					$data->{$gene_id}->{'varsplic'}->{$transl_id}->{'ccds'} = $ccds_id;
 				}
 			}
 		}		
