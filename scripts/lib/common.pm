@@ -60,14 +60,14 @@ sub get_seq_report($)
 		);
 		while ( my $seq = $in->next_seq() )
 		{
-			if ( $seq->id=~/([^|]*)\|([^|]*)\|([^|]*)/ )
+			if ( $seq->id=~/^([^|]*)\|([^|]*)\|([^|]*)/ )
 			{
-				my ($trans_id) = $1;
-				my ($prot_id) = $2;
+				my ($prot_id) = $1;
+				my ($trans_id) = $2;
 				my ($gene_id) = $3;
 				# delete suffix in Ensembl ids
-				if ( $trans_id =~ /^ENS/ ) { $trans_id =~ s/\.\d*$// }
 				if ( $prot_id =~ /^ENS/ ) { $prot_id =~ s/\.\d*$// }
+				if ( $trans_id =~ /^ENS/ ) { $trans_id =~ s/\.\d*$// }
 				if ( $gene_id =~ /^ENS/ ) { $gene_id =~ s/\.\d*$// }
 				if(exists $report->{$gene_id}->{'transcripts'}->{$trans_id}) {
 					if ( $report->{$gene_id}->{'transcripts'}->{$trans_id} eq $seq->seq ) {
@@ -187,26 +187,27 @@ sub get_main_report($$;$)
 		my($gene_id)=$split_line[0];
 		my($gene_name)=$split_line[1];
 		my($transcript_id)=$split_line[2];
-		my($trans_translation)=$split_line[3];
-		my($trans_biotype)=$split_line[4];
-		my($no_codons)=$split_line[5];
-		my($ccds_id)=$split_line[6];
-		my($tsl)=$split_line[7];
-		my($prot_len)=$split_line[8];
+		my($translation_id)=$split_line[3];
+		my($trans_translation)=$split_line[4];
+		my($trans_biotype)=$split_line[5];
+		my($no_codons)=$split_line[6];
+		my($ccds_id)=$split_line[7];
+		my($tsl)=$split_line[8];
+		my($prot_len)=$split_line[9];
 
-		my($firestar_annot)=$split_line[9];
-		my($matador3d_annot)=$split_line[10];
-		my($corsair_annot)=$split_line[11];
-		my($spade_annot)=$split_line[12];
-		my($thump_annot)=$split_line[13];
-		my($crash_annot)=$split_line[14];
+		my($firestar_annot)=$split_line[10];
+		my($matador3d_annot)=$split_line[11];
+		my($corsair_annot)=$split_line[12];
+		my($spade_annot)=$split_line[13];
+		my($thump_annot)=$split_line[14];
+		my($crash_annot)=$split_line[15];
 		my(@aux_crash_annot)=split(',', $crash_annot);
 		my($crash_sp_annot)=$aux_crash_annot[0];
 		my($crash_tp_annot)=$aux_crash_annot[1];
-		my($inertia_annot)=$split_line[15];
-		my($proteo_annot)=$split_line[16];
-		my($appris_annot)=$split_line[17];
-		my($appris_label)=$split_line[18];
+		my($inertia_annot)=$split_line[16];
+		my($proteo_annot)=$split_line[17];
+		my($appris_annot)=$split_line[18];
+		my($appris_label)=$split_line[19];
 
 		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
 			defined $trans_biotype and defined $no_codons and defined $ccds_id and defined $prot_len
@@ -332,30 +333,31 @@ sub get_label_report($$;$)
 		$input_line=~s/\n*$//;
 		my(@split_line)=split("\t", $input_line);
 		next if(scalar(@split_line)<=7);
-
+		
 		my($gene_id)=$split_line[0];
 		my($gene_name)=$split_line[1];
 		my($transcript_id)=$split_line[2];
-		my($trans_translation)=$split_line[3];
-		my($trans_biotype)=$split_line[4];
-		my($no_codons)=$split_line[5];
-		my($ccds_id)=$split_line[6];
-		my($tsl)=$split_line[7];
-		my($prot_len)=$split_line[8];
+		my($translation_id)=$split_line[3];
+		my($trans_translation)=$split_line[4];
+		my($trans_biotype)=$split_line[5];
+		my($no_codons)=$split_line[6];
+		my($ccds_id)=$split_line[7];
+		my($tsl)=$split_line[8];
+		my($prot_len)=$split_line[9];
 
-		my($firestar_annot)=$split_line[9];
-		my($matador3d_annot)=$split_line[10];
-		my($corsair_annot)=$split_line[11];
-		my($spade_annot)=$split_line[12];
-		my($thump_annot)=$split_line[13];
-		my($crash_annot)=$split_line[14];
+		my($firestar_annot)=$split_line[10];
+		my($matador3d_annot)=$split_line[11];
+		my($corsair_annot)=$split_line[12];
+		my($spade_annot)=$split_line[13];
+		my($thump_annot)=$split_line[14];
+		my($crash_annot)=$split_line[15];
 		my(@aux_crash_annot)=split(',', $crash_annot);
 		my($crash_sp_annot)=$aux_crash_annot[0];
 		my($crash_tp_annot)=$aux_crash_annot[1];
-		my($inertia_annot)=$split_line[15];		
-		my($proteo_annot)=$split_line[16];
-		my($appris_annot)=$split_line[17];
-		my($appris_relia)=$split_line[18];
+		my($inertia_annot)=$split_line[16];		
+		my($proteo_annot)=$split_line[17];
+		my($appris_annot)=$split_line[18];
+		my($appris_relia)=$split_line[19];
 
 		if(	defined $gene_id and defined $gene_name and defined $transcript_id and defined $trans_translation and 
 			defined $trans_biotype and defined $no_codons and defined $ccds_id and defined $prot_len
@@ -561,7 +563,6 @@ sub src_appris_decision($$$$$;$)
 				$gene = $gencode_data->[0];
 		}		
 	}
-#	print STDERR "GENE:\n".Dumper($gene)."\n";
 	
 	# get object of reports from the given ids
 	my ($ids_str) = join("\\|^", @{$ids});
@@ -580,37 +581,24 @@ sub src_appris_decision($$$$$;$)
 		my (@cmd_out) = `$cmd`;
 		$label_result = join('', @cmd_out);
 	};
-#print STDERR "MAIN_RST:\n$main_result\n";
-#print STDERR "LABEL_RST:$label_result\n";	
 	my ($reports) = parse_appris_methods($gene, undef, undef, undef, undef, undef, undef, undef, undef,$main_result, $label_result);
-#	print STDERR "REPORTS:\n".Dumper($reports)."\n";
 		
 	# get scores of methods for each transcript
 	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports);
-#	print STDERR "PRE_SCORES:\n".Dumper($scores)."\n";
-#	print STDERR "PRE_S_SCORES:\n".Dumper($s_scores)."\n";
 	
 	# get annots of methods for each transcript
 	my ($annots) = appris::get_method_annots($gene, $s_scores);
-#	print STDERR "PRE_ANNOTS:\n".Dumper($annots)."\n";
 	
 	# get scores/annots of appris for each transcript
 	my ($nscores) = appris::get_final_scores($gene, $annots, $scores, $s_scores);
-#	print STDERR "PRE2_SCORES:\n".Dumper($scores)."\n";
-#	print STDERR "PRE2_S_SCORES:\n".Dumper($s_scores)."\n";
-#	print STDERR "PRE2_NSCORES:\n".Dumper($nscores)."\n";
 
 	# get annotations indexing each transcript
 	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots);
-#	print STDERR "ANNOTS:\n".Dumper($annots)."\n";
 	
 	# print outputs
 	my ($score_content) = appris::get_score_output($gene, $scores, $annots);
 	my ($nscore_content) = appris::get_nscore_output($gene, $nscores);
 	my ($label_content) = appris::get_label_output($gene, $annots);
-#	print STDERR "APPRIS_SCORE:$score_content\n";
-#	print STDERR "APPRIS_NSCORE:$nscore_content\n";
-#	print STDERR "APPRIS_LABEL:$label_content\n";
 
 	return ($seq_content, $score_content, $nscore_content, $label_content);
 }

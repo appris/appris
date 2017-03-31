@@ -2446,30 +2446,31 @@ sub parse_appris_rst($$)
         # mit_signal
         # prin_isoform
         
-        if ( scalar(@rst2) == 19 ) {
+        if ( scalar(@rst2) == 20 ) {
 			my ($gene_id) = $rst2[0];
 			my ($gene_name) = $rst2[1];
 			my ($transc_id) = $rst2[2];
-			my ($translation) = $rst2[3];
-			my ($biotype) = $rst2[4];
-			my ($no_codons) = $rst2[5];
-			my ($ccds_id) = $rst2[6];
-			my ($tsl) = $rst2[7];
-			my ($aa_length) = $rst2[8];
+			my ($transl_id) = $rst2[3];
+			my ($flag_transl) = $rst2[4];
+			my ($biotype) = $rst2[5];
+			my ($no_codons) = $rst2[6];
+			my ($ccds_id) = $rst2[7];
+			my ($tsl) = $rst2[8];
+			my ($aa_length) = $rst2[9];
 
-			my ($fun_res_annot) = $rst2[9];
-			my ($con_struct_annot) = $rst2[10];
-			my ($vert_con_annot) = $rst2[11];
-			my ($dom_annot) = $rst2[12];
-			my ($tmh_annot) = $rst2[13];
-			my ($spep_mit_annot) = $rst2[14];
+			my ($fun_res_annot) = $rst2[10];
+			my ($con_struct_annot) = $rst2[11];
+			my ($vert_con_annot) = $rst2[12];
+			my ($dom_annot) = $rst2[13];
+			my ($tmh_annot) = $rst2[14];
+			my ($spep_mit_annot) = $rst2[15];
 			my (@aux_crash_annot) = split(',', $spep_mit_annot);
 			my ($spep_annot) = $aux_crash_annot[0];
 			my ($mit_annot) = $aux_crash_annot[1];
-			my ($u_evol_annot) = $rst2[15];
-			my ($n_pep_annot) = $rst2[16];
-			my ($p_isof_annot) = $rst2[17];
-			my ($relia_annot) = $rst2[18];
+			my ($u_evol_annot) = $rst2[16];
+			my ($n_pep_annot) = $rst2[17];
+			my ($p_isof_annot) = $rst2[18];
+			my ($relia_annot) = $rst2[19];
 			
 			$cutoffs->{$transc_id}->{'functional_residues_score'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_score'} = $con_struct_annot;
@@ -2515,30 +2516,31 @@ sub parse_appris_rst($$)
         # mit_signal
         # prin_isoform
         
-        if ( scalar(@rst2) == 19 ) {        	
+        if ( scalar(@rst2) == 20 ) {        	
 			my ($gene_id) = $rst2[0];
 			my ($gene_name) = $rst2[1];
 			my ($transc_id) = $rst2[2];
-			my ($translation) = $rst2[3];
-			my ($biotype) = $rst2[4];
-			my ($no_codons) = $rst2[5];
-			my ($ccds_id) = $rst2[6];
-			my ($tsl) = $rst2[7];
-			my ($aa_length) = $rst2[8];
+			my ($transl_id) = $rst2[3];
+			my ($flag_transl) = $rst2[4];
+			my ($biotype) = $rst2[5];
+			my ($no_codons) = $rst2[6];
+			my ($ccds_id) = $rst2[7];
+			my ($tsl) = $rst2[8];
+			my ($aa_length) = $rst2[9];
 
-			my ($fun_res_annot) = $rst2[9];
-			my ($con_struct_annot) = $rst2[10];
-			my ($vert_con_annot) = $rst2[11];
-			my ($dom_annot) = $rst2[12];
-			my ($tmh_annot) = $rst2[13];
-			my ($spep_mit_annot) = $rst2[14];
+			my ($fun_res_annot) = $rst2[10];
+			my ($con_struct_annot) = $rst2[11];
+			my ($vert_con_annot) = $rst2[12];
+			my ($dom_annot) = $rst2[13];
+			my ($tmh_annot) = $rst2[14];
+			my ($spep_mit_annot) = $rst2[15];
 			my (@aux_crash_annot) = split(',', $spep_mit_annot);
 			my ($spep_annot) = $aux_crash_annot[0];
 			my ($mit_annot) = $aux_crash_annot[1];			
-			my ($u_evol_annot) = $rst2[15];
-			my ($n_pep_annot) = $rst2[16];
-			my ($prin_isoform_annot) = $rst2[17];
-			my ($relia_annot) = $rst2[18];
+			my ($u_evol_annot) = $rst2[16];
+			my ($n_pep_annot) = $rst2[17];
+			my ($prin_isoform_annot) = $rst2[18];
+			my ($relia_annot) = $rst2[19];
 			
 			$cutoffs->{$transc_id}->{'functional_residues_signal'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_signal'} = $con_struct_annot;

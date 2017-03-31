@@ -793,7 +793,6 @@ sub get_matador3d_annotations {
 						'seqname'	=> $method_seqname,
 						'source'	=> $method_source,
 						'type'		=> $method_type,
-						'type'		=> $method_type,
 						'start'		=> $method_start,
 						'end'		=> $method_end,
 						'score'		=> $method_score,
@@ -814,8 +813,8 @@ sub get_matador3d_annotations {
 				foreach my $region (@{$method->alignments}) {
 					if ( defined $region->score ) {
 						# get coords
-						my ($method_start)  = ( defined $region->start )  ? $region->start  : $region->score;
-						my ($method_end)    = ( defined $region->end )    ? $region->end    : $region->score;
+						my ($method_start)  = ( defined $region->start )  ? $region->start  : ( ( defined $region->pstart )  ? $region->pstart  : '.' );
+						my ($method_end)    = ( defined $region->end   )  ? $region->end    : ( ( defined $region->pend   )  ? $region->pend    : '.' );
 						my ($method_score)  = ( defined $region->score )  ? $region->score  : 0;
 						my ($method_strand) = ( defined $region->strand ) ? $region->strand : '.';
 						# common attributes

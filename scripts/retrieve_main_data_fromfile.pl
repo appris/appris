@@ -75,26 +75,29 @@ sub get_appris_annot($$$;$);
 sub main()
 {
 	# Get data backup from file
-	$logger->debug("-- get old main data that contains CCDS -------\n");
-	my ($old_main_report, $old_seq_report) = common::get_main_report($input_old_main_file, $input_old_seq_file, undef);	
+	my ($old_main_report, $old_seq_report) = (undef,undef);
+	if ( defined $input_old_main_file and defined $input_old_seq_file ) {
+		$logger->debug("-- get old main data that contains CCDS -------\n");	
+		($old_main_report, $old_seq_report) = common::get_main_report($input_old_main_file, $input_old_seq_file, undef);			
+	}
 	#$logger->debug("OLD_MAIN_REPORT:\n".Dumper($old_main_report)."\n");
 	#$logger->debug("OLD_SEQ_REPORT:\n".Dumper($old_seq_report)."\n");
 	
 	# Get data from file
 	$logger->debug("-- get main data from files -------\n");
 	my ($main_report, $seq_report) = common::get_main_report($input_main_file, $input_seq_file, $input_data_file);	
-	#$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
-	#$logger->debug("SEQ_REPORT:\n".Dumper($seq_report)."\n");
+	$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
+	$logger->debug("SEQ_REPORT:\n".Dumper($seq_report)."\n");
 	
 	# Get label from file
 	$logger->debug("-- get label data from files -------\n");
 	my ($label_report) = common::get_label_report($input_label_file, $input_seq_file, $input_data_file);	
-	#$logger->debug("LABEL_REPORT:\n".Dumper($label_report)."\n");
+	$logger->debug("LABEL_REPORT:\n".Dumper($label_report)."\n");
 			
 	# Get annots
 	$logger->debug("-- get anntos -------\n");
 	eval {
-		my ($cmd) = "awk '{if (\$19 ~ /^PRINCIPAL/ || \$19 ~ /^ALTERNATIVE/ ) {print \$2\"\t\"\$1\"\t\"\$3\"\t\"\$7\"\t\"\$19}}' $input_main_file > $output_file";
+		my ($cmd) = "awk '{if (\$20 ~ /^PRINCIPAL/ || \$20 ~ /^ALTERNATIVE/ ) {print \$2\"\t\"\$1\"\t\"\$3\"\t\"\$8\"\t\"\$20}}' $input_main_file > $output_file";
 		$logger->debug("** script: $cmd\n");
 		system($cmd);		
 	};
@@ -102,7 +105,7 @@ sub main()
 		
 	$logger->debug("-- get anntos (for Ensembl) -------\n");
 	eval {
-		my ($cmd) = "awk '{if (\$19 ~ /^PRINCIPAL/ || \$19 ~ /^ALTERNATIVE/ ) {print \$1\"\t\"\$3\"\t\"\$19}}' $input_main_file > $output_ens_file";
+		my ($cmd) = "awk '{if (\$20 ~ /^PRINCIPAL/ || \$20 ~ /^ALTERNATIVE/ ) {print \$1\"\t\"\$3\"\t\"\$20}}' $input_main_file > $output_ens_file";
 		$logger->debug("** script: $cmd\n");
 		system($cmd);		
 	};
