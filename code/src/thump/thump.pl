@@ -129,9 +129,9 @@ sub main()
 				-format => 'Fasta'
 	);
 	while ( my $seqObj = $in->next_seq() ) {			
-		if ( $seqObj->id =~ /([^|]*)/ )
+		if ( $seqObj->id =~ /^([^|]*)\|([^|]*)/ )
 		{			
-			my ($seq_id) = $1;
+			my ($seq_id) = $2;
 			if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }	
 			my ($seq) = $seqObj->seq;
 			$logger->info("-- $seq_id\n");				

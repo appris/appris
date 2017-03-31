@@ -493,10 +493,8 @@ sub read_fasta_file {
 			}
 			
 			#ÊBEGIN: CHANGE for APPRIS
-##			my $protein_id 		= $fields[0];
-#			my $transcript_id 	= $fields[1];
-#			my $gene_id 		= $fields[2];
-			my $transcript_id 	= $fields[0];
+			my $protein_id 		= $fields[0];
+			my $transcript_id 	= $fields[1];
 			my $gene_id 		= $fields[2];
 			#ÊEND: CHANGE for APPRIS
 			
@@ -525,10 +523,8 @@ sub read_fasta_file {
 	if($sequence){ # handle last sequence
 		my @fields 			= split(/\|/, $old_header);
 		#ÊBEGIN: CHANGE for APPRIS
-##		my $protein_id 		= $fields[0];
-#		my $transcript_id 	= $fields[1];
-#		my $gene_id 		= $fields[2];
-		my $transcript_id 	= $fields[0];
+		my $protein_id 		= $fields[0];
+		my $transcript_id 	= $fields[1];
 		my $gene_id 		= $fields[2];
 		#ÊEND: CHANGE for APPRIS
 		

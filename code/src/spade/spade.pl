@@ -95,9 +95,9 @@ sub main()
     );
 	while ( my $seq = $fasta_object->next_seq() )
 	{
-		if ( $seq->id=~/([^|]*)/ )
+		if ( $seq->id=~/^([^|]*)\|([^|]*)/ )
 		{			
-			my ($sequence_id) = $1;
+			my ($sequence_id) = $2;
 			if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
             my ($sequence) = $seq->seq;
             $sequence_report->{$sequence_id} = $sequence;
