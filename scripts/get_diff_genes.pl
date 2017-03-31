@@ -9,7 +9,7 @@ use Data::Dumper;
 
 use APPRIS::Registry;
 use APPRIS::CDS;
-use APPRIS::Parser qw( parse_gencode );
+use APPRIS::Parser qw( parse_infiles );
 use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 
@@ -86,7 +86,7 @@ sub main()
 		
 	# create gencode object
 	$logger->info("-- create gencode object\n");
-	my ($gencode_data) = parse_gencode($data_file, undef, $translations_file);
+	my ($gencode_data) = parse_infiles($data_file, undef, $translations_file);
 	unless ( defined $gencode_data ) {
 		$logger->error("can not create gencode object\n");
 	}

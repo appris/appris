@@ -11,7 +11,6 @@ use Data::Dumper;
 
 use lib "$FindBin::Bin/lib";
 use appris qw( create_ensembl_input );
-use APPRIS::Parser qw( parse_gencode );
 use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::Exception qw( info throw );

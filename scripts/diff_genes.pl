@@ -9,7 +9,6 @@ use Data::Dumper;
 
 use APPRIS::Registry;
 use APPRIS::CDS;
-use APPRIS::Parser qw( parse_gencode );
 use APPRIS::Utils::File qw( printStringIntoFile );
 use APPRIS::Utils::Logger;
 

@@ -58,7 +58,6 @@ use APPRIS::Utils::Exception qw( throw warning deprecate );
 use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile updateStringIntoFile );
 use APPRIS::Exporter;
 use APPRIS::Parser qw(
-	parse_gencode
 	parse_firestar_rst
 	parse_matador3d_rst
 	parse_spade_rst

@@ -13,7 +13,6 @@ use appris qw(
 	get_gene_list
 	create_ensembl_input
 );
-use APPRIS::Parser qw( parse_gencode );
 use APPRIS::Utils::File qw( prepare_workspace printStringIntoFile getTotalStringFromFile );
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::Exception qw( info throw );
@@ -198,7 +197,7 @@ sub main()
 		}
 		elsif ( defined $position ) {
 			$logger->info("-- using genome position\n");
-			$data_fh = appris::create_gencode_input($data_file, $position);
+			$data_fh = appris::create_indata($data_file, $position);
 			if ( UNIVERSAL::isa($data_fh,'File::Temp') ) {
 				$data_file = $data_fh->filename;
 			}
@@ -209,7 +208,7 @@ sub main()
 		}
 		
 		$logger->info("-- create gencode data files\n");
-		my ($gencode_data) = appris::create_gencode_data($data_file);		
+		my ($gencode_data) = appris::create_indata($data_file);		
 		
 		# delete tmp file
 		if ( defined $data_fh and UNIVERSAL::isa($data_fh,'File::Temp') ) {
