@@ -613,9 +613,9 @@ sub get_final_annotations($$$$$)
 		# 1. acquire the dominant transcripts from appris score.
 		# They have to pass the cutoff to be added into "principal" list
 		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method}, $annots);
-#		warning("GENE_2: \n".Dumper($gene)."\n");
-#		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
-#		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
+		warning("GENE_2: \n".Dumper($gene)."\n");
+		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
+		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 1;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -624,7 +624,7 @@ sub get_final_annotations($$$$$)
 
 		# 2. from preserved transcript, we keep transcripts that they have got CCDS
 		$princ_list = step_ccds($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+		warning("PRINC_LIST_2: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 2;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -633,7 +633,7 @@ sub get_final_annotations($$$$$)
 
 		# 3_1. from preserved transcript, we keep transcripts that they have got eldest CCDS
 		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -642,7 +642,7 @@ sub get_final_annotations($$$$$)
 
 		# 3_2. from preserved transcript, we keep transcripts that they have got TSL1
 		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -651,18 +651,28 @@ sub get_final_annotations($$$$$)
 
 		# 4. from preserved transcript, we keep transcripts that they have got longest seq with CCDS
 		$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+		warning("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+		warning("ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
+		warning("NSCORES_4: \n".Dumper($nscores)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 4;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
 			return $tag;
 		}
-
+		
+		# 5. from preserved transcript, we keep transcripts that they have been validated manually
+		$princ_list = step_validated($princ_list, $isof_report, $nscores);
+		warning("PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
+		if ( is_unique($princ_list, $isof_report) ) {
+			$tag = 5;
+			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+			return $tag;
+		}
+		
 		# 5. from preserved transcript, we keep transcripts that they have got longest seq
 		$princ_list = step_longest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
-		$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);
-		
+		warning("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
+		$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);		
 	}
 	
 	return $tag;
@@ -716,9 +726,11 @@ sub step_appris($$$)
 		foreach my $transc_id (@{$s_scores->{'scores'}->{$ap_score}}) {
 			my ($index) = $gene->{'_index_transcripts'}->{$transc_id};
 			my ($transcript) = $gene->transcripts->[$index];
+			my ($transc_name) = $transcript->external_name;
 			my ($transl_seq) = $transcript->translate->sequence;
 			my ($transc_rep) = {
 					'id'		=> $transc_id,
+					'name'		=> $transc_name,
 					'seq'		=> $transl_seq,
 					'length'	=> length($transl_seq)
 			};
@@ -761,15 +773,6 @@ sub step_appris($$$)
 			# 2.	it is a NMD: app_score is -1. Exception: we accept the last terms when the transcript is unique
 			#
 			my ($core_flag) = 1;
-			#while (my ($method, $weight) = each(%{$METHOD_WEIGHTED}) ) {
-			#	if ( $weight > 1 ) { # the core of pipeline has to be a weight... (Note: We have discarded THUMP with weight1)
-			#		my ($label) = $METHOD_LABELS->{$method}->[0];
-			#		if ( $annots->{$transc_id}->{$label} eq $NO_LABEL ) {
-			#			$core_flag = 0;
-			#			last;					
-			#		}
-			#	}
-			#}
 			my ($unique_transc) = ( scalar(keys(%{$s_scores->{'scores'}})) == 1 and scalar(@{$s_scores->{'scores'}->{$sorted_ap_scores[0]}}) >= 1 ) ? 1 : 0;
 			if ( $core_flag == 1 ) {
 				if ( ( ($highest_score - $ap_score) <=  $main::APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
@@ -917,6 +920,38 @@ sub step_ccds_longest($$$)
 		
 } # end step_ccds_longest
 
+sub step_validated($$$)
+{
+	my ($i_princ_list, $isof_report, $nscores) = @_;
+	my ($report);
+	
+	# preliminar report
+	my ($princ_isof);
+	foreach my $princ ( @{$isof_report} ) {
+		my ($transc_id) = $princ->{'id'};
+		if ( exists $i_princ_list->{$transc_id} ) {
+			if ( exists $princ->{'name'} ) {
+				my ($name) = $princ->{'name'};
+				if ( $name =~ /NM\_/ or $name =~ /\-0[0-9]*$/ ) { # Not automatic transcripts
+					push(@{$princ_isof}, $princ);
+				}
+			}			
+		}
+	}
+	
+	# print princ isoforms for validated manually
+	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
+		foreach my $princ ( @{$princ_isof} ) {
+			my ($transc_id) = $princ->{'id'};
+			$report->{$transc_id} = 1;
+		}				
+	}
+	else { $report = $i_princ_list }
+
+	return $report;
+		
+} # end step_validated
+
 sub step_longest($$$)
 {
 	my ($i_princ_list, $isof_report, $nscores) = @_;
@@ -970,15 +1005,6 @@ sub step_longest($$$)
 				}
 			}
 			else {
-#				my (@sort_sc) = sort { $b <=> $a } keys (%{$princ_isof_scores});
-#				my ($longest_sc) = $sort_sc[0];
-#				foreach my $transc_id ( @{$princ_isof_scores->{$longest_sc}} ) {
-#					foreach my $transc_id2 ( @{$princ_isof->{$longest}} ) {
-#						if ( $transc_id eq $transc_id2 ) {
-#							$report->{$transc_id} = 1;
-#						}
-#					}
-#				}
 				# if the seqs are different, get the one with higger appris-score. otherwise, all of them
 				foreach my $transc_id ( @{$princ_isof->{$longest}} ) {
 					my ($sc) = $nscores->{$transc_id}->{'appris'};
