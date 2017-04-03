@@ -1753,7 +1753,7 @@ sub fetch_analysis_by_stable_id {
 							-pstart	=> $residue->{'start'},
 							-pend	=> $residue->{'end'},
 							-score	=> $residue->{'alignment_score'},
-							-score	=> $residue->{'bias'},
+							-bias	=> $residue->{'bias'},
 							-pdb_id	=> $residue->{'pdb_id'}
 						)				
 					);
