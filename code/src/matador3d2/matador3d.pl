@@ -61,8 +61,8 @@ my ($cfg) 			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$RUN_PROGRAM		= $ENV{APPRIS_PRG_OPT_HMMER_31b2_BIN_DIR}.'/'.$cfg->val( 'MATADOR3D_VARS', 'program');
-$PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D_VARS', 'db');
+$RUN_PROGRAM		= $ENV{APPRIS_PRG_OPT_HMMER_31b2_BIN_DIR}.'/'.$cfg->val( 'MATADOR3D2_VARS', 'program');
+$PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D2_VARS', 'db');
 
 
 # Get log filehandle and print heading and parameters to logfile
