@@ -878,9 +878,9 @@ sub _get_cds_coordinates_from_gff($$)
 	my ($transcript_codition) = '';
     while ( my $seq = $in->next_seq() )
     {
-        if($seq->id=~/([^|]*)/)
+        if($seq->id=~/^([^|]*)\|([^|]*)/)
         {
-            my ($sequence_id) = $1;
+            my ($sequence_id) = $2;
             if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
 			$transcript_codition .= ' $9 ~ /'.$sequence_id.'/ ||';
         }
