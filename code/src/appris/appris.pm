@@ -613,9 +613,9 @@ sub get_final_annotations($$$$$)
 		# 1. acquire the dominant transcripts from appris score.
 		# They have to pass the cutoff to be added into "principal" list
 		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method}, $annots);
-		warning("GENE_2: \n".Dumper($gene)."\n");
-		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
-		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
+#		warning("GENE_2: \n".Dumper($gene)."\n");
+#		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 1;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -624,7 +624,7 @@ sub get_final_annotations($$$$$)
 
 		# 2. from preserved transcript, we keep transcripts that they have got CCDS
 		$princ_list = step_ccds($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_2: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 2;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -633,7 +633,7 @@ sub get_final_annotations($$$$$)
 
 		# 3_1. from preserved transcript, we keep transcripts that they have got eldest CCDS
 		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -642,7 +642,7 @@ sub get_final_annotations($$$$$)
 
 		# 3_2. from preserved transcript, we keep transcripts that they have got TSL1
 		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 3;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -651,9 +651,9 @@ sub get_final_annotations($$$$$)
 
 		# 4. from preserved transcript, we keep transcripts that they have got longest seq with CCDS
 		$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
-		warning("ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
-		warning("NSCORES_4: \n".Dumper($nscores)."\n");
+#		warning("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+#		warning("ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
+#		warning("NSCORES_4: \n".Dumper($nscores)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 4;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -662,7 +662,7 @@ sub get_final_annotations($$$$$)
 		
 		# 5. from preserved transcript, we keep transcripts that they have been validated manually
 		$princ_list = step_validated($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 5;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -671,7 +671,7 @@ sub get_final_annotations($$$$$)
 		
 		# 5. from preserved transcript, we keep transcripts that they have got longest seq
 		$princ_list = step_longest($princ_list, $isof_report, $nscores);
-		warning("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
 		$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);		
 	}
 	
