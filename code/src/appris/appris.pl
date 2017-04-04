@@ -71,6 +71,7 @@ our $APPRIS_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'cutoff');
 our $FIRESTAR_MINRES		= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
 our $FIRESTAR_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
 our $MATADOR3D_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
+our $MATADOR3D2_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d2_cutoff');
 our $SPADE_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'spade_cutoff');
 our $CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 our $CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
