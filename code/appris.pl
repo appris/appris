@@ -605,21 +605,21 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);
 	}
-#	if ( exists $files->{'matador3d'} ) {
-#		my ($m) = 'matador3d';
-#		eval {
-#			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
-#							"--conf='".$config_file."' ".
-#							"--gff='".$files->{'annot'}."' ".
-#							"--input='".$files->{'transl'}."' ".
-#							"--output='".$files->{$m}."' ".
-#							"$LOGGER_CONF ";
-#			$logger->info("\n** script: $cmd\n");
-#			system ($cmd);
-#		};
-#		$logger->error("runing $m: ".$!) if($@);
-#	}
 	if ( exists $files->{'matador3d'} ) {
+		my ($m) = 'matador3d';
+		eval {
+			my ($cmd) = "perl $SRC_DIR/matador3d/matador3d.pl ".
+							"--conf='".$config_file."' ".
+							"--gff='".$files->{'annot'}."' ".
+							"--input='".$files->{'transl'}."' ".
+							"--output='".$files->{$m}."' ".
+							"$LOGGER_CONF ";
+			$logger->info("\n** script: $cmd\n");
+			system ($cmd);
+		};
+		$logger->error("runing $m: ".$!) if($@);
+	}
+	if ( exists $files->{'matador3d2'} ) {
 		my ($m) = 'matador3d';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/matador3d2/matador3d.pl ".

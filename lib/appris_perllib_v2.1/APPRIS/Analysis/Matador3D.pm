@@ -34,6 +34,7 @@ use strict;
 use warnings;
 
 use APPRIS::Analysis::Matador3DRegion;
+use APPRIS::Analysis::Matador3D2Region;
 use APPRIS::Utils::Argument qw(rearrange);
 use APPRIS::Utils::Exception qw(throw warning deprecate);
 
