@@ -908,9 +908,9 @@ sub _get_cds_coordinates_from_gff($$)
     while ( my $seq = $in2->next_seq() )
     {
 
-        if($seq->id=~/([^|]*)/)
+        if($seq->id=~/^([^|]*)\|([^|]*)/)
         {
-            my ($sequence_id) = $1;
+            my ($sequence_id) = $2;
             if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
 
 			foreach my $trans_cds_info (@global_trans_cds_info)
