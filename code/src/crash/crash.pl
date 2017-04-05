@@ -183,8 +183,17 @@ sub run_sp($$)
 	my ($output_file) = $ws_cache.'/seq.signalp';	
 	my ($err_file) = '/dev/null';
 	
+	# Check if the cached files has any kind of ERROR
+	my ($error_output_file) = sub {
+		my ($file) = @_;
+		my ($o) = 0;
+		my (@out) = `grep "ERROR" $file`;
+		if ( scalar(@out) > 0 ) { $o = 1 }
+		return $o;
+	};
+
 	# Execute program
-	unless ( -e $output_file and (-s $output_file > 0 ) ) {
+	unless ( -e $output_file and (-s $output_file > 0 ) and $error_output_file->($output_file) == 0 ) {
 		eval {
 			my ($cmd) = "$RUN_PROGRAM_1 $input_file 1> $output_file 2> $err_file";
 			$logger->debug("\n** script: $cmd\n");		
