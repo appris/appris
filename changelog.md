@@ -24,6 +24,8 @@ TODO!!
 	Pig			(version 2017_02)
 	Chimp		(version 2017_02)
 	
+TODO!!!
+New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
 
 ### Server (4.7)
 
