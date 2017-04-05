@@ -1,17 +1,88 @@
 ___
-## 2017_03.v21
+## 2017_05.v22
 ```
-SERVER-RELEASE:   2017_03.v21
+SERVER-RELEASE:   2017_05.v22
+CODE-RELEASE:     4.7.2.15
+```
+
+### Highlights
+
+TODO!!
+- Creation of APPRIS gene-set (version a1) for all vertebrate species localed: human, mouse, zebra-fish, rat, pig, chimp. 
+The APPRIS gene-set has been developed from the join of the gene sets of Ensembl and RefSeq, and enrich with the isoforms of UniProt.
+
+TODO!!
+- New APPRIS annotations using the gene dataset of RefSeq for the following species:
+	Mouse 		(version 106)
+	Zebra-fish	(version 105)
+	Rat 		(version 106)
+	Pig			(version 105)
+	Chimp		(version 104)
+	
+TODO!!
+- New APPRIS annotations using the gene names annotated in UniProt for the following species:
+	Pig			(version 2017_02)
+	Chimp		(version 2017_02)
+	
+
+### Server (4.7)
+
+- TODO!!! CHANGES for the new APPRIS
+
+
+### Code (2.15)
+
+TODO!!!
+- Matador3D2
+New DB!!
+- Include the 2 methods of Matador3D and appris has to choose
+ 
+TODO!!!
+- APPRIS!!!
+Ten ahora en cuenta la discriminacion de cada metodo para descartar los transcritos
+Despues los que quedan, toma la decision de forma global con el valor normalizado de cada transctito.
+
+TODO!!!
+- THUMP
+	- Bug Fix on consensus section.  check the example, PDE3B, ENSMUSG00000098306 TODO!!!
+
+
+___
+## 2017_04.v21
+```
+SERVER-RELEASE:   2017_04.v21
 CODE-RELEASE:     4.6.2.14
 ```
 
 ### Highlights
-- APPRIS annotations for RefSeq mouse (version 106)
-- Creation of APPRIS gene-set for human and mouse (a1) which join the gene datasets of Ensembl, RefSeq, and UniProt.
+
+- New release of Ensembl (e88) for all species.
 
 ### Code (2.14)
-- Fixed bug reportint the APPRIS annotations for UniProt
-- Matador3D v2: Fixing a bug when a domain sequences was not defined, it creates very high scores.
+
+- Matador3D (version 1) has been reconnected in the APPRIS pipeline
+
+- Include the two methods of Matador3D but Matador3D (v1) is used in the pipeline.
+
+- Matador3D2: Fixing a bug when a domain sequences was not defined, it creates very high scores.
+
+- SPADE: Fixing a bug with the overlapping of exported alignments.
+
+- APPRIS: Improving the algorithm
+In the cases when all sequences are PRINCIPAL:5, APPRIS firstly selects the principal isoform by the following decision:
+	The transcript validated manually (NM_ in RefSeq) and the transcript has not to be automatic transcript (with -2XX transcript name in Ensembl).
+In addition, APPRIS makes a decision when the all final transcripts have the same length of sequences and the same APPRIS score based on the smaller id.
+Eg, '162966' for human RefSeq 107
+  
+- CRASH
+	- Fix the bug why sometimes it executed and others not. (Eg, ENSG00000066654/ENST00000381337)
+	
+- Fixed bug reporting the APPRIS annotations for UniProt
+
+- Update the code for the creation of the APPRIS gene data-sets.
+
+- Now APPRIS accepts the few shorted sequences.
+
 
 ___
 ## 2017_01.v20
