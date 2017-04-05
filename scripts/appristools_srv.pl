@@ -402,7 +402,7 @@ sub _download_genefiles_refseq($$$$)
 	};
 	throw("downloading genefile: refseq data") if($@);						
 	eval {
-		my ($i) = "ref_$as_name\_top_level.gff3";
+		my ($i) = "ref_$as_name\*\_top_level.gff3";
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/GFF/$i.gz        -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
 		info($cmd);
 		system($cmd);
