@@ -671,8 +671,17 @@ sub get_final_annotations($$$$$)
 		
 		# 5. from preserved transcript, we keep transcripts that they have got longest seq
 		$princ_list = step_longest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_5: \n".Dumper($princ_list)."\n");
-		$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);		
+#		warning("PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
+		if ( is_unique($princ_list, $isof_report) ) {
+			$tag = 5;
+			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+			return $tag;
+		}
+		else {
+			$princ_list = step_smaller_id($princ_list, $isof_report, $nscores);
+#			warning("PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
+			$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);
+		}
 	}
 	
 	return $tag;
@@ -1020,6 +1029,20 @@ sub step_longest($$$)
 	return $report;
 		
 } # end step_longest
+
+sub step_smaller_id($$$)
+{
+	my ($i_princ_list, $isof_report, $nscores) = @_;
+	my ($report);
+	
+	# sort the transc ids and selects the first one
+	my (@princ_isof) = sort { $a cmp $b } keys(%{$i_princ_list});
+	my ($transc_id) = $princ_isof[0];
+	$report->{$transc_id} = 1;
+
+	return $report;
+		
+} # end step_smaller_id
 
 sub step_tags($$$$\$)
 {
