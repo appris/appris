@@ -276,7 +276,7 @@ sub copy_genefiles()
 						eval {
 							my ($datadir) = "e$ds_v";
 							unless ( -e "$a_featdir/$datadir" ) {
-								my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+								my ($cmd) = "mkdir $a_featdir & cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
 								info($cmd);
 								system($cmd);
 							}
@@ -287,7 +287,7 @@ sub copy_genefiles()
 						eval {
 							my ($datadir) = "rs$ds_v";
 							unless ( -e "$a_featdir/$datadir" ) {
-								my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+								my ($cmd) = "mkdir $a_featdir & cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
 								info($cmd);
 								system($cmd);
 							}
