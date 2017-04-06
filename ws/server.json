@@ -1,5 +1,5 @@
 {
-    "version": "2017_03.v21",
+    "version": "2017_04.v21",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -31,12 +31,12 @@
                         "peptides":                 ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs107v21",
+                    "id":   "rs108v21",
                     "type": "current",
                     "source": {
                         "name": "refseq",
-                        "label": "RefSeq107",
-                        "version": "107"
+                        "label": "RefSeq108",
+                        "version": "108"
                     },
                     "database":   "appris_homo_sapiens",
                     "datafiles":   {
