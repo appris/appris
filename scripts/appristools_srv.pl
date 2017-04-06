@@ -9,7 +9,7 @@ use FindBin;
 use JSON;
 use Data::Dumper;
 use APPRIS::Utils::File qw( getStringFromFile getTotalStringFromFile printStringIntoFile );
-use APPRIS::Utils::Exception qw( info throw );
+use APPRIS::Utils::Exception qw( info throw warning );
 
 # Input parameters
 my ($steps) = undef;
@@ -275,18 +275,22 @@ sub copy_genefiles()
 					if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {						
 						eval {
 							my ($datadir) = "e$ds_v";
-							my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
-							info($cmd);
-							system($cmd);
+							unless ( -e "$a_featdir/$datadir" ) {
+								my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+								info($cmd);
+								system($cmd);
+							}
 						};
 						throw("creating data workspace") if($@);
 					}					
 					elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {						
 						eval {
 							my ($datadir) = "rs$ds_v";
-							my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
-							info($cmd);
-							system($cmd);
+							unless ( -e "$a_featdir/$datadir" ) {
+								my ($cmd) = "mkdir $a_featdir && cd $relspe_dir && tar -cf - $datadir | (cd $a_featdir; tar -xf -) ";
+								info($cmd);
+								system($cmd);
+							}
 						};
 						throw("creating data workspace") if($@);
 					}					
@@ -306,23 +310,27 @@ sub download_genefiles()
 				if ( exists $cfg_dataset->{'source'} and exists $cfg_dataset->{'source'}->{'name'} and exists $cfg_dataset->{'source'}->{'version'} ) {
 					my ($as_name) = $cfg_assembly->{'name'};
 					my ($ds_id) = $cfg_dataset->{'id'};
+					my ($ds_type) = $cfg_dataset->{'type'};
 					my ($ds_v)  = $cfg_dataset->{'source'}->{'version'};
 					my ($relspe_dir) = $LOC_WSDIR.'/features/'.$species_id;
 					
-					#Êcreate data workspace
-					eval {
-						my ($cmd) = "mkdir -p $relspe_dir";
-						info($cmd);
-						system($cmd);
-					};
-					throw("creating data workspace") if($@);
-					
-					# download genefiles from data source
-					if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {
-						_download_genefiles_ensembl($ds_v, $species_id, $as_name, $relspe_dir);
-					}
-					elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {
-						_download_genefiles_refseq($ds_v, $species_id, $as_name, $relspe_dir);
+					# don't download archive datasets
+					if ( $ds_type ne 'archive' ) {
+						#Êcreate data workspace
+						eval {
+							my ($cmd) = "mkdir -p $relspe_dir";
+							info($cmd);
+							system($cmd);
+						};
+						throw("creating data workspace") if($@);
+						
+						# download genefiles from data source
+						if ( $cfg_dataset->{'source'}->{'name'} eq 'ensembl' ) {
+							_download_genefiles_ensembl($ds_v, $species_id, $as_name, $relspe_dir);
+						}
+						elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {
+							_download_genefiles_refseq($ds_v, $species_id, $as_name, $relspe_dir);
+						}						
 					}
 				}
 			}			
@@ -354,7 +362,15 @@ sub _download_genefiles_ensembl($$$$)
 		info($cmd);
 		system($cmd);
 	};
-	throw("downloading genefile: ensembl data") if($@);						
+	throw("downloading genefile: ensembl data") if($@);
+	unless ( -e "$datadir/$outfile_data" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: ensembl data has not been saved");
+		return undef;
+	}	
+
 	eval {
 		my ($i) = "$species_filename.cdna.all.fa";
  		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/cdna/$i.gz    -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
@@ -362,6 +378,14 @@ sub _download_genefiles_ensembl($$$$)
 		system($cmd);
 	};
 	throw("downloading genefile: ensembl cdna") if($@);						
+	unless ( -e "$datadir/$outfile_transc" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: ensembl cdna has not been saved");
+		return undef;
+	}	
+
 	eval {
 		my ($i) = "$species_filename.pep.all.fa";
 		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/fasta/$species_id/pep/$i.gz      -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
@@ -369,6 +393,14 @@ sub _download_genefiles_ensembl($$$$)
 		system($cmd);
 	};
 	throw("downloading genefile: ensembl pep") if($@);	 
+	unless ( -e "$datadir/$outfile_transl" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: ensembl pep has not been saved");
+		return undef;
+	}	
+
 }
 sub _download_genefiles_refseq($$$$)
 {
@@ -396,18 +428,28 @@ sub _download_genefiles_refseq($$$$)
 	};
 	throw("downloading genefile: refseq readme file") if($@);			
 	eval {
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/Assembled_chromosomes/chr_accessions_$as_name -P $datadir";
+		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/Assembled_chromosomes/chr_accessions_$as_name\* -P $datadir";
 		info($cmd);
 		system($cmd);
 	};
-	throw("downloading genefile: refseq data") if($@);						
+	throw("downloading genefile: refseq data") if($@);	
+
 	eval {
 		my ($i) = "ref_$as_name\*\_top_level.gff3";
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/GFF/$i.gz        -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
 		info($cmd);
 		system($cmd);
 	};
-	throw("downloading genefile: refseq data") if($@);						
+	throw("downloading genefile: refseq data") if($@);
+	unless ( -e "$datadir/$outfile_data" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);		
+		warning("downloading genefile: refseq data has not been saved");
+		print STDERR "KK\n";
+		return undef;
+	}	
+
 	eval {
 		my ($i) = "rna.fa";
  		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/RNA/$i.gz       -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
@@ -415,6 +457,14 @@ sub _download_genefiles_refseq($$$$)
 		system($cmd);
 	};
 	throw("downloading genefile: refseq cdna") if($@);						
+	unless ( -e "$datadir/$outfile_transc" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: refseq cdna has not been saved");
+		return undef;
+	}	
+
 	eval {
 		my ($i) = "protein.fa";
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/$i.gz   -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
@@ -422,18 +472,41 @@ sub _download_genefiles_refseq($$$$)
 		system($cmd);
 	};
 	throw("downloading genefile: refseq pep") if($@);						
+	unless ( -e "$datadir/$outfile_transl" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: refseq pep has not been saved");
+		return undef;
+	}	
+
 	eval {
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/protein.gbk.gz                  -P $datadir";
 		info($cmd);
 		system($cmd);
 	};
-	throw("downloading genefile: refseq pep data") if($@);
+	throw("downloading genefile: refseq protein report") if($@);
+	unless ( -e "$datadir/protein.gbk.gz" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: refseq protein report has not been saved");
+		return undef;
+	}	
+
 	eval {
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/gene/DATA/gene2ensembl.gz                                     -P $datadir";
 		info($cmd);
 		system($cmd);
 	};
 	throw("downloading genefile: refseq xref with ensembl") if($@);						
+	unless ( -e "$datadir/gene2ensembl.gz" ) {
+		my ($cmd) = "rm -rf $datadir";
+		info($cmd);
+		system($cmd);
+		warning("downloading genefile: refseq protein report has not been saved");
+		return undef;
+	}	
 	 
 	# uncompress files
 	eval {
@@ -441,7 +514,8 @@ sub _download_genefiles_refseq($$$$)
 		info($cmd);
 		system($cmd);
 	};
-	throw("uncompressing genefiles") if($@);						
+	throw("uncompressing genefiles") if($@);
+		
 }
 
 main();
