@@ -116,42 +116,36 @@ else
 	METHODS_PARAM="${ALL_METHOD}"
 fi
 
-METHOD_SCRIPT="iappris.pl"
-SCRIPT="${APPRIS_CODE_DIR}/${METHOD_SCRIPT}"
+METHOD_SCRIPT="retrieve_method_data.pl"
+SCRIPT="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT}"
 
 SPECIES="APPRIS test"
 APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.test.ini"
-
-# -----------------------------------------------------------------------------
-# Delete and create DB
-
-appris_db_delete -d appris_test -h localhost -u root
-
-appris_db_create -d appris_test -h localhost -u root
-
+FORMAT_LIST="gtf bed"
+OUTPUT_FILE="appris_method.test"
 
 # -----------------------------------------------------------------------------
 # Run method
 
-# print trace
-echo "================="
-echo "perl ${SCRIPT} \\ "
-echo " --inpath=${INPATH} \\ "
-echo " --id=${INPATH##*/} \\ "
-echo " --species=\"${SPECIES}\" \\ "
-echo " --methods=${METHODS_PARAM} \\ "
-echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \\ "
-echo " --loglevel=${LOG_LEVEL}\ "
-
-# run method
-perl ${SCRIPT} \
---inpath=${INPATH} \
---id=${INPATH##*/} \
---species="${SPECIES}" \
---methods=${METHODS_PARAM} \
---apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
---loglevel=${LOG_LEVEL}
-echo "================="
-
-
+for FORMAT in ${FORMAT_LIST}; do
+	# print trace
+	echo "================="
+	echo "perl ${SCRIPT} \\ "
+	echo " --species=\"${SPECIES}\" \\ "
+	echo " --methods=${METHODS_PARAM} \\ "
+	echo " --format=${FORMAT} \\ "
+	echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \\ "
+	echo " --output=${OUTPUT_FILE} \\ "
+	echo " --loglevel=${LOG_LEVEL}\ "
+	
+	# run method
+	perl ${SCRIPT} \
+	--species="${SPECIES}" \
+	--methods=${METHODS_PARAM} \
+	--format=${FORMAT} \
+	--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+	--output=${OUTPUT_FILE} \
+	--loglevel=${LOG_LEVEL}
+	echo "================="
+done
 

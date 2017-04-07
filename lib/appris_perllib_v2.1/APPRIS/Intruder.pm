@@ -920,30 +920,7 @@ sub feed_gene_by_analysis {
 			throw('No firestar analysis') if ($@);
 		}
 		
-#		# Insert MATADOR3D analysis -----------------
-#		if (defined $type and ($type eq 'matador3d' or $type eq 'all') and $analysis->matador3d) {
-#			my ($method) = $analysis->matador3d;
-#				
-#			# Insert method annotation
-#			my ($result);
-#			if ($method->result) {
-#				$result = $method->result;					
-#			}
-#			else {
-#				throw('No matador3d analysis');			
-#			}
-#
-#			my($global_id);
-#			eval {
-#				$global_id = $self->dbadaptor->insert_matador3d(
-#								entity_id		=> $internal_entity_id,
-#								result			=> $result
-#				);
-#			};
-#			throw('No matador3d analysis') if ($@);
-#		}
-
-		# Insert MATADOR3D2 analysis -----------------
+		# Insert MATADOR3D analysis -----------------
 		if (defined $type and ($type eq 'matador3d' or $type eq 'all') and $analysis->matador3d) {
 			my ($method) = $analysis->matador3d;
 				
@@ -964,6 +941,29 @@ sub feed_gene_by_analysis {
 				);
 			};
 			throw('No matador3d analysis') if ($@);
+		}
+
+		# Insert MATADOR3D2 analysis -----------------
+		if (defined $type and ($type eq 'matador3d2' or $type eq 'all') and $analysis->matador3d2) {
+			my ($method) = $analysis->matador3d2;
+				
+			# Insert method annotation
+			my ($result);
+			if ($method->result) {
+				$result = $method->result;					
+			}
+			else {
+				throw('No matador3d2 analysis');			
+			}
+
+			my($global_id);
+			eval {
+				$global_id = $self->dbadaptor->insert_matador3d2(
+								entity_id		=> $internal_entity_id,
+								result			=> $result
+				);
+			};
+			throw('No matador3d2 analysis') if ($@);
 		}
 		
 		# Insert SPADE analysis -----------------
@@ -1293,60 +1293,7 @@ sub feed_transc_by_analysis {
 			}
 		}
 			
-#		# Insert MATADOR3D analysis -----------------
-#		if (defined $type and ($type eq 'matador3d' or $type eq 'all') and $analysis->matador3d) {
-#			my ($method) = $analysis->matador3d;
-#
-#			# insert annotation
-#			my($global_id);
-#			if ( defined $method->score and defined $method->result ) {
-#				eval {
-#					$global_id = $self->dbadaptor->insert_matador3d(
-#									entity_id				=> $internal_entity_id,
-#									score					=> $method->score,
-#									result					=> $method->result
-#					);
-#				};
-#				throw('No matador3d analysis') if ($@);
-#			}
-#			else {
-#				throw('No matador3d analysis');			
-#			}
-#
-#			# insert regions
-#			if ( defined $method->alignments ) {
-#				foreach my $region (@{$method->alignments}) {
-#					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score ) {
-#						eval {
-#							my (%parameters) = (
-#											matador3d_id		=> $global_id,
-#											cds_id				=> $region->cds_id,
-#											start				=> $region->pstart,
-#											end					=> $region->pend,
-#											score				=> $region->score
-#							);
-#							$parameters{trans_start} = $region->start if ( defined $region->start );
-#							$parameters{trans_end} = $region->end if ( defined $region->end );
-#							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
-#							
-#							$parameters{type} = $region->type if ( $region->type );
-#							$parameters{alignment_start} = $region->alignment_start if ( $region->alignment_start );
-#							$parameters{alignment_end} = $region->alignment_end if ( $region->alignment_end );
-#							$parameters{pdb_id} = $region->pdb_id if ( $region->pdb_id );
-#							$parameters{identity} = $region->identity if ( $region->identity );
-#							$parameters{external_id} = $region->external_id if ( $region->external_id );
-#							my ($method_residues_id) = $self->dbadaptor->insert_matador3d_alignments(%parameters);
-#						};
-#						throw('No matador3d residue analysis') if ($@);					
-#					}
-#					else {
-#						throw('No matador3d residue analysis');						
-#					}
-#				}
-#			}
-#		}
-		
-		# Insert MATADOR3D2 analysis -----------------
+		# Insert MATADOR3D analysis -----------------
 		if (defined $type and ($type eq 'matador3d' or $type eq 'all') and $analysis->matador3d) {
 			my ($method) = $analysis->matador3d;
 
@@ -1369,6 +1316,59 @@ sub feed_transc_by_analysis {
 			# insert regions
 			if ( defined $method->alignments ) {
 				foreach my $region (@{$method->alignments}) {
+					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score ) {
+						eval {
+							my (%parameters) = (
+											matador3d_id		=> $global_id,
+											cds_id				=> $region->cds_id,
+											start				=> $region->pstart,
+											end					=> $region->pend,
+											score				=> $region->score
+							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
+							
+							$parameters{type} = $region->type if ( $region->type );
+							$parameters{alignment_start} = $region->alignment_start if ( $region->alignment_start );
+							$parameters{alignment_end} = $region->alignment_end if ( $region->alignment_end );
+							$parameters{pdb_id} = $region->pdb_id if ( $region->pdb_id );
+							$parameters{identity} = $region->identity if ( $region->identity );
+							$parameters{external_id} = $region->external_id if ( $region->external_id );
+							my ($method_residues_id) = $self->dbadaptor->insert_matador3d_alignments(%parameters);
+						};
+						throw('No matador3d residue analysis') if ($@);					
+					}
+					else {
+						throw('No matador3d residue analysis');						
+					}
+				}
+			}
+		}
+		
+		# Insert MATADOR3D2 analysis -----------------
+		if (defined $type and ($type eq 'matador3d2' or $type eq 'all') and $analysis->matador3d2) {
+			my ($method) = $analysis->matador3d2;
+
+			# insert annotation
+			my($global_id);
+			if ( defined $method->score and defined $method->result ) {
+				eval {
+					$global_id = $self->dbadaptor->insert_matador3d2(
+									entity_id				=> $internal_entity_id,
+									score					=> $method->score,
+									result					=> $method->result
+					);
+				};
+				throw('No matador3d2 analysis') if ($@);
+			}
+			else {
+				throw('No matador3d2 analysis');			
+			}
+
+			# insert regions
+			if ( defined $method->alignments ) {
+				foreach my $region (@{$method->alignments}) {
 					if ( defined $region->pstart and defined $region->pend and defined $region->score ) {
 						eval {
 							my (%parameters) = (
@@ -1383,12 +1383,12 @@ sub feed_transc_by_analysis {
 							$parameters{trans_end} = $region->end if ( defined $region->end );
 							$parameters{trans_strand} = $region->strand if ( defined $region->strand );							
 							
-							my ($method_residues_id) = $self->dbadaptor->insert_matador3d_alignments(%parameters);
+							my ($method_residues_id) = $self->dbadaptor->insert_matador3d2_alignments(%parameters);
 						};
-						throw('No matador3d residue analysis') if ($@);					
+						throw('No matador3d2 residue analysis') if ($@);					
 					}
 					else {
-						throw('No matador3d residue analysis');						
+						throw('No matador3d2 residue analysis');						
 					}
 				}
 			}

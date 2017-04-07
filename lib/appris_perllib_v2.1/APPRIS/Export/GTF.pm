@@ -153,6 +153,12 @@ sub get_trans_annotations {
 	   		        										$external_id,
 	           												$feature);
 				}
+				if ( ($source =~ /matador3d2/) or ($source eq 'all') ) {
+					$output .= get_matador3d2_annotations(	$transcript_id,
+	   		        										$gene_id,
+	   		        										$external_id,
+	           												$feature);
+				}
 				if ( ($source =~ /corsair/) or ($source eq 'all') ) {
 					$output .= get_corsair_annotations(	$transcript_id,
 	   		        										$gene_id,
@@ -668,97 +674,97 @@ sub get_firestar_annotations {
 
 =cut
 
-#sub get_matador3d_annotations {
-#	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
-#
-#    my ($output) = '';
-#    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
-#	my ($method_phase) = '.';
-#	my ($method_source) = $GTF_CONSTANTS->{'matador3d'}->{'source'};
-#	my ($method_type) = $GTF_CONSTANTS->{'matador3d'}->{'type'};
-#
-#	# Get annotations
-# 	if ( $feature->analysis ) {
-# 		my ($analysis) = $feature->analysis;
-# 		if ( $analysis->matador3d ) {
-#	 		my ($method) = $analysis->matador3d;
-#	 		
-#	 		# get method annotations
-#	 		if ( defined $method->score and !defined $method->alignments ) {
-#	 			# get coords
-#				my ($method_start,$method_end,$method_strand);			
-#				if ( $feature->start and $feature->end and $feature->strand ) {
-#					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
-#				}
-#				else {
-#					my ($length_aa);
-#					if ($feature->translate and $feature->translate->sequence) {
-#						$length_aa = length($feature->translate->sequence);
-#					}
-#					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
-#				}
-#				my ($method_score)  = ( defined $method->score )  ? $method->score  : 0;
-#				# common attributes
-#				my ($common) = {
-#						'seqname'	=> $method_seqname,
-#						'source'	=> $method_source,
-#						'type'		=> $method_type,
-#						'type'		=> $method_type,
-#						'start'		=> $method_start,
-#						'end'		=> $method_end,
-#						'score'		=> $method_score,
-#						'strand'	=> $method_strand,
-#						'phase'		=> $method_phase
-#				};
-#				# optinal attributes
-#				my($optional);
-#				$optional->{'gene_id'}			= $gene_id;
-#				$optional->{'transcript_id'}	= $transcript_id;
-#				if (defined $common and defined $optional) {
-#					$output .= print_annotations($common,$optional);			
-#				}
-#	 		}
-#	 		
-#	 		# get residue annotations
-#			elsif ( defined $method->alignments ) {
-#				foreach my $region (@{$method->alignments}) {
-#					if ( defined $region->score ) {
-#						# get coords
-#						my ($method_start)  = ( defined $region->start )  ? $region->start  : $region->score;
-#						my ($method_end)    = ( defined $region->end )    ? $region->end    : $region->score;
-#						my ($method_score)  = ( defined $region->score )  ? $region->score  : 0;
-#						my ($method_strand) = ( defined $region->strand ) ? $region->strand : '.';
-#						# common attributes
-#						my ($common) = {
-#								'seqname'	=> $method_seqname,
-#								'source'	=> $method_source,
-#								'type'		=> $method_type,
-#								'type'		=> $method_type,
-#								'start'		=> $method_start,
-#								'end'		=> $method_end,
-#								'score'		=> $method_score,
-#								'strand'	=> $method_strand,
-#								'phase'		=> $method_phase
-#						};
-#						# optinal attributes
-#						my($optional);
-#						$optional->{'gene_id'}			= $gene_id;
-#						$optional->{'transcript_id'}	= $transcript_id;
-#						$optional->{'note'}				= "pdb_id:".$region->pdb_id if ($region->pdb_id);
-#						$optional->{'note'}				.= ",identity:".$region->identity if ($region->identity);
-#						if (defined $common and defined $optional) {
-#							$output .= print_annotations($common,$optional);			
-#						}													 	
-#					}
-#				}
-#			} 		
-# 		}
-# 	}
-#
-#	return $output;
-#	
-#} # End get_matador3d_annotations
 sub get_matador3d_annotations {
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
+
+    my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
+	my ($method_phase) = '.';
+	my ($method_source) = $GTF_CONSTANTS->{'matador3d'}->{'source'};
+	my ($method_type) = $GTF_CONSTANTS->{'matador3d'}->{'type'};
+
+	# Get annotations
+ 	if ( $feature->analysis ) {
+ 		my ($analysis) = $feature->analysis;
+ 		if ( $analysis->matador3d ) {
+	 		my ($method) = $analysis->matador3d;
+	 		
+	 		# get method annotations
+	 		if ( defined $method->score ) {
+	 			# get coords
+				my ($method_start,$method_end,$method_strand);			
+				if ( $feature->start and $feature->end and $feature->strand ) {
+					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+				}
+				else {
+					my ($length_aa);
+					if ($feature->translate and $feature->translate->sequence) {
+						$length_aa = length($feature->translate->sequence);
+					}
+					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+				}
+				my ($method_score)  = ( defined $method->score )  ? $method->score  : 0;
+				# common attributes
+				my ($common) = {
+						'seqname'	=> $method_seqname,
+						'source'	=> $method_source,
+						'type'		=> $method_type,
+						'type'		=> $method_type,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
+						'score'		=> $method_score,
+						'strand'	=> $method_strand,
+						'phase'		=> $method_phase
+				};
+				# optinal attributes
+				my($optional);
+				$optional->{'gene_id'}			= $gene_id;
+				$optional->{'transcript_id'}	= $transcript_id;
+				if (defined $common and defined $optional) {
+#					$output .= print_annotations($common,$optional);			
+				}
+	 		}
+	 		
+	 		# get residue annotations
+			if ( defined $method->alignments ) {
+				foreach my $region (@{$method->alignments}) {
+					if ( defined $region->score and $region->pdb_id ) {
+						# get coords
+						my ($method_start)  = ( defined $region->start )  ? $region->start  : $region->score;
+						my ($method_end)    = ( defined $region->end )    ? $region->end    : $region->score;
+						my ($method_score)  = ( defined $region->score )  ? $region->score  : 0;
+						my ($method_strand) = ( defined $region->strand ) ? $region->strand : '.';
+						# common attributes
+						my ($common) = {
+								'seqname'	=> $method_seqname,
+								'source'	=> $method_source,
+								'type'		=> $method_type,
+								'type'		=> $method_type,
+								'start'		=> $method_start,
+								'end'		=> $method_end,
+								'score'		=> $method_score,
+								'strand'	=> $method_strand,
+								'phase'		=> $method_phase
+						};
+						# optinal attributes
+						my($optional);
+						$optional->{'gene_id'}			= $gene_id;
+						$optional->{'transcript_id'}	= $transcript_id;
+						$optional->{'note'}				= "pdb_id:".$region->pdb_id if ($region->pdb_id);
+						$optional->{'note'}				.= ",identity:".$region->identity if ($region->identity);
+						if (defined $common and defined $optional) {
+							$output .= print_annotations($common,$optional);			
+						}													 	
+					}
+				}
+			} 		
+ 		}
+ 	}
+
+	return $output;
+	
+} # End get_matador3d_annotations
+sub get_matador3d2_annotations {
 	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
 
     my ($output) = '';
@@ -804,14 +810,14 @@ sub get_matador3d_annotations {
 				$optional->{'gene_id'}			= $gene_id;
 				$optional->{'transcript_id'}	= $transcript_id;
 				if (defined $common and defined $optional) {
-					$output .= print_annotations($common,$optional);			
+#					$output .= print_annotations($common,$optional);			
 				}
 	 		}
 	 		
 	 		# get residue annotations
-			elsif ( defined $method->alignments ) {
+			if ( defined $method->alignments ) {
 				foreach my $region (@{$method->alignments}) {
-					if ( defined $region->score ) {
+					if ( defined $region->score and $region->pdb_id ) {
 						# get coords
 						my ($method_start)  = ( defined $region->start )  ? $region->start  : ( ( defined $region->pstart )  ? $region->pstart  : '.' );
 						my ($method_end)    = ( defined $region->end   )  ? $region->end    : ( ( defined $region->pend   )  ? $region->pend    : '.' );
@@ -845,7 +851,7 @@ sub get_matador3d_annotations {
 
 	return $output;
 	
-} # End get_matador3d_annotations
+} # End get_matador3d2_annotations
 
 =head2 get_corsair_annotations
 
