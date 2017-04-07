@@ -1,8 +1,8 @@
 ___
-## 2017_05.v22
+## 2017_05.v23
 ```
-SERVER-RELEASE:   2017_05.v22
-CODE-RELEASE:     4.7.2.15
+SERVER-RELEASE:   2017_05.v23
+CODE-RELEASE:     4.7.2.16
 ```
 
 ### Highlights
@@ -32,7 +32,7 @@ New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
 - TODO!!! CHANGES for the new APPRIS
 
 
-### Code (2.15)
+### Code (2.16)
 
 TODO!!!
 - Matador3D2
@@ -43,6 +43,23 @@ TODO!!!
 - APPRIS!!!
 Ten ahora en cuenta la discriminacion de cada metodo para descartar los transcritos
 Despues los que quedan, toma la decision de forma global con el valor normalizado de cada transctito.
+
+
+
+___
+## 2017_04.v22
+```
+SERVER-RELEASE:   2017_04.v22
+CODE-RELEASE:     4.6.2.15
+```
+
+### Highlights
+
+
+### Code (2.15)
+
+TODO!!!
+Update of Matador3D database
 
 TODO!!!
 - THUMP
