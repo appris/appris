@@ -55,6 +55,7 @@ CODE-RELEASE:     4.6.2.15
 
 ### Highlights
 
+- New release of Ensembl (e88) for all species.
 
 ### Code (2.15)
 
@@ -75,8 +76,9 @@ CODE-RELEASE:     4.6.2.14
 
 ### Highlights
 
-- New release of Ensembl (e88) for all species.
+- Only Annotations of human have been updated for Ensembl87, Gencode19, RefSeq 105 and RefSeq 107.
 
+ 
 ### Code (2.14)
 
 - Matador3D (version 1) has been reconnected in the APPRIS pipeline
