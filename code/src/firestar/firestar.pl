@@ -26,8 +26,6 @@ use vars qw(
 	$PROG_CUTOFF
 	$PROG_CSA
 	$PROG_COG
-	$PROG_MIN_RESIDUES
-	$PROG_DIFF_RESIDUES
 );
 
 # Input parameters
@@ -71,8 +69,6 @@ $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');
 $PROG_CUTOFF			= $cfg->val('FIRESTAR_VARS', 'cutoff');
 $PROG_CSA				= $cfg->val('FIRESTAR_VARS', 'csa');
 $PROG_COG				= $cfg->val('FIRESTAR_VARS', 'cog');
-$PROG_MIN_RESIDUES		= $cfg->val('FIRESTAR_VARS', 'min_res');
-$PROG_DIFF_RESIDUES		= $cfg->val('FIRESTAR_VARS', 'diff_res');
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -514,30 +510,37 @@ sub main()
 			}
 		}
 		
+#		# get the list of winners and loosers 
+#		for ( my $i = 0; $i < $#sort+1; $i++ )
+#		{
+#			my $nextsum = $sort[$i];
+#			
+#			# We believe in firestar but when the number of functional residues are bigger than 2
+#			if ( $num_residues_win <= $PROG_MIN_RESIDUES ) 
+#			{		
+#				my ($list_of_vars) = '';
+#				my @vars = split(/ /, $order{$nextsum});
+#				push(@winners, $order{$nextsum});				
+#			}
+#			else # we believe
+#			{
+#				if ( $win - $nextsum <= $PROG_DIFF_RESIDUES )
+#				{
+#					push(@winners, $order{$nextsum});
+#				}
+#				else
+#				{
+#					push(@loosers, $order{$nextsum});
+#				}		
+#			}
+#		}
 		# get the list of winners and loosers 
 		for ( my $i = 0; $i < $#sort+1; $i++ )
 		{
 			my $nextsum = $sort[$i];
-			
-			# We believe in firestar but when the number of functional residues are bigger than 2
-			if ( $num_residues_win <= $PROG_MIN_RESIDUES ) 
-			{		
-				my ($list_of_vars) = '';
-				my @vars = split(/ /, $order{$nextsum});
-				push(@winners, $order{$nextsum});				
-			}
-			else # we believe
-			{
-				if ( $win - $nextsum <= $PROG_DIFF_RESIDUES )
-				{
-					push(@winners, $order{$nextsum});
-				}
-				else
-				{
-					push(@loosers, $order{$nextsum});
-				}		
-			}
+			push(@winners, $order{$nextsum});				
 		}
+
 		
 		# print rejected and accepted sequences ----------------
 		$output_content .= "\n";
