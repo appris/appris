@@ -12,12 +12,12 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e87v21",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
-                        "label": "Gencode26/Ensembl88",
-                        "version": "88"
+                        "label": "Gencode25/Ensembl87",
+                        "version": "87"
                     },
                     "database":   "appris_homo_sapiens",
                     "datafiles":   {
