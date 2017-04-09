@@ -49,7 +49,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201606v21",
+                    "id":   "up201606v20",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -140,7 +140,7 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -158,7 +158,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs106v21",
+                    "id":   "rs106v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -176,7 +176,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v20",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -207,7 +207,7 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -225,7 +225,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs105v21",
+                    "id":   "rs105v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -243,7 +243,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v20",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -265,7 +265,7 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "e77v21",
+                    "id":   "e77v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -296,7 +296,7 @@
                 "id":       "rn6",
                 "name":     "Rnor_6.0",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -314,7 +314,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs106v21",
+                    "id":   "rs106v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -332,7 +332,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v20",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -354,7 +354,7 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "e77v21",
+                    "id":   "e77v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -385,7 +385,7 @@
                 "id":       "susScr3",
                 "name":     "Sscrofa10.2",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -403,7 +403,7 @@
                         "transmembrane_helices":    ["GTF","BED","BED12"]
                     }
                 },{
-                    "id":   "rs105v21",
+                    "id":   "rs105v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -434,7 +434,7 @@
                 "id":       "panTro5",
                 "name":     "Pan_tro_3.0",
                 "datasets": [{
-                    "id":   "rs104v21",
+                    "id":   "rs104v20",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -456,7 +456,7 @@
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -487,7 +487,7 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -518,7 +518,7 @@
                 "id":       "ce11",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e87v21",
+                    "id":   "e87v20",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
