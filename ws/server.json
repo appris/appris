@@ -225,24 +225,6 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 },{
-                    "id":   "rs105v20",
-                    "type": "current",
-                    "source": {
-                        "name": "refseq",
-                        "label": "RefSeq105",
-                        "version": "105"
-                    },
-                    "database":   "appris_danio_rerio",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    }
-                },{
                     "id":   "up201610v20",
                     "type": "current",
                     "source": {
@@ -302,24 +284,6 @@
                         "name": "ensembl",
                         "label": "Ensembl87",
                         "version": "87"
-                    },
-                    "database":   "appris_rattus_norvegicus",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    }
-                },{
-                    "id":   "rs106v20",
-                    "type": "current",
-                    "source": {
-                        "name": "refseq",
-                        "label": "RefSeq106",
-                        "version": "106"
                     },
                     "database":   "appris_rattus_norvegicus",
                     "datafiles":   {
@@ -402,24 +366,6 @@
                         "whole_domains":            ["GTF","BED","BED12"],
                         "transmembrane_helices":    ["GTF","BED","BED12"]
                     }
-                },{
-                    "id":   "rs105v20",
-                    "type": "current",
-                    "source": {
-                        "name": "refseq",
-                        "label": "RefSeq105",
-                        "version": "105"
-                    },
-                    "database":   "appris_sus_scrofa",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED","BED12"],
-                        "tertiary_structure":       ["GTF","BED","BED12"],
-                        "vertebrates_conservation": ["GTF","BED","BED12"],
-                        "whole_domains":            ["GTF","BED","BED12"],
-                        "transmembrane_helices":    ["GTF","BED","BED12"]
-                    }
                 }]
             }]
         },
@@ -452,27 +398,6 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 }]
-            },{
-                "id":       "panTro4",
-                "name":     "CHIMP2.1.4",
-                "datasets": [{
-                    "id":   "e87v20",
-                    "type": "current",
-                    "source": {
-                        "name": "ensembl",
-                        "label": "Ensembl87",
-                        "version": "87"
-                    },
-                    "database":   "appris_pan_troglodytes",
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    }
                 }]
             }]
         },
