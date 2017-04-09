@@ -398,7 +398,6 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     }
                 }]
-                }]
             }]
         },
         "drosophila_melanogaster": {
