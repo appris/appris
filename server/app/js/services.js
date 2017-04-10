@@ -11,7 +11,7 @@ apprisServices.factory('Changelogs', ['$resource', 'serverHostWS', function($res
 
 /* CONFIG file of used SERVER */
 apprisServices.factory('Server', ['$resource', 'serverHostWS', function($resource, serverHostWS){
-    return $resource(serverHostWS+'/server.json');
+    return $resource(serverHostWS+'/config.json');
 }]);
 
 /* CONFIG file of used METHODS */
