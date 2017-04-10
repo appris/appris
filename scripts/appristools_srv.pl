@@ -15,19 +15,19 @@ use APPRIS::Utils::Exception qw( info throw warning );
 my ($steps) = undef;
 my ($release) = undef;
 my ($relnotes_file) = undef;
-my ($server_file) = undef;
+my ($conf_file) = undef;
 my ($loglevel) = undef;
 
 &GetOptions(
 	'steps|p=s'			=> \$steps,
 	'release|r=s'		=> \$release,
 	'notes|n=s'			=> \$relnotes_file,	
-	'server|s=s'		=> \$server_file,
+	'conf|c=s'			=> \$conf_file,
 	'loglevel|l=s'		=> \$loglevel,
 );
 
 # Check required parameters
-unless ( defined $steps and defined $server_file ) {
+unless ( defined $steps and defined $conf_file ) {
 	print `perldoc $0`;
 	print "\nBad option combination of input data\n\n";
 	exit 1;
@@ -75,8 +75,10 @@ $FTP_ENSEMBL_PUB		= 'ftp://ftp.ensembl.org/pub';
 $FTP_REFSEQ_PUB			= 'ftp://ftp.ncbi.nlm.nih.gov';
 
 # Extract Server config file
-my ($server_json) = JSON->new();
-my ($SERVER) = $server_json->decode( getStringFromFile($server_file) );
+my ($config_json) = JSON->new();
+my ($CONFIG) = $config_json->decode( getStringFromFile($conf_file) );
+my (@CFG_SPECIES) = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});
+
 
 #################
 # Method bodies #
@@ -108,7 +110,7 @@ sub main()
 	# Step 3: upload annotation files to server
 	if ( $steps =~ /3/ )
 	{
-		if ( defined $release and defined $relnotes_file and defined $server_file ) {
+		if ( defined $release and defined $relnotes_file and defined $conf_file ) {
 			info("-- upload annotation files to server...");
 			upload_annotfiles();		
 		}
@@ -154,7 +156,8 @@ sub upload_annotfiles()
 	
 	# add into local workspace with datafiles, for each species
 	info("-- add into local workspace with datafiles, for each species...");
-	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};		
 
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
@@ -220,8 +223,9 @@ sub upload_annotfiles()
 	# import databases into server
 	info("-- import databases into server...");
 	my ($cmd_imp) = "";
-	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
-
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
 				if ( exists $cfg_dataset->{'database'} ) {
@@ -260,8 +264,9 @@ sub upload_genefiles()
 sub copy_genefiles()
 {
 	# add into local workspace with datafiles, for each species
-	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
-
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
 				if ( exists $cfg_dataset->{'source'} and exists $cfg_dataset->{'source'}->{'name'} and exists $cfg_dataset->{'source'}->{'version'} ) {
@@ -303,8 +308,9 @@ sub copy_genefiles()
 sub download_genefiles()
 {
 	# add into local workspace with datafiles, for each species
-	while (my ($species_id, $cfg_species) = each($SERVER->{'species'}) ) {
-
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
 				if ( exists $cfg_dataset->{'source'} and exists $cfg_dataset->{'source'}->{'name'} and exists $cfg_dataset->{'source'}->{'version'} ) {
@@ -547,7 +553,7 @@ Executes all APPRIS 'steps
   
   -n, --notes     {file}   <Release Notes file - TXT format - >
 		
-  -s, --server   {file}    <Config file of Server - JSON format - >
+  -c, --conf      {file}   <Config file for all gene datatasets (JSON format)>
   
 =head1 EXAMPLE
 
@@ -555,7 +561,7 @@ Executes all APPRIS 'steps
 		-p 123
 		-r 2016_06.v17 \
 		-n changelog.md \
-		-s ws/server.json
+		-c ws/config.json
 
 =head1 AUTHOR
 

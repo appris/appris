@@ -1,0 +1,886 @@
+{
+    "version": "2017_04.v22",
+    "species": {
+        "homo_sapiens": {
+            "order":        1,
+            "scientific":   "Homo sapiens",
+            "common":       "Human",
+            "group":        "popular",
+            "category":     "houses",
+            "official":     "hg38",
+            "assemblies":   [{
+                "id":       "hg38",
+                "name":     "GRCh38",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Gencode26/Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.ensembl"
+                    }
+                },{
+                    "id":   "rs108v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq108",
+                        "version": "108"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.refseq"
+                    }
+                },{
+                    "id":   "up201606v21",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_06",
+                        "version": "2016_06"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.uniprot"
+                    }
+                },{
+                    "id":   "a1v21",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_84+RefSeq_107+UniProt_201606",
+                        "version": "1"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.appris"
+                    }
+                },{
+                    "id":   "e84v21",
+                    "type": "archive",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Gencode24/Ensembl84",
+                        "version": "84"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.e84"
+                    }
+                }]
+            },{
+                "id":       "hg19",
+                "name":     "GRCh37",
+                "datasets": [{
+                    "id":   "g19v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Gencode19/Ensembl74",
+                        "version": "74"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.g19"
+                    }
+                },{
+                    "id":   "rs105v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq105",
+                        "version": "105"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.rs105"
+                    }
+                }]
+            }]
+        },
+        "mus_musculus": {
+            "order":        2,
+            "scientific":   "Mus musculus",
+            "common":       "Mouse",
+            "group":        "popular",
+            "category":     "houses",
+            "official":     "mm10",
+            "assemblies":   [{
+                "id":       "mm10",
+                "name":     "GRCm38",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "GencodeM12/Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Mmus.ensembl"
+                    }
+                },{
+                    "id":   "rs106v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq106",
+                        "version": "106"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Mmus.refseq"
+                    }
+                },{
+                    "id":   "up201610v21",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Mmus.uniprot"
+                    }
+                },{
+                    "id":   "a1v21",
+                    "type": "current",
+                    "source": {
+                        "name": "appris",
+                        "label": "Ensembl_88+RefSeq_106+UniProt_201610",
+                        "version": "1"
+                    },
+                    "database":   "appris_mus_musculus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Mmus.appris"
+                    }
+                }]
+            }]
+        },
+        "danio_rerio": {
+            "order":        3,
+            "scientific":   "Danio rerio",
+            "common":       "Zebrafish",
+            "group":        "popular",
+            "category":     "houses",
+            "official":     "danRer10",
+            "assemblies":   [{
+                "id":       "danRer10",
+                "name":     "GRCz10",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Drer.ensembl"
+                    }
+                },{
+                    "id":   "rs105v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq105",
+                        "version": "105"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Drer.refseq"
+                    }
+                },{
+                    "id":   "up201610v21",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Drer.uniprot"
+                    }
+                }]
+            },{
+                "id":       "danRer7",
+                "name":     "Zv9",
+                "datasets": [{
+                    "id":   "e77v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl77",
+                        "version": "77"
+                    },
+                    "database":   "appris_danio_rerio",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Drer.e77"
+                    }
+                }]
+            }]
+        },
+        "rattus_norvegicus": {
+            "order":        4,
+            "scientific":   "Rattus norvegicus",
+            "common":       "Rat",
+            "group":        "rodents",
+            "category":     "houses",
+            "official":     "rn6",
+            "assemblies":   [{
+                "id":       "rn6",
+                "name":     "Rnor_6.0",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Rnor.ensembl"
+                    }
+                },{
+                    "id":   "rs106v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq106",
+                        "version": "106"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Rnor.refseq"
+                    }
+                },{
+                    "id":   "up201610v21",
+                    "type": "current",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_10",
+                        "version": "2016_10"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Rnor.uniprot"
+                    }
+                }]
+            },{
+                "id":       "rn5",
+                "name":     "Rnor_5.0",
+                "datasets": [{
+                    "id":   "e77v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl77",
+                        "version": "77"
+                    },
+                    "database":   "appris_rattus_norvegicus",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Rnor.e77"
+                    }
+                }]
+            }]
+        },
+        "sus_scrofa": {
+            "order":        5,
+            "scientific":   "Sus scrofa",
+            "common":       "Pig",
+            "group":        "laurasiatheria",
+            "category":     "houses",
+            "official":     "susScr3",
+            "assemblies":   [{
+                "id":       "susScr3",
+                "name":     "Sscrofa10.2",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_sus_scrofa",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED","BED12"],
+                        "tertiary_structure":       ["GTF","BED","BED12"],
+                        "vertebrates_conservation": ["GTF","BED","BED12"],
+                        "whole_domains":            ["GTF","BED","BED12"],
+                        "transmembrane_helices":    ["GTF","BED","BED12"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Sscr.ensembl"
+                    }
+                },{
+                    "id":   "rs105v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq105",
+                        "version": "105"
+                    },
+                    "database":   "appris_sus_scrofa",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED","BED12"],
+                        "tertiary_structure":       ["GTF","BED","BED12"],
+                        "vertebrates_conservation": ["GTF","BED","BED12"],
+                        "whole_domains":            ["GTF","BED","BED12"],
+                        "transmembrane_helices":    ["GTF","BED","BED12"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Sscr.refseq"
+                    }
+                }]
+            }]
+        },
+        "pan_troglodytes": {
+            "order":        6,
+            "scientific":   "Pan troglodytes",
+            "common":       "Chimpanzee",
+            "group":        "primates",
+            "category":     "houses",
+            "official":     "panTro4",
+            "assemblies":   [{
+                "id":       "panTro5",
+                "name":     "Pan_tro_3.0",
+                "datasets": [{
+                    "id":   "rs104v21",
+                    "type": "current",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq104",
+                        "version": "104"
+                    },
+                    "database":   "appris_pan_troglodytes",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Ptro.refseq"
+                    }
+                }]
+            },{
+                "id":       "panTro4",
+                "name":     "CHIMP2.1.4",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_pan_troglodytes",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Ptro.ensembl"
+                    }
+                }]
+            }]
+        },
+        "drosophila_melanogaster": {
+            "order":        7,
+            "scientific":   "Drosophila melanogaster",
+            "common":       "Fruitfly",
+            "group":        "invertebrates",
+            "category":     "houses",
+            "official":     "dm6",
+            "assemblies":   [{
+                "id":       "dm6",
+                "name":     "BDGP6",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_drosophila_melanogaster",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Dmel.ensembl"
+                    }
+                }]
+            }]
+        },
+        "caenorhabditis_elegans": {
+            "order":        8,
+            "scientific":   "Caenorhabditis elegans",
+            "common":       "C.elegans",
+            "group":        "invertebrates",
+            "category":     "houses",
+            "official":     "ce11",
+            "assemblies":   [{
+                "id":       "ce11",
+                "name":     "WBcel235",
+                "datasets": [{
+                    "id":   "e88v21",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    },
+                    "database":   "appris_caenorhabditis_elegans",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Cele.ensembl"
+                    }
+                }]
+            }]
+        },
+        "bos_taurus": {
+            "order":        9,
+            "scientific":   "Bos taurus",
+            "common":       "Cow",
+            "group":       "laurasiatheria",
+            "official":     "bosTau8",
+            "assemblies":   [{
+                "id":       "bosTau8",
+                "name":     "UMD3.1",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "canis_familiaris": {
+            "order":        10,
+            "scientific":   "Canis familiaris",
+            "common":       "Dog",
+            "group":        "laurasiatheria",
+            "official":     "canFam3",
+            "assemblies":   [{
+                "id":       "canFam3",
+                "name":     "CanFam3.1",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "felis_catus": {
+            "order":        11,
+            "scientific":   "Felis catus",
+            "common":       "Cat",
+            "group":        "laurasiatheria",
+            "official":     "felCat5",
+            "assemblies":   [{
+                "id":       "felCat5",
+                "name":     "Felis_catus_6.2",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "monodelphis_domestica": {
+            "order":        12,
+            "scientific":   "Monodelphis domestica",
+            "common":       "Opossum",
+            "group":        "mammals",
+            "official":     "monDom5",
+            "assemblies":   [{
+                "id":       "monDom5",
+                "name":     "BROADO5",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "gallus_gallus": {
+            "order":        13,
+            "scientific":   "Gallus gallus",
+            "common":       "Chicken",
+            "group":        "birds",
+            "official":     "galGal4",
+            "assemblies":   [{
+                "id":       "galGal4",
+                "name":     "Gallus_gallus-5.0",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "taeniopygia_guttata": {
+            "order":        14,
+            "scientific":   "Taeniopygia guttata",
+            "common":       "Zebra Finch",
+            "group":        "birds",
+            "official":     "taeGut1",
+            "assemblies":   [{
+                "id":       "taeGut1",
+                "name":     "taeGut3.2.4",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "anolis_carolinensis": {
+            "order":        15,
+            "scientific":   "Anolis carolinensis",
+            "common":       "Anole lizard",
+            "group":        "reptiles",
+            "official":     "anoCar2",
+            "assemblies":   [{
+                "id":       "anoCar2",
+                "name":     "AnoCar2.0",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "xenopus_tropicalis": {
+            "order":        16,
+            "scientific":   "Xenopus tropicalis",
+            "common":       "Xenopus",
+            "group":        "amphibians",
+            "official":     "xenTro3",
+            "assemblies":   [{
+                "id":       "xenTro3",
+                "name":     "JGI_4.2",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        },
+        "takifugu_rubripes": {
+            "order":        17,
+            "scientific":   "Takifugu rubripes",
+            "common":       "Fugu",
+            "group":        "fish",
+            "official":     "fr3",
+            "assemblies":   [{
+                "id":       "fr3",
+                "name":     "FUGU4",
+                "datasets": [{
+                    "id":   "e88",
+                    "type": "download",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Ensembl88",
+                        "version": "88"
+                    }
+                }]
+            }]
+        }
+    },
+    "datafiles": [{
+        "id":       "species",
+        "label":    "Species",
+        "desc":     "List of species"
+    },{
+        "id":       "assembly",
+        "label":    "Assembly version",
+        "desc":     "Assembly version"
+    },{
+        "id":       "dataset",
+        "label":    "Gene Dataset",
+        "desc":     "Gene Dataset"
+    },{
+        "id":       "principal_isoforms",
+        "label":    "Principal Isoforms",
+        "desc":     "List of Principal Isoforms",
+        "file":     "appris_data.principal"
+    },{
+        "id":       "appris_scores",
+        "label":    "APPRIS scores",
+        "desc":     "Score of APPRIS methods",
+        "file":     "appris_data.appris"
+    },{
+        "id":       "functional_residues",
+        "label":    "Functional residues",
+        "desc":     "No. Functional Residues",
+        "file":     "appris_method.firestar"
+    },{
+        "id":       "tertiary_structure",
+        "label":    "Tertiary structure",
+        "desc":     "Tertiary Structure Score",
+        "file":     "appris_method.matador3d"
+    },{
+        "id":       "vertebrates_conservation",
+        "label":    "Vertebrates conservation",
+        "desc":     "Conservation Score (vertebrates)",
+        "file":     "appris_method.corsair"
+    },{
+        "id":       "whole_domains",
+        "label":    "Whole domains",
+        "desc":     "Whole Domains",
+        "file":     "appris_method.spade"
+    },{
+        "id":       "transmembrane_helices",
+        "label":    "Transmembrane helices",
+        "desc":     "No. Transmembrane Helices",
+        "file":     "appris_method.thump"
+    },{
+        "id":       "peptides",
+        "label":    "Peptides",
+        "desc":     "No. Peptides",
+        "file":     "appris_method.proteo"
+    }]
+}

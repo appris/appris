@@ -149,7 +149,6 @@ if ( defined $type_of_align ) {
 $NUM_MAX_PROC = $ENV{APPRIS_NUM_PARALLEL_PROC};
 if ( defined $num_process ) { $NUM_MAX_PROC = $num_process }
 my ($NUM_PROC_CHILDS) = 0;
-my ($PROC_CHILDS) = undef;
 
 # get vars of ensembl db
 unless ( defined $ensembldb_conf_file ) {
