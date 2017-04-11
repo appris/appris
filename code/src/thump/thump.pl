@@ -111,6 +111,7 @@ sub convert_mod($$$);
 sub run_prodiv($$$);
 sub park_consensus($$$$$$);
 sub park_consensus_seq($);
+sub consensus_seq(\$);
 sub filter_damaged_length($);
 sub _get_appris_annotations($);
 
@@ -183,9 +184,10 @@ sub main()
 			$logger->info("-- parse consensus\n");
 			eval {
 				my ($park_cons) = park_consensus($seq_id, $seq_file, $phobius_file, $memsat_file, $prodiv_file, $ws_tmp);
-				my ($cons_seq) = park_consensus_seq($park_cons);
-				$park_cons->{'consen'} = $cons_seq;
-				$report->{$seq_id}     = $park_cons;
+				my ($cons_mask, $cons_seq) = park_consensus_seq($park_cons);
+				$park_cons->{'consen_mask'}  = $cons_mask;
+				$park_cons->{'consen_seq'} = $cons_seq;
+				$report->{$seq_id}           = $park_cons;
 			};
 			$logger->error("parsing consensus") if($@);
 			
@@ -194,6 +196,15 @@ sub main()
 	}
 		
 	# Create consensus using the THM from another seq ---------------
+	if ( defined $report )
+	{		
+		eval {
+			consensus_seq($report);			
+		};
+		$logger->error("creating consensus seq") if($@);
+	}
+		
+	# Create labels ---------------
 	my ($output_content) = '';
 	if ( defined $report )
 	{		
@@ -448,6 +459,7 @@ sub park_consensus($$$$$$)
 	my (@fichero);
 	my ($contador);
 	my (@sequence);
+	my ($seq);
 	my ($seq_len);
 	my ($w);
 	my ($control);	
@@ -456,10 +468,16 @@ sub park_consensus($$$$$$)
 	open (SEQ_FILE, $seq_file);
 	my (@parking) = <SEQ_FILE>;
 	close(SEQ_FILE);
-
+	
 	my ($park_phobius_cont) = '';
 	my ($park_prodiv_cont) = '';
 	my ($park_memsat_cont) = '';
+	
+	# Seq ---
+	chomp($parking[1]);
+	@sequence = split(//,$parking[1]);
+	$seq = join('',@sequence);
+	$consensus->{'seq'}   = $seq;
 	
 	# Phobius ---
 	@fichero = undef;
@@ -483,6 +501,7 @@ sub park_consensus($$$$$$)
 	}		
 	chomp($parking[1]);
 	@sequence = split(//,$parking[1]);
+	$seq = join('',@sequence);
 	$seq_len = scalar@sequence;
 	for (my $i = 1; $i < (scalar@sequence+1); $i++ ) {
 		if ( defined $coord_phobius->[$w] && $i == $coord_phobius->[$w] && $control eq 'n' ) {
@@ -507,7 +526,6 @@ sub park_consensus($$$$$$)
 	}
 	$park_phobius_cont .="\n";
 	$consensus->{'phobius'}->{'num'}   = $contador;
-	$consensus->{'phobius'}->{'coord'} = $coord_prodiv;	
 	$consensus->{'phobius'}->{'coord'} = $coord_phobius;
 	$consensus->{'phobius'}->{'seq'}   = $park_phobius_cont;
 	
@@ -625,7 +643,7 @@ sub park_consensus($$$$$$)
 sub park_consensus_seq($)
 {
 	my ($consensus) = @_;
-	my ($consesus_seq) = '';
+	my ($consesus_mask, $consesus_seq) = ('',undef);
 	
 	if (
 		exists $consensus->{'phobius'} and exists $consensus->{'phobius'}->{'seq'} and $consensus->{'phobius'}->{'seq'} ne '' and
@@ -641,52 +659,146 @@ sub park_consensus_seq($)
 			for (my $z = 0; $z < $len; $z++ ) {				
 				if ( defined $phobius[$z] && defined $prodiv[$z] && defined $memsat[$z] ) {		
 					if ( ($phobius[$z] eq $prodiv[$z]) && ($phobius[$z] eq $memsat[$z]) && ($phobius[$z] eq 'X') ) {
-						$consesus_seq .= "X";
+						$consesus_mask .= "X";
 					}
 					else {
 						$init_thm = 0;
-						$consesus_seq .= "-";
+						$consesus_mask .= "-";
 					}				
 				}
 				else {
 					$init_thm = 0;
-					$consesus_seq .= "-";
+					$consesus_mask .= "-";
 				}
 			}
 		}
-	}	
-	return $consesus_seq;
+	}
+
+	my @sequence = split(//,$consensus->{'seq'});
+	my $seq = join('',@sequence);
+	my $seq_len = scalar@sequence;
+	my @mask = split(//,$consesus_mask);
+	my ($coord) = {};
+	for (my $z = 0; $z < $seq_len; $z++ ) {
+		if ( defined $mask[$z] and $mask[$z] eq 'X' ) {
+			if ( !exists $coord->{'start'} ) {
+				$coord->{'start'} = $z+1;
+				$coord->{'thm'} = '';
+			}
+			$coord->{'thm'} .= $sequence[$z];
+		}
+		else {
+			if ( exists $coord->{'start'} and !exists $coord->{'end'} ) {
+				$coord->{'end'} = $z;
+				push(@{$consesus_seq}, {
+					'thm'   => $coord->{'thm'},
+					'coord' => $coord->{'start'}.'-'.$coord->{'end'}	
+				});
+				$coord = {};
+			}
+		}
+	}
+	
+	return ($consesus_mask, $consesus_seq);
+}
+
+# consensus seq
+sub consensus_seq(\$)
+{
+	my ($ref_report) = @_;
+	
+	# has the seq
+	my $has_substr = sub {
+		my ($seq, $dom) = @_;
+		my ($out) = undef;
+		$out = index($seq, $dom);				
+		return $out;
+	};
+	
+	# extract the best THM seqs and the transcripts that have the THM's
+	my ($thm_big);
+	my (@ids) = keys(%{$$ref_report});
+	my (@ids2) = keys(%{$$ref_report});
+	for ( my $i=0; $i < scalar(@ids); $i++) {
+		my ($id)   = $ids[$i];
+		my ($rep)  = $$ref_report->{$id};
+		if ( defined $rep->{'consen_seq'} ) {
+			my ($thms) = $rep->{'consen_seq'};
+			for ( my $j=0; $j < scalar(@ids2); $j++) {
+				if ( $i != $j ) {
+					my ($id2)   = $ids2[$j];
+					my ($rep2)  = $$ref_report->{$id2};
+					if ( defined $rep2->{'consen_seq'} ) {
+						my (@thms)  = map { $_->{'thm'} } @{$rep->{'consen_seq'}};
+						my (@thms2) = map { $_->{'thm'} } @{$rep2->{'consen_seq'}};
+		 				foreach my $thm (@thms) {
+							my ($thm_b) = map { $_ } grep { /.+$thm|$thm.+/ } @thms2;
+							if ( defined $thm_b ) { $thm_big->{$thm}->{$thm_b} = 1 }
+						}
+					}
+				}
+			}			
+		}
+	}
+		
+	# extract the THM seqs
+	while ( my ($id, $rep) = each(%{$$ref_report}) ) {
+		my ($seq) = $rep->{'seq'};		
+		if ( defined $rep->{'consen_seq'} ) {
+			foreach my $thm_rep (@{$rep->{'consen_seq'}} ) {
+				my ($thm) = $thm_rep->{'thm'};
+				my ($s) = -1;
+				if ( exists $thm_big->{$thm} ) {
+					foreach my $thm_b ( sort { length($a) <=> length($b) } keys(%{$thm_big->{$thm}}) ) {
+						$s = $has_substr->($seq, $thm_b);
+						if ( $s != -1 ) {
+							$thm = $thm_b;
+							last;
+						}
+					}					
+				} else {
+					$s = $has_substr->($seq, $thm);					
+				}
+				if ( $s != -1 ) {
+					my ($start) = $s + 1;
+					my ($end) = $start + length($thm) - 1;
+					push(@{$$ref_report->{$id}->{'thms'}}, {
+						'seq'   => $thm,
+						'start' => $start,
+						'end'   => $end 
+					});
+				}
+			}
+			
+		}
+	}
+
 }
 
 # label the helix
 sub filter_damaged_length($)
 {
-	my ($report) = @_;
-	my ($output) = '';	
+	my ($report) = @_;	
+	my ($output) = '';
 	while ( my ($id, $rep) = each(%{$report}) ) {
-		my ($cons_seq) = $rep->{'consen'};
-		my (@content) = split('',$cons_seq);
-		$output .= '>'.$id."\t"."length ".length($cons_seq)." a.a.\n";
+		my ($cons_mask) = $rep->{'consen_mask'};
+		my (@content) = split('',$cons_mask);
+		$output .= '>'.$id."\t"."length ".length($cons_mask)." a.a.\n";
 		my ($num_helix) = 0;
-		my ($init_thm) = 0;
-		for ( my $i = 0; $i < scalar(@content); $i++ ) {
-			my ($aa) = $content[$i];
-			if ( $aa eq 'X' ) { # check the first position of helix
-				my ($x) = substr($cons_seq, $i);
-				my ($x_seq) = $x =~ m/^X+/mg;
-				my ($x_len) = length($x_seq);
-				if ( $x_len > 9 ) { # helix bigger than 9 aa.
+		if ( exists $rep->{'thms'} and scalar(@{$rep->{'thms'}}) > 0 ) {
+			for ( my $i = 0; $i < scalar(@{$rep->{'thms'}}); $i++ ) {
+				my ($thm_rep) = $rep->{'thms'}->[$i];
+				my ($t_len) = length($thm_rep->{'seq'});
+				my ($t_start) = $thm_rep->{'start'};
+				my ($t_end) = $thm_rep->{'end'};
+				if ( $t_len > 9 ) { # helix bigger than 9 aa.
 					$num_helix++;
-					if ( $x_len > 14 ) {
-						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\n";
-					}
-					else { # damaged is smaller than 14 aa.
-						$output .= "helix number $num_helix start: ".($i+1)."\tend: ".($i+$x_len)."\tdamaged\n";
-					}
+					$output .= "helix number $num_helix start: ".$t_start."\tend: ".$t_end;
+					if ( $t_len > 14 ) { $output .= "\n" }
+					# damaged is smaller than 14 aa.
+					else { $output .= "\tdamaged\n" }					
 				}
-				$i = $i + $x_len;
-			}
-			
+			}			
 		}
 	}	
 	return $output;

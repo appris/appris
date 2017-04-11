@@ -464,7 +464,7 @@ Executes all APPRIS 'steps
 
 	appristools -p 1234 -c ws/config.json -m fmsctrpa -e 'jmrodriguez@cnio.es' -f gtf
 	
-	appristools -p 1234 -s conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'jmrodriguez@cnio.es' -f gtf
+	appristools -p 1234 -d conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'jmrodriguez@cnio.es' -f gtf
 
 =head1 AUTHOR
 
