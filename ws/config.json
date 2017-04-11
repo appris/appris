@@ -12,7 +12,7 @@
                 "id":       "hg38",
                 "name":     "GRCh38",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -34,7 +34,7 @@
                         "envfile": "apprisrc.Hsap.ensembl"
                     }
                 },{
-                    "id":   "rs108v21",
+                    "id":   "rs108v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -55,12 +55,12 @@
                         "envfile": "apprisrc.Hsap.refseq"
                     }
                 },{
-                    "id":   "up201606v21",
+                    "id":   "up201703v22",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
-                        "label": "UniProt 2016_06",
-                        "version": "2016_06"
+                        "label": "UniProt 2017_03",
+                        "version": "2017_03"
                     },
                     "database":   "appris_homo_sapiens",
                     "datafiles":   {
@@ -76,7 +76,7 @@
                         "envfile": "apprisrc.Hsap.uniprot"
                     }
                 },{
-                    "id":   "a1v21",
+                    "id":   "a1v22",
                     "type": "current",
                     "source": {
                         "name": "appris",
@@ -97,7 +97,7 @@
                         "envfile": "apprisrc.Hsap.appris"
                     }
                 },{
-                    "id":   "e84v21",
+                    "id":   "e84v22",
                     "type": "archive",
                     "source": {
                         "name": "ensembl",
@@ -117,13 +117,75 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.e84"
+                },{
+                    "id":   "e87v22",
+                    "type": "archive",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Gencode25/Ensembl87",
+                        "version": "87"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.e87"
+                },{
+                    "id":   "rs107v22",
+                    "type": "archive",
+                    "source": {
+                        "name": "refseq",
+                        "label": "RefSeq107",
+                        "version": "107"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.rs107"
+                    }
+                },{
+                    "id":   "up201606v22",
+                    "type": "archive",
+                    "source": {
+                        "name": "uniprot",
+                        "label": "UniProt 2016_06",
+                        "version": "2016_06"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF"],
+                        "tertiary_structure":       ["GTF"],
+                        "vertebrates_conservation": ["GTF"],
+                        "whole_domains":            ["GTF"],
+                        "transmembrane_helices":    ["GTF"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.up201606"
                     }
                 }]
             },{
                 "id":       "hg19",
                 "name":     "GRCh37",
                 "datasets": [{
-                    "id":   "g19v21",
+                    "id":   "g19v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -145,7 +207,7 @@
                         "envfile": "apprisrc.Hsap.g19"
                     }
                 },{
-                    "id":   "rs105v21",
+                    "id":   "rs105v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -165,6 +227,28 @@
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.rs105"
                     }
+                },{
+                    "id":   "g12v22",
+                    "type": "current",
+                    "source": {
+                        "name": "ensembl",
+                        "label": "Gencode12/Ensembl67",
+                        "version": "67"
+                    },
+                    "database":   "appris_homo_sapiens",
+                    "datafiles":   {
+                        "principal_isoforms":       ["TXT"],
+                        "appris_scores":            ["TXT"],
+                        "functional_residues":      ["GTF","BED"],
+                        "tertiary_structure":       ["GTF","BED"],
+                        "vertebrates_conservation": ["GTF","BED"],
+                        "whole_domains":            ["GTF","BED"],
+                        "transmembrane_helices":    ["GTF","BED"],
+                        "peptides":                 ["GTF","BED"]
+                    },
+                    "pipeline": {
+                        "envfile": "apprisrc.Hsap.g12"
+                    }                    
                 }]
             }]
         },
@@ -179,7 +263,7 @@
                 "id":       "mm10",
                 "name":     "GRCm38",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -200,7 +284,7 @@
                         "envfile": "apprisrc.Mmus.ensembl"
                     }
                 },{
-                    "id":   "rs106v21",
+                    "id":   "rs106v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -221,7 +305,7 @@
                         "envfile": "apprisrc.Mmus.refseq"
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v22",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -242,7 +326,7 @@
                         "envfile": "apprisrc.Mmus.uniprot"
                     }
                 },{
-                    "id":   "a1v21",
+                    "id":   "a1v22",
                     "type": "current",
                     "source": {
                         "name": "appris",
@@ -276,7 +360,7 @@
                 "id":       "danRer10",
                 "name":     "GRCz10",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -297,7 +381,7 @@
                         "envfile": "apprisrc.Drer.ensembl"
                     }
                 },{
-                    "id":   "rs105v21",
+                    "id":   "rs105v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -318,7 +402,7 @@
                         "envfile": "apprisrc.Drer.refseq"
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v22",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -343,7 +427,7 @@
                 "id":       "danRer7",
                 "name":     "Zv9",
                 "datasets": [{
-                    "id":   "e77v21",
+                    "id":   "e77v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -377,7 +461,7 @@
                 "id":       "rn6",
                 "name":     "Rnor_6.0",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -398,7 +482,7 @@
                         "envfile": "apprisrc.Rnor.ensembl"
                     }
                 },{
-                    "id":   "rs106v21",
+                    "id":   "rs106v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -419,7 +503,7 @@
                         "envfile": "apprisrc.Rnor.refseq"
                     }
                 },{
-                    "id":   "up201610v21",
+                    "id":   "up201610v22",
                     "type": "current",
                     "source": {
                         "name": "uniprot",
@@ -444,7 +528,7 @@
                 "id":       "rn5",
                 "name":     "Rnor_5.0",
                 "datasets": [{
-                    "id":   "e77v21",
+                    "id":   "e77v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -478,7 +562,7 @@
                 "id":       "susScr3",
                 "name":     "Sscrofa10.2",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -499,7 +583,7 @@
                         "envfile": "apprisrc.Sscr.ensembl"
                     }
                 },{
-                    "id":   "rs105v21",
+                    "id":   "rs105v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -533,7 +617,7 @@
                 "id":       "panTro5",
                 "name":     "Pan_tro_3.0",
                 "datasets": [{
-                    "id":   "rs104v21",
+                    "id":   "rs104v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
@@ -558,7 +642,7 @@
                 "id":       "panTro4",
                 "name":     "CHIMP2.1.4",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -592,7 +676,7 @@
                 "id":       "dm6",
                 "name":     "BDGP6",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",
@@ -626,7 +710,7 @@
                 "id":       "ce11",
                 "name":     "WBcel235",
                 "datasets": [{
-                    "id":   "e88v21",
+                    "id":   "e88v22",
                     "type": "current",
                     "source": {
                         "name": "ensembl",

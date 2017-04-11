@@ -35,14 +35,19 @@ New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
 ### Code (2.16)
 
 TODO!!!
-- Matador3D2
-New DB!!
+* Matador3D
+Update of Matador3D database
+
+OR
+* Matador3D2
+- New DB!!
 - Include the 2 methods of Matador3D and appris has to choose
  
 TODO!!!
-- APPRIS!!!
+* APPRIS!!!
 Ten ahora en cuenta la discriminacion de cada metodo para descartar los transcritos
 Despues los que quedan, toma la decision de forma global con el valor normalizado de cada transctito.
+
 
 
 
@@ -55,16 +60,24 @@ CODE-RELEASE:     4.6.2.15
 
 ### Highlights
 
-- New release of Ensembl (e88) for all species.
++ New release of APPRIS for Ensembl (e88) -all local species-.
+
++ New APPRIS annotations using the gene dataset of RefSeq for the following species:
+	Human 		(version 108)
+	Mouse 		(version 106)
+	Zebra-fish	(version 105)
+	Rat 		(version 106)
+	Pig			(version 105)
+	Chimp		(version 104)
+	
++ New APPRIS annotations using the gene names annotated in UniProt for the following species:
+	Pig			(version 2017_02)
+	Chimp		(version 2017_02)
 
 ### Code (2.15)
 
-TODO!!!
-Update of Matador3D database
-
-TODO!!!
-- THUMP
-	- Bug Fix on consensus section.  check the example, PDE3B, ENSMUSG00000098306 TODO!!!
+* THUMP
+	- Bug Fix on consensus section. Eg, PDE3B, ENSMUSG00000098306.
 
 
 ___
