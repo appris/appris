@@ -117,6 +117,7 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.e84"
+                    }
                 },{
                     "id":   "e87v22",
                     "type": "archive",
@@ -138,6 +139,7 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.e87"
+                    }
                 },{
                     "id":   "rs107v22",
                     "type": "archive",
