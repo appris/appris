@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="rattus_norvegicus/e88"
 
-export APPRIS_WS_DATE="rattus_norvegicus/e88v21"
+export APPRIS_WS_DATE="rattus_norvegicus/e88v22"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 

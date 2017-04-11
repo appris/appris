@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="homo_sapiens/e81"
 
-export APPRIS_WS_DATE="homo_sapiens/e81v21"
+export APPRIS_WS_DATE="homo_sapiens/e81v22"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 

@@ -14,7 +14,7 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 
 export APPRIS_WS_NAME="danio_rerio/e77"
 
-export APPRIS_WS_DATE="danio_rerio/e77v21"
+export APPRIS_WS_DATE="danio_rerio/e77v22"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
