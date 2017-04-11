@@ -66,9 +66,13 @@ else {
 }
 
 # Extract Server config file
-my ($server_json) = JSON->new();
-my ($CONFIG) = $server_json->decode( getStringFromFile($conf_file) );
-my (@CFG_SPECIES) = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});
+my ($CONFIG);
+my (@CFG_SPECIES);	
+if ( defined $conf_file ) {
+	my ($server_json) = JSON->new();
+	$CONFIG = $server_json->decode( getStringFromFile($conf_file) );
+	@CFG_SPECIES = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});	
+}
 
 # get num. process (by default 1)
 $NUM_MAX_PROC = ( defined $num_process ) ? $num_process : 1;
@@ -92,48 +96,54 @@ sub param_retrieve_method($);
 # Main subroutine
 sub main()
 {
-	# run pipeline for each gene datasets
-	info("-- run pipeline for each gene datasets...");
-	foreach my $species_id ( @CFG_SPECIES ) {
-		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
-		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
-				my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
-				if ( exists $cfg_dataset->{'pipeline'} and exists $cfg_dataset->{'pipeline'}->{'envfile'} ) {
-					my ($conf_env_file) = ( $cfg_dataset->{'pipeline'}->{'envfile'} =~ /^\// ) ? $cfg_dataset->{'pipeline'}->{'envfile'} : $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/'.$cfg_dataset->{'pipeline'}->{'envfile'};
-					
-					my ($pid) = fork();
-					
-					# submit job
-					if ( !defined $pid ) {
-					    die "Cannot fork: $!";
+	if ( defined $conf_file and defined $CONFIG and scalar(@CFG_SPECIES) > 0 ) {
+		# run pipeline for each gene datasets
+		info("-- run pipeline for each gene datasets...");
+		foreach my $species_id ( @CFG_SPECIES ) {
+			my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
+				for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
+					my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
+					if ( exists $cfg_dataset->{'pipeline'} and exists $cfg_dataset->{'pipeline'}->{'envfile'} ) {
+						my ($conf_env_file) = ( $cfg_dataset->{'pipeline'}->{'envfile'} =~ /^\// ) ? $cfg_dataset->{'pipeline'}->{'envfile'} : $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/'.$cfg_dataset->{'pipeline'}->{'envfile'};
+						
+						my ($pid) = fork();
+						
+						# submit job
+						if ( !defined $pid ) {
+						    die "Cannot fork: $!";
+						}
+						if ( $pid ) {
+							$NUM_PROC_CHILDS++;
+						}	
+						elsif ( $pid == 0 ) {
+						    # client process
+							info("\n** script($$): run_pipeline:$conf_env_file\n");
+	#					    close STDOUT; close STDERR; # so parent can go on
+							eval {
+								run_pipeline($conf_env_file);
+							};
+							exit 1 if($@);
+						    exit 0;
+						}
+						
+						# wait until at least one process finish
+						while ( $NUM_PROC_CHILDS >= $NUM_MAX_PROC ) {
+							my $pid = wait();
+							$NUM_PROC_CHILDS--;						
+							info("\n** script($pid) exits\n\n");
+						}
+						
 					}
-					if ( $pid ) {
-						$NUM_PROC_CHILDS++;
-					}	
-					elsif ( $pid == 0 ) {
-					    # client process
-						info("\n** script($$): run_pipeline:$conf_env_file\n");
-#					    close STDOUT; close STDERR; # so parent can go on
-						eval {
-							run_pipeline($conf_env_file);
-						};
-						exit 1 if($@);
-					    exit 0;
-					}
-					
-					# wait until at least one process finish
-					while ( $NUM_PROC_CHILDS >= $NUM_MAX_PROC ) {
-						my $pid = wait();
-						$NUM_PROC_CHILDS--;						
-						info("\n** script($pid) exits\n\n");
-					}
-					
-				}
-			}			
-		}		
-	}	
-
+				}			
+			}		
+		}
+	}		
+	elsif ( defined $conf_data ) {
+		# run pipeline for unique gene datasets
+		info("-- run pipeline for unique gene dataset...");		
+		run_pipeline($conf_data);
+	}
 }
 
 # run pipeline
