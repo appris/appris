@@ -153,8 +153,7 @@ sub create_xreference($$$) {
 				$index->{$id}->{$isof_id} = 1;
 			}
 	}
-#print STDERR "INDEX\n".Dumper($index)."\n";
-	
+		
 	# get the CCDS -> protein
 	# Add genename into output report
 	my ($prot_ccds);
@@ -166,6 +165,7 @@ sub create_xreference($$$) {
 		my (@cs) = split("\t", $coltxt);
 		for ( my $i=0; $i < scalar(@cs); $i++ ) {
 			my ($c) = $cs[$i];
+			$c =~ s/^\s*//g; $c =~ s/\s*$//g;
 			$idx->{$c} = $i;
 		}
 		return $idx;
@@ -189,10 +189,7 @@ sub create_xreference($$$) {
 			$gene_name =~ s/\s*//g;
 			$report->{'gene'}->{$id} = $gene_name;
 		}
-	}
-#print STDERR "CCDS\n".Dumper($prot_ccds)."\n";
-#print STDERR "GENE\n".Dumper($prot_gn)."\n";
-	
+	}	
 	
 	# get the CCDS -> isoform id
 	my (@ccds_isof_list) = `grep -e "CCDS;" $data_file`;
