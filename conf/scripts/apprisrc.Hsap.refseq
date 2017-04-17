@@ -12,9 +12,9 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="homo_sapiens/rs107"
+export APPRIS_WS_NAME="homo_sapiens/rs108"
 
-export APPRIS_WS_DATE="homo_sapiens/rs107v22"
+export APPRIS_WS_DATE="homo_sapiens/rs108v22"
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
