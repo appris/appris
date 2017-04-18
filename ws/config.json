@@ -19,7 +19,10 @@
                         "label": "Gencode26/Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -41,7 +44,10 @@
                         "label": "RefSeq108",
                         "version": "108"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -62,7 +68,10 @@
                         "label": "UniProt 2017_03",
                         "version": "2017_03"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -83,7 +92,10 @@
                         "label": "Ensembl_84+RefSeq_107+UniProt_201606",
                         "version": "1"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -104,7 +116,10 @@
                         "label": "Gencode24/Ensembl84",
                         "version": "84"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -126,7 +141,10 @@
                         "label": "Gencode25/Ensembl87",
                         "version": "87"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -148,7 +166,10 @@
                         "label": "RefSeq107",
                         "version": "107"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -169,7 +190,10 @@
                         "label": "UniProt 2016_06",
                         "version": "2016_06"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -194,7 +218,10 @@
                         "label": "Gencode19/Ensembl74",
                         "version": "74"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -216,7 +243,10 @@
                         "label": "RefSeq105",
                         "version": "105"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -237,7 +267,10 @@
                         "label": "Gencode12/Ensembl67",
                         "version": "67"
                     },
-                    "database":   "appris_homo_sapiens",
+                    "database":   {
+                        "name":    "appris_homo_sapiens",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -272,7 +305,10 @@
                         "label": "GencodeM12/Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_mus_musculus",
+                    "database":   {
+                        "name":    "appris_mus_musculus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -293,8 +329,11 @@
                         "label": "RefSeq106",
                         "version": "106"
                     },
-                    "database":   "appris_mus_musculus",
-                    "datafiles":   {
+                    "database":   {
+                        "name":    "appris_mus_musculus",
+                        "inifile": "apprisdb.ini"
+                    },
+                   "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
                         "functional_residues":      ["GTF","BED"],
@@ -314,7 +353,10 @@
                         "label": "UniProt 2016_10",
                         "version": "2016_10"
                     },
-                    "database":   "appris_mus_musculus",
+                    "database":   {
+                        "name":    "appris_mus_musculus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -335,7 +377,10 @@
                         "label": "Ensembl_88+RefSeq_106+UniProt_201610",
                         "version": "1"
                     },
-                    "database":   "appris_mus_musculus",
+                    "database":   {
+                        "name":    "appris_mus_musculus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -369,7 +414,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_danio_rerio",
+                    "database":   {
+                        "name":    "appris_danio_rerio",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -390,7 +438,10 @@
                         "label": "RefSeq105",
                         "version": "105"
                     },
-                    "database":   "appris_danio_rerio",
+                    "database":   {
+                        "name":    "appris_danio_rerio",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -411,7 +462,10 @@
                         "label": "UniProt 2016_10",
                         "version": "2016_10"
                     },
-                    "database":   "appris_danio_rerio",
+                    "database":   {
+                        "name":    "appris_danio_rerio",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -436,7 +490,10 @@
                         "label": "Ensembl77",
                         "version": "77"
                     },
-                    "database":   "appris_danio_rerio",
+                    "database":   {
+                        "name":    "appris_danio_rerio",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -470,7 +527,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_rattus_norvegicus",
+                    "database":   {
+                        "name":    "appris_rattus_norvegicus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -491,7 +551,10 @@
                         "label": "RefSeq106",
                         "version": "106"
                     },
-                    "database":   "appris_rattus_norvegicus",
+                    "database":   {
+                        "name":    "appris_rattus_norvegicus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -512,7 +575,10 @@
                         "label": "UniProt 2016_10",
                         "version": "2016_10"
                     },
-                    "database":   "appris_rattus_norvegicus",
+                    "database":   {
+                        "name":    "appris_rattus_norvegicus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -537,7 +603,10 @@
                         "label": "Ensembl77",
                         "version": "77"
                     },
-                    "database":   "appris_rattus_norvegicus",
+                    "database":   {
+                        "name":    "appris_rattus_norvegicus",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -571,7 +640,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_sus_scrofa",
+                    "database":   {
+                        "name":    "appris_sus_scrofa",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -592,7 +664,10 @@
                         "label": "RefSeq105",
                         "version": "105"
                     },
-                    "database":   "appris_sus_scrofa",
+                    "database":   {
+                        "name":    "appris_sus_scrofa",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -626,7 +701,10 @@
                         "label": "RefSeq104",
                         "version": "104"
                     },
-                    "database":   "appris_pan_troglodytes",
+                    "database":   {
+                        "name":    "appris_pan_troglodytes",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -651,7 +729,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_pan_troglodytes",
+                    "database":   {
+                        "name":    "appris_pan_troglodytes",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -685,7 +766,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_drosophila_melanogaster",
+                    "database":   {
+                        "name":    "appris_drosophila_melanogaster",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
@@ -719,7 +803,10 @@
                         "label": "Ensembl88",
                         "version": "88"
                     },
-                    "database":   "appris_caenorhabditis_elegans",
+                    "database":   {
+                        "name":    "appris_caenorhabditis_elegans",
+                        "inifile": "apprisdb.ini"
+                    },
                     "datafiles":   {
                         "principal_isoforms":       ["TXT"],
                         "appris_scores":            ["TXT"],
