@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="pan_troglodytes/rs104"
-
-export APPRIS_WS_DATE="pan_troglodytes/rs104v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -44,21 +40,15 @@ export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transc.fa
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transl.fa"
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/panTro5.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/panTro5.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.refseq"
 
 # --------------------------------#
 # Setting up the vars for cluster #

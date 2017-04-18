@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="mus_musculus/up201610"
-
-export APPRIS_WS_DATE="mus_musculus/up201610v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -42,12 +38,6 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/uniprot-proteome.extra.f
 export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/mm10.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.uniprot"
 
 # --------------------------------#
 # Setting up the vars for cluster #

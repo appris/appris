@@ -1,21 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# Load environmental variables
-# If you do not trust the path, configure below:
-SYSTEM=`uname -s`
-if [ "$SYSTEM" = Darwin ]
-then
-	source /etc/bashrc
-	source /etc/profile
-	source ${HOME}/.bash_profile
-elif [ "$SYSTEM" = Linux ]
-then
-	source /etc/profile
-	source /etc/bash.bashrc
-	source ${HOME}/.bashrc
-fi
-
+# Local variables
 VER=0.1b
 VERDATE="1-Apr-2013"
 
@@ -174,15 +160,6 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 	# concatenate annotations ------------------
 	echo "================="
 	echo "concatenate annotations"
-	#for ANNOT_DIR in $(find ${APPRIS_ANNOT_DIR}/* -maxdepth 0 -type d)
-	#do
-	#	cat ${ANNOT_DIR}/appris >> ${ANNOT_RST_MAIN_FILE}
-	#	cat ${ANNOT_DIR}/appris.label >> ${ANNOT_RST_LABEL_FILE}
-	#	cat ${ANNOT_DIR}/transl.fa >> ${ANNOT_RST_TRANSL_FILE}
-	#	if [[ -e "${ANNOT_DIR}/annot.gtf" ]]; then
-	#		cat ${ANNOT_DIR}/annot.gtf >> ${ANNOT_RST_ANNOT_FILE}
-	#	fi
-	#done
 	find ${APPRIS_ANNOT_DIR} -type f -name "appris" -exec cat {} \; >> ${ANNOT_RST_MAIN_FILE}
 	find ${APPRIS_ANNOT_DIR} -type f -name "appris.label" -exec cat {} \; >> ${ANNOT_RST_LABEL_FILE}
 	find ${APPRIS_ANNOT_DIR} -type f -name "transl.fa" -exec cat {} \; >> ${ANNOT_RST_TRANSL_FILE}

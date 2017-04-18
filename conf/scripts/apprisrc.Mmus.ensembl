@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="mus_musculus/e88"
-
-export APPRIS_WS_DATE="mus_musculus/e88v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -33,17 +29,10 @@ export APPRIS_SPECIES="Mus musculus"
 export APPRIS_ASSEMBLY="GRCm38"
 
 export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,X,Y,M,MT"
-#export APPRIS_CHR_LIST="2,17,10,18"
-#export APPRIS_CHR_LIST="7,3,8,19"
-#export APPRIS_CHR_LIST="11,9,X,12"
-#export APPRIS_CHR_LIST="4,6,14,16,Y"
-#export APPRIS_CHR_LIST="1,5,15,13,M,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
-
-#export APPRIS_E_VERSION=82
 
 export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.annot.gtf"
 
@@ -51,21 +40,17 @@ export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.transc.fa"
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.transl.fa"
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/mm10.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=82
+
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/mm10.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.ensembl"
 
 # --------------------------------#
 # Setting up the vars for cluster #

@@ -8,7 +8,7 @@ use Config::IniFiles;
 use FindBin;
 use JSON;
 use Data::Dumper;
-use APPRIS::Utils::File qw( getStringFromFile );
+use APPRIS::Utils::File qw( getStringFromFile printStringIntoTmpFile );
 use APPRIS::Utils::Exception qw( info throw );
 
 ###################
@@ -22,6 +22,7 @@ use vars qw(
 my ($steps) = undef;
 my ($conf_file) = undef;
 my ($conf_data) = undef;
+my ($conf_db) = undef;
 my ($methods) = undef;
 my ($formats) = undef;
 my ($num_process) = undef;
@@ -31,7 +32,8 @@ my ($loglevel) = undef;
 &GetOptions(
 	'steps|p=s'			=> \$steps,
 	'conf|c=s'			=> \$conf_file,
-	'data|d=s'			=> \$conf_data,	
+	'data|d=s'			=> \$conf_data,
+	'conf-db|b=s'		=> \$conf_db,
 	'methods|m=s'		=> \$methods,
 	'formats|f=s'		=> \$formats,
 	'nproc|n=s'			=> \$num_process,
@@ -65,13 +67,20 @@ else {
 	$methods = $met;
 }
 
+# Get database variables
+unless ( defined $conf_db ) {
+	$conf_db = $ENV{APPRIS_CONF_DB_FILE};	
+}
+
 # Extract Server config file
 my ($CONFIG);
+my ($CONFIG_VERSION);
 my (@CFG_SPECIES);	
 if ( defined $conf_file ) {
 	my ($server_json) = JSON->new();
 	$CONFIG = $server_json->decode( getStringFromFile($conf_file) );
-	@CFG_SPECIES = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});	
+	@CFG_SPECIES = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});
+	$CONFIG_VERSION = $CONFIG->{'version'};
 }
 
 # get num. process (by default 1)
@@ -84,19 +93,18 @@ my ($PROC_CHILDS) = undef;
 #################
 # Method bodies #
 #################
-sub run_pipeline($);
+sub create_tmp_db_ini($);
+sub run_pipeline($;$);
 sub params_run_pipe($);
 sub param_check_files($);
 sub param_retrieve_data($);
-sub param_db_create($);
-sub param_db_insert($);
-sub param_db_backup($);
+sub param_db_insert($;$);
 sub param_retrieve_method($);
 
 # Main subroutine
 sub main()
 {
-	if ( defined $conf_file and defined $CONFIG and scalar(@CFG_SPECIES) > 0 ) {
+	if ( defined $conf_file and defined $CONFIG and defined $CONFIG_VERSION and scalar(@CFG_SPECIES) > 0 ) {
 		# run pipeline for each gene datasets
 		info("-- run pipeline for each gene datasets...");
 		foreach my $species_id ( @CFG_SPECIES ) {
@@ -104,12 +112,31 @@ sub main()
 			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 				for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
 					my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
-					if ( exists $cfg_dataset->{'pipeline'} and exists $cfg_dataset->{'pipeline'}->{'envfile'} ) {
+					if ( exists $cfg_dataset->{'id'} and
+						 exists $cfg_dataset->{'pipeline'} and exists $cfg_dataset->{'pipeline'}->{'envfile'} and
+						 exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} and
+						 exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'inifile'}
+					) {
+						# get env files
+						#	get env vars for dataset
 						my ($conf_env_file) = ( $cfg_dataset->{'pipeline'}->{'envfile'} =~ /^\// ) ? $cfg_dataset->{'pipeline'}->{'envfile'} : $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/'.$cfg_dataset->{'pipeline'}->{'envfile'};
-						
-						my ($pid) = fork();
-						
+						my ($cfg_dataset_id) = $cfg_dataset->{'id'};
+						my ($cfg_dataset_name) = $cfg_dataset_id; $cfg_dataset_name =~ s/v[0-9]+$//g;
+						# 	create tmp ini file for db
+						my ($conf_db_file) = create_tmp_db_ini($cfg_dataset);
+												
+						my ($config_dataset) = {
+							'id'       => $cfg_dataset_id,
+							'name'     => $cfg_dataset_name,
+							'species'  => $species_id,
+							'ws_name'  => $species_id.'/'.$cfg_dataset_name,
+							'ws_date'  => $CONFIG_VERSION.'/'.$species_id.'/'.$cfg_dataset_id,
+							'env_file' => $conf_env_file,
+							'db_file'  => $conf_db_file,
+						};
+												
 						# submit job
+						my ($pid) = fork();						
 						if ( !defined $pid ) {
 						    die "Cannot fork: $!";
 						}
@@ -121,7 +148,7 @@ sub main()
 							info("\n** script($$): run_pipeline:$conf_env_file\n");
 	#					    close STDOUT; close STDERR; # so parent can go on
 							eval {
-								run_pipeline($conf_env_file);
+								run_pipeline($conf_env_file, $config_dataset);
 							};
 							exit 1 if($@);
 						    exit 0;
@@ -146,10 +173,39 @@ sub main()
 	}
 }
 
-# run pipeline
-sub run_pipeline($)
+sub create_tmp_db_ini($) {
+	my ($cfg_dataset) = @_;
+	my ($cfg_dataset_id) = $cfg_dataset->{'id'};
+	my ($db_inifile) = ( $cfg_dataset->{'database'}->{'inifile'} =~ /^\// ) ? $cfg_dataset->{'database'}->{'inifile'} : $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/'.$cfg_dataset->{'database'}->{'inifile'};
+	my ($db_name) = $cfg_dataset->{'database'}->{'name'}.'_'.$cfg_dataset_id;
+	
+	my ($fname) = $db_name.'.ini';
+	my ($config_cont) = getStringFromFile($db_inifile);
+	$config_cont =~ s/__APPRIS__DATABASES__DBNAME__/$db_name/g;
+	my ($outfile) = printStringIntoTmpFile($fname, $config_cont);
+	
+	return $outfile;
+}
+
+# create the environment variables for data analysis
+sub create_env_vars($)
 {
-	my ($conf_data) = @_;
+	my ($conf_ds) = @_;
+	my ($output) = '';
+	if ( defined $conf_ds ) {
+		$output .= "export APPRIS_WS_NAME='".$conf_ds->{'ws_name'}."' && " if ( exists $conf_ds->{'ws_name'} );
+		$output .= "export APPRIS_WS_DATE='".$conf_ds->{'ws_date'}."' && " if ( exists $conf_ds->{'ws_date'} );
+	}	
+	return $output;
+}
+
+# run pipeline
+sub run_pipeline($;$)
+{
+	my ($conf_data, $conf_ds) = @_;
+	
+	# Step 0: export the environment variables
+	my ($exp_env) = ( defined $conf_ds ) ? create_env_vars($conf_ds) : ''; 
 	
 	# Step 1: execute APPRIS
 	if ( $steps =~ /1/ )
@@ -157,7 +213,7 @@ sub run_pipeline($)
 		info("executing pipeline...");
 		eval {
 			my ($params) = params_run_pipe($conf_data);
-			my ($cmd) = "apprisall $params";
+			my ($cmd) = "$exp_env appris_run_appris $params";
 			info($cmd);
 			system ($cmd);
 		};
@@ -187,7 +243,7 @@ sub run_pipeline($)
 		info("retrieving main data...");
 		eval {
 			my ($params) = param_retrieve_data($conf_data);
-			my ($cmd) = "appris_retrieve_main_data $params";
+			my ($cmd) = "$exp_env appris_retrieve_main_data $params";
 			info($cmd);
 			system ($cmd);
 		};
@@ -207,20 +263,10 @@ sub run_pipeline($)
 	# Step 3: insert annotations into APPRIS database
 	if ( $steps =~ /3/ )
 	{
-		# create database
-		info("creating database...");
-		eval {
-			my ($params) = param_db_create($conf_data);
-			my ($cmd) = "appris_db_create $params";
-			info($cmd);
-			system ($cmd);
-		};
-		throw("creating database") if($@);
-		
 		info("inserting data into db...");
 		eval {
-			my ($params) = param_db_insert($conf_data);
-			my ($cmd) = "appris_insert_appris $params";
+			my ($params) = param_db_insert($conf_data, $conf_ds);
+			my ($cmd) = "$exp_env appris_insert_appris $params";
 			info($cmd);
 			system ($cmd);
 		};
@@ -230,15 +276,6 @@ sub run_pipeline($)
 # If is ERROR => Stop
 # Otherwise => Keep going
 
-		info("creating db backup...");
-		eval {
-			my ($params) = param_db_backup($conf_data);
-			my ($cmd) = "appris_db_backup $params";
-			info($cmd);
-			system ($cmd);
-		};
-		throw("creating db backup") if($@);
-		
 # TODO: Send email with final decision of this step
 
 	}
@@ -260,7 +297,7 @@ sub run_pipeline($)
 			} else {
 			    #close STDOUT; close STDERR; # so parent can go on
 				eval {
-					my ($cmd) = "appris_retrieve_method_data $params";
+					my ($cmd) = "$exp_env appris_retrieve_method_data $params";
 					info($cmd);
 					system ($cmd);
 				};
@@ -345,31 +382,14 @@ sub param_retrieve_data($)
 	
 	return $params;	
 }
-sub param_db_create($)
+sub param_db_insert($;$)
 {
-	my ($conf_data) = @_;
+	my ($conf_data, $conf_ds) = @_;
 	my ($params) = '';
 	
-	# get vars from config file
-	my ($APPRIS_SPECIES) = `. $conf_data; echo \$APPRIS_SPECIES`; $APPRIS_SPECIES =~ s/\s*$//g;
-	my ($APPRIS_SCRIPTS_DB_INI) = `. $conf_data; echo \$APPRIS_SCRIPTS_DB_INI`; $APPRIS_SCRIPTS_DB_INI =~ s/\s*$//g;
-	my ($APPRIS_DATA_DIR) = `. $conf_data; echo \$APPRIS_DATA_DIR`; $APPRIS_DATA_DIR =~ s/\s*//g;
-	
-	my ($cfg) = new Config::IniFiles( -file => $APPRIS_SCRIPTS_DB_INI );
-	my ($spe) = $APPRIS_SPECIES; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
-	$params .= " -d ".$cfg->val($specie_db, 'db');
-	$params .= " -h ".$cfg->val('APPRIS_DATABASES', 'host');
-	$params .= " -u ".$cfg->val('APPRIS_DATABASES', 'user');
-	$params .= " -p ".$cfg->val('APPRIS_DATABASES', 'pass');
+	if ( defined $conf_ds and exists $conf_ds->{'db_file'} ) { $params .= " -d ".$conf_ds->{'db_file'}." " }
+	else { throw("configuration is not provided") }
 
-	return $params;		
-}
-sub param_db_insert($)
-{
-	my ($conf_data) = @_;
-	my ($params) = '';
-	
 	if ( defined $conf_data ) { $params .= " -c $conf_data " }
 	else { throw("configuration is not provided") }
 	
@@ -379,27 +399,6 @@ sub param_db_insert($)
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
-}
-sub param_db_backup($)
-{
-	my ($conf_data) = @_;
-	my ($params) = '';
-	
-	# get vars from config file
-	my ($APPRIS_SPECIES) = `. $conf_data; echo \$APPRIS_SPECIES`; $APPRIS_SPECIES =~ s/\s*$//g;
-	my ($APPRIS_SCRIPTS_DB_INI) = `. $conf_data; echo \$APPRIS_SCRIPTS_DB_INI`; $APPRIS_SCRIPTS_DB_INI =~ s/\s*$//g;
-	my ($APPRIS_DATA_DIR) = `. $conf_data; echo \$APPRIS_DATA_DIR`; $APPRIS_DATA_DIR =~ s/\s*//g;
-	
-	my ($cfg) = new Config::IniFiles( -file => $APPRIS_SCRIPTS_DB_INI );
-	my ($spe) = $APPRIS_SPECIES; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
-	$params .= " -d ".$cfg->val($specie_db, 'db');
-	$params .= " -h ".$cfg->val('APPRIS_DATABASES', 'host');
-	$params .= " -u ".$cfg->val('APPRIS_DATABASES', 'user');
-	$params .= " -p ".$cfg->val('APPRIS_DATABASES', 'pass');
-	$params .= " -o ".$APPRIS_DATA_DIR.'/appris_db.dump.gz';
-
-	return $params;		
 }
 sub param_retrieve_method($)
 {
@@ -445,10 +444,12 @@ Executes all APPRIS 'steps
 		
   -c, --conf     {file} <Config file for all gene datatasets (JSON format)>
   	or  
-  -d, --data     {file} <Config file for one gene datasets   (ENV file)>  
-
+  -d, --data     {file} <Config file for one gene datasets   (ENV file)>
+  
 =head2 Optional arguments:
-		
+
+  -b, --conf-db  {file} <INI file with database configuration>  
+	
   -m, --methods {vector} <List of methods. Characters of methods: fmsctrpa (default: all)>
 	* f  - Functionally important residues, firestar
 	* m  - Protein structural information, Matador3D

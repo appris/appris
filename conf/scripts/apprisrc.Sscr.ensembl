@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="sus_scrofa/e88"
-
-export APPRIS_WS_DATE="sus_scrofa/e88v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -33,22 +29,22 @@ export APPRIS_SPECIES="Sus scrofa"
 export APPRIS_ASSEMBLY="Sscrofa10.2"
 
 export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,X,Y,MT"
-#export APPRIS_CHR_LIST="1,2,3,4,5"
-#export APPRIS_CHR_LIST="6,7,8,9,10"
-#export APPRIS_CHR_LIST="11,12,13,14,15"
-#export APPRIS_CHR_LIST="16,17,18,X,Y,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
-
-#export APPRIS_E_VERSION=84
 
 export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.annot.gtf"
 
 export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.transc.fa"
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.transl.fa"
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/susScr3.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=84
 
 #export APPRIS_GENE_LIST=""
 
@@ -57,16 +53,6 @@ export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/sus_scrofa.transl.fa"
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/susScr3.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.ensembl"
 
 # --------------------------------#
 # Setting up the vars for cluster #

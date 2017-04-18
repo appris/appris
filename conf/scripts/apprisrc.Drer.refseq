@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="danio_rerio/rs105"
-
-export APPRIS_WS_DATE="danio_rerio/rs105v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -44,21 +40,15 @@ export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transc.fa"
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transl.fa"
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=fish
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.refseq"
 
 # --------------------------------#
 # Setting up the vars for cluster #

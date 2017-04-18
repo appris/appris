@@ -1,21 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# Load environmental variables
-# If you do not trust the path, configure below:
-SYSTEM=`uname -s`
-if [ "$SYSTEM" = Darwin ]
-then
-	source /etc/bashrc
-	source /etc/profile
-	source ${HOME}/.bash_profile
-elif [ "$SYSTEM" = Linux ]
-then
-	source /etc/profile
-	source /etc/bash.bashrc
-	source ${HOME}/.bashrc
-fi
-
+# Local variables
 VER=0.1b
 VERDATE="1-Apr-2013"
 
@@ -23,6 +9,7 @@ FILENAME=`basename $0`
 FILENAME="${FILENAME%.*}"
 DIRNAME=`dirname $0`
 
+CONF_DB=""
 CONF_SPECIES=""
 METHODS=""
 GENE_LIST=""
@@ -86,6 +73,10 @@ USAGE="
 while expr "//$1" : //- >/dev/null
 do
 	case "$1" in
+		-d | -dbconf )
+			CONF_DB=$2
+			shift
+			;;
 		-c | -conf )
 			CONF_SPECIES=$2
 			shift
@@ -138,9 +129,16 @@ if [ "${CONF_SPECIES}" == "" ]; then
 	exit 1
 fi
 
+if [ "${INPUT_DIR}" != "" ]; then
+	APPRIS_ANNOT_DIR="${INPUT_DIR}"
+	APPRIS_DATA_DIR="${INPUT_DIR}"
+fi
+
 # -----------------------------------------------------------------------------
 # Prepare Environment from config file for SPECIES
 load_appris_specie_env "${CONF_SPECIES}" "verbose"
+
+prepare_workspace "${APPRIS_DATA_DIR}"
 
 # -----------------------------------------------------------------------------
 # Get method script name
@@ -162,14 +160,8 @@ else
 	exit 1
 fi
 DB_PARAMETERS=""
-if [ "${APPRIS_SCRIPTS_DB_INI}" != "" ]; then
-	DB_PARAMETERS=" --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
-fi
-
-# -----------------------------------------------------------------------------
-# Var declarations
-if [ "${INPUT_DIR}" != "" ]; then
-	APPRIS_ANNOT_DIR="${INPUT_DIR}"
+if [ "${CONF_DB}" != "" ]; then
+	DB_PARAMETERS=" --apprisdb-conf=${CONF_DB}"
 fi
 
 # -----------------------------------------------------------------------------
@@ -200,6 +192,17 @@ METHOD_PARAMETERS=""
 if [ "${METHODS}" != "" ]; then
 	METHOD_PARAMETERS=" --methods=${METHODS}"
 fi
+
+# -----------------------------------------------------------------------------
+# Create database
+if [ "${CONF_DB}" != "" ]; then
+	echo "================="
+	db_params=$(parse_inifile "${CONF_DB}" "APPRIS_DATABASES")
+	echo "appris_db_create $db_params"
+	appris_db_create $db_params
+	echo "================="
+fi
+
 
 # -----------------------------------------------------------------------------
 # Run method
@@ -303,4 +306,14 @@ else
 		echo "================="
 	
 	fi
+fi
+
+# -----------------------------------------------------------------------------
+# Backup database
+if [ "${CONF_DB}" != "" ]; then
+	echo "================="
+	db_params=$(parse_inifile "${CONF_DB}" "APPRIS_DATABASES")
+	echo "appris_db_backup $db_params -o ${APPRIS_DATA_DIR}/appris_db.dump.gz"
+	appris_db_backup $db_params -o ${APPRIS_DATA_DIR}/appris_db.dump.gz
+	echo "================="
 fi

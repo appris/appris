@@ -51,7 +51,7 @@ prepare_workspace() {
 	mkdir -p $1
 }
 
-array_contains () { 
+array_contains() { 
     local array="$1[@]"
     local seeking=$2
     local in=1
@@ -62,4 +62,42 @@ array_contains () {
         fi
     done
     return $in
+}
+
+parse_inifile() {
+	local file=$1
+	local section=$2
+	local flag="0"
+	local db_inifile=""
+	while IFS='= ' read var val
+	do
+	    if [[ $var != ";" && $var != "" ]]; then
+	    	if [[ $var == \[*] ]]; then
+				if [[ $var == "[$section]" ]]; then
+					sec=$var
+					flag="1"
+				else					
+					flag="0"
+				fi
+	    	else
+				if [[ $flag == "1" && $val != "" ]]; then
+					case "$var" in
+						db )
+							db_inifile+="-d ${val} "
+							;;
+						host )
+							db_inifile+="-h ${val} "
+							;;
+						user )
+							db_inifile+="-u ${val} "
+							;;
+						pass )
+							db_inifile+="-p ${val} "
+							;;
+					esac	
+				fi
+			fi
+		fi
+	done < $file
+	echo $db_inifile
 }

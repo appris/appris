@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="homo_sapiens/gencode19"
-
-export APPRIS_WS_DATE="homo_sapiens/g19v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -33,17 +29,10 @@ export APPRIS_SPECIES="Homo sapiens"
 export APPRIS_ASSEMBLY="GRCh37"
 
 export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y,M,MT"
-#export APPRIS_CHR_LIST="1,6,5,20,18"
-#export APPRIS_CHR_LIST="19,7,14,22,13"
-#export APPRIS_CHR_LIST="17,16,4,9,21"
-#export APPRIS_CHR_LIST="11,3,8,10,Y"
-#export APPRIS_CHR_LIST="2,12,15,X,M"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
-
-#export APPRIS_E_VERSION=74
 
 export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.annotation.extra.gtf"
 
@@ -51,21 +40,17 @@ export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_transcript
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/gencode.v19.pc_translations.fa"
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg19.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=74
+
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg19.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.g19"
 
 # --------------------------------#
 # Setting up the vars for cluster #

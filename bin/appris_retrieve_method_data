@@ -1,21 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# Load environmental variables
-# If you do not trust the path, configure below:
-SYSTEM=`uname -s`
-if [ "$SYSTEM" = Darwin ]
-then
-	source /etc/bashrc
-	source /etc/profile
-	source ${HOME}/.bash_profile
-elif [ "$SYSTEM" = Linux ]
-then
-	source /etc/profile
-	source /etc/bash.bashrc
-	source ${HOME}/.bashrc
-fi
-
+# Local variables
 VER=0.1b
 VERDATE="1-Apr-2013"
 

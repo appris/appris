@@ -36,8 +36,6 @@ use vars qw(
 	$LOCAL_PWD
 	$CONFIG_INI_APPRIS_DB_FILE
 	$APPRIS_METHODS
-	
-	$APPRIS_PROTEO_DATA_FILE
 );
 
 $LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
@@ -45,9 +43,6 @@ $CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
 	$APPRIS_METHODS->{$method} = 1;
 }
-# TEMPORAL SOLUTION!!!!
-$APPRIS_PROTEO_DATA_FILE = $ENV{APPRIS_PROTEO_DATA_FILE};
-# TEMPORAL SOLUTION!!!!
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
@@ -342,14 +337,12 @@ sub feed_entity($$)
 	
 	# insert entity from given specie
 	my ($cfg) = new Config::IniFiles( -file => $conf_file );
-	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
 	my ($param) = {
 			'-dbhost'       => $cfg->val('APPRIS_DATABASES', 'host'),
 			'-dbuser'       => $cfg->val('APPRIS_DATABASES', 'user'),
 			'-dbpass'       => $cfg->val('APPRIS_DATABASES', 'pass'),
 			'-dbport'       => $cfg->val('APPRIS_DATABASES', 'port'),
-			'-dbname'       => $cfg->val($specie_db, 'db'),
+			'-dbname'       => $cfg->val('APPRIS_DATABASES', 'db'),
 	};
 	$logger->debug(Dumper($param)."\n");
 	my ($intruder) = APPRIS::Intruder->new();
@@ -368,14 +361,12 @@ sub feed_reports($$)
 	
 	# insert entity from given specie
 	my ($cfg) = new Config::IniFiles( -file => $conf_file );
-	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
 	my ($param) = {
 			'-dbhost'       => $cfg->val('APPRIS_DATABASES', 'host'),
 			'-dbuser'       => $cfg->val('APPRIS_DATABASES', 'user'),
 			'-dbpass'       => $cfg->val('APPRIS_DATABASES', 'pass'),
 			'-dbport'       => $cfg->val('APPRIS_DATABASES', 'port'),
-			'-dbname'       => $cfg->val($specie_db, 'db'),
+			'-dbname'       => $cfg->val('APPRIS_DATABASES', 'db'),
 	};
 	$logger->debug(Dumper($param)."\n");
 	my ($intruder) = APPRIS::Intruder->new();

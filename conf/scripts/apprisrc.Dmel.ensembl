@@ -12,10 +12,6 @@ export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WS_NAME="drosophila_melanogaster/e88"
-
-export APPRIS_WS_DATE="drosophila_melanogaster/e88v22"
-
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
 export APPRIS_ANNOT_DIR="${APPRIS_ANNOT_DIR}/${APPRIS_WS_DATE}"
@@ -32,19 +28,11 @@ export APPRIS_SPECIES="Drosophila melanogaster"
 
 export APPRIS_ASSEMBLY="BDGP6"
 
-#export APPRIS_CHR_LIST=$(awk '{if ($3=="CDS"){print $1} }' ${GENCODE_ANNOTATION_FILE} | sort -u)
 export APPRIS_CHR_LIST="2L,2R,3L,3R,4,X,Y,dmel_mitochondrion_genome"
-#export APPRIS_CHR_LIST="2L,2R"
-#export APPRIS_CHR_LIST="3L,3R"
-#export APPRIS_CHR_LIST="4"
-#export APPRIS_CHR_LIST="X,Y,dmel_mitochondrion_genome"
-
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
-
-#export APPRIS_E_VERSION=79
 
 export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.annot.gtf"
 
@@ -52,21 +40,17 @@ export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.t
 
 export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/drosophila_melanogaster.transl.fa"
 
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/dm6.chrom.sizes"
+
+export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=79
+
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
 #export APPRIS_TYPE_ALIGN_SPECIES_NAME=invertebrates
-
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/dm6.chrom.sizes"
-
-export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
-
-# ---------------------------------#
-# Setting up the vars for database #
-# ---------------------------------#
-
-export APPRIS_SCRIPTS_DB_INI="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini.ensembl"
 
 # --------------------------------#
 # Setting up the vars for cluster #

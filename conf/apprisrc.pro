@@ -50,6 +50,12 @@ export APPRIS_PROGRAMS_OPT_DIR="${APPRIS_CODE_DIR}/opt"
 
 export APPRIS_METHODS="firestar,matador3d,spade,corsair,thump,crash,proteo,appris"
 
+# ---------------------------------#
+# Setting up the vars for database #
+# ---------------------------------#
+
+export APPRIS_CONF_DB_FILE="${APPRIS_SCRIPTS_CONF_DIR}/apprisdb.ini"
+
 # --------------------------------#
 # Setting up the vars for cluster #
 # --------------------------------#

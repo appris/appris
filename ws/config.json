@@ -138,7 +138,7 @@
                         "peptides":                 ["GTF","BED"]
                     },
                     "pipeline": {
-                        "envfile": "apprisrc.Hsap.e87"
+                        "envfile": "apprisrc.Hsap.ensembl"
                     }
                 },{
                     "id":   "rs107v22",
@@ -159,7 +159,7 @@
                         "transmembrane_helices":    ["GTF","BED"]
                     },
                     "pipeline": {
-                        "envfile": "apprisrc.Hsap.rs107"
+                        "envfile": "apprisrc.Hsap.refseq"
                     }
                 },{
                     "id":   "up201606v22",
@@ -180,7 +180,7 @@
                         "transmembrane_helices":    ["GTF"]
                     },
                     "pipeline": {
-                        "envfile": "apprisrc.Hsap.up201606"
+                        "envfile": "apprisrc.Hsap.uniprot"
                     }
                 }]
             },{

@@ -34,6 +34,8 @@ New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
 
 ### Code (2.16)
 
+- Now, the pipeline is executed from the config.json file
+
 TODO!!!
 * Matador3D
 Update of Matador3D database

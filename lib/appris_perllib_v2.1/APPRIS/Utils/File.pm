@@ -107,10 +107,10 @@ sub getLocalTime()
 
 =cut
 
-sub printStringIntoTmpFile($)
+sub printStringIntoTmpFile($$)
 {
-	my ($string) = @_;
-	my($file)='/tmp/encode_'.getppid.'.faa';
+	my ($filename, $string) = @_;
+	my($file)='/tmp/'.$filename;
 	local(*HANDLE);
 	open(HANDLE,">$file") or return undef;
 	print HANDLE $string;
