@@ -117,7 +117,7 @@ do
 done
 
 if [ "${CONF_DB}" == "" ]; then
-	echo You must specify the config file (INI) of database!
+	echo You must specify the config file INI of database!
 	echo -e $USAGE
 	exit 1
 fi
