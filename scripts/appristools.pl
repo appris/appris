@@ -99,7 +99,7 @@ sub params_run_pipe($);
 sub param_check_files($);
 sub param_retrieve_data($);
 sub param_db_insert($;$);
-sub param_retrieve_method($);
+sub param_retrieve_method($;$);
 
 # Main subroutine
 sub main()
@@ -286,7 +286,7 @@ sub run_pipeline($;$)
 	{
 		my ($forks) = 0;
 		foreach my $format ( split(',', $formats) ) {
-			my ($params) = param_retrieve_method($conf_data) . " -f $format ";			
+			my ($params) = param_retrieve_method($conf_data, $conf_ds) . " -f $format ";
 			my ($pid) = fork();
 			if (not defined $pid) {
 				warn "Could not fork in $format";
@@ -386,30 +386,35 @@ sub param_db_insert($;$)
 {
 	my ($conf_data, $conf_ds) = @_;
 	my ($params) = '';
-	
-	if ( defined $conf_ds and exists $conf_ds->{'db_file'} ) { $params .= " -d ".$conf_ds->{'db_file'}." " }
-	else { throw("configuration is not provided") }
-
+		
+	# required
 	if ( defined $conf_data ) { $params .= " -c $conf_data " }
 	else { throw("configuration is not provided") }
 	
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
+	
+	# optional
+	if ( defined $conf_ds and exists $conf_ds->{'db_file'} ) { $params .= " -d ".$conf_ds->{'db_file'}." " }
 	
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	
 	return $params;	
 }
-sub param_retrieve_method($)
+sub param_retrieve_method($;$)
 {
-	my ($conf_data) = @_;
+	my ($conf_data, $conf_ds) = @_;
 	my ($params) = '';
-		
+	
+	# required
 	if ( defined $conf_data ) { $params .= " -c $conf_data " }
 	else { throw("configuration is not provided") }
 		
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
+	
+	# optional
+	if ( defined $conf_ds and exists $conf_ds->{'db_file'} ) { $params .= " -d ".$conf_ds->{'db_file'}." " }
 	
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }
 	

@@ -1,21 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# Load environmental variables
-# If you do not trust the path, configure below:
-SYSTEM=`uname -s`
-if [ "$SYSTEM" = Darwin ]
-then
-	source /etc/bashrc
-	source /etc/profile
-	source ${HOME}/.bash_profile
-elif [ "$SYSTEM" = Linux ]
-then
-	source /etc/profile
-	source /etc/bash.bashrc
-	source ${HOME}/.bashrc
-fi
-
+# Local variables
 VER=0.1b
 VERDATE="1-Apr-2013"
 
@@ -23,6 +9,7 @@ FILENAME=`basename $0`
 FILENAME="${FILENAME%.*}"
 DIRNAME=`dirname $0`
 
+CONF_DB=""
 CONF_SPECIES=""
 METHOD=""
 OUTPUT_FILENAME=""
@@ -49,18 +36,11 @@ USAGE="
 \t\t* INERTIA: list of exons and the best score of slr (omega), the smaller score.\n
 \n
  Required arguments:\n
-\t -c [-conf]\n
-\t\t Hsap  - Homo sapiens -\n
-\t\t Mmus  - Mus musculus -\n
-\t\t Rnor  - Rattus norvegicus -\n
-\t\t Drer  - Danio rerio -\n
-\t\t Sscr  - Sus scrofa -\n
-\t\t Ptro  - Pan troglodytes -\n
-\t\t Dmel  - Drosophila melanogaster -\n
-\t\t Cele  - Caenorhabditis elegans -\n
-\t\t Lpar  - Lynx pardinus -\n
+\t -d [-dbconf]\n
+\t\t INI file for database configuration\n
 \n
-\t\t Source file for species\n
+\t -c [-conf]\n
+\t\t Source file with env variables for the input dataset\n
 \n
 \t -m [-method]\n
 \t\t matador3d\n
@@ -89,6 +69,10 @@ USAGE="
 while expr "//$1" : //- >/dev/null
 do
 	case "$1" in
+		-d | -dbconf )
+			CONF_DB=$2
+			shift
+			;;
 		-c | -conf )
 			CONF_SPECIES=$2
 			shift
@@ -140,6 +124,12 @@ do
 	shift
 done
 
+if [ "${CONF_DB}" == "" ]; then
+	echo You must specify the config file (INI) of database!
+	echo -e $USAGE
+	exit 1
+fi
+
 if [ "${CONF_SPECIES}" == "" ]; then
 	echo You must specify at least one config file for SPECIES!
 	echo -e $USAGE
@@ -167,8 +157,19 @@ load_appris_specie_env "${CONF_SPECIES}" "verbose"
 METHOD_SCRIPT="retrieve_method_annots"
 
 # -----------------------------------------------------------------------------
-# Var declarations
-SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+# Required var declarations
+if [ "${APPRIS_SPECIES}" != "" ]; then
+	SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+else
+	echo Error within env variables: APPRIS_SPECIES!
+	exit 1
+fi
+DB_PARAMETERS=""
+if [ "${CONF_DB}" != "" ]; then
+	DB_PARAMETERS=" --apprisdb-conf=${CONF_DB}"
+fi
+
+prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
 
 # -----------------------------------------------------------------------------
 # Log declarations
@@ -191,7 +192,7 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 		echo " --species="${APPRIS_SPECIES}""
 		echo " --method=${METHOD}"
 		echo " --output=${OUTPUT_FILENAME}"
-		echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+		echo " ${DB_PARAMETERS}"
 		echo " ${LOG_PARAMETERS}"
 	
 		# run method
@@ -199,7 +200,7 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 			--species="${APPRIS_SPECIES}" \
 			--method=${METHOD} \
 			--output=${OUTPUT_FILENAME} \
-			--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+			${DB_PARAMETERS} \
 			${LOG_PARAMETERS}
 		echo "================="
 
@@ -221,7 +222,7 @@ else
 		echo " --position=${POSITION}"
 		echo " --method=${METHOD}"
 		echo " --output=${OUTPUT_FILE}"
-		echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+		echo " ${DB_PARAMETERS}"
 		echo " ${LOG_PARAMETERS}"
 	
 		# run method
@@ -230,7 +231,7 @@ else
 			--position=${POSITION} \
 			--method=${METHOD} \
 			--output=${OUTPUT_FILE} \
-			--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+			${DB_PARAMETERS} \
 			${LOG_PARAMETERS}
 		echo "================="
 		

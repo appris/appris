@@ -34,18 +34,11 @@ USAGE="
 \t Insert annotations into APPRIS database.\n
 \n
  Required arguments:\n
-\t -c [-conf]\n
-\t\t Hsap  - Homo sapiens -\n
-\t\t Mmus  - Mus musculus -\n
-\t\t Rnor  - Rattus norvegicus -\n
-\t\t Drer  - Danio rerio -\n
-\t\t Sscr  - Sus scrofa -\n
-\t\t Ptro  - Pan troglodytes -\n
-\t\t Dmel  - Drosophila melanogaster -\n
-\t\t Cele  - Caenorhabditis elegans -\n
-\t\t Lpar  - Lynx pardinus -\n
+\t -d [-dbconf]\n
+\t\t INI file for database configuration\n
 \n
-\t\t Source file for species\n
+\t -c [-conf]\n
+\t\t Source file with env variables for the input dataset\n
 \n
  Optional arguments:\n
 \t -i, -in\n
@@ -122,6 +115,12 @@ do
 	esac
 	shift
 done
+
+if [ "${CONF_DB}" == "" ]; then
+	echo You must specify the config file (INI) of database!
+	echo -e $USAGE
+	exit 1
+fi
 
 if [ "${CONF_SPECIES}" == "" ]; then
 	echo You must specify at least one config file for SPECIES!
@@ -270,7 +269,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 else
 # From a given list of genes
 
-	if [[ "${APPRIS_GENE_LIST}" != "" || "${SPECIES}" == "Lpar" ]] ; then
+	if [[ "${APPRIS_GENE_LIST}" != "" ]] ; then
 	
 		# local parameters
 		LOG_PARAMETERS=""

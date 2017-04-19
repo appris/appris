@@ -16,13 +16,6 @@ use Data::Dumper;
 ###################
 # Global variable #
 ###################
-use vars qw(
-	$LOCAL_PWD
-	$CONFIG_INI_APPRIS_DB_FILE
-);
-
-$LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
@@ -48,16 +41,10 @@ my ($loglevel) = undef;
 	'logpath=s'			=> \$logpath,
 	'logappend'			=> \$logappend,
 );
-unless(defined $species and defined $format and defined $output_file)
+unless( defined $apprisdb_conf_file and defined $species and defined $format and defined $output_file )
 {
 	print `perldoc $0`;
 	exit 1;
-}
-
-# Optional arguments
-# get vars of appris db
-unless ( defined $apprisdb_conf_file ) {
-	$apprisdb_conf_file = $CONFIG_INI_APPRIS_DB_FILE;
 }
 
 # Get log filehandle and print heading and parameters to logfile
@@ -94,14 +81,12 @@ sub main()
 	
 	# APPRIS Registry from given specie
 	my ($cfg) = new Config::IniFiles( -file => $apprisdb_conf_file );
-	my ($spe) = $species; $spe =~ s/^\s*//; $spe =~ s/\s*$//; $spe =~ s/\s/\_/;	
-	my ($specie_db) = uc($spe.'_db');
 	my ($param) = {
 			'-dbhost'       => $cfg->val('APPRIS_DATABASES', 'host'),
 			'-dbuser'       => $cfg->val('APPRIS_DATABASES', 'user'),
 			'-dbpass'       => $cfg->val('APPRIS_DATABASES', 'pass'),
 			'-dbport'       => $cfg->val('APPRIS_DATABASES', 'port'),
-			'-dbname'       => $cfg->val($specie_db, 'db'),
+			'-dbname'       => $cfg->val('APPRIS_DATABASES', 'db'),
 	};
 	$logger->debug(Dumper($param)."\n");
 	my ($registry) = APPRIS::Registry->new();

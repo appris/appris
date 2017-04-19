@@ -1,21 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# Load environmental variables
-# If you do not trust the path, configure below:
-SYSTEM=`uname -s`
-if [ "$SYSTEM" = Darwin ]
-then
-	source /etc/bashrc
-	source /etc/profile
-	source ${HOME}/.bash_profile
-elif [ "$SYSTEM" = Linux ]
-then
-	source /etc/profile
-	source /etc/bash.bashrc
-	source ${HOME}/.bashrc
-fi
-
+# Local variables
 VER=0.1b
 VERDATE="1-Apr-2013"
 
@@ -23,6 +9,8 @@ FILENAME=`basename $0`
 FILENAME="${FILENAME%.*}"
 DIRNAME=`dirname $0`
 
+CONF_DB=""
+CONF_SPECIES=""
 OUTPUT_FILENAME=""
 LOG_LEVEL=""
 
@@ -47,13 +35,11 @@ USAGE="
 \t\t* OVERLAP/NO_OVERLAP: exon that overlaps with (without) the exons of all isoforms.\n
 \n
  Required arguments:\n
+\t -d [-dbconf]\n
+\t\t INI file for database configuration\n
+\n
 \t -c [-conf]\n
-\t\t Hsap  - Homo sapiens -\n
-\t\t Mmus  - Mus musculus -\n
-\t\t Rnor  - Rattus norvegicus -\n
-\t\t Drer  - Danio rerio -\n
-\t\t Sscr  - Sus scrofa -\n
-\t\t Lpar  - Lynx pardinus -\n
+\t\t Source file with env variables for the input dataset\n
 \n
  \t -o [-out]\n
 \t\t Output file name\n
@@ -77,19 +63,14 @@ USAGE="
 while expr "//$1" : //- >/dev/null
 do
 	case "$1" in
-		-c | -conf )
-			case "$2" in
-				Hsap | Mmus | Rnor | Drer | Sscr | Lpar )
-					SPECIES=$2
-					;;
-				* )
-					echo Unknown method name: "$2" 
-					echo -e $USAGE
-					exit 1
-					;;
-			esac
+		-d | -dbconf )
+			CONF_DB=$2
 			shift
-			;;	
+			;;
+		-c | -conf )
+			CONF_SPECIES=$2
+			shift
+			;;
 		-o | -out )
         	OUTPUT_FILENAME=$2
 			shift
@@ -124,7 +105,13 @@ do
 	shift
 done
 
-if [ "${SPECIES}" == "" ]; then
+if [ "${CONF_DB}" == "" ]; then
+	echo You must specify the config file (INI) of database!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${CONF_SPECIES}" == "" ]; then
 	echo You must specify at least one SPECIES!
 	echo -e $USAGE
 	exit 1
@@ -138,11 +125,26 @@ fi
 
 # -----------------------------------------------------------------------------
 # Prepare Environment from given SPECIES
-load_appris_specie_env "${SPECIES}"
+load_appris_specie_env "${CONF_SPECIES}" "verbose"
 
 # -----------------------------------------------------------------------------
 # Get method script name
 METHOD_SCRIPT="retrieve_exon_data"
+
+# -----------------------------------------------------------------------------
+# Required var declarations
+if [ "${APPRIS_SPECIES}" != "" ]; then
+	SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+else
+	echo Error within env variables: APPRIS_SPECIES!
+	exit 1
+fi
+DB_PARAMETERS=""
+if [ "${CONF_DB}" != "" ]; then
+	DB_PARAMETERS=" --apprisdb-conf=${CONF_DB}"
+fi
+
+prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
 
 # -----------------------------------------------------------------------------
 # Log declarations
@@ -157,21 +159,21 @@ fi
 SCRIPT="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT}.pl"
 
 # from a given list of genes
-if [[ "${GENE_LIST}" != ""  || "${SPECIES}" == "Lpar" ]] ; then
+if [[ "${APPRIS_GENE_LIST}" != "" ]] ; then
 
 	# print trace
 	echo "================="
 	echo "perl ${SCRIPT}"
 	echo " --species="${APPRIS_SPECIES}""
 	echo " --output=${OUTPUT_FILENAME}"
-	echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+	echo " ${DB_PARAMETERS}"
 	echo " ${LOG_PARAMETERS}"
 
 	# run method
 	perl ${SCRIPT} \
 		--species="${APPRIS_SPECIES}" \
 		--output=${OUTPUT_FILENAME} \
-		--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+		${DB_PARAMETERS} \
 		${LOG_PARAMETERS}
 	echo "================="
 		
@@ -192,7 +194,7 @@ else
 		echo " --species="${APPRIS_SPECIES}""
 		echo " --position=${POSITION}"
 		echo " --output=${OUTPUT_FILE}"
-		echo " --apprisdb-conf=${APPRIS_SCRIPTS_DB_INI}"
+		echo " ${DB_PARAMETERS}"
 		echo " ${LOG_PARAMETERS}"
 	
 		# run method
@@ -200,7 +202,7 @@ else
 			--species="${APPRIS_SPECIES}" \
 			--position=${POSITION} \
 			--output=${OUTPUT_FILE} \
-			--apprisdb-conf=${APPRIS_SCRIPTS_DB_INI} \
+			${DB_PARAMETERS} \
 			${LOG_PARAMETERS}
 		echo "================="
 		

@@ -33,13 +33,9 @@ use APPRIS::Utils::Exception qw( info throw );
 # Global variable #
 ###################
 use vars qw(
-	$LOCAL_PWD
-	$CONFIG_INI_APPRIS_DB_FILE
 	$APPRIS_METHODS
 );
 
-$LOCAL_PWD					= $FindBin::Bin; $LOCAL_PWD =~ s/bin//;
-$CONFIG_INI_APPRIS_DB_FILE	= $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/apprisdb.ini';
 foreach my $method ( split(',',$ENV{APPRIS_METHODS}) ) {
 	$APPRIS_METHODS->{$method} = 1;
 }
@@ -72,7 +68,8 @@ my ($loglevel) = undef;
 unless (
 	defined  $id and
 	defined  $inpath and
-	defined  $species
+	defined  $species and
+	defined  $apprisdb_conf_file
 ){
 	print `perldoc $0`;
 	exit 1;
@@ -97,12 +94,6 @@ if ( -e $inputs->{'data'} and (-s $inputs->{'data'} > 0) and
 # SEQUENCE mode
 elsif ( -e $inputs->{'transl'} and (-s $inputs->{'transl'} > 0) ) {
 	$type_of_input = 'sequence';	
-}
-
-# Optional arguments
-# get vars of appris db
-unless ( defined $apprisdb_conf_file ) {
-	$apprisdb_conf_file = $CONFIG_INI_APPRIS_DB_FILE;
 }
 
 # Get log filehandle and print heading and parameters to logfile
@@ -410,13 +401,13 @@ run_appris
 	
 	--inpath= <Acquire input files from PATH>
 	
+	--apprisdb-conf <Config file of APPRIS database (default: 'conf/apprisdb.ini' file)>
+	
 =head2 Optional arguments:
 
 		--methods= <List of APPRIS's methods ('ensembl,firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
 		
-		--ensembldb-conf <Config file of Ensembl database (default: 'conf/ensembldb.ini' file)>
-		
-		--apprisdb-conf <Config file of APPRIS database (default: 'conf/apprisdb.ini' file)>
+		--ensembldb-conf <Config file of Ensembl database (default: 'conf/ensembldb.ini' file)>		
 				
 =head2 Optional arguments (log arguments):
 	
