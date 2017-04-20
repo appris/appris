@@ -34,7 +34,7 @@ server/node_modules/
 db/*
 !db/.gitignore
 !db/BLOSUM62
-!db/README.txt
+!db/README.md
 !db/scripts
 
 # RStudio project
