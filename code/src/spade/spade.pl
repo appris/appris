@@ -18,6 +18,7 @@ use vars qw(
 	$LOCAL_PWD
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$RUN_PROGRAM
 	$PROG_DB_DIR
 	$PROG_EVALUE
@@ -58,10 +59,11 @@ my ($cfg) 			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$RUN_PROGRAM		= $cfg->val( 'SPADE_VARS', 'program');
+$CACHE_FLAG			= $cfg->val('SPADE_VARS', 'cache');
+$RUN_PROGRAM		= $cfg->val('SPADE_VARS', 'program');
 $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR};
-$PROG_EVALUE		= $cfg->val( 'SPADE_VARS', 'evalue');
-$APPRIS_CUTOFF		= $cfg->val( 'SPADE_VARS', 'cutoff');
+$PROG_EVALUE		= $cfg->val('SPADE_VARS', 'evalue');
+$APPRIS_CUTOFF		= $cfg->val('SPADE_VARS', 'cutoff');
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -403,7 +405,7 @@ sub _run_pfamscan($$)
 
 	# Run pfamscan
 	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
-	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) ) # Cached pfamscan
+	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Cached pfamscan
 	{
 		eval {
 			my ($cmd) = "$RUN_PROGRAM -as -align -dir $PROG_DB_DIR -fasta $fasta_sequence_file -outfile $pfamscan_sequence_file &> /dev/null";

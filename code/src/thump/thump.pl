@@ -30,6 +30,7 @@ use vars qw(
 	
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$PROG_DB
 	
 	$HELICE_LENGTH
@@ -79,6 +80,7 @@ $PHOBIUS_DIR		= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/phobius/';
 $PRODIV_DIR			= $ENV{APPRIS_PROGRAMS_OPT_DIR}.'/prodiv/';
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$CACHE_FLAG			= $cfg->val('THUMP_VARS', 'cache');
 $PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('THUMP_VARS', 'db');
 $HELICE_LENGTH		= 9;
 $OK_LABEL			= 'YES';
@@ -235,7 +237,7 @@ sub run_phobius($$$)
 {
 	my ($input, $ws_cache, $ws_tmp) = @_;
 	my ($output) = $ws_cache.'/seq.phobius';	
-	unless ( -e $output and (-s $output > 0) )
+	unless ( -e $output and (-s $output > 0) and ($CACHE_FLAG eq 'yes') )
 	{
 		eval {
 			my ($cmd) = "perl $BIN_DIR/phobvX.pl --input=$input --output=$output $LOGGER_CONF";
@@ -256,8 +258,9 @@ sub run_memsat($$$)
 	my ($out_align) = $ws_cache."/seq.memsat_aln";	
 	unless ( -e $out_memsat and (-s $out_memsat > 0) and 
 			 -e $out_blast and (-s $out_blast > 0) and
-			 -e $out_align and (-s $out_align > 0) )
-	{
+			 -e $out_align and (-s $out_align > 0) and
+			 ($CACHE_FLAG eq 'yes')
+	){
 		eval {
 			my ($cmd) = "perl $BIN_DIR/memsatvX.pl ".
 								" --db=$PROG_DB ".
@@ -282,7 +285,7 @@ sub run_kalign($$$)
 {
 	my ($input, $ws_cache, $ws_tmp) = @_;	
 	my ($out_align) = $ws_cache.'/seq.kalign';
-	unless ( -e $out_align and (-s $out_align > 0) )
+	unless ( -e $out_align and (-s $out_align > 0) and ($CACHE_FLAG eq 'yes') )
 	{
 		eval {
 			my ($cmd) = "kalign -i $input -o $out_align -f clu -c input -d wu ";
@@ -345,7 +348,7 @@ sub run_prodiv($$$)
 	my ($input, $ws_cache, $ws_tmp) = @_;
 	my ($out_align) = $ws_cache.'/seq.prodiv';
 	my ($in_tmp_prodiv) = $ws_tmp.'/Query.prodiv.res';	
-	unless ( -e $out_align and (-s $out_align > 0) )
+	unless ( -e $out_align and (-s $out_align > 0) and ($CACHE_FLAG eq 'yes') )
 	{		
 		eval {
 			my ($cmd) = "perl $PRODIV_DIR/all_tmhmm_runner.pl Query $ws_tmp $in_tmp_prodiv 1> /dev/null 2> /dev/null";

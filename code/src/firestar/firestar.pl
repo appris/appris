@@ -20,6 +20,7 @@ use vars qw(
 	$DEFALULT_FIRESTAR_CONFIG_FILE
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$NAME_DIR
 	$PROG_EVALUE
 	$PROG_CUTOFF
@@ -62,6 +63,7 @@ $LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$CACHE_FLAG				= $cfg->val('FIRESTAR_VARS', 'cache');
 $NAME_DIR				= $cfg->val('FIRESTAR_VARS', 'name');
 $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');
 $PROG_CUTOFF			= $cfg->val('FIRESTAR_VARS', 'cutoff');
@@ -182,7 +184,7 @@ sub main()
 		$logger->error("-- printing firestar config annot") unless ( defined $print_log );
 		
 		# If output is not cached
-		unless ( -e $firePredText_file and (-s $firePredText_file > 0) ) {
+		unless ( -e $firePredText_file and (-s $firePredText_file > 0) and ($CACHE_FLAG eq 'yes') ) {
 			my ($cmd) = "$LOCAL_PWD/source/perl/firestar.pl -opt appris -q seq -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
 			$logger->debug("\n** script: $cmd\n");			
 			my (@firePredText_out) = `$cmd`;

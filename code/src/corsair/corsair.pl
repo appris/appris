@@ -27,6 +27,7 @@ use vars qw(
 	$GIVEN_SPECIES
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$RUN_PROGRAM
 	$PROG_DB
 	$PROG_DB_V
@@ -77,13 +78,14 @@ $LOCAL_PWD			= $FindBin::Bin;
 $GIVEN_SPECIES		= $cfg->val('APPRIS_PIPELINE', 'species');
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$RUN_PROGRAM		= $cfg->val( 'CORSAIR_VARS', 'program');
+$CACHE_FLAG			= $cfg->val('CORSAIR_VARS', 'cache');
+$RUN_PROGRAM		= $cfg->val('CORSAIR_VARS', 'program');
 $PROG_DB			= undef;
 $PROG_DB_V			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_v');
 $PROG_DB_INV		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_inv');
 $PROG_EVALUE		= $cfg->val('CORSAIR_VARS', 'evalue');
 $PROG_MINLEN		= $cfg->val('CORSAIR_VARS', 'minlen');
-$PROG_CUTOFF		= $cfg->val( 'CORSAIR_VARS', 'cutoff');
+$PROG_CUTOFF		= $cfg->val('CORSAIR_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
@@ -209,7 +211,7 @@ sub main()
 			
 			# Run blast
 			my ($blast_sequence_file) = $ws_cache.'/seq.refseq';
-			unless (-e $blast_sequence_file and (-s $blast_sequence_file > 0) ) # Blast Cache
+			unless (-e $blast_sequence_file and (-s $blast_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Blast Cache
 			{
 				eval
 				{

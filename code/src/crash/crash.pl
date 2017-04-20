@@ -20,6 +20,7 @@ use vars qw(
 	$PROG_OUT_SUFFIX
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$RUN_PROGRAM_1
 	$RUN_PROGRAM_2
 	$PROG_IN_SUFFIX
@@ -59,8 +60,9 @@ my ($cfg)			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$RUN_PROGRAM_1		= $cfg->val( 'CRASH_VARS', 'program1');
-$RUN_PROGRAM_2		= $cfg->val( 'CRASH_VARS', 'program2');
+$CACHE_FLAG			= $cfg->val('CRASH_VARS', 'cache');
+$RUN_PROGRAM_1		= $cfg->val('CRASH_VARS', 'program1');
+$RUN_PROGRAM_2		= $cfg->val('CRASH_VARS', 'program2');
 $PROG_IN_SUFFIX		= 'faa';
 $PROG1_OUT_SUFFIX	= 'signalp';
 $PROG2_OUT_SUFFIX	= 'targetp';
@@ -193,7 +195,7 @@ sub run_sp($$)
 	};
 
 	# Execute program
-	unless ( -e $output_file and (-s $output_file > 0 ) and $error_output_file->($output_file) == 0 ) {
+	unless ( -e $output_file and (-s $output_file > 0 ) and $error_output_file->($output_file) == 0 and ($CACHE_FLAG eq 'yes') ) {
 		eval {
 			my ($cmd) = "$RUN_PROGRAM_1 $input_file 1> $output_file 2> $err_file";
 			$logger->debug("\n** script: $cmd\n");		
@@ -221,7 +223,7 @@ sub run_tp($$)
 	my ($err_file) = '/dev/null';
 
 	# Execute program
-	unless ( -e $output_file and (-s $output_file > 0 ) ) {
+	unless ( -e $output_file and (-s $output_file > 0 ) and ($CACHE_FLAG eq 'yes') ) {
 		eval {
 			my ($cmd) = "$RUN_PROGRAM_2 $input_file 1> $output_file 2> $err_file";
 			$logger->debug("\n** script: $cmd\n");		
