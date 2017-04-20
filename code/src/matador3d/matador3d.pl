@@ -19,6 +19,7 @@ use vars qw(
 	$LOCAL_PWD
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CACHE_FLAG
 	$RUN_PROGRAM
 	$PROG_DB
 	$PROG_EVALUE
@@ -62,6 +63,7 @@ my ($cfg) 			= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD			= $FindBin::Bin;
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$CACHE_FLAG			= $cfg->val( 'MATADOR3D2_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val( 'MATADOR3D_VARS', 'program');
 $PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D_VARS', 'db');
 $PROG_EVALUE		= $cfg->val('MATADOR3D_VARS', 'evalue');
@@ -218,7 +220,7 @@ sub _run_blastpgp($$)
 	
 	# Run blast
 	my ($blast_sequence_file) = $ws_cache.'/seq.pdb';               
-	unless(-e $blast_sequence_file and (-s $blast_sequence_file >0)) # Cached Blast
+	unless(-e $blast_sequence_file and (-s $blast_sequence_file >0) and ($CACHE_FLAG eq 'yes')) # Cached Blast
 	{
 		eval
 		{

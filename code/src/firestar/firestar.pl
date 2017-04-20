@@ -21,7 +21,6 @@ use vars qw(
 	$WSPACE_TMP
 	$WSPACE_CACHE
 	$NAME_DIR
-	$NAME_CACHE	
 	$PROG_EVALUE
 	$PROG_CUTOFF
 	$PROG_CSA
@@ -64,7 +63,6 @@ $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $NAME_DIR				= $cfg->val('FIRESTAR_VARS', 'name');
-$NAME_CACHE				= $cfg->val('CACHE_VARS', 'name');
 $PROG_EVALUE			= $cfg->val('FIRESTAR_VARS', 'evalue');
 $PROG_CUTOFF			= $cfg->val('FIRESTAR_VARS', 'cutoff');
 $PROG_CSA				= $cfg->val('FIRESTAR_VARS', 'csa');
