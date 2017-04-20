@@ -19,8 +19,6 @@
 .vim/
 .vimrc
 
-CHANGE.log
-TODO.txt
 server/logs/
 server/node_modules/
 
