@@ -54,7 +54,6 @@ Example:\n
 # -----------------------------------------------------------------------------
 # Get input parameters
 
-ALL_METHOD="firestar,matador3d,spade,corsair,thump,crash,proteo"
 INPATH="${PWD}"
 LOG_LEVEL="info"
 
@@ -134,7 +133,7 @@ if [ "${METHODS}" != "" ]; then
 	fi	
 	METHODS_PARAM="${MET:1}"
 else
-	METHODS_PARAM="${ALL_METHOD}"
+	METHODS_PARAM="${APPRIS_METHODS}"
 fi
 
 
