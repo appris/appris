@@ -29,6 +29,7 @@ my ($transcripts_file) = undef;
 my ($translations_file) = undef;
 my ($firestar_file) = undef;
 my ($matador3d_file) = undef;
+my ($matador3d2_file) = undef;
 my ($corsair_file) = undef;
 my ($spade_file) = undef;
 my ($thump_file) = undef;
@@ -50,6 +51,7 @@ my ($loglevel) = undef;
 	'translations=s'	=> \$translations_file,
 	'firestar=s'		=> \$firestar_file,
 	'matador3d=s'		=> \$matador3d_file,
+	'matador3d2=s'		=> \$matador3d2_file,
 	'corsair=s'			=> \$corsair_file,
 	'spade=s'			=> \$spade_file,
 	'thump=s'			=> \$thump_file,
@@ -68,6 +70,7 @@ my ($loglevel) = undef;
 # Get conf vars
 my ($cfg) = new Config::IniFiles( -file =>  $config_file );
 our $APPRIS_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'cutoff');
+our $APPRIS_METHODS			= $cfg->val( 'APPRIS_VARS', 'methods');
 our $FIRESTAR_MINRES		= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
 our $FIRESTAR_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
 our $MATADOR3D_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
@@ -79,11 +82,8 @@ our $THUMP_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
 
 # Required arguments
 unless ( defined $config_file and 
-		#defined $data_file and 
-		#defined $transcripts_file and 
 		defined $translations_file and 
-		defined $firestar_file and defined $matador3d_file and defined $corsair_file and defined $spade_file and
-		#defined $inertia_file and defined $thump_file and defined $crash_file and defined $proteo_file and
+		defined $firestar_file and (defined $matador3d_file or defined $matador3d2_file) and defined $corsair_file and defined $spade_file and
 		defined $output_main_file and defined $output_label_file )
 {
     print `perldoc $0`;
@@ -113,6 +113,7 @@ sub main()
 	# Local variables
 	my ($firestar_result);
 	my ($matador3d_result);
+	my ($matador3d2_result);
 	my ($corsair_result);
 	my ($spade_result);
 	my ($thump_result);
@@ -153,6 +154,16 @@ sub main()
 	if ( -e $matador3d_file and (-s $matador3d_file > 0) ) {
 		$matador3d_result = getStringFromFile($matador3d_file);
 		unless ( defined $matador3d_result ) {
+			$logger->error("can not open method result: $!\n");
+		}
+	}
+	else {
+		$logger->info("file does not exit\n");
+	}
+	$logger->info("get matador3d2 result\n");
+	if ( -e $matador3d2_file and (-s $matador3d2_file > 0) ) {
+		$matador3d2_result = getStringFromFile($matador3d2_file);
+		unless ( defined $matador3d2_result ) {
 			$logger->error("can not open method result: $!\n");
 		}
 	}
@@ -223,7 +234,7 @@ sub main()
 
 	# get object of reports
 	$logger->info("-- create reports\n");
-	my ($reports) = parse_appris_methods($gene, $firestar_result, $matador3d_result, $spade_result, $corsair_result, $crash_result, $thump_result, $inertia_result, $proteo_result);
+	my ($reports) = parse_appris_methods($gene, $firestar_result, $matador3d_result, $matador3d2_result, $spade_result, $corsair_result, $crash_result, $thump_result, $inertia_result, $proteo_result);
 	$logger->debug("REPORTS:\n".Dumper($reports)."\n");
 
 	# get scores of methods for each transcript

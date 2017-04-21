@@ -104,11 +104,6 @@ unless (
 	exit 1;
 }
 
-# Get method's pipeline
-#unless ( defined $methods ) {
-#	$methods = $DEFAULT_CFG->val('APPRIS_PIPELINE', 'structure');
-#}
-
 # Get the type of input (the order of conditions is important)
 if ( defined $inpath ) {
 	$type_of_input = 'inpath';
@@ -495,7 +490,6 @@ sub create_inputs($)
 {
 	my ($id) = @_;
 	my ($input_files);
-	#my ($datadir) =  $wspace.'/'.$CFG->val( 'INPUT_VARS', 'name');
 		
 	# Obtain inputs for pipeline
 	$logger->info("-- obtain gene annotations, transcript seq, and translate seq...");
@@ -620,7 +614,7 @@ sub run_pipeline($$$)
 		$logger->error("runing $m: ".$!) if($@);
 	}
 	if ( exists $files->{'matador3d2'} ) {
-		my ($m) = 'matador3d';
+		my ($m) = 'matador3d2';
 		eval {
 			my ($cmd) = "perl $SRC_DIR/matador3d2/matador3d.pl ".
 							"--conf='".$config_file."' ".
@@ -654,9 +648,6 @@ sub run_pipeline($$$)
 							"--gff='".$files->{'pannot'}."' ".
 							"--output='".$files->{$m}."' ".							
 							"$LOGGER_CONF ";
-							#if ( exists $files->{'pannot'} ) {
-							#	$cmd .= "--gff=".$files->{'pannot'}." ";								
-							#}							
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
 		};
@@ -726,6 +717,7 @@ sub run_pipeline($$$)
 
 						"--firestar='".$files->{$m}->{'firestar'}."' ".
 						"--matador3d='".$files->{$m}->{'matador3d'}."' ".
+						"--matador3d2='".$files->{$m}->{'matador3d2'}."' ".
 						"--spade='".$files->{$m}->{'spade'}."' ".
 						"--corsair='".$files->{$m}->{'corsair'}."' ".
 						"--thump='".$files->{$m}->{'thump'}."' ".

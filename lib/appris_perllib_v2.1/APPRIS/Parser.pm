@@ -56,6 +56,7 @@ use APPRIS::Analysis;
 use APPRIS::Analysis::Region;
 use APPRIS::Analysis::Firestar;
 use APPRIS::Analysis::Matador3D;
+use APPRIS::Analysis::Matador3D2;
 use APPRIS::Analysis::SPADE;
 use APPRIS::Analysis::INERTIA;
 use APPRIS::Analysis::CRASH;
@@ -121,6 +122,8 @@ sub parse_firestar_rst($);
 sub parse_firestar($$);
 sub parse_matador3d_rst($);
 sub parse_matador3d($$);
+sub parse_matador3d2_rst($);
+sub parse_matador3d2($$);
 sub parse_spade_rst($);
 sub parse_spade($$);
 sub parse_inertia($$);
@@ -136,8 +139,8 @@ sub parse_proteo_rst($);
 sub parse_proteo($$);
 sub parse_appris_rst($$);
 sub parse_appris($$$);
-sub parse_appris_methods($$$$$$$$;$;$;$);
-sub create_appris_entity($$$$$$$$$$$$$$);
+sub parse_appris_methods($$$$$$$$$;$;$;$);
+sub create_appris_entity($$$$$$$$$$$$$$$);
 
 
 =head2 parse_infiles
@@ -1080,7 +1083,7 @@ sub parse_matador3d2($$)
 			}
 			
 			# create Analysis object (for trans)			
-			my ($method) = APPRIS::Analysis::Matador3D->new (
+			my ($method) = APPRIS::Analysis::Matador3D2->new (
 							-result					=> $report->{'result'},
 							-score					=> $report->{'score'}
 			);
@@ -1090,7 +1093,7 @@ sub parse_matador3d2($$)
 			}			
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
-				$analysis->matador3d($method);
+				$analysis->matador3d2($method);
 				$analysis->number($analysis->number+1);
 			}			
 		}
@@ -1104,10 +1107,10 @@ sub parse_matador3d2($$)
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::Matador3D->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::Matador3D2->new( -result => $cutoffs->{'result'} );	
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
-		$analysis2->matador3d($method2);
+		$analysis2->matador3d2($method2);
 		$analysis2->number($analysis2->number+1);
 	}
 	
@@ -2682,6 +2685,8 @@ sub parse_appris($$$)
                Parse firestar result
   Arg [3]    : string $result
                Parse matador3d result
+  Arg [3]    : string $result
+               Parse matador3d2 result
   Arg [4]    : string $result
                Parse spade result
   Arg [5]    : string $result
@@ -2715,12 +2720,13 @@ sub parse_appris($$$)
 
 =cut
 
-sub parse_appris_methods($$$$$$$$;$;$;$)
+sub parse_appris_methods($$$$$$$$$;$;$;$)
 {
 	my (
 		$gene,
 		$firestar_result,
 		$matador3d_result,
+		$matador3d2_result,
 		$spade_result,
 		$corsair_result,
 		$crash_result,
@@ -2738,6 +2744,7 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 	
 	my ($firestar);
 	my ($matador3d);
+	my ($matador3d2);
 	my ($corsair);
 	my ($spade);
 	my ($thump);
@@ -2752,6 +2759,9 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 	}
 	if ( defined $matador3d_result ) {
 		$matador3d = parse_matador3d($gene, $matador3d_result);
+	}
+	if ( defined $matador3d2_result ) {
+		$matador3d2 = parse_matador3d2($gene, $matador3d2_result);
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($gene, $corsair_result);
@@ -2800,6 +2810,17 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 				my ($method) = $result->analysis->matador3d;
 				if (defined $method) {
 					$analysis->matador3d($method);
+					$analysis->number($analysis->number+1);
+				}
+			}			
+		}
+		# get matador3d2
+		if ( $matador3d2 and $matador3d2->transcripts->[$index] and $matador3d2->transcripts->[$index]->analysis ) {
+			my ($result) = $matador3d2->transcripts->[$index];
+			if ( $result->analysis->matador3d2 ) {
+				my ($method) = $result->analysis->matador3d2;
+				if (defined $method) {
+					$analysis->matador3d2($method);
 					$analysis->number($analysis->number+1);
 				}
 			}			
@@ -2911,6 +2932,14 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 			$analysis2->number($analysis2->number+1);
 		}
 	}
+	# get matador3d2
+	if ( $matador3d2 and $matador3d2->analysis and $matador3d2->analysis->matador3d2 ) {
+		my ($method2) = $matador3d2->analysis->matador3d2;
+		if (defined $method2) {
+			$analysis2->matador3d2($method2);
+			$analysis2->number($analysis2->number+1);
+		}
+	}
 	# get corsair
 	if ( $corsair and $corsair->analysis and $corsair->analysis->corsair ) {
 		my ($method2) = $corsair->analysis->corsair;
@@ -2980,6 +3009,8 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
                Parse firestar result
   Arg [5]    : string $result
                Parse matador3d result
+  Arg [5]    : string $result
+               Parse matador3d2 result
   Arg [6]    : string $result
                Parse spade result
   Arg [7]    : string $result
@@ -3005,7 +3036,7 @@ sub parse_appris_methods($$$$$$$$;$;$;$)
 
 =cut
 
-sub create_appris_entity($$$$$$$$$$$$$$)
+sub create_appris_entity($$$$$$$$$$$$$$$)
 {
 	my (
 		$data_file,
@@ -3013,6 +3044,7 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 		$transl_file,
 		$firestar_result,
 		$matador3d_result,
+		$matador3d2_result,
 		$spade_result,
 		$corsair_result,
 		$crash_result,
@@ -3046,6 +3078,7 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 	
 	my ($firestar);
 	my ($matador3d);
+	my ($matador3d2);
 	my ($corsair);
 	my ($spade);
 	my ($cexonic);
@@ -3061,6 +3094,9 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 	}
 	if ( defined $matador3d_result ) {
 		$matador3d = parse_matador3d($entity, $matador3d_result);
+	}
+	if ( defined $matador3d2_result ) {
+		$matador3d2 = parse_matador3d2($entity, $matador3d2_result);
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($entity, $corsair_result);
@@ -3114,6 +3150,17 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 					my ($method) = $result->analysis->matador3d;
 					if (defined $method) {
 						$analysis->matador3d($method);
+						$analysis->number($analysis->number+1);
+					}
+				}			
+			}
+			# get matador3d2
+			if ( $matador3d2 and $matador3d2->transcripts->[$index] and $matador3d2->transcripts->[$index]->analysis ) {
+				my ($result) = $matador3d2->transcripts->[$index];
+				if ( $result->analysis->matador3d2 ) {
+					my ($method) = $result->analysis->matador3d2;
+					if (defined $method) {
+						$analysis->matador3d2($method);
 						$analysis->number($analysis->number+1);
 					}
 				}			
@@ -3219,6 +3266,14 @@ sub create_appris_entity($$$$$$$$$$$$$$)
 		my ($method2) = $matador3d->analysis->matador3d;
 		if (defined $method2) {
 			$analysis2->matador3d($method2);
+			$analysis2->number($analysis2->number+1);
+		}
+	}
+	# get matador3d2
+	if ( $matador3d2 and $matador3d2->analysis and $matador3d2->analysis->matador3d2 ) {
+		my ($method2) = $matador3d2->analysis->matador3d2;
+		if (defined $method2) {
+			$analysis2->matador3d2($method2);
 			$analysis2->number($analysis2->number+1);
 		}
 	}

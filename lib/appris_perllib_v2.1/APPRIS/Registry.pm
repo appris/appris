@@ -53,6 +53,7 @@ use APPRIS::Analysis;
 use APPRIS::Analysis::Region;
 use APPRIS::Analysis::Firestar;
 use APPRIS::Analysis::Matador3D;
+use APPRIS::Analysis::Matador3D2;
 use APPRIS::Analysis::SPADE;
 use APPRIS::Analysis::INERTIA;
 use APPRIS::Analysis::CRASH;
@@ -1767,7 +1768,7 @@ sub fetch_analysis_by_stable_id {
 			throw('No matador analysis') if ($@);
 			if (defined $method) { # Create object
 				eval {
-					$matador3d2 = APPRIS::Analysis::Matador3D->new
+					$matador3d2 = APPRIS::Analysis::Matador3D2->new
 					(
 						-result						=> $method->{'result'},
 						-conservation_structure		=> $method->{'conservation_structure'},

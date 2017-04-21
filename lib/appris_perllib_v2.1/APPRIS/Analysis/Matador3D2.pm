@@ -10,30 +10,30 @@
 
 =head1 NAME
 
-APPRIS::Analysis::Matador3D - Object representing an analysis run
+APPRIS::Analysis::Matador3D2 - Object representing an analysis run
 
 =head1 SYNOPSIS
 
-  my $analysis = APPRIS::Analysis::Matador3D->new(
+  my $analysis = APPRIS::Analysis::Matador3D2->new(
     -result      => <Analysis result>,
     -conservation_structure  => <Annotation analysed>,
   );
 
 =head1 DESCRIPTION
 
-A representation of analysis of Matador3D within the APPRIS system.
+A representation of analysis of Matador3D2 within the APPRIS system.
 Object to store details of an analysis run.
 
 =head1 METHODS
 
 =cut
 
-package APPRIS::Analysis::Matador3D;
+package APPRIS::Analysis::Matador3D2;
 
 use strict;
 use warnings;
 
-use APPRIS::Analysis::Matador3DRegion;
+use APPRIS::Analysis::Matador3D2Region;
 use APPRIS::Utils::Argument qw(rearrange);
 use APPRIS::Utils::Exception qw(throw warning deprecate);
 
@@ -48,11 +48,11 @@ use APPRIS::Utils::Exception qw(throw warning deprecate);
   Arg [-num_alignments] : (optional)
         int - the number of analysed residues
   Arg [-alignments]: (optional)
-        Listref of APPRIS::Analysis::Matador3DRegion - the 
+        Listref of APPRIS::Analysis::Matador3D2Region - the 
         set of alignments that was analysed
-  Example    : $analysis = APPRIS::Analysis::Matador3D->new(...);
+  Example    : $analysis = APPRIS::Analysis::Matador3D2->new(...);
   Description: Creates a new analysis object
-  Returntype : APPRIS::Analysis::Matador3D
+  Returntype : APPRIS::Analysis::Matador3D2
   Exceptions : none
   Caller     : general
   Status     : Stable
@@ -145,11 +145,11 @@ sub num_alignments {
 
 =head2 alignments
 
-  Arg [1]    : (optional) Listref of APPRIS::Analysis::Matador3DRegion - the 
+  Arg [1]    : (optional) Listref of APPRIS::Analysis::Matador3D2Region - the 
                set of alignments that for this analysis 
   Example    : $analysis->alignments($alignments);
   Description: Getter/setter for the set of analysed alignments 
-  Returntype : Listref of APPRIS::Analysis::Matador3DRegion or undef
+  Returntype : Listref of APPRIS::Analysis::Matador3D2Region or undef
   Exceptions : none
   Caller     : general
   Status     : Stable

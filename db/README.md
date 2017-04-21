@@ -56,11 +56,11 @@
 	
 	perl scripts/matador3d/discardEmptySeqsPDB.pl pdb_{DATE_VERSION}.fasta 1> pdb_{DATE_VERSION}.emptySeqs.fa
 	
-	ln -s pdb_{DATE_VERSION}.emptySeqs.fa pdb
+	ln -s pdb_{DATE_VERSION}.emptySeqs.fa pdb_{DATE_VERSION}
 	
 5. Index database
 	
-	formatdb -i pdb -p T
+	formatdb -i pdb_{DATE_VERSION} -p T
 	
 6. Delete tmp files
 

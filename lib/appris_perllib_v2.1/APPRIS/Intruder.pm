@@ -51,6 +51,7 @@ use APPRIS::Analysis;
 use APPRIS::Analysis::Region;
 use APPRIS::Analysis::Firestar;
 use APPRIS::Analysis::Matador3D;
+use APPRIS::Analysis::Matador3D2;
 use APPRIS::Analysis::SPADE;
 use APPRIS::Analysis::INERTIA;
 use APPRIS::Analysis::CRASH;

@@ -581,7 +581,7 @@ sub src_appris_decision($$$$$;$)
 		my (@cmd_out) = `$cmd`;
 		$label_result = join('', @cmd_out);
 	};
-	my ($reports) = parse_appris_methods($gene, undef, undef, undef, undef, undef, undef, undef, undef,$main_result, $label_result);
+	my ($reports) = parse_appris_methods($gene, undef, undef, undef, undef, undef, undef, undef, undef, undef, $main_result, $label_result);
 		
 	# get scores of methods for each transcript
 	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports);

@@ -39,6 +39,7 @@ $NO_LABEL				= 'NO';
 $METHOD_LABELS = {
 	'firestar'	=> [ 'functional_residue',			'num_functional_residues'							],
 	'matador3d'	=> [ 'conservation_structure',		'score_homologous_structure'						],
+	'matador3d2'=> [ 'conservation_structure',		'score_homologous_structure'						],
 	'corsair'	=> [ 'vertebrate_signal',			'score_vertebrate_signal'							],
 	'spade'		=> [ 'domain_signal',				'score_domain_signal'								],
 	'thump'		=> [ 'transmembrane_signal',		'score_transmembrane_signal'						],
@@ -70,6 +71,7 @@ $METHOD_WEIGHTED = {
 					  'weight' => 6	
 					}],
 	'matador3d'	=> 6,
+	'matador3d2'=> 6,
 	'spade'		=> 6,
 	'corsair'	=> [{
 					  'max'    => 3,
@@ -114,160 +116,169 @@ sub get_method_scores($$)
 			elsif ( $aa_length < $s_scores->{'aa_length'}->{'min'} ) {
 				$s_scores->{'aa_length'}->{'min'} = $aa_length;
 			}
-			
-			my ($m) = 'firestar';
-			if ( $result and $result->analysis and $result->analysis->firestar ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->firestar;
-				if ( defined $analysis->num_residues ) {
-					my ($sc) = $analysis->num_residues;
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;
-				}
-			}
-			$m = 'matador3d';
-			if ( $result and $result->analysis and $result->analysis->matador3d ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->matador3d;
-				if ( defined $analysis->score ) {
-					my ($sc) = $analysis->score;
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;					
-				}				
-			}
-			# get corsair
-			$m = 'corsair';
-			if ( $result and $result->analysis and $result->analysis->corsair ) {
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->corsair;
-				if ( defined $analysis->score ) {
-					my ($sc) = $analysis->score;
-					# if variant has 'start/stop codon not found', the score is 0
-					if ( $transcript->translate->codons ) {
-						my ($codons) = '';
-						foreach my $codon (@{$transcript->translate->codons}) {
-							if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) { $codons .= $codon->type.',' }
+			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {				
+				if ( $m eq 'firestar' and $result and $result->analysis and $result->analysis->firestar ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->firestar;
+					if ( defined $analysis->num_residues ) {
+						my ($sc) = $analysis->num_residues;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
 						}
-						unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $sc = 0 } 
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;
 					}
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $m eq 'matador3d' and $result and $result->analysis and $result->analysis->matador3d ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->matador3d;
+					if ( defined $analysis->score ) {
+						my ($sc) = $analysis->score;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;					
+					}				
+				}
+				elsif ( $m eq 'matador3d2' and $result and $result->analysis and $result->analysis->matador3d2 ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->matador3d2;
+					if ( defined $analysis->score ) {
+						my ($sc) = $analysis->score;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;					
+					}				
+				}
+				elsif ( $m eq 'corsair' and $result and $result->analysis and $result->analysis->corsair ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->corsair;
+					if ( defined $analysis->score ) {
+						my ($sc) = $analysis->score;
+						# if variant has 'start/stop codon not found', the score is 0
+						if ( $transcript->translate->codons ) {
+							my ($codons) = '';
+							foreach my $codon (@{$transcript->translate->codons}) {
+								if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) { $codons .= $codon->type.',' }
+							}
+							unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $sc = 0 } 
+						}
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;
+					}			
+				}
+				elsif ( $m eq 'spade' and $result and $result->analysis and $result->analysis->spade ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->spade;
+					if ( defined $analysis->bitscore ) {
+						my ($sc) = $analysis->bitscore;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;						
+					}				
+				}
+				elsif ( $m eq 'thump' and $result and $result->analysis and $result->analysis->thump ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->thump;
+					if ( defined $analysis->num_tmh and 
+						 defined $analysis->num_damaged_tmh ) {
+						my ($sc) = $analysis->num_tmh;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;					
+					}				
+				}
+				elsif ( $m eq 'crash' and $result and $result->analysis and $result->analysis->crash ) {
+					my ($annot_sc_sp) = $METHOD_LABELS->{$m}->[1];
+					my ($annot_sc_tp) = $METHOD_LABELS->{$m}->[3];	
+					my ($analysis) = $result->analysis->crash;
+					if ( defined $analysis->sp_score and defined $analysis->tp_score ) {
+						my ($sc) = $analysis->sp_score.','.$analysis->tp_score;
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc_sp} = $analysis->sp_score;
+						$scores->{$transcript_id}->{$annot_sc_tp} = $analysis->tp_score;
 					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
+				}
+				elsif ( $m eq 'inertia' and $result and $result->analysis and $result->analysis->inertia ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];				
+					my ($analysis) = $result->analysis->inertia;
+					if ( defined $analysis->regions ) {
+						 my ($sc) = get_num_unusual_exons($analysis);
+						 push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						 $scores->{$transcript_id}->{$annot_sc} = $sc;
 					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
+				}
+				elsif ( $m eq 'proteo' and $result and $result->analysis and $result->analysis->proteo ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($analysis) = $result->analysis->proteo;
+					if ( defined $analysis->num_peptides ) {
+						my ($sc) = $analysis->num_peptides;
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;					
 					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;
-				}			
-			}
-			$m = 'spade';
-			if ( $result and $result->analysis and $result->analysis->spade ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->spade;
-				if ( defined $analysis->bitscore ) {
-					my ($sc) = $analysis->bitscore;
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;						
 				}				
-			}
-			$m = 'thump';
-			if ( $result and $result->analysis and $result->analysis->thump ) {
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->thump;
-				if ( defined $analysis->num_tmh and 
-					 defined $analysis->num_damaged_tmh ) {
-					my ($sc) = $analysis->num_tmh;
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;					
-				}				
-			}
-			# crash: signalp + targetp
-			$m = 'crash';
-			if ( $result and $result->analysis and $result->analysis->crash ) {
-				my ($annot_sc_sp) = $METHOD_LABELS->{$m}->[1];
-				my ($annot_sc_tp) = $METHOD_LABELS->{$m}->[3];	
-				my ($analysis) = $result->analysis->crash;
-				if ( defined $analysis->sp_score and defined $analysis->tp_score ) {
-					my ($sc) = $analysis->sp_score.','.$analysis->tp_score;
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc_sp} = $analysis->sp_score;
-					$scores->{$transcript_id}->{$annot_sc_tp} = $analysis->tp_score;
-				}
-			}
-			$m = 'inertia';
-			if ( $result and $result->analysis and $result->analysis->inertia ) {
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];				
-				my ($analysis) = $result->analysis->inertia;
-				if ( defined $analysis->regions ) {
-					 my ($sc) = get_num_unusual_exons($analysis);
-					 push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					 $scores->{$transcript_id}->{$annot_sc} = $sc;
-				}
-			}
-			# (WE DON'T USE PROTEO FOR APPRIS DECISION)
-			$m = 'proteo';
-			if ( $result and $result->analysis and $result->analysis->proteo ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($analysis) = $result->analysis->proteo;
-				if ( defined $analysis->num_peptides ) {
-					my ($sc) = $analysis->num_peptides;
-					if ( !exists $s_scores->{$m} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-						$s_scores->{$m}->{'max'} = $sc;
-					}
-					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-						$s_scores->{$m}->{'min'} = $sc;
-					}
-					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc} = $sc;					
-				}
 			}
 		}
 	}
@@ -300,122 +311,26 @@ sub get_method_scores_from_appris_rst($$)
 			elsif ( $aa_length < $s_scores->{'aa_length'}->{'min'} ) {
 				$s_scores->{'aa_length'}->{'min'} = $aa_length;
 			}
-			
-			my ($m) = 'firestar';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->functional_residues_score ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->functional_residues_score;
-				if ( !exists $s_scores->{$m} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-				}
-				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-				$scores->{$transcript_id}->{$annot_sc} = $sc;
-			}
-			$m = 'matador3d';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->homologous_structure_score ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->homologous_structure_score;
-				if ( !exists $s_scores->{$m} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-				}
-				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-				$scores->{$transcript_id}->{$annot_sc} = $sc;					
-			}
-			$m = 'corsair';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->vertebrate_conservation_score ) {
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->vertebrate_conservation_score;
-				if ( !exists $s_scores->{$m} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-				}
-				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-				$scores->{$transcript_id}->{$annot_sc} = $sc;
-			}
-			$m = 'spade';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->domain_score ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->domain_score;
-				if ( !exists $s_scores->{$m} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-				}
-				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-				$scores->{$transcript_id}->{$annot_sc} = $sc;						
-			}
-			$m = 'thump';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->transmembrane_helices_score ) {
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->transmembrane_helices_score;
-				if ( !exists $s_scores->{$m} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				elsif ( $sc > $s_scores->{$m}->{'max'} ) {
-					$s_scores->{$m}->{'max'} = $sc;
-				}
-				elsif ( $sc < $s_scores->{$m}->{'min'} ) {
-					$s_scores->{$m}->{'min'} = $sc;
-				}
-				push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-				$scores->{$transcript_id}->{$annot_sc} = $sc;					
-			}
-			# crash: signalp + targetp
-			$m = 'crash';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
-				my ($annot_sc_sp) = $METHOD_LABELS->{$m}->[1];
-				my ($annot_sc_tp) = $METHOD_LABELS->{$m}->[3];
-				my ($sc_sp) = $result->analysis->appris->peptide_score;
-				my ($sc_tp) = $result->analysis->appris->mitochondrial_score;
-				if ( $sc_sp ne '-' and $sc_tp ne '-' ) {
-					my ($sc) = $sc_sp.','.$sc_tp;					
+			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {
+				if ( $m eq 'firestar' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->functional_residues_score ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->functional_residues_score;
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
 					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-					$scores->{$transcript_id}->{$annot_sc_sp} = $sc_sp;
-					$scores->{$transcript_id}->{$annot_sc_tp} = $sc_tp;
+					$scores->{$transcript_id}->{$annot_sc} = $sc;
 				}
-			}
-			#$m = 'inertia';
-			#if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
-			#	my ($annot_sc) = $METHOD_LABELS->{$m}->[1];				
-			#	my ($analysis) = $result->analysis->inertia;
-			#	if ( defined $analysis->regions ) {
-			#		 my ($sc) = get_num_unusual_exons($analysis);
-			#		 push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
-			#		 $scores->{$transcript_id}->{$annot_sc} = $sc;
-			#	}
-			#}
-			# (WE DON'T USE PROTEO FOR APPRIS DECISION)
-			$m = 'proteo';
-			if ( $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_evidence_score ) {				
-				my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
-				my ($sc) = $result->analysis->appris->peptide_evidence_score;
-				if ( $sc ne '-' ) {
+				elsif ( $m eq 'matador3d' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->homologous_structure_score ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->homologous_structure_score;
 					if ( !exists $s_scores->{$m} ) {
 						$s_scores->{$m}->{'max'} = $sc;
 						$s_scores->{$m}->{'min'} = $sc;
@@ -429,6 +344,109 @@ sub get_method_scores_from_appris_rst($$)
 					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
 					$scores->{$transcript_id}->{$annot_sc} = $sc;					
 				}
+				elsif ( $m eq 'matador3d2' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->homologous_structure_score ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->homologous_structure_score;
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc} = $sc;					
+				}
+				elsif ( $m eq 'corsair' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->vertebrate_conservation_score ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->vertebrate_conservation_score;
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc} = $sc;
+				}
+				elsif ( $m eq 'spade' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->domain_score ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->domain_score;
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc} = $sc;						
+				}
+				elsif ( $m eq 'thump' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->transmembrane_helices_score ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->transmembrane_helices_score;
+					if ( !exists $s_scores->{$m} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+						$s_scores->{$m}->{'max'} = $sc;
+					}
+					elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+						$s_scores->{$m}->{'min'} = $sc;
+					}
+					push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+					$scores->{$transcript_id}->{$annot_sc} = $sc;					
+				}
+				elsif ( $m eq 'crash' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
+					my ($annot_sc_sp) = $METHOD_LABELS->{$m}->[1];
+					my ($annot_sc_tp) = $METHOD_LABELS->{$m}->[3];
+					my ($sc_sp) = $result->analysis->appris->peptide_score;
+					my ($sc_tp) = $result->analysis->appris->mitochondrial_score;
+					if ( $sc_sp ne '-' and $sc_tp ne '-' ) {
+						my ($sc) = $sc_sp.','.$sc_tp;					
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc_sp} = $sc_sp;
+						$scores->{$transcript_id}->{$annot_sc_tp} = $sc_tp;
+					}
+				}
+				elsif ( $m eq 'inertia' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_score and defined $result->analysis->appris->mitochondrial_score ) {
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];				
+					my ($analysis) = $result->analysis->inertia;
+					if ( defined $analysis->regions ) {
+						 my ($sc) = get_num_unusual_exons($analysis);
+						 push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						 $scores->{$transcript_id}->{$annot_sc} = $sc;
+					}
+				}
+				elsif ( $m eq 'proteo' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->peptide_evidence_score ) {				
+					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
+					my ($sc) = $result->analysis->appris->peptide_evidence_score;
+					if ( $sc ne '-' ) {
+						if ( !exists $s_scores->{$m} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						elsif ( $sc > $s_scores->{$m}->{'max'} ) {
+							$s_scores->{$m}->{'max'} = $sc;
+						}
+						elsif ( $sc < $s_scores->{$m}->{'min'} ) {
+							$s_scores->{$m}->{'min'} = $sc;
+						}
+						push(@{$s_scores->{$m}->{'scores'}->{$sc}}, $transcript_id);
+						$scores->{$transcript_id}->{$annot_sc} = $sc;					
+					}
+				}				
 			}
 		}
 	}
@@ -447,38 +465,37 @@ sub get_method_annots($$)
 	# get annotations for each method (or group of method) -------------------
 	foreach my $transcript (@{$gene->transcripts}) {	
 		my ($transcript_id) = $transcript->stable_id;
-		if ( $transcript->translate and $transcript->translate->sequence ) {
-			
-			my ($m) = 'firestar';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label) = $METHOD_LABELS->{$m}->[0];
-				get_firestar_annots($gene, $scores->{$m}, $annot_label, \$annots);
-			}
-			$m = 'matador3d';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label) = $METHOD_LABELS->{$m}->[0];
-				get_matador3d_annots($gene, $scores->{$m}, $annot_label, \$annots);
-			}
-			$m = 'spade';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label) = $METHOD_LABELS->{$m}->[0];
-				get_spade_annots($gene, $scores->{$m}, $annot_label, \$annots);
-			}
-			$m = 'corsair';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label) = $METHOD_LABELS->{$m}->[0];
-				get_corsair_annots($gene, $scores->{$m}, $annot_label, \$annots);
-			}
-			$m = 'thump';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label) = $METHOD_LABELS->{$m}->[0];
-				get_thump_annots($gene, $scores->{$m}, $annot_label, \$annots);
-			}
-			$m = 'crash';
-			if ( defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
-				my ($annot_label_sp) = $METHOD_LABELS->{$m}->[0];
-				my ($annot_label_tp) = $METHOD_LABELS->{$m}->[2];
-				get_crash_annots($gene, $scores->{$m}, $annot_label_sp, $annot_label_tp, \$annots);
+		if ( $transcript->translate and $transcript->translate->sequence ) {			
+			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {
+				if ( $m eq 'firestar' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_firestar_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'matador3d' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_matador3d_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'matador3d2' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_matador3d2_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'spade' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_spade_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'corsair' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_corsair_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'thump' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
+					get_thump_annots($gene, $scores->{$m}, $annot_label, \$annots);
+				}
+				elsif ( $m eq 'crash' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
+					my ($annot_label_sp) = $METHOD_LABELS->{$m}->[0];
+					my ($annot_label_tp) = $METHOD_LABELS->{$m}->[2];
+					get_crash_annots($gene, $scores->{$m}, $annot_label_sp, $annot_label_tp, \$annots);
+				}				
 			}
 		}
 	}
@@ -499,7 +516,7 @@ sub get_final_scores($$\$\$)
 		my ($transcript_id) = $transcript->stable_id;
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			my ($appris_score) = 0;
-			foreach my $method ( keys(%{$METHOD_WEIGHTED}) ) {
+			foreach my $method ( split(',', $main::APPRIS_METHODS) ) {
 				my ($n_sc) = 0;
 				my ($sc) = 0;
 				my ($max) = (exists $$ref_s_scores->{$method} and exists $$ref_s_scores->{$method}->{'max'})? $$ref_s_scores->{$method}->{'max'} : 0;
@@ -1490,6 +1507,53 @@ sub get_matador3d_annots($$$\$)
 	}
 		
 } # end get_matador3d_annots
+
+sub get_matador3d2_annots($$$\$)
+{
+	my ($gene, $scores, $annot_label, $ref_annots) = @_;
+	my ($annots);
+	my (@unknows);
+	my (@nos);
+	
+	# sort by descending order
+	my (@sorted_scores) = sort { $b <=> $a } keys (%{$scores->{'scores'}}); 
+	for ( my $i=0; $i < scalar(@sorted_scores); $i++ ) {
+		if ( $i == 0 ) { # biggest score
+			my ($sc) = $sorted_scores[$i];
+			foreach my $transc_id (@{$scores->{'scores'}->{$sc}}) {
+				push(@unknows,$transc_id);
+			}
+		}
+		else {
+			if ( $sorted_scores[0] - $sorted_scores[$i] <= $main::MATADOR3D2_CUTOFF ) {
+				my ($sc) = $sorted_scores[$i];
+				foreach my $transc_id (@{$scores->{'scores'}->{$sc}}) {
+					push(@unknows,$transc_id);
+				}
+			}
+			else {
+				my ($sc) = $sorted_scores[$i];
+				foreach my $transc_id (@{$scores->{'scores'}->{$sc}}) {
+					push(@nos,$transc_id);
+				}
+			}
+		}
+	}
+	if ( scalar(@unknows) == 1 ) {
+		foreach my $transc_id (@unknows) {
+			$$ref_annots->{$transc_id}->{$annot_label} = $OK_LABEL;
+		}
+	}
+	else {
+		foreach my $transc_id (@unknows) {
+			$$ref_annots->{$transc_id}->{$annot_label} = $UNKNOWN_LABEL;
+		}
+	}
+	foreach my $transc_id (@nos) {
+		$$ref_annots->{$transc_id}->{$annot_label} = $NO_LABEL;
+	}
+		
+} # end get_matador3d2_annots
 
 sub get_spade_annots($$$\$)
 {

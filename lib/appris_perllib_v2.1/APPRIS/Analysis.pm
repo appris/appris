@@ -81,7 +81,8 @@ sub new {
 	
 	my (
 		$number,
-		$firestar,	$matador3d,
+		$firestar,	
+		$matador3d, $matador3d2,
 		$spade,		$inertia,
 		$crash,		$thump,
 		$cexonic,	$corsair,
@@ -91,7 +92,8 @@ sub new {
 	)
 	= rearrange( [
 		'number',
-		'firestar',	'matador3d',
+		'firestar',	
+		'matador3d', 'matador3d2',
 		'spade',	'inertia',
 		'crash',	'thump',
 		'cexonic',	'corsair',
@@ -105,6 +107,7 @@ sub new {
 	else { $self->number(0); }
 	$self->firestar($firestar) if(defined $firestar);
 	$self->matador3d($matador3d) if(defined $matador3d);
+	$self->matador3d2($matador3d2) if(defined $matador3d2);
 	$self->spade($spade) if(defined $spade);
 	$self->inertia($inertia) if(defined $inertia);
 	$self->crash($crash) if(defined $crash);
@@ -171,6 +174,25 @@ sub matador3d {
 	my ($self) = shift;
 	$self->{'matador3d'} = shift if(@_);
 	return $self->{'matador3d'};
+}
+
+=head2 matador3d2
+
+  Arg [1]    : (optional) APPRIS::Analysis::Matador3D - the matador3d 
+               object to set
+  Example    : $analysis->matador3d2($method);
+  Description: Getter/setter for the matador3d object
+  Returntype : APPRIS::Analysis::Matador3D or undef
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub matador3d2 {
+	my ($self) = shift;
+	$self->{'matador3d2'} = shift if(@_);
+	return $self->{'matador3d2'};
 }
 
 =head2 spade

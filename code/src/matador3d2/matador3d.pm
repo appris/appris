@@ -3,7 +3,9 @@
 package matador3d;
 #ÊEND: CHANGE for APPRIS
 
-use warnings;
+#ÊBEGIN: CHANGE for APPRIS
+#use warnings;
+#ÊEND: CHANGE for APPRIS
 use strict;
 use File::Basename;
 use Getopt::Long;
@@ -101,14 +103,15 @@ sub run_hmmscan{
 			my $output_dom_file_sorted 	= "$ws_cache/seq.matador3d";
 			#ÊEND: CHANGE for APPRIS
 			
-			if(!-e "$output_dom_file_sorted"){				
-				
-				# Create input sequence file
-				#ÊBEGIN: CHANGE for APPRIS
+			# Create input sequence file
+			#ÊBEGIN: CHANGE for APPRIS
+#			if(!-e "$output_dom_file_sorted"){
 #				open(FH, ">", $sequence_file) || die "Error while opening file $sequence_file";
 #				my $sequence = $sequences->{$gene_id}{$transcript_id};
 #				print FH ">$transcript_id\n$sequence\n";
 #				close FH;
+			unless(-e $output_dom_file_sorted and (-s $output_dom_file_sorted > 0) and ($main::CACHE_FLAG eq 'yes')) # Cached Blast
+			{
 				if(!-e "$sequence_file"){
 					open(FH, ">", $sequence_file) || die "Error while opening file $sequence_file";
 					my $sequence = $sequences->{$gene_id}{$transcript_id};
@@ -117,7 +120,7 @@ sub run_hmmscan{
 				}
 				#ÊEND: CHANGE for APPRIS
 				
-				# Run hmmscan for this sequence against HMM database 
+				# Run hmmscan for this sequence against HMM database
 				`$hmmscan_bin -o $output_ali_file --notextw --domtblout $output_dom_file $database $sequence_file`;
 				`grep -v "^#" $output_dom_file | sort -grk14 > $output_dom_file_sorted`; # Remove superflous lines starting with # and sort by decreasing domain bitscore
 				# Un checkeo de todo ha funcionado no estaria demas, habria que desactivar -o /dev/null
