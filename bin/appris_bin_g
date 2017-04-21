@@ -110,8 +110,11 @@ if [ "${METHODS}" != "" ]; then
 	if [[ "${METHODS}" == *"f"* ]]; then
 		MET="${MET},firestar"
 	fi
-	if [[ "${METHODS}" == *"m"* ]]; then
+	if [[ "${METHODS}" == *"m1"* ]]; then
 		MET="${MET},matador3d"
+	fi
+	if [[ "${METHODS}" == *"m2"* ]]; then
+		MET="${MET},matador3d2"
 	fi
 	if [[ "${METHODS}" == *"s"* ]]; then
 		MET="${MET},spade"
