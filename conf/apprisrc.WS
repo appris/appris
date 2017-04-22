@@ -26,7 +26,7 @@ export APPRIS_WSERVER_CONF_SR_FILE="${APPRIS_WSERVER_CONF_DIR}/server.json"
 
 export APPRIS_WSERVER_CONF_ME_FILE="${APPRIS_WSERVER_CONF_DIR}/methods.json"
 
-export APPRIS_WSERVER_PIPELINE_STRUCTURE="firestar,matador3d,spade,corsair,thump,crash,appris"
+export APPRIS_WSERVER_PIPELINE_STRUCTURE="firestar,matador3d,matador3d2,spade,corsair,thump,crash,appris"
 
 export APPRIS_WSERVER_PIPELINE_STRUCTURE_SEQ="sequences,residues"
 
