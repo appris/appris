@@ -1250,7 +1250,7 @@ run_appris
 
 	--outpath={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/ws/cluster.ini
 	
 	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/log
 	
@@ -1271,7 +1271,7 @@ run_appris
 
 	--outpath={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH}/appris/scripts/conf/scripts/cluster.ini
 	
 	--logfile={ABSOLUTE_PATH}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/log
 	
