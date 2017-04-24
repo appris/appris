@@ -114,7 +114,7 @@ sub main()
 					my ($source) = $fields->{'source'};
 					my ($type) = $fields->{'type'};
 					my ($attribs) = $fields->{'attrs'};
-					next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) );			
+					#next unless ( ($source =~ /RefSeq/) or ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) );
 					if (exists $attribs->{'ID'} ) {
 						my ($gene_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'GeneID');
 						my ($accesion_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'Genbank');			
