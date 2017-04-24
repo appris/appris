@@ -623,6 +623,7 @@ sub _print_gene_disagree($$$)
 					'gene_name'."\t".
 					'transc_id'."\t".
 					'ccds_id'."\t".
+					'num_isof'."\t".
 					'firestar'."\t".
 					'matador3d'."\t".
 					'corsair'."\t".
@@ -657,6 +658,7 @@ sub _print_gene_disagree($$$)
 			my ($ccds_disagree_cont) = join("\t", @{$cont});
 			
 			#foreach my $transc_id (keys %{$gene_report->{'transcripts'}}) {
+			my ($num_trans) = scalar( keys(%{$gene_report->{'transcripts'}}) );
 			while (my ($transc_id,$transc_report) = each(%{$gene_report->{'transcripts'}}) ) {
 				if (
 					exists $report->{'firestar'}->{$gene_id}->{$transc_id} or
@@ -674,6 +676,7 @@ sub _print_gene_disagree($$$)
 									$gene_name."\t".
 									$transc_id."\t".
 									$ccds_id."\t".
+									$num_trans."\t".
 									$ccds_disagree_cont."\n";					
 				}
 			}			
