@@ -87,7 +87,7 @@ sub main()
 		$_extract_dbXref = sub {
 			my ($data,$patt) = @_;
 			my ($match);
-			if ( $data =~ /$patt\:([^\,]*)/ ) {
+			if ( defined $data and $data =~ /$patt\:([^\,]*)/ ) {
 				$match = $1;
 			}
 			return $match;
