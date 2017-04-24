@@ -3680,8 +3680,6 @@ sub _parse_indata_refseq($)
 	my ($cache_transcId);
 	return $data unless (-e $file and (-s $file > 0) );
 	
-	#my ($molecule) = ',transcript,primary_transcript,mRNA,ncRNA,rRNA,tRNA,V_gene_segment,cDNA_match,C_gene_segment,D_gene_segment,D_loop,J_gene_segment,long_terminal_repeat,match,';
-	
 	my $_extract_dbXref = sub {
 		my ($data,$patt) = @_;
 		my ($match);
@@ -3763,12 +3761,17 @@ sub _parse_indata_refseq($)
 									
 					$cds->{'cds_id'} = $ID;
 					
-					if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) {
-						my ($transc_id) = $cache_transcId->{$Parent};
-						$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
-						$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
+					if ( (exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent}) or ($accesion_id =~ /^YP\_/ ) ) {
+						my ($transc_id);
+						if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) { $transc_id = $cache_transcId->{$Parent} }
+						elsif ($accesion_id =~ /^YP\_/ ) { $transc_id = $accesion_id }
 						
-						push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);				
+						if ( defined $transc_id ) {
+							my ($transc_id) = $cache_transcId->{$Parent};
+							$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
+							$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
+							push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);
+						}
 					}				
 				}
 				elsif ( defined $accesion_id ) # Any type of molecule: mRNA, transcript, ncRNA, etc.
