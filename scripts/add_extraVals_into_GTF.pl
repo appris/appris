@@ -131,7 +131,8 @@ sub main()
 									unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
 										if ( exists $extra_genedata->{$ens_gene_id} and
 											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'}
+											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} and 
+											 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} ne ""
 										) {
 											my ($ccds_id) = $extra_genedata->{$gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
 											$new_values .= "; ccds_id \"$ccds_id\"";
@@ -140,7 +141,8 @@ sub main()
 									# add RT
 									if ( exists $extra_genedata->{$ens_gene_id} and
 										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'}
+										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} and 
+										 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ne ""
 									) {
 										my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
 										if ( $extra_tags =~ /readthrough_transcript/ ) {
@@ -150,7 +152,8 @@ sub main()
 									# add TSL
 									if ( exists $extra_genedata->{$ens_gene_id} and
 										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'}
+										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} and 
+										 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ne ""
 									) {
 										my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
 										if ( $extra_val ne '' ) {
