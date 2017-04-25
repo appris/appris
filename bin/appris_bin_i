@@ -18,7 +18,8 @@ Optional arguments:\n
 \n
 \t -m {Methods which will execute. By default, all}\n
 \t\t f -> firestar\n
-\t\t m -> matador3d\n
+\t\t m1 -> matador3d\n
+\t\t m2 -> matador3d2\n
 \t\t s -> spade\n
 \t\t c -> corsair\n
 \t\t t -> thump\n
