@@ -718,15 +718,14 @@ sub consensus_seq(\$)
 		return $out;
 	};
 	
-	# extract the best THM seqs and the transcripts that have the THM's
-	my ($thm_big);
+	# extract the whole THM with the best (longest) thm's sequences
+	my ($thm_all);
 	my (@ids) = keys(%{$$ref_report});
 	my (@ids2) = keys(%{$$ref_report});
 	for ( my $i=0; $i < scalar(@ids); $i++) {
 		my ($id)   = $ids[$i];
 		my ($rep)  = $$ref_report->{$id};
 		if ( defined $rep->{'consen_seq'} ) {
-			my ($thms) = $rep->{'consen_seq'};
 			for ( my $j=0; $j < scalar(@ids2); $j++) {
 				if ( $i != $j ) {
 					my ($id2)   = $ids2[$j];
@@ -736,46 +735,40 @@ sub consensus_seq(\$)
 						my (@thms2) = map { $_->{'thm'} } @{$rep2->{'consen_seq'}};
 		 				foreach my $thm (@thms) {
 							my ($thm_b) = map { $_ } grep { /.+$thm|$thm.+/ } @thms2;
-							if ( defined $thm_b ) { $thm_big->{$thm}->{$thm_b} = 1 }
+							if ( defined $thm_b ) { $thm_all->{$thm}->{$thm_b} = 1 }
+							else { $thm_all->{$thm}->{$thm} = 1 }
 						}
 					}
 				}
 			}			
 		}
 	}
-		
+
 	# extract the THM seqs
+	my ($thm_control);
 	while ( my ($id, $rep) = each(%{$$ref_report}) ) {
 		my ($seq) = $rep->{'seq'};		
-		if ( defined $rep->{'consen_seq'} ) {
-			foreach my $thm_rep (@{$rep->{'consen_seq'}} ) {
-				my ($thm) = $thm_rep->{'thm'};
-				my ($s) = -1;
-				if ( exists $thm_big->{$thm} ) {
-					foreach my $thm_b ( sort { length($a) <=> length($b) } keys(%{$thm_big->{$thm}}) ) {
-						$s = $has_substr->($seq, $thm_b);
-						if ( $s != -1 ) {
-							$thm = $thm_b;
-							last;
-						}
-					}					
-				} else {
-					$s = $has_substr->($seq, $thm);					
-				}
+		foreach my $thm ( keys(%{$thm_all}) ) {
+			my ($s) = -1;
+			foreach my $thm_b ( sort { length($a) <=> length($b) } keys(%{$thm_all->{$thm}}) ) {
+				$s = $has_substr->($seq, $thm_b);
 				if ( $s != -1 ) {
-					my ($start) = $s + 1;
-					my ($end) = $start + length($thm) - 1;
-					push(@{$$ref_report->{$id}->{'thms'}}, {
-						'seq'   => $thm,
-						'start' => $start,
-						'end'   => $end 
-					});
+					$thm = $thm_b;
+					last;
 				}
 			}
-			
+			if ( $s != -1 and !(exists $thm_control->{$id}->{$thm}) ) {
+				my ($start) = $s + 1;
+				my ($end) = $start + length($thm) - 1;
+				push(@{$$ref_report->{$id}->{'thms'}}, {
+					'seq'   => $thm,
+					'start' => $start,
+					'end'   => $end
+				});
+				$thm_control->{$id}->{$thm} = 1;
+			}
 		}
 	}
-
 }
 
 # label the helix
