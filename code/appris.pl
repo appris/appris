@@ -931,7 +931,7 @@ perl appris.pl
 
 	--outpath={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/ws/cluster.ini
 	
 	--logfile={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX/log
 	
@@ -952,7 +952,7 @@ perl appris.pl
 	
 	--outpath={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX
 	
-	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/cluster.ini.wserver
+	--cluster-conf={ABSOLUTE_PATH_WITH_ID}/appris/scripts/conf/ws/cluster.ini
 	
 	--logfile={ABSOLUTE_PATH_WITH_ID}/WSERVER_ENSG00000160404_XXXX/ENSG00000160404.13/log
 	
