@@ -3764,7 +3764,7 @@ sub _parse_indata_refseq($)
 					if ( (exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent}) or ($accesion_id =~ /^YP\_/ ) ) {
 						my ($transc_id);
 						if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) { $transc_id = $cache_transcId->{$Parent} }
-						elsif ($accesion_id =~ /^YP\_/ ) { $transc_id = $accesion_id }
+						elsif ($accesion_id =~ /^YP\_/ ) { $transc_id = $accesion_id; }
 						
 						if ( defined $transc_id ) {
 							my ($transc_id) = $cache_transcId->{$Parent};

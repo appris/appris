@@ -382,11 +382,14 @@ sub create_appris_input($$)
 			# get translation seq/cds/cds_seq/codons
 			if ( $transcript->translate ) {
 				my ($translate) = $transcript->translate;
+				my ($translate_id) = $transcript_eid;
 				if ( $translate->sequence ) {
 					my ($seq) = $translate->sequence;
 					my ($len) = length($translate->sequence);
-					my ($translate_id) = $transcript_eid;
-					$translate_id = $translate->protein_id if ( defined $translate->protein_id );
+					if ( defined $translate->protein_id ) {
+						$translate_id = $translate->protein_id;
+						unless ( defined $transcript_eid and $transcript_eid ne "" ) { $transcript_eid = $translate_id }
+					}
 					$transl_cont .= ">$translate_id|$transcript_eid|$gene_id|$gene_name|$ccds_id|$len\n";
 					$transl_cont .= $seq."\n";					
 				}
@@ -424,7 +427,7 @@ sub create_appris_input($$)
 											'.'."\t".
 											$cds_strand."\t".
 											$cds_phase."\t".
-											"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; cds_id \"$exon_id\";\n";
+											"gene_id \"$gene_id\"; transcript_id \"$transcript_id\"; protein_id \"$translate_id\"; cds_id \"$exon_id\";\n";
 						}						
 						if (defined $pro_cds_start and defined $pro_cds_end) {
 							$pdata_cont .=	'SEQ'."\t".
