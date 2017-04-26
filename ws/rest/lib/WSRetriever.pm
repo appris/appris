@@ -60,6 +60,7 @@ use APPRIS::Exporter;
 use APPRIS::Parser qw(
 	parse_firestar_rst
 	parse_matador3d_rst
+	parse_matador3d2_rst
 	parse_spade_rst
 	parse_corsair_rst
 	parse_thump_rst
@@ -119,6 +120,7 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 			methods			=>  undef,
 			firestar		=>  undef,
 			matador3d		=>  undef,
+			matador3d2		=>  undef,
 			spade			=>  undef,
 			corsair			=>  undef,
 			thump			=>  undef,
@@ -222,6 +224,11 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 		my ($self, $arg) = @_;
 		$self->{'matador3d'} = $arg if defined $arg;
 		return $self->{'matador3d'};
+	}
+	sub matador3d2 {
+		my ($self, $arg) = @_;
+		$self->{'matador3d2'} = $arg if defined $arg;
+		return $self->{'matador3d2'};
 	}
 	sub spade {
 		my ($self, $arg) = @_;
@@ -447,6 +454,12 @@ sub load_control {
 				$self->matador3d(getStringFromFile($metfile));
 			}
 		}
+		if ( $method eq 'matador3d2' ) {
+			my ($metfile) = grep(/$method$/, keys %outfiles);
+			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
+				$self->matador3d2(getStringFromFile($metfile));
+			}
+		}
 		if ( $method eq 'corsair' ) {
 			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
@@ -598,6 +611,7 @@ sub get_reports
 										$self->transl,
 										$self->firestar,
 										$self->matador3d,
+										$self->matador3d2,
 										$self->spade,
 										$self->corsair,
 										$self->crash,
@@ -669,6 +683,13 @@ sub get_results
 		my ($cutoff_ids) = $grep_ids->($cutoff, $ids);
 		if ( defined $cutoff_ids ) {
 			$analyses->{'matador3d'} = $cutoff_ids;			
+		}
+	}
+	if ( $self->matador3d2 ) {
+		my ($cutoff) = APPRIS::Parser::parse_matador3d2_rst($self->matador3d2);
+		my ($cutoff_ids) = $grep_ids->($cutoff, $ids);
+		if ( defined $cutoff_ids ) {
+			$analyses->{'matador3d2'} = $cutoff_ids;
 		}
 	}
 	if ( $self->corsair ) {
@@ -1190,19 +1211,12 @@ sub parse_logfile
 				}
 				elsif ( $l_rep->{'status'} eq "error" ) {
 					# Hard-Core with MATADOR3D!!!!!
-					if ( $m eq 'matador3d' ){
+					if ( $m eq 'matador3d' or $m eq 'matador3d2' ){
 						$log .= "'". $m_label . "'" . " was acquired\n"
 					}
 					else {
 						$log .= "'". $m_label . "'" . " was acquired with errors\n"
 					}					
-					# Hard-Core with MATADOR3D!!!!!
-					#if ( $l_rep->{'method'} eq 'matador3d' ){
-					#	$log .= $l_rep->{'method'}." finished\n";
-					#}
-					#else {
-					#	$log .= $l_rep->{'method'}." finished with errors\n";	
-					#}					
 					$failed = 1;
 					$run_mets += 0.7;
 				}
@@ -1350,7 +1364,7 @@ sub get_seq_features {
 				    				$seq_panel->{$seq_id}->[$idx]->{'span'} = "<span class='seq-browser-label $m'><span class='glyphicon glyphicon-check'></span></span>";
 				    			}				    			
 				    		}
-				    		elsif ( $met eq $METHOD_DESC->{'matador3d'} ) {
+				    		elsif ( $met eq $METHOD_DESC->{'matador3d'} or $met eq $METHOD_DESC->{'matador3d2'} ) {
 				    			my ($idx) = 1;
 				    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
 				    			$r_clas .= " $m ";
@@ -1533,7 +1547,7 @@ sub get_aln_features {
 					    				$seq_panel->{$seq_id}->[$idx]->{'span'} = "<span class='seq-browser-label $m'><span class='glyphicon glyphicon-check'></span></span>";
 					    			}
 					    		}
-					    		elsif ( $met eq $METHOD_DESC->{'matador3d'} ) {
+					    		elsif ( $met eq $METHOD_DESC->{'matador3d'} or $met eq $METHOD_DESC->{'matador3d2'} ) {
 					    			my ($idx) = 1;
 					    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
 					    			$r_clas .= " $m ";
@@ -1941,6 +1955,10 @@ $SEQ_PANEL = [{
 	'span'		=> undef,
 },{
 	'matador3d'	=> undef,
+	'class'		=> "m",
+	'span'		=> undef,
+},{
+	'matador3d2'=> undef,
 	'class'		=> "m",
 	'span'		=> undef,
 },{
