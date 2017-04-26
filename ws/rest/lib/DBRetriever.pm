@@ -256,9 +256,9 @@ sub load_registry {
 						if ( lc($cfg_dataset->{'id'}) =~ /^$dataset/ ) { $found_ds = 1 }				
 					} else { $found_ds = 1 }
 
-					if ( $found_sc == 1 and $found_ds == 1 and exists $cfg_dataset->{'database'} ) {
+					if ( $found_sc == 1 and $found_ds == 1 and exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
 						my ($db_host, $db_user, $db_pass, $db_port) = (undef, undef, undef, undef);
-						my ($db_name) = $cfg_dataset->{'database'}.'_'.$cfg_dataset->{'id'};
+						my ($db_name) = $cfg_dataset->{'database'}->{'name'}.'_'.$cfg_dataset->{'id'};
 						my ($registry) = APPRIS::Registry->new();
 						if ( exists $cfg_dataset->{'type'} and lc($cfg_dataset->{'type'}) eq 'archive' ) {
 							$db_host  = $db_cfg->val('APPRIS_ARCHIVES', 'host');
