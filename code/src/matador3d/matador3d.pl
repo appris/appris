@@ -22,6 +22,7 @@ use vars qw(
 	$CACHE_FLAG
 	$RUN_PROGRAM
 	$PROG_DB
+	$PROG_DB_DIR
 	$PROG_EVALUE
 	$APPRIS_CUTOFF
 	$MIN_LENGTH_CDS
@@ -65,7 +66,8 @@ $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $CACHE_FLAG			= $cfg->val('MATADOR3D_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val('MATADOR3D_VARS', 'program');
-$PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D_VARS', 'db');
+$PROG_DB			= $cfg->val('MATADOR3D_VARS', 'db');
+$PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('MATADOR3D_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('MATADOR3D_VARS', 'cutoff');
 $MIN_LENGTH_CDS		= 6;
@@ -225,8 +227,8 @@ sub _run_blastpgp($$)
 		eval
 		{
 			# parameters to run blaspgp
-			$logger->debug("$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file\n");                   
-			system("$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file");			
+			$logger->debug("$RUN_PROGRAM -d $PROG_DB_DIR -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file\n");                   
+			system("$RUN_PROGRAM -d $PROG_DB_DIR -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file");			
 		};
 		$logger->error("Running blast\n") if($@);
 	}
