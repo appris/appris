@@ -17,14 +17,9 @@ then
 fi
 
 
-
-for Q in $(ps aux | grep appristools | awk '{print $2}'); do kill -9 $Q; done
-
-for Q in $(ps aux | grep 'bin/appris_' | grep bash | awk '{print $2}'); do kill -9 $Q; done
-
-for Q in $(ps aux | grep 'scripts/run_appris' | awk '{print $2}'); do kill -9 $Q; done
-
-for Q in $(ps aux | grep 'scripts/insert_appris' | awk '{print $2}'); do kill -9 $Q; done
-
+for Q in $(ps aux | grep appristools | awk '{print $2}'); do kill -9 $Q; done &&
+for Q in $(ps aux | grep 'bin/appris_' | grep bash | awk '{print $2}'); do kill -9 $Q; done &&
+for Q in $(ps aux | grep 'scripts/run_appris' | awk '{print $2}'); do kill -9 $Q; done &&
+for Q in $(ps aux | grep 'scripts/insert_appris' | awk '{print $2}'); do kill -9 $Q; done &&
 for Q in $(ps aux | grep 'scripts/retrieve_' | awk '{print $2}'); do kill -9 $Q; done
 
