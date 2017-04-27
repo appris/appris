@@ -522,11 +522,14 @@ sub get_final_scores($$\$\$)
 				my ($max) = (exists $$ref_s_scores->{$method} and exists $$ref_s_scores->{$method}->{'max'})? $$ref_s_scores->{$method}->{'max'} : 0;
 				my ($min) = (exists $$ref_s_scores->{$method} and exists $$ref_s_scores->{$method}->{'min'})? $$ref_s_scores->{$method}->{'min'} : 0;
 				my ($label) = $METHOD_LABELS->{$method}->[1];
+				my ($alabel) = $METHOD_LABELS->{$method}->[0];
+				my ($appris_label) = $annots->{$transcript_id}->{$alabel};
 				
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } #$n_sc = ($sc - $min)/($max - $min)
+					if ( $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
+					if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
 					else { $n_sc = 0 }
 				}
 				if ( $n_sc < 0 ) { $n_sc = 0 }
@@ -534,37 +537,58 @@ sub get_final_scores($$\$\$)
 				$nscores->{$transcript_id}->{$method} = $n_sc;
 				
 				# apply weights to normalize scores
+#				if ( $method eq 'firestar' ) {
+#					if ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[4]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
+#					}
+#				}
+#				elsif ( $method eq 'corsair' ) {
+#					if ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
+#					}
+#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
+#						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
+#					}
+#				}
+#				else {
+#					$appris_score += $METHOD_WEIGHTED->{$method}*$n_sc;
+#				}
+				my ($weight) = 0;
 				if ( $method eq 'firestar' ) {
-					if ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[4]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
-					}
+					if    ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[4]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[3]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[2]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[1]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[0]->{'weight'} }
 				}
 				elsif ( $method eq 'corsair' ) {
-					if ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
-					}
-					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
-						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
-					}
+					if    ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[2]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[1]->{'weight'} }
+					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[0]->{'weight'} }
 				}
 				else {
-					$appris_score += $METHOD_WEIGHTED->{$method}*$n_sc;
+					$weight = $METHOD_WEIGHTED->{$method};
 				}
+				$appris_score += $weight*$n_sc;
+				# discard transcripts when the transcripts does not pass the filters for each method (with weight)
+#				if ( ($appris_label eq $NO_LABEL) and ( (ref($METHOD_WEIGHTED->{$method}) eq 'ARRAY') or ($METHOD_WEIGHTED->{$method} > 0) ) ) {
+#					$appris_score = -1;
+#				}
 			}
 			
 			# filter by biotype

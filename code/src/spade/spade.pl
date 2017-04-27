@@ -20,6 +20,7 @@ use vars qw(
 	$WSPACE_CACHE
 	$CACHE_FLAG
 	$RUN_PROGRAM
+	$PROG_DB
 	$PROG_DB_DIR
 	$PROG_EVALUE
 	$APPRIS_CUTOFF
@@ -61,7 +62,8 @@ $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $CACHE_FLAG			= $cfg->val('SPADE_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val('SPADE_VARS', 'program');
-$PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR};
+$PROG_DB			= $cfg->val('SPADE_VARS', 'db');
+$PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('SPADE_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('SPADE_VARS', 'cutoff');
 
@@ -405,6 +407,7 @@ sub _run_pfamscan($$)
 
 	# Run pfamscan
 	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
+	#my ($pfamscan_sequence_file) = $ws_cache.'/seq.'.$PROG_DB;
 	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Cached pfamscan
 	{
 		eval {

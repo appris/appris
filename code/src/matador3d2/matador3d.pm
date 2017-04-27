@@ -98,7 +98,8 @@ sub run_hmmscan{
 			
 			# var files
 			my $sequence_file 			= "$ws_cache/seq.faa";
-			my $output_ali_file 		= "$ws_cache/seq.pdb70.hmm";
+			#my $output_ali_file 		= "$ws_cache/seq.pdb70.hmm";
+			my $output_ali_file 		= "$ws_cache/seq.".$database;
 			my $output_dom_file 		= "$ws_cache/seq.matador3d.domtblout";
 			my $output_dom_file_sorted 	= "$ws_cache/seq.matador3d";
 			#ÊEND: CHANGE for APPRIS
@@ -110,7 +111,7 @@ sub run_hmmscan{
 #				my $sequence = $sequences->{$gene_id}{$transcript_id};
 #				print FH ">$transcript_id\n$sequence\n";
 #				close FH;
-			unless(-e $output_dom_file_sorted and (-s $output_dom_file_sorted > 0) and ($main::CACHE_FLAG eq 'yes')) # Cached Blast
+			unless(-e $output_ali_file and (-s $output_ali_file > 0) and -e $output_dom_file_sorted and (-s $output_dom_file_sorted > 0) and ($main::CACHE_FLAG eq 'yes')) # Cached Blast
 			{
 				if(!-e "$sequence_file"){
 					open(FH, ">", $sequence_file) || die "Error while opening file $sequence_file";

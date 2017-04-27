@@ -219,7 +219,7 @@ sub _run_blastpgp($$)
 	}
 	
 	# Run blast
-	my ($blast_sequence_file) = $ws_cache.'/seq.pdb';               
+	my ($blast_sequence_file) = $ws_cache.'/seq.'.$PROG_DB;
 	unless(-e $blast_sequence_file and (-s $blast_sequence_file >0) and ($CACHE_FLAG eq 'yes')) # Cached Blast
 	{
 		eval
