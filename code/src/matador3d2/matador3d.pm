@@ -99,7 +99,7 @@ sub run_hmmscan{
 			# var files
 			my $sequence_file 			= "$ws_cache/seq.faa";
 			#my $output_ali_file 		= "$ws_cache/seq.pdb70.hmm";
-			my $output_ali_file 		= "$ws_cache/seq.".$database;
+			my $output_ali_file 		= "$ws_cache/seq.".$main::PROG_DB;
 			my $output_dom_file 		= "$ws_cache/seq.matador3d.domtblout";
 			my $output_dom_file_sorted 	= "$ws_cache/seq.matador3d";
 			#ÊEND: CHANGE for APPRIS

@@ -24,6 +24,7 @@ use vars qw(
 	$WSPACE_CACHE
 	$RUN_PROGRAM
 	$PROG_DB
+	$PROG_DB_DIR
 );
        
 # Input parameters
@@ -61,7 +62,8 @@ $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 our $CACHE_FLAG		= $cfg->val('MATADOR3D2_VARS', 'cache');
 $RUN_PROGRAM		= $ENV{APPRIS_PRG_OPT_HMMER_31b2_BIN_DIR}.'/'.$cfg->val('MATADOR3D2_VARS', 'program');
-$PROG_DB			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('MATADOR3D2_VARS', 'db');
+our $PROG_DB		= $cfg->val('MATADOR3D2_VARS', 'db');
+$PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 
 
 # Get log filehandle and print heading and parameters to logfile
@@ -92,7 +94,7 @@ sub main()
 
 	# Run each hmmscan for each sequence and store results in temporary directory
 	$logger->info("-- run hmmscan\n");
-	matador3d::run_hmmscan($RUN_PROGRAM, $sequences, $WSPACE_CACHE, $PROG_DB);
+	matador3d::run_hmmscan($RUN_PROGRAM, $sequences, $WSPACE_CACHE, $PROG_DB_DIR);
 	
 	# Score isoforms
 	$logger->info("-- score isoforms\n");
