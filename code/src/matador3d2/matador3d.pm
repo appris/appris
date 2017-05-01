@@ -100,8 +100,8 @@ sub run_hmmscan{
 			my $sequence_file 			= "$ws_cache/seq.faa";
 			#my $output_ali_file 		= "$ws_cache/seq.pdb70.hmm";
 			my $output_ali_file 		= "$ws_cache/seq.".$main::PROG_DB;
-			my $output_dom_file 		= "$ws_cache/seq.matador3d.domtblout";
-			my $output_dom_file_sorted 	= "$ws_cache/seq.matador3d";
+			my $output_dom_file 		= "$ws_cache/seq.matador3d2.domtblout";
+			my $output_dom_file_sorted 	= "$ws_cache/seq.matador3d2";
 			#ÊEND: CHANGE for APPRIS
 			
 			# Create input sequence file
@@ -201,7 +201,7 @@ sub load_data{
 		my ($seq_idx) = $cache->idx;
 		my ($seq_dir) = $cache->dir;
 						
-		my $hmmscan_file = "$seq_dir/seq.matador3d";		
+		my $hmmscan_file = "$seq_dir/seq.matador3d2";
 		#ÊEND: CHANGE for APPRIS
 		
 		if(! -e $hmmscan_file){
