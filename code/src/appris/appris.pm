@@ -1502,7 +1502,7 @@ sub get_matador3d_annots($$$\$)
 			}
 		}
 		else {
-			if ( $sorted_scores[0] - $sorted_scores[$i] <= $main::MATADOR3D_CUTOFF ) {
+			if ( $sorted_scores[0] - $sorted_scores[$i] < $main::MATADOR3D_CUTOFF ) {
 				my ($sc) = $sorted_scores[$i];
 				foreach my $transc_id (@{$scores->{'scores'}->{$sc}}) {
 					push(@unknows,$transc_id);
