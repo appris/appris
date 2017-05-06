@@ -31,7 +31,7 @@
         "source": "refseq"
     },
     {
-        "gene": "Q8NCW6",
+        "gene": "GALNT11",
         "species_id": "homo_sapiens",
         "assembly": "hg38",
         "source": "uniprot"
