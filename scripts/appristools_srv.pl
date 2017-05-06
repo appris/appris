@@ -229,9 +229,9 @@ sub upload_annotfiles()
 		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
-				if ( exists $cfg_dataset->{'database'} ) {
+				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
 					my ($ds_id) = $cfg_dataset->{'id'};
-					my ($ds_db) = $cfg_dataset->{'database'}.'_'.$ds_id;					
+					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
 					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
 					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
 					my ($srv_db_file) = $srv_reldat_dir.'/appris_db.dump.gz';
