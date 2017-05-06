@@ -37,12 +37,12 @@
                         "envfile": "apprisrc.Hsap.ensembl"
                     }
                 },{
-                    "id":   "rs108v22",
+                    "id":   "rs107v22",
                     "type": "current",
                     "source": {
                         "name": "refseq",
-                        "label": "RefSeq108",
-                        "version": "108"
+                        "label": "RefSeq107",
+                        "version": "107"
                     },
                     "database":   {
                         "name":    "appris_homo_sapiens",
@@ -133,30 +133,6 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.ensembl"
-                    }
-                },{
-                    "id":   "rs107v22",
-                    "type": "archive",
-                    "source": {
-                        "name": "refseq",
-                        "label": "RefSeq107",
-                        "version": "107"
-                    },
-                    "database":   {
-                        "name":    "appris_homo_sapiens",
-                        "inifile": "apprisdb.ini"
-                    },
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    },
-                    "pipeline": {
-                        "envfile": "apprisrc.Hsap.refseq"
                     }
                 },{
                     "id":   "up201606v22",

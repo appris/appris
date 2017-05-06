@@ -7,12 +7,15 @@ CODE-RELEASE:     4.7.2.16
 
 ### Highlights
 
+
 TODO!!
 - Creation of APPRIS gene-set (version a1) for all vertebrate species located: human, mouse, zebra-fish, rat, pig, chimp. 
 The APPRIS gene-set has been developed from the join of the gene sets of Ensembl and RefSeq, and enrich with the isoforms of UniProt.
 
 TODO!!
 - New APPRIS annotations using the gene dataset of RefSeq for the following species:
+	Human 		(version 108)
+	
 	Mouse 		(version 106)
 	Zebra-fish	(version 105)
 	Rat 		(version 106)
@@ -21,11 +24,12 @@ TODO!!
 	
 TODO!!
 - New APPRIS annotations using the gene names annotated in UniProt for the following species:
+	Human 		(version 2017_03)
 	Pig			(version 2017_02)
 	Chimp		(version 2017_02)
 	
 TODO!!!
-New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
+New releases for RefSeq in HUMAN (rs108)
 
 ### Server (4.7)
 
@@ -55,7 +59,6 @@ CODE-RELEASE:     4.6.2.15
 + New release of APPRIS for Ensembl (e88) -all local species-.
 
 + New APPRIS annotations using the gene dataset of RefSeq for the following species:
-	Human 		(version 108)
 	Mouse 		(version 106)
 	Zebra-fish	(version 105)
 	Rat 		(version 106)
@@ -63,6 +66,7 @@ CODE-RELEASE:     4.6.2.15
 	Chimp		(version 104)
 	
 + New APPRIS annotations using the gene names annotated in UniProt for the following species:
+	Human 		(version 2017_03)
 	Pig			(version 2017_02)
 	Chimp		(version 2017_02)
 

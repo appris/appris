@@ -78,6 +78,7 @@ $FTP_REFSEQ_PUB			= 'ftp://ftp.ncbi.nlm.nih.gov';
 my ($config_json) = JSON->new();
 my ($CONFIG) = $config_json->decode( getStringFromFile($conf_file) );
 my (@CFG_SPECIES) = sort { $CONFIG->{'species'}->{$a}->{'order'} <=> $CONFIG->{'species'}->{$b}->{'order'} } keys(%{$CONFIG->{'species'}});
+my ($CONFIG_VERSION) = $CONFIG->{'version'};
 
 
 #################
@@ -165,7 +166,7 @@ sub upload_annotfiles()
 				if ( exists $cfg_dataset->{'database'} ) {
 					my ($as_name) = $cfg_assembly->{'name'};
 					my ($ds_id) = $cfg_dataset->{'id'};
-					my ($ds_dir) = $APPRIS_DATA_DIR.'/'.$species_id.'/'.$ds_id;
+					my ($ds_dir) = $APPRIS_DATA_DIR.'/'.$CONFIG_VERSION.'/'.$species_id.'/'.$ds_id;
 					my ($relspe_dir) = $loc_reldir.'/datafiles/'.$species_id;
 					my ($reldat_dir) = $relspe_dir.'/'.$ds_id;
 					
