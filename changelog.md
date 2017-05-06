@@ -8,7 +8,7 @@ CODE-RELEASE:     4.7.2.16
 ### Highlights
 
 TODO!!
-- Creation of APPRIS gene-set (version a1) for all vertebrate species localed: human, mouse, zebra-fish, rat, pig, chimp. 
+- Creation of APPRIS gene-set (version a1) for all vertebrate species located: human, mouse, zebra-fish, rat, pig, chimp. 
 The APPRIS gene-set has been developed from the join of the gene sets of Ensembl and RefSeq, and enrich with the isoforms of UniProt.
 
 TODO!!
@@ -34,29 +34,19 @@ New releases for RefSeq in HUMAN (rs108) and UniProt (2017_04)
 
 ### Code (2.16)
 
-- Now, the pipeline is executed from the config.json file
-
 TODO!!!
-* Matador3D
-Update of Matador3D database
 
-OR
 * Matador3D2
 - New DB!!
 - Include the 2 methods of Matador3D and appris has to choose
  
-TODO!!!
-* APPRIS!!!
-Ten ahora en cuenta la discriminacion de cada metodo para descartar los transcritos
-Despues los que quedan, toma la decision de forma global con el valor normalizado de cada transctito.
-
 
 
 
 ___
-## 2017_04.v22
+## 2017_05.v22
 ```
-SERVER-RELEASE:   2017_04.v22
+SERVER-RELEASE:   2017_05.v22
 CODE-RELEASE:     4.6.2.15
 ```
 
@@ -78,9 +68,22 @@ CODE-RELEASE:     4.6.2.15
 
 ### Code (2.15)
 
+* The pipeline is running based on the config.json file, from now.
+
+* New cache files based on date.
+
+* Matador3D:
+	- Update of PDB database
+
 * THUMP
 	- Bug Fix on consensus section. Eg, PDE3B, ENSMUSG00000098306.
 
+* APPRIS
+	- Includes both Matador3D and Matador3D2 methods. Then, appris chooses from the 'pipeline.ini' file.
+	- New algorithm. Take into account the transcripts that have passed the filters of methods previously.
+	- Decrease the weight of Matador3D. 
+
+	
 
 ___
 ## 2017_04.v21
