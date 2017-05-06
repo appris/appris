@@ -1,5 +1,5 @@
 {
-    "version": "2017_04.v22",
+    "version": "2017_05.v22",
     "species": {
         "homo_sapiens": {
             "order":        1,
@@ -83,30 +83,6 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.uniprot"
-                    }
-                },{
-                    "id":   "a1v22",
-                    "type": "current",
-                    "source": {
-                        "name": "appris",
-                        "label": "Ensembl_84+RefSeq_107+UniProt_201606",
-                        "version": "1"
-                    },
-                    "database":   {
-                        "name":    "appris_homo_sapiens",
-                        "inifile": "apprisdb.ini"
-                    },
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    },
-                    "pipeline": {
-                        "envfile": "apprisrc.Hsap.appris"
                     }
                 },{
                     "id":   "e84v22",
@@ -259,31 +235,6 @@
                     "pipeline": {
                         "envfile": "apprisrc.Hsap.rs105"
                     }
-                },{
-                    "id":   "g12v22",
-                    "type": "current",
-                    "source": {
-                        "name": "ensembl",
-                        "label": "Gencode12/Ensembl67",
-                        "version": "67"
-                    },
-                    "database":   {
-                        "name":    "appris_homo_sapiens",
-                        "inifile": "apprisdb.ini"
-                    },
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"],
-                        "peptides":                 ["GTF","BED"]
-                    },
-                    "pipeline": {
-                        "envfile": "apprisrc.Hsap.g12"
-                    }                    
                 }]
             }]
         },
@@ -368,30 +319,6 @@
                     },
                     "pipeline": {
                         "envfile": "apprisrc.Mmus.uniprot"
-                    }
-                },{
-                    "id":   "a1v22",
-                    "type": "current",
-                    "source": {
-                        "name": "appris",
-                        "label": "Ensembl_88+RefSeq_106+UniProt_201610",
-                        "version": "1"
-                    },
-                    "database":   {
-                        "name":    "appris_mus_musculus",
-                        "inifile": "apprisdb.ini"
-                    },
-                    "datafiles":   {
-                        "principal_isoforms":       ["TXT"],
-                        "appris_scores":            ["TXT"],
-                        "functional_residues":      ["GTF","BED"],
-                        "tertiary_structure":       ["GTF","BED"],
-                        "vertebrates_conservation": ["GTF","BED"],
-                        "whole_domains":            ["GTF","BED"],
-                        "transmembrane_helices":    ["GTF","BED"]
-                    },
-                    "pipeline": {
-                        "envfile": "apprisrc.Mmus.appris"
                     }
                 }]
             }]
