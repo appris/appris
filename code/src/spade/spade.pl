@@ -448,13 +448,13 @@ sub _parse_pfamscan($$)
 	unless( defined $result ) {
 		$logger->error("Can not open pfamscan result: $!\n");
 	}
-	my (@results) = split(/($seq_id[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
+	my (@results) = split(/(\Q$seq_id\E[^\n]*\n#HMM[^\n]*\n#MATCH[^\n]*\n#PP[^\n]*\n#SEQ[^\n]*\n+)/,$result);
 	
 	foreach my $line (@results)
 	{
 		my ($alignment_report);
 
-		if ( $line =~ /^($seq_id[^\n]*)/ )
+		if ( $line =~ /^(\Q$seq_id\E[^\n]*)/ )
 		{
 			$transcript_result .= '>'.$line;
 				
