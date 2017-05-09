@@ -1,0 +1,75 @@
+
+Prerequisites
+
+Perl modules
+$ sudo cpan Moose
+BioPerl
+
+Installation
+
+$ cd /programinstallers
+$ wget -N ftp://ftp.sanger.ac.uk/pub/databases/Pfam/Tools/PfamScan.tar.gz
+$ tar -zxvf PfamScan.tar.gz
+$ cd PfamScan
+
+Manually install the Bio::Pfam modules into the already existing BioPerl location
+$ sudo mv Bio/Pfam /usr/local/share/perl5/Bio/
+
+Manually install the main program
+$ mv pfam_scan.pl /usr/local/bin/
+
+Copy README to local web page
+$ cp -puv README ../bioinformatics/programs/pfamscan/README.txt
+
+Cleanup
+$ cd /programinstallers ; rm PfamScan -rf
+
+Download and compile the HMMER3 source code
+$ wget -N ftp://selab.janelia.org/pub/software/hmmer3/3.1b1/hmmer-3.1b1.tar.gz
+$ tar -zxvf hmmer-3.1b1.tar.gz
+$ cd hmmer-3.1b1
+$ ./configure CC=gcc LDFLAGS="-static" --prefix=/usr/local/bin/hmmer3
+$ make
+$ make check
+$ make install
+
+Cleanup
+$ cd /programinstallers
+$ rm hmmer-3.1b1 -rf
+
+Add to default PATH
+$ sudo nano /etc/profile
+...
+PATH="$PATH:/usr/local/bin/hmmer"
+...
+
+Download Pfam data files
+$ mkdir /usr/local/bin/hmmer3/data
+$ cd /usr/local/bin/hmmer3/data
+$ wget -N ftp://ftp.sanger.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz ftp://ftp.sanger.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz ftp://ftp.sanger.ac.uk/pub/databases/Pfam/current_release/Pfam-B.hmm.gz ftp://ftp.sanger.ac.uk/pub/databases/Pfam/current_release/Pfam-B.hmm.dat.gz ftp://ftp.sanger.ac.uk/pub/databases/Pfam/current_release/active_site.dat.gz
+$ gunzip *.gz
+
+Directory size is 3.5 GBytes after uncompressing
+
+$ hmmpress Pfam-A.hmm
+Working...    done.
+Pressed and indexed 14831 HMMs (14831 names and 14831 accessions).
+Models pressed into binary file:   Pfam-A.hmm.h3m
+SSI index for binary model file:   Pfam-A.hmm.h3i
+Profiles (MSV part) pressed into:  Pfam-A.hmm.h3f
+Profiles (remainder) pressed into: Pfam-A.hmm.h3p
+
+$ hmmpress Pfam-B.hmm
+Working...    done.
+Pressed and indexed 20000 HMMs (20000 names and 20000 accessions).
+Models pressed into binary file:   Pfam-B.hmm.h3m
+SSI index for binary model file:   Pfam-B.hmm.h3i
+Profiles (MSV part) pressed into:  Pfam-B.hmm.h3f
+Profiles (remainder) pressed into: Pfam-B.hmm.h3p
+
+Directory size is now 7.2 GBytes
+For convenience, I modified the pfam_scan.pl program code to make the -dir parameter optional and have a default value, i.e. /usr/local/bin/hmmer3/data
+$ nano /usr/local/bin/pfam_scan.pl
+After line 18 add
+$dir = '/usr/local/bin/hmmer3/data'; # VCRU modification
+
