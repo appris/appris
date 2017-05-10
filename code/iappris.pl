@@ -14,6 +14,7 @@ use APPRIS::Parser qw(
 	parse_transl_data
 	parse_firestar
 	parse_matador3d
+	parse_matador3d2
 	parse_spade
 	parse_corsair
 	parse_thump
@@ -271,6 +272,13 @@ sub parse_reports($$)
 		$logger->info("-- parse $method report\n");
 		my ($report) = $reports->{$method};		
 		my ($analysis) = parse_matador3d($entity, $report);
+		$analyses->{$method} = $analysis;
+	}
+	$method = 'matador3d2';
+	if ( exists $reports->{$method} ) {
+		$logger->info("-- parse $method report\n");
+		my ($report) = $reports->{$method};		
+		my ($analysis) = parse_matador3d2($entity, $report);
 		$analyses->{$method} = $analysis;
 	}
 	$method = 'spade';

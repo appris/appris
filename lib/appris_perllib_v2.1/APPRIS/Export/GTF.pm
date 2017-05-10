@@ -72,6 +72,10 @@ $GTF_CONSTANTS = {
 		'source'=>'MATADOR3D',
 		'type'=>'homologous_structure',
 	},
+	'matador3d2'=>{
+		'source'=>'MATADOR3D2',
+		'type'=>'homologous_structure',
+	},
 	'spade'=>{
 		'source'=>'SPADE',
 		'type'=>'functional_domain',
@@ -147,13 +151,13 @@ sub get_trans_annotations {
 	   		        										$external_id,
 	           												$feature);
 				}
-				if ( ($source =~ /matador3d/) or ($source eq 'all') ) {
+				if ( ($source =~ /^matador3d$/) or ($source eq 'all') ) {
 					$output .= get_matador3d_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
 	           												$feature);
 				}
-				if ( ($source =~ /matador3d2/) or ($source eq 'all') ) {
+				if ( ($source =~ /^matador3d2$/) or ($source eq 'all') ) {
 					$output .= get_matador3d2_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
@@ -770,14 +774,14 @@ sub get_matador3d2_annotations {
     my ($output) = '';
     my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
 	my ($method_phase) = '.';
-	my ($method_source) = $GTF_CONSTANTS->{'matador3d'}->{'source'};
-	my ($method_type) = $GTF_CONSTANTS->{'matador3d'}->{'type'};
+	my ($method_source) = $GTF_CONSTANTS->{'matador3d2'}->{'source'};
+	my ($method_type) = $GTF_CONSTANTS->{'matador3d2'}->{'type'};
 
 	# Get annotations
  	if ( $feature->analysis ) {
  		my ($analysis) = $feature->analysis;
- 		if ( $analysis->matador3d ) {
-	 		my ($method) = $analysis->matador3d;
+ 		if ( $analysis->matador3d2 ) {
+	 		my ($method) = $analysis->matador3d2;
 	 		
 	 		# get method annotations
 	 		if ( defined $method->score and !defined $method->alignments ) {
