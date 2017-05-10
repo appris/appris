@@ -616,7 +616,7 @@ sub run_pipeline($$$)
 	if ( exists $files->{'matador3d2'} ) {
 		my ($m) = 'matador3d2';
 		eval {
-			my ($cmd) = "perl $SRC_DIR/matador3d2/matador3d.pl ".
+			my ($cmd) = "perl $SRC_DIR/matador3d2/matador3d2.pl ".
 							"--conf='".$config_file."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
