@@ -96,8 +96,8 @@ sub main()
 	# retrieve peptides from text file
 	if ( defined $gene_id and ($gene_id ne '') ) {
 		$logger->info("-- retrieve peptides from a gene\n");
-		my ($cmd) = "awk -F ',' '\$2 ~ /$gene_id/ || $2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with commas
-		#my ($cmd) = "awk '\$2 ~ /$gene_id/ || $2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with tabs
+		my ($cmd) = "awk -F ',' '\$2 ~ /$gene_id/ || \$2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with commas
+		#my ($cmd) = "awk '\$2 ~ /$gene_id/ || \$2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with tabs
 		$logger->debug("$cmd\n");						
 		my (@proteo_txt_out) = `$cmd`;
 		if ( scalar(@proteo_txt_out) == 0 ) {
