@@ -1,7 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
-use warnings;
 use Getopt::Long;
 use FindBin;
 use Bio::SeqIO;
@@ -157,8 +156,9 @@ sub create_seqrep($$\$)
 	my ($gene_id) = $g_report->{'id'};
 	my ($gene_name) = ( exists $g_report->{'name'} ) ? $g_report->{'name'} : undef;
 	
-	while (my ($transc_id, $t_report) = each(%{$g_report->{'varsplic'}}) ) {
+	while (my ($transl_id, $t_report) = each(%{$g_report->{'varsplic'}}) ) {
 		if ( exists $t_report->{'seq'} ) {
+			my ($transc_id) = ( exists $t_report->{'transc_id'} ) ? $t_report->{'transc_id'} : $transl_id;
 			# create cache sequence idx
 			my ($seq_s) = $t_report->{'seq'};
 			my ($cache) = APPRIS::Utils::CacheMD5->new( -dat => $seq_s );		
