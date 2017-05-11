@@ -968,8 +968,8 @@ sub send_email($$$$$$)
 		#$content	 .= "<p>Please remember that your results will be stored in our server only for 3 weeks, than will be deleted !!</p>";		
 	}
 	else {
-		$subject = $cfg_subject." Your jobid $species/$wserver has finished";
-		$content = "<p>The results for your query $species/$wserver are now available.";	
+		$subject = $cfg_subject." Your jobid ".$ENV{APPRIS_WS_DATE}." has finished";
+		$content = "<p>The results for your query ".$ENV{APPRIS_WS_DATE}." - $wserver and the species $species are now available.";	
 	}
 	_semail($cfg_from, $email, $subject, $content, $gzip_file);
 	
