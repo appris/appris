@@ -40,7 +40,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
     // APPRIS annots
 
     // load result types (method results). BY DEFAULT: retrieves all
-    ResultTypes.query({ jobid: $scope.runnerid, species: $routeParams.species }).then( function(data) {
+    ResultTypes.query({ jobid: $scope.runnerid, species: $routeParams.species, sc: $routeParams.sc }).then( function(data) {
         $scope.isSeqRunner = data.isSeqRunner;
         $scope.resultDetailAnnotHeads = data.resultDetailAnnotHeads;
         $scope.currentMethods = data.currentMethods;

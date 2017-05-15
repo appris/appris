@@ -332,28 +332,36 @@ sub get_trans_annotations {
 						}
 					}		
 				}
-				if ( ($methods =~ /appris/) or ($methods eq 'all') ) {				
+				my (%sc) = map { $_ => 1 } split(',', $methods);				
+				if ( (exists $sc{appris}) or ($methods eq 'all') ) {				
 					get_appris_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
 	           								\$track->[0]
 					);
 				}
-				if ( ($methods =~ /firestar/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{firestar}) or ($methods eq 'all') ) {				
 					get_firestar_annotations( 	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[1]
 					);
 				}
-				if ( ($methods =~ /matador3d/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{matador3d}) or ($methods eq 'all') ) {				
 					get_matador3d_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[2]
 					);
 				}
-				if ( ($methods =~ /spade/) or ($methods eq 'all') ) {
+				if ( (exists $sc{matador3d2}) or ($methods eq 'all') ) {				
+					get_matador3d2_annotations(	$typebed,
+												$transcript_id,
+	           									$feature,
+	           									\$track->[2]
+					);
+				}
+				if ( (exists $sc{spade}) or ($methods eq 'all') ) {
 					if ( $methods =~ /spade\-([^\,\$]*)/ ) {
 						while ( $methods =~ /spade\-([^\,\$]*)/mg ) {
 							my ($s_name) = $1;
@@ -395,28 +403,28 @@ sub get_trans_annotations {
 						);
 					}	
 				}
-				if ( ($methods =~ /corsair/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{corsair}) or ($methods eq 'all') ) {				
 					get_corsair_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[4]
 					);
 				}
-				if ( ($methods =~ /inertia/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{inertia}) or ($methods eq 'all') ) {				
 					get_inertia_annotations(	$typebed,
 												$transcript_id,
 	           									$feature,
 	           									\$track->[5]
 					);
 				}
-				if ( ($methods =~ /crash/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{crash}) or ($methods eq 'all') ) {				
 					get_crash_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
 	           								\$track->[6]
 					);
 				}
-				if ( ($methods =~ /thump/) or ($methods eq 'all') ) {				
+				if ( (exists $sc{thump}) or ($methods eq 'all') ) {				
 					get_thump_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
@@ -424,7 +432,7 @@ sub get_trans_annotations {
 					);
 				}
 				# Now, the tracks of PROTEO are printed per peptide (gene)
-				if ( ($methods =~ /proteo/) or ($methods eq 'all') ) {
+				if ( (exists $sc{proteo}) or ($methods eq 'all') ) {
 					get_proteo_annotations(	$typebed,
 											$transcript_id,
 	           								$feature,
@@ -1217,6 +1225,50 @@ sub get_matador3d_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->matador3d ) { 			
 	 		my ($method) = $analysis->matador3d;
+	 		# get residue annotations
+			if ( defined $method->alignments ) {
+				
+				# get the residues
+				my ($res_list) = $method->alignments;				
+				my ($num_res) = scalar(@{$res_list});
+				my ($res_align);
+				foreach my $res (@{$res_list}) {
+					push(@{$res_align}, $res);
+				}
+				my ($data) = extract_track_region(	$transcript_id,
+													$feature,
+													$res_align,
+													[{
+														'name' => 'note',
+														'value' => 'pdb_id'
+													}]);
+				if (defined $data ) {
+					${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
+				}
+			}
+ 		}
+ 	}
+}
+
+=head2 get_matador3d2_annotations
+
+  Arg [1]    : String - the stable identifier of transcript
+  Arg [4]    : APPRIS::Transcript
+  Arg [5]    : Object - internal BED variable 
+  Example    : $annot = get_matador3d2_annotations($trans_id, $feat, $ref_out);  
+  Description: Retrieves specific annotation.
+  Returntype : String or undef
+
+=cut
+
+sub get_matador3d2_annotations {
+	my ($typebed, $transcript_id, $feature, $ref_output) = @_;
+
+	# Get annotations
+ 	if ( $feature->analysis ) {
+ 		my ($analysis) = $feature->analysis;
+ 		if ( $analysis->matador3d2 ) { 			
+	 		my ($method) = $analysis->matador3d2;
 	 		# get residue annotations
 			if ( defined $method->alignments ) {
 				

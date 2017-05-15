@@ -82,6 +82,7 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
     function getParams( iparams ) {
         var params = {};
         if ( angular.isDefined(iparams.species) ) { params.species = iparams.species }
+        if ( angular.isDefined(iparams.sc) ) { params.sc = iparams.sc }
         if ( angular.isDefined(iparams.format) ) { params.format = iparams.format }
         return params;
     }

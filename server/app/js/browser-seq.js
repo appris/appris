@@ -534,7 +534,7 @@ function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFi
                     }
 
                     if ( angular.isDefined(query.species) && angular.isDefined(query.id) && angular.isDefined(query.ids) ) {
-                        var al = urlExporter + '/' + 'id/' + query.species + '/' + query.id + '?' + 'ids=' + query.ids + '&methods=' + mname + '&format=raw';
+                        var al = urlExporter + '/' + 'id/' + query.species + '/' + query.id + '?' + 'ids=' + encodeURIComponent(query.ids) + '&methods=' + mname + '&format=raw';
                         if ( angular.isDefined(query.as) && query.as !== null ) {
                             al += '&as=' + query.as;
                         }
@@ -550,7 +550,7 @@ function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFi
                         }
                     }
                     else if ( angular.isDefined(query.jobid) ) {
-                        var al = urlRunnerRst + '/' + query.jobid + '?' + 'ids=' + query.ids + '&methods=' + mname + '&format=raw';
+                        var al = urlRunnerRst + '/' + query.jobid + '?' + 'ids=' + encodeURIComponent(query.ids) + '&methods=' + mname + '&format=raw';
                         alink += '<a class="pull-right" href="' +  al + '" target="blank">In detail<i class="glyphicon glyphicon-new-window" style="text-decoration: none; margin-left: 3px"></a></i>';
                     }
 

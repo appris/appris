@@ -81,6 +81,12 @@ $METHOD_HEADS = {
 		'raw'=>
 			"== homologous_structure: text_result\n",
 	},
+	'matador3d2'=>{
+		'tsv'=>
+			"== homologous_structure: residues\tbest_template\tbitscore\n",
+		'raw'=>
+			"== homologous_structure: text_result\n",
+	},
 	'spade'=>{
 		'tsv'=>
 			"== functional_domain: start\tend\tdomain_name\tbest_e-value\n",
@@ -139,7 +145,6 @@ $APPRIS_ALTER_LABEL			= $APPRIS::Utils::Constant::APPRIS_ALTER_LABEL;
 =cut
 
 sub get_trans_annotations {	
-    #my ($feature, $source, $type) = @_;
     my ($feature, $source, $res) = @_;
     my ($output) = '';
 
@@ -148,28 +153,32 @@ sub get_trans_annotations {
 		if ($feature->stable_id) {
 			if ($feature->translate and $feature->translate->sequence) { # proteing coding methods
 				$output .= ">".$feature->stable_id."\n";
-				if ( ($source =~ /firestar/) or ($source eq 'all') ) {
+		 		my (%sc) = map { $_ => 1 } split(',', $source);				
+				if ( (exists $sc{firestar}) or ($source eq 'all') ) {
 					$output .= get_trans_firestar_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /matador3d/) or ($source eq 'all') ) {
+				if ( (exists $sc{matador3d}) or ($source eq 'all') ) {
 					$output .= get_trans_matador3d_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /corsair/) or ($source eq 'all') ) {
+				if ( (exists $sc{matador3d2}) or ($source eq 'all') ) {
+					$output .= get_trans_matador3d2_tsv_annot($feature, $res);
+				}
+				if ( (exists $sc{corsair}) or ($source eq 'all') ) {
 					$output .= get_trans_corsair_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /spade/) or ($source eq 'all') ) {
+				if ( (exists $sc{spade}) or ($source eq 'all') ) {
 					$output .= get_trans_spade_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /inertia/) or ($source eq 'all') ) {
+				if ( (exists $sc{inertia}) or ($source eq 'all') ) {
 					$output .= get_trans_inertia_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /thump/) or ($source eq 'all') ) {
+				if ( (exists $sc{thump}) or ($source eq 'all') ) {
 					$output .= get_trans_thump_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /crash/) or ($source eq 'all') ) {
+				if ( (exists $sc{crash}) or ($source eq 'all') ) {
 					$output .= get_trans_crash_tsv_annot($feature, $res);
 				}
-				if ( ($source =~ /proteo/) ) {
+				if ( (exists $sc{proteo}) ) {
 					$output .= get_trans_proteo_tsv_annot($feature,$res);
 				}
 #				if ( ($source =~ /appris/) or ($source eq 'all') ) {
@@ -213,6 +222,9 @@ sub get_tsv_annotations {
 			}
 			if ( ($method eq 'matador3d') or ($method eq 'all') ) {
 				$output .= get_matador3d_annot($method, $type, $feature);
+			}
+			if ( ($method eq 'matador3d2') or ($method eq 'all') ) {
+				$output .= get_matador3d2_annot($method, $type, $feature);
 			}
 			if ( ($method eq 'corsair') or ($method eq 'all') ) {
 				$output .= get_corsair_annot($method, $type, $feature);
@@ -263,6 +275,9 @@ sub get_raw_annotations {
 			}
 			if ( ($method eq 'matador3d') or ($method eq 'all') ) {
 				$output .= get_matador3d_annot($method, $type, $feature);
+			}
+			if ( ($method eq 'matador3d2') or ($method eq 'all') ) {
+				$output .= get_matador3d2_annot($method, $type, $feature);
 			}
 			if ( ($method eq 'corsair') or ($method eq 'all') ) {
 				$output .= get_corsair_annot($method, $type, $feature);
@@ -773,6 +788,145 @@ sub get_trans_matador3d_raw_annot {
 #	return $output;
 #}
 sub get_matador3d_tsv_result
+{
+	my ($method, $report) = @_;
+	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};
+	
+	while (my ($seq_id, $seq_report) = each(%{$report}) ) {
+		if ( ($seq_id ne 'result') and (exists $seq_report->{'alignments'}) ) {
+			foreach my $region (@{$seq_report->{'alignments'}}) {
+				if ( 
+					defined $region->{'pstart'} and defined $region->{'pend'} and 
+					defined $region->{'pdb_id'} and defined $region->{'score'}
+				) {
+					$output .=	$region->{'pstart'}.':'.$region->{'pend'}."\t".
+								$region->{'pdb_id'}."\t".
+								$region->{'score'}."\n";
+				}
+			}
+		}
+	}
+	return $output;
+}
+
+
+
+# MATADOR3D2 METHODS -------
+sub get_matador3d2_annot {
+	my ($imethod, $itype, $feature) = @_;
+	my ($output) = '';
+	if ( $itype eq 'tsv' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'tsv'};	
+	}
+	elsif ( $itype eq 'raw' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'raw'};
+	}
+	if ($feature and (ref($feature) ne 'ARRAY')) { # one object
+	   	if ($feature->isa("APPRIS::Gene")) {
+			foreach my $transcript (@{$feature->transcripts}) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_matador3d2_tsv_annot($transcript);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_matador3d2_raw_annot($transcript);
+				}
+			}
+ 		}
+    	elsif ($feature->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_matador3d2_tsv_annot($feature);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_matador3d2_raw_annot($feature);
+				}
+    	}
+    	else {
+			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+    	}
+	}
+	elsif ($feature and (ref($feature) eq 'ARRAY') ) { # listref of objects
+	   	foreach my $feat (@{$feature}) {
+	    	if ($feat->isa("APPRIS::Gene")) {
+				foreach my $transcript (@{$feat->transcripts}) {
+					if ( $itype eq 'tsv' ) {
+						$output .= get_trans_matador3d2_tsv_annot($transcript);
+					}
+					elsif ( $itype eq 'raw' ) {
+						$output .= get_trans_matador3d2_raw_annot($transcript);
+					}
+				}
+	    	}
+	   		elsif ($feat->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_matador3d2_tsv_annot($feat);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_matador3d2_raw_annot($feat);
+				}
+			}
+			else {
+				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+			}    		
+		}
+	}
+	return $output;
+}
+# matador3d2: annotation input. tabular output
+sub get_trans_matador3d2_tsv_annot {
+	my ($transcript,$res) = @_;
+	my ($imet) = 'matador3d2';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->matador3d2 and $analysis->matador3d2->result ) {
+					my ($method) = $analysis->matador3d2;					
+					if ( defined $method->result ) {
+						if ( defined $method->alignments ) {
+							foreach my $region (@{$method->alignments}) {
+								if ( 
+									defined $region->pstart and defined $region->pend and 
+									defined $region->pdb_id and defined $region->score
+								) {
+									next unless ( res_is_inside($res, $region->pstart, $region->pend) );								
+									$output .=	$region->pstart.':'.$region->pend."\t".
+												$region->pdb_id."\t".
+												$region->score."\n";
+								}
+							}
+						}
+					}
+										
+				}
+		 	}
+		}
+    }
+    if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'tsv'} . $output }    
+	return $output;	
+}
+# matador3d2: annotation input. raw output
+sub get_trans_matador3d2_raw_annot {
+	my ($transcript) = @_;
+	my ($imet) = 'matador3d2';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->matador3d2 and $analysis->matador3d2->result ) {
+					$output .= $analysis->matador3d2->result."\n";
+				}
+		 	}
+		}
+    }
+	if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'raw'} . $output }    
+	return $output;	
+}
+# matador3d2: result input. tabular output
+sub get_matador3d2_tsv_result
 {
 	my ($method, $report) = @_;
 	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};

@@ -301,16 +301,28 @@ sub resulttypes_appris {
 							'mediaType'		=> 'text/plain' });
 			}
 		}
-		my ($method_id) = $METHOD_IDS->{$method};
-		my ($type) = {			
-			'id'			=> $method_id,
-			'name'			=> $METHODS->{$method_id}->{'name'},
-			'label'			=> $METHODS->{$method_id}->{'label'},
-			'desc'			=> $METHODS->{$method_id}->{'desc'},
-			'mode'			=> $run_mode,
-			'types'			=> $m_results
-		};
-		push(@{$resulttypes}, $type);
+		if ( exists $METHOD_IDS->{$method} ) {
+			my ($method_id) = $METHOD_IDS->{$method};
+			my ($method_name) = $METHODS->{$method_id}->{'name'};
+			# HARDCORE for Matador3D. when the gene dataset come from 'appris' or uniprot.
+			# The name of Matado3D is converted to Matador3D2
+			if ( $method_name eq 'matador3d' ) {
+				if ( exists $params->{'sc'} and $params->{'sc'} ne '' ) {
+					if ( ($params->{'sc'} eq 'appris') or ($params->{'sc'} eq 'uniprot') ) {
+						$method_name = 'matador3d2';
+					}
+				}
+			}
+			my ($type) = {
+				'id'			=> $method_id,
+				'name'			=> $method_name,
+				'label'			=> $METHODS->{$method_id}->{'label'},
+				'desc'			=> $METHODS->{$method_id}->{'desc'},
+				'mode'			=> $run_mode,
+				'types'			=> $m_results
+			};
+			push(@{$resulttypes}, $type);
+		}
 	}					
 	
 	return $resulttypes;

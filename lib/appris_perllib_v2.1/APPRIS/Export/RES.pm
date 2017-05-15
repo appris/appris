@@ -68,6 +68,7 @@ $METHOD_HEADS = {
 	'appris'	=> "principal isoform (reliability, 1-->5)",
 	'firestar'	=> "PDB ligand (reliability, 1-->6)",
 	'matador3d'	=> "best PDB template (%ID)",
+	'matador3d2'=> "best PDB template (bitscore)",
 	'spade'		=> "best Pfam domain name (e-value)",
 	'corsair'	=> "nearest homologue (%ID)",
 	'crash'		=> "type signal",
@@ -103,7 +104,8 @@ sub get_trans_annotations {
 		 	if ( $feature->analysis ) {		 		
 		 		my ($methods);
 		 		my ($analysis) = $feature->analysis;
-		 		if ( ($source =~ /firestar/) or ($source eq 'all') ) {
+		 		my (%sc) = map { $_ => 1 } split(',', $source);
+		 		if ( (exists $sc{firestar}) or ($source eq 'all') ) {
 			 		if ( $analysis->firestar and $analysis->firestar->result ) {		 			
 						my ($method) = $analysis->firestar;	 			
 				 		my ($residues) = parser_firestar_residues($method, $inres);
@@ -118,7 +120,7 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-		 		if ( ($source =~ /matador3d/) or ($source eq 'all') ) {
+		 		if ( (exists $sc{matador3d}) or ($source eq 'all') ) {
 			 		if ( $analysis->matador3d and $analysis->matador3d->result ) {		 			
 						my ($method) = $analysis->matador3d;	 			
 				 		my ($residues) = parser_matador3d_residues($method, $inres);
@@ -133,7 +135,22 @@ sub get_trans_annotations {
 						}
 			 		}		 			
 		 		}
-		 		if ( ($source =~ /spade/) or ($source eq 'all') ) {	 		
+		 		if ( (exists $sc{matador3d2}) or ($source eq 'all') ) {
+			 		if ( $analysis->matador3d2 and $analysis->matador3d2->result ) {		 			
+						my ($method) = $analysis->matador3d2;	 			
+				 		my ($residues) = parser_matador3d2_residues($method, $inres);
+						if ( defined $residues and scalar($residues) > 0 ) {
+							push(@{$methods}, {
+								'name'		=> 'matador3d2',
+								'id'		=> $METHOD_DESC->{'matador3d'},
+								'label'		=> $METHOD_LABEL_DESC->{'matador3d'},
+								'title'		=> $METHOD_HEADS->{'matador3d2'},
+								'residues'	=> $residues
+							});
+						}
+			 		}		 			
+		 		}
+		 		if ( (exists $sc{spade}) or ($source eq 'all') ) {	 		
 			 		if ( $analysis->spade and $analysis->spade->result ) {		 			
 						my ($method) = $analysis->spade;
 				 		my ($residues) = parser_spade_residues($method, $inres);
@@ -148,7 +165,7 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-		 		if ( ($source =~ /corsair/) or ($source eq 'all') ) {
+		 		if ( (exists $sc{corsair}) or ($source eq 'all') ) {
 			 		if ( $analysis->corsair and $analysis->corsair->result ) {		 			
 						my ($method) = $analysis->corsair;
 				 		my ($residues) = parser_corsair_residues($method, $len);
@@ -163,7 +180,7 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-		 		if ( ($source =~ /thump/) or ($source eq 'all') ) {
+		 		if ( (exists $sc{thump}) or ($source eq 'all') ) {
 			 		if ( $analysis->thump and $analysis->thump->result ) {
 			 			my ($method) = $analysis->thump;		 			
 				 		my ($residues) = parser_thump_residues($method, $inres);
@@ -178,7 +195,7 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-		 		if ( ($source =~ /crash/) or ($source eq 'all') ) {		 		
+		 		if ( (exists $sc{crash}) or ($source eq 'all') ) {		 		
 			 		if ( $analysis->crash and $analysis->crash->result ) {		 			
 						my ($method) = $analysis->crash;	 			
 				 		my ($label,$residues) = parser_crash_residues($method, $inres);
@@ -193,7 +210,7 @@ sub get_trans_annotations {
 						}
 			 		}
 		 		}
-		 		if ( ($source =~ /proteo/) ) {
+		 		if ( (exists $sc{proteo}) ) {
 			 		if ( $analysis->proteo and $analysis->proteo->result ) {
 			 			my ($method) = $analysis->proteo;		 			
 				 		my ($residues) = parser_proteo_residues($method, $len);
@@ -275,33 +292,6 @@ sub parser_firestar_residues {
 		
 } # end parser_firestar_residues
 
-#sub parser_matador3d_residues {
-#	my ($method, $inres) = @_;
-#	my ($residues);
-#	
-#	if ( defined $method->result ) {
-#		if ( defined $method->alignments ) {
-#			foreach my $region (@{$method->alignments}) {	
-#				if ( ($region->type eq 'mini-exon') and 
-#					defined $region->score and 
-#					defined $region->pstart and defined $region->pend and 
-#					defined $region->pdb_id and defined $region->identity ) {
-#						if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
-#							my ($res) = {
-#								'start'		=> $region->pstart,
-#								'end'		=> $region->pend,
-#								'annot'		=> $region->pdb_id ." (" . $region->identity . ")",
-#							};
-#							push(@{$residues},$res);
-#						}
-#				}
-#			}
-#		}
-#	}
-#	
-#	return $residues;
-#	
-#} # end parser_matador3d_residues
 sub parser_matador3d_residues {
 	my ($method, $inres) = @_;
 	my ($residues);
@@ -329,6 +319,34 @@ sub parser_matador3d_residues {
 	return $residues;
 	
 } # end parser_matador3d_residues
+
+sub parser_matador3d2_residues {
+	my ($method, $inres) = @_;
+	my ($residues);
+	
+	if ( defined $method->result ) {
+		if ( defined $method->alignments ) {
+			foreach my $region (@{$method->alignments}) {	
+				if ( 
+					defined $region->pstart and defined $region->pend and 
+					defined $region->pdb_id and defined $region->score
+				){
+					if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
+						my ($res) = {
+							'start'		=> $region->pstart,
+							'end'		=> $region->pend,
+							'annot'		=> $region->pdb_id ." (" . $region->score . ")",
+						};
+						push(@{$residues},$res);
+					}
+				}
+			}
+		}
+	}
+	
+	return $residues;
+	
+} # end parser_matador3d2_residues
 
 sub parser_spade_residues {
 	my ($method, $inres) = @_;

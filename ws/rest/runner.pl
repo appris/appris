@@ -175,6 +175,10 @@ sub main()
 		if ( defined $species ) {
 			$params->{'species'} = $species;
 		}
+		my ($sc) = $cgi->param('sc') || $postdata->{'sc'} || undef;
+		if ( defined $sc ) {
+			$params->{'sc'} = $sc;
+		}
 	}	
 	
 	# Runner object
