@@ -284,6 +284,7 @@ sub load_registry {
 								'assembly'	=> $cfg_assembly->{'id'},
 								'source'	=> $cfg_dataset->{'source'},
 								'dataset'	=> $cfg_dataset->{'id'},
+								'type'		=> lc($cfg_dataset->{'type'}),
 								'registry'	=> $registry								
 						});
 					}
@@ -416,6 +417,7 @@ sub get_seek_features
 					'assembly'	=> $registry->{'assembly'},
 					'source'	=> $registry->{'source'},
 					'dataset'	=> $registry->{'dataset'},
+					'type'		=> $registry->{'type'},
 					'entity'	=> $f
 				});
 			}

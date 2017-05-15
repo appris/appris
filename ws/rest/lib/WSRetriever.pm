@@ -1797,6 +1797,7 @@ sub seek_features
 					'species'	=> $specie_id,
 					'assembly'	=> 'none',
 					'dataset'	=> 'none',
+					'type'		=> 'none',
 					'entity'	=> $feat			
 		});
 		my ($report) = $self->create_seeker_report($self->jobid, $features );
@@ -1836,6 +1837,7 @@ sub create_seeker_report($)
 		my ($assembly) = $feature->{'assembly'};
 		my ($source) = $feature->{'source'};
 		my ($dataset) = $feature->{'dataset'};
+		my ($type) = $feature->{'type'};
 		my ($entity) = $feature->{'entity'};
 		$assembly = undef if ( $assembly eq 'none' ); # undef assembly from WSRetriever jobs
 		if ( $entity and ref($entity) ) {
@@ -1844,6 +1846,7 @@ sub create_seeker_report($)
 				'assembly'	=> $assembly,
 				'source'	=> $source,
 				'dataset'	=> $dataset,
+				'type'		=> $type,
 				'id'		=> $entity->stable_id,
 				'label'		=> $entity->stable_id,
 				'chr'		=> $entity->chromosome,
