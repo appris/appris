@@ -9,11 +9,11 @@ CODE-RELEASE:     4.7.2.16
 
 
 TODO!!
-- Creation of APPRIS gene-set (version a1) for all vertebrate species located: human, mouse, zebra-fish, rat, pig, chimp. 
++ Creation of APPRIS gene-set (version a1) for all vertebrate species located: human, mouse, zebra-fish, rat, pig, chimp. 
 The APPRIS gene-set has been developed from the join of the gene sets of Ensembl and RefSeq, and enrich with the isoforms of UniProt.
 
 TODO!!
-- New APPRIS annotations using the gene dataset of RefSeq for the following species:
++ New APPRIS annotations using the gene dataset of RefSeq for the following species:
 	Human 		(version 108)
 	
 	Mouse 		(version 106)
@@ -23,7 +23,7 @@ TODO!!
 	Chimp		(version 104)
 	
 TODO!!
-- New APPRIS annotations using the gene names annotated in UniProt for the following species:
++ New APPRIS annotations using the gene names annotated in UniProt for the following species:
 	Human 		(version 2017_03)
 	Pig			(version 2017_02)
 	Chimp		(version 2017_02)
@@ -33,17 +33,23 @@ New releases for RefSeq in HUMAN (rs108)
 
 ### Server (4.7)
 
-- TODO!!! CHANGES for the new APPRIS
++ Improvements in the website to include the annotations for the APPRIS gene data-set
 
++ PROTEO
+	- Bug fixed printing the number of peptides. Eg. PDE3B
 
 ### Code (2.16)
 
-TODO!!!
++ SPADE
+	- Bugs fixed: parsing the Pfam outputs for APPRIS databases.
 
-* Matador3D2
-- New DB!!
-- Include the 2 methods of Matador3D and appris has to choose
+TODO!!!
++ Matador3D2
+	- New DB!!
+	- Include the 2 methods of Matador3D and appris has to choose
+	
  
+
 
 
 

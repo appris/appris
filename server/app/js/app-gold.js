@@ -151,6 +151,10 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
                 controller: 'AboutController',
                 templateUrl: 'partials/about.html'
             }).
+            when('/contact', {
+                controller: 'AboutController',
+                templateUrl: 'partials/contact.html'
+            }).
             when('/changelogs', {
                 templateUrl: 'partials/changelogs.html'
             }).

@@ -1,4 +1,3 @@
-<!--<div data-ng-controller="RootController"></div>-->
 <alert-tpl data-ng-if="alert.enable" ></alert-tpl>
 
 <result-info-isof-tpl></result-info-isof-tpl>
@@ -7,6 +6,19 @@
 <result-info-browser-annot-tpl></result-info-browser-annot-tpl>
 <result-info-browser-seq-tpl></result-info-browser-seq-tpl>
 <result-info-browser-gen-tpl></result-info-browser-gen-tpl>
+
+<!--<h1>Dynamic columns in a angularJS datatable</h1>-->
+<!--<table border="1">-->
+    <!--<tr ng-repeat="item in items" item="item" columns="columns">-->
+<!--</table>-->
+
+<!--<div ng-repeat="column in columns">{{column.title}} visible: <input type="checkbox" ng-model="column.visible"/></div>-->
+
+<!--<table border="1">-->
+    <!--<tr ng-repeat="item in items" item="item" columns="columns2">-->
+<!--</table>-->
+
+<!--<div ng-repeat="column in columns2">{{column.title}} visible: <input type="checkbox" ng-model="column.visible"/></div>-->
 
 <div class="control-group" data-ng-controller="GeneResultController">
     <div class="table-responsive">
@@ -30,14 +42,15 @@
 
 <div class="control-group">
 <h2>Principal Isoforms
-<small><span tooltip-placement="top"
-             tooltip="Click for more information" class="glyphicon glyphicon-info-sign pointer"
-                                    aria-label="true" aria-hidden="true" data-toggle="modal"
-                                    data-target="#infoIsof"></span></small>
-<small><span
-        tooltip-placement="top" tooltip="Show/Hide"
-        class="pull-right pointer glyphicon"
-        data-ng-class="{'glyphicon-chevron-right': isCollapsedMainAnnot, 'glyphicon-chevron-down': !isCollapsedMainAnnot}" data-ng-click="isCollapsedMainAnnot = !isCollapsedMainAnnot"></span></small>
+    <small><span tooltip-placement="top"
+                 tooltip="Click for more information" class="glyphicon glyphicon-info-sign pointer"
+                                        aria-label="true" aria-hidden="true" data-toggle="modal"
+                                        data-target="#infoIsof"></span></small>
+    <div class="appris-table-tshow pull-right pointer"
+         data-ng-click="isCollapsedMainAnnot = !isCollapsedMainAnnot">
+        <span tooltip-placement="top" tooltip="Show/Hide" class="pull-right pointer glyphicon" data-ng-class="{'glyphicon-chevron-right': isCollapsedMainAnnot, 'glyphicon-chevron-down': !isCollapsedMainAnnot}"></span>
+        <span data-ng-show="isCollapsedMainAnnot">Show </span><span data-ng-show="!isCollapsedMainAnnot">Hide </span>panel
+    </div>
 </h2>
 <div collapse="isCollapsedMainAnnot">
     <div class="table-responsive">
@@ -60,10 +73,11 @@
     <small><span tooltip-placement="top" tooltip="Click for more information"
                              class="glyphicon glyphicon-info-sign pointer" aria-label="true" aria-hidden="true"
                  data-toggle="modal" data-target="#infoAnnot"></span></small>
-    <small><span
-            tooltip-placement="top" tooltip="Show/Hide"
-            class="pull-right pointer glyphicon"
-            data-ng-class="{'glyphicon-chevron-right': isCollapsedDetailAnnot, 'glyphicon-chevron-down': !isCollapsedDetailAnnot}" data-ng-click="isCollapsedDetailAnnot = !isCollapsedDetailAnnot"></span></small>
+    <div class="appris-table-tshow pull-right pointer"
+         data-ng-click="isCollapsedDetailAnnot = !isCollapsedDetailAnnot">
+        <span tooltip-placement="top" tooltip="Show/Hide" class="pull-right pointer glyphicon" data-ng-class="{'glyphicon-chevron-right': isCollapsedDetailAnnot, 'glyphicon-chevron-down': !isCollapsedDetailAnnot}"></span>
+        <span data-ng-show="isCollapsedDetailAnnot">Show </span><span data-ng-show="!isCollapsedDetailAnnot">Hide </span>panel
+    </div>
 </h2>
 
 <div collapse="isCollapsedDetailAnnot">
@@ -85,13 +99,15 @@
 </div>
 <hr />
 
-<h2>APPRIS browsers    <small><span tooltip-placement="top" tooltip="Click for more information"
+<h2>APPRIS browsers
+    <small><span tooltip-placement="top" tooltip="Click for more information"
                                     class="glyphicon glyphicon-info-sign pointer" aria-label="true" aria-hidden="true"
                                     data-toggle="modal" data-target="#infoBrowser"></span></small>
-    <small><span
-            tooltip-placement="top" tooltip="Show/Hide"
-            class="pull-right pointer glyphicon"
-            data-ng-class="{'glyphicon-chevron-right': isCollapsedBrowsers, 'glyphicon-chevron-down': !isCollapsedBrowsers}" data-ng-click="isCollapsedBrowsers = !isCollapsedBrowsers"></span></small>
+    <div class="appris-table-tshow pull-right pointer"
+         data-ng-click="isCollapsedBrowsers = !isCollapsedBrowsers">
+        <span tooltip-placement="top" tooltip="Show/Hide" class="pull-right pointer glyphicon" data-ng-class="{'glyphicon-chevron-right': isCollapsedBrowsers, 'glyphicon-chevron-down': !isCollapsedBrowsers}"></span>
+        <span data-ng-show="isCollapsedBrowsers">Show </span><span data-ng-show="!isCollapsedBrowsers">Hide </span>panel
+    </div>
 </h2>
 <div collapse="isCollapsedBrowsers">
 <report-browsers></report-browsers>

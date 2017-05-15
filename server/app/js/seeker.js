@@ -114,6 +114,7 @@ module.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', 
             ds: $routeParams.ds
         };
         $scope.limitString = 20;
+        $scope.isCollapsed = true;
 
         // create search summary
         var specieResult = {};
@@ -143,18 +144,31 @@ module.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', 
                     dblink.External_Id = dblink.External_Id.replace(/,$/g,'');
                     dblink.External_Id = dblink.External_Id.replace(/^-/g,'');
                 }
+                else {
+                    dblink.External_Id = item.id;
+                }
                 if ( dblink.Ensembl_Gene_Id != '-' ) {
                     dblink.Ensembl_Gene_Id = dblink.Ensembl_Gene_Id.replace(/,$/g,'');
                     dblink.Ensembl_Gene_Id = dblink.Ensembl_Gene_Id.replace(/^-/g,'');
+                }
+                else {
+                    if ( angular.isDefined(item.source) && item.source.name == 'ensembl' ) { dblink.Ensembl_Gene_Id = item.id }
                 }
                 if ( dblink.Refseq_Gene_Id != '-' ) {
                     dblink.Refseq_Gene_Id = dblink.Refseq_Gene_Id.replace(/,$/g,'');
                     dblink.Refseq_Gene_Id = dblink.Refseq_Gene_Id.replace(/^-/g,'');
                 }
+                else {
+                    if ( angular.isDefined(item.source) && item.source.name == 'refseq' ) { dblink.Refseq_Gene_Id = item.id }
+                }
                 if ( dblink.Uniprot_Gene_Id != '-' ) {
                     dblink.Uniprot_Gene_Id = dblink.Uniprot_Gene_Id.replace(/,$/g,'');
                     dblink.Uniprot_Gene_Id = dblink.Uniprot_Gene_Id.replace(/^-/g,'');
                 }
+                else {
+                    if ( angular.isDefined(item.source) && item.source.name == 'uniprot' ) { dblink.Uniprot_Gene_Id = item.id }
+                }
+
                 var speRst = {
                     "species":      item.species,
                     "assembly": {
@@ -165,6 +179,7 @@ module.controller('SeekerResultController', ['consQueryNotMatch', '$rootScope', 
                     "dataset":      item.dataset.replace(/\.([^$]*)$/g,''),
                     "label":        item.label,
                     "namespace":    item.namespace,
+                    "type":         item.type,
                     "id":           item.id,
                     "biotype":      item.biotype,
                     "dblink":       dblink,

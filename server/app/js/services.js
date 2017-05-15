@@ -118,9 +118,6 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
                 id: "transcript_id",
                 label: "Seq. id"
             },{
-                id: "transcript_name",
-                label: "Seq. name"
-            },{
                 id: "length_aa",
                 label: "Length (aa)"
             });

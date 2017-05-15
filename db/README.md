@@ -89,7 +89,7 @@
 	
 	formatdb -i refseq_invert -p T
 
->> Pfam, ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release 
+>> Pfam, ftp://ftp.ebi.ac.uk/pub/databases/Pfam/
 
 ftp://ftp.sanger.ac.uk/pub/databases/Pfam/ (DEPRECATED)
 

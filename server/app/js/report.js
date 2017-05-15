@@ -74,10 +74,12 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                 .then( function(data) {
                     if ( $scope.exporterid ) {
                         var resultData = $filter('convertTransScoreObj')(data);
-                        $scope.resultMainAnnotHeads.push({
-                            id: "transcript_id",
-                            label: "Seq. id"
-                        });
+                        if ( angular.isDefined(queryData.sc) && queryData.sc != 'appris' ) {
+                            $scope.resultMainAnnotHeads.push({
+                                id: "transcript_id",
+                                label: "Seq. id"
+                            });
+                        }
                         if ( angular.isDefined(resultData) && (angular.isArray(resultData) && resultData.length > 0 ) && angular.isDefined(resultData[0][0]) ) {
                             var ids = resultData[0];
                             if ( $filter('hasTranscriptId')(ids, 'ensembl_transcript_id') ) {
@@ -99,10 +101,13 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                                 });
                             }
                         }
+                        if ( angular.isDefined(queryData.sc) && queryData.sc == 'ensembl' ) {
+                            $scope.resultMainAnnotHeads.push({
+                                id: "transcript_name",
+                                label: "Seq. name"
+                            });
+                        }
                         $scope.resultMainAnnotHeads.push({
-                            id: "transcript_name",
-                            label: "Seq. name"
-                        },{
                             id: "length_aa",
                             label: "Length (aa)"
                         },{
@@ -138,9 +143,9 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                             },{
                                 id: "transcript_name",
                                 label: "Seq. name"
-                                },{
-                                    id: "length_aa",
-                                    label: "Length (aa)"
+                            },{
+                                id: "length_aa",
+                                label: "Length (aa)"
                             },{
                                 id: "principal_isoform",
                                 label: "Principal Isoform"

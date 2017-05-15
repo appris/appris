@@ -8,24 +8,46 @@
                         <tbody>
                         <tr>
                             <th>Source</th>
-                            <th>Gene Entry</th>
+                            <!--<th>Gene Entry</th>-->
                             <th>Gene Name</th>
-                            <!--<th>Ensembl Gene Id</th>-->
-                            <!--<th>RefSeq Gene Id</th>-->
-                            <!--<th>UniProt Gene Id</th>-->
+                            <th>Ensembl Gene Id</th>
+                            <th>RefSeq Gene Id</th>
+                            <th>UniProt Gene Id</th>
                             <th>Assembly</th>
                         </tr>
                         <tr
-                                data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'}" data-ng-if="queryRst.namespace == 'Gene_Id'">
+                                data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'} | filter:{type:'current'}"
+                                data-ng-if="queryRst.namespace == 'Gene_Id'">
                             <td>{{queryRst.source.label}}</td>
                             <td><a
-                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source.name}}&ds={{queryRst.dataset}}">{{queryRst.id | limitTo:limitString}}{{queryRst.id.length > limitString ? '...' : ''}}</a></td>
-                            <td>{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</td>
-                            <!--<td>{{queryRst.dblink.Ensembl_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Ensembl_Gene_Id.length > limitString ? '...' : ''}}</td>-->
-                            <!--<td>{{queryRst.dblink.Refseq_Gene_Id  | limitTo:limitString}}{{queryRst.dblink.Refseq_Gene_Id.length > limitString ? '...' : ''}}</td>-->
-                            <!--<td>{{queryRst.dblink.Uniprot_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Uniprot_Gene_Id.length > limitString ? '...' : ''}}</td>-->
+                                    data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source.name}}&ds={{queryRst.dataset}}">{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</a></td>
+                            <!--<td>{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</td>-->
+                            <td>{{queryRst.dblink.Ensembl_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Ensembl_Gene_Id.length > limitString ? '...' : ''}}</td>
+                            <td>{{queryRst.dblink.Refseq_Gene_Id  | limitTo:limitString}}{{queryRst.dblink.Refseq_Gene_Id.length > limitString ? '...' : ''}}</td>
+                            <td>{{queryRst.dblink.Uniprot_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Uniprot_Gene_Id.length > limitString ? '...' : ''}}</td>
                             <td>{{queryRst.assembly.name}}</td>
                         </tr>
+
+                        <div class="appris-table-tshow pull-right pointer"
+                             data-ng-click="isCollapsed = !isCollapsed"
+                             data-ng-show="(seekerRst.match | filter:{namespace:'Gene_Id'} | filter:{type:'archive'}).length > 0">
+                            <span tooltip-placement="top" tooltip="Show/Hide" class="pull-right pointer glyphicon" data-ng-class="{'glyphicon-chevron-right': isCollapsed, 'glyphicon-chevron-down': !isCollapsed}"></span>
+                            <span data-ng-show="isCollapsed">Show</span><span data-ng-show="!isCollapsed">Hide</span> archive data-sets
+                        </div>
+                        <div collapse="isCollapsed">
+                            <tr class="archive" collapse="isCollapsed"
+                                    data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'} | filter:{type:'archive'}"
+                                    data-ng-if="queryRst.namespace == 'Gene_Id'">
+                                <td>[Archive] {{queryRst.source.label}}</td>
+                                <td><a
+                                        data-ng-href="#/database/id/{{queryRst.species}}/{{queryRst.id}}?as={{queryRst.assembly.id}}&sc={{queryRst.source.name}}&ds={{queryRst.dataset}}">{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</a></td>
+                                <!--<td>{{queryRst.dblink.External_Id     | limitTo:limitString}}{{queryRst.dblink.External_Id.length > limitString ? '...' : ''}}</td>-->
+                                <td>{{queryRst.dblink.Ensembl_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Ensembl_Gene_Id.length > limitString ? '...' : ''}}</td>
+                                <td>{{queryRst.dblink.Refseq_Gene_Id  | limitTo:limitString}}{{queryRst.dblink.Refseq_Gene_Id.length > limitString ? '...' : ''}}</td>
+                                <td>{{queryRst.dblink.Uniprot_Gene_Id | limitTo:limitString}}{{queryRst.dblink.Uniprot_Gene_Id.length > limitString ? '...' : ''}}</td>
+                                <td>{{queryRst.assembly.name}}</td>
+                            </tr>
+                        </div>
                         </tbody>
                     </table>
                 </div>
