@@ -116,7 +116,7 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
             }
             // Add seq. id and methods
             resultDetailAnnotHeads.push({
-                id: "transcript_id",
+                id: "transcript_id_lbl",
                 label: "Seq. id"
             },{
                 id: "length_aa",

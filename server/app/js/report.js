@@ -335,7 +335,7 @@ apprisFilters.filter('isSeqRunner', function() {
 });
 
 // Creates report from results with genome input
-apprisFilters.filter('convertTransScoreObj', function() {
+apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter) {
     return function(input) {
         var filtered = {};
         var idList = [];
@@ -343,11 +343,13 @@ apprisFilters.filter('convertTransScoreObj', function() {
         angular.forEach(input, function(item) {
             if ( angular.isDefined(item.annotation) ) {
                 var iTrans = item.transcript_id;
+                var iTrans_lbl = deleteSrcNamesFilter(iTrans);
                 var sLabel = item.type;
                 var sScore = item.score;
                 if ( !(filtered[iTrans]) ) {
                     filtered[iTrans] = {};
                     filtered[iTrans]['transcript_id'] = iTrans;
+                    filtered[iTrans]['transcript_id_lbl'] = iTrans_lbl;
                     filtered[iTrans]['flags'] = '';
                     if ( angular.isDefined(item.transcript_name) ) {
                         filtered[iTrans]['transcript_name'] = item.transcript_name;

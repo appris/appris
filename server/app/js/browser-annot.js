@@ -26,7 +26,7 @@ module.controller('BrowserAnnotController', ['$scope', '$filter', 'Sequencer', f
 
 /* DIRECTIVES */
 
-module.directive('browserAnnotTpl', ['$compile', 'consUrlFirestarligand', 'consUrlPDBstructure', 'consUrlPfamfamily', function($compile, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily) {
+module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarligand', 'consUrlPDBstructure', 'consUrlPfamfamily', function($compile, $filter, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily) {
 
     function createAnnotReferences(residues, methods) {
         var elem = '';
@@ -34,6 +34,7 @@ module.directive('browserAnnotTpl', ['$compile', 'consUrlFirestarligand', 'consU
             var accorHtml = '<accordion close-others="false">';
             angular.forEach(residues, function(item) {
                 var id = item.id;
+                var id_lbl = $filter('deleteSrcNames')(id);
                 var body = '<tabset>';
                 angular.forEach(item.methods, function(method) {
                     var mid = method.id;
@@ -110,7 +111,7 @@ module.directive('browserAnnotTpl', ['$compile', 'consUrlFirestarligand', 'consU
                 body += '</tabset>';
                 accorHtml += '<accordion-group class="accord">';
                 accorHtml += '<accordion-heading>'+
-                    id +
+                    id_lbl +
                     '<i class="pull-right glyphicon" ng-class="{\'glyphicon-chevron-down\': browserTabAnnots, \'glyphicon-chevron-right\': !browserTabAnnots}"></i>'+
                     '</accordion-heading>';
                 accorHtml += body;

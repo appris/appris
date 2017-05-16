@@ -67,7 +67,7 @@ module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligan
                 };
                 var urlExporterWS = serverHostWS+'/rest/exporter';
                 var urlRunnerResultWS = serverHostWS+'/rest/runner/result';
-                    asAServiceOptions.content = createAnnotReferences($scope.query, data, urlExporterWS, urlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
+                    asAServiceOptions.content = createAnnotReferences($filter, $scope.query, data, urlExporterWS, urlRunnerResultWS, consUrlFirestarligand, consUrlPDBstructure, consUrlPfamfamily);
                 var myPopover = $popover(e, asAServiceOptions);
                 myPopover.$promise.then(myPopover.toggle);
             }, function(error) {
@@ -81,7 +81,7 @@ module.controller('BrowserSeqController', ['serverHostWS', 'consUrlFirestarligan
 
 /* DIRECTIVES */
 
-module.directive('browserSeqTpl', ['$compile', function($compile) {
+module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $filter) {
 
     var resPerLine = 70;
     var charsTitle = 40;
@@ -162,6 +162,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
         if ( angular.isArray(splitseqs) && angular.isArray(splitseqs[0].seqs) ) {
             angular.forEach(splitseqs, function(spseq) {
                 var tidx = spseq.id;
+                var tidx_lbl = $filter('deleteSrcNames')(tidx);
                 var splen = spseq.len;
                 var spseqs = spseq.seqs;
                 var seqline = '';
@@ -205,7 +206,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
                     }
                 });
                 elem += '<browser-seq-line '+tidx+'>';
-                elem += '>' + tidx + '|' + splen +'<br>';
+                elem += '>' + tidx_lbl + '|' + splen +'<br>';
                 elem += seqline;
                 elem += '<br>';
                 elem += '</browser-seq-line>';
@@ -234,6 +235,7 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
             for ( var i = 0; i < nlines; i++ ) {
                 angular.forEach(splitseqs, function(spseq) {
                     var tidx = spseq.id;
+                    var tidx_lbl = $filter('deleteSrcNames')(tidx);
                     var spseqs = spseq.seqs;
                     if ( angular.isDefined(spseqs[i]) ) {
                         var spseq = spseqs[i];
@@ -274,8 +276,8 @@ module.directive('browserSeqTpl', ['$compile', function($compile) {
                                 }
                             });
                             var seqid = '';
-                            if ( tidx.length >= charsTitle) { seqid = tidx.substring(0,charsTitle) }
-                            else { seqid = tidx + Array(charsTitle - tidx.length ).join(" ") }
+                            if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle) }
+                            else { seqid = tidx_lbl + Array(charsTitle - tidx_lbl.length ).join(" ") }
                             elem += '<browser-seq-line tidx="'+tidx+'">' + seqid + seqline + '<br>' + '</browser-seq-line>';
                         }
                     }
@@ -471,12 +473,13 @@ function filterMethodsFromRes(methods, mclass) {
     });
     return filmethods;
 }
-function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFirestar, urlPDB, urlPfam) {
+function createAnnotReferences($filter, query, residues, urlExporter, urlRunnerRst, urlFirestar, urlPDB, urlPfam) {
     var elem = '';
     if ( angular.isArray(residues) ) {
         var accorHtml = '<accordion close-others="false">';
         angular.forEach(residues, function(item) {
             var id = item.id;
+            var id_lbl = $filter('deleteSrcNames')(id);
             var body = '<tabset>';
             angular.forEach(item.methods, function(method) {
                 var mid = method.id;
@@ -578,7 +581,7 @@ function createAnnotReferences(query, residues, urlExporter, urlRunnerRst, urlFi
             body += '</tabset>';
             accorHtml += '<accordion-group class="accord">';
             accorHtml += '<accordion-heading>'+
-                id +
+                id_lbl +
                 '<i class="pull-right glyphicon" ng-class="{\'glyphicon-chevron-down\': browserTabAnnots, \'glyphicon-chevron-right\': !browserTabAnnots}"></i>'+
                 '</accordion-heading>';
             accorHtml += body;
