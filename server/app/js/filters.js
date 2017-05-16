@@ -133,7 +133,7 @@ apprisFilters.filter('delete_version', function() {
 // Delete source names from string
 apprisFilters.filter('deleteSrcNames', function(){
     return function(input) {
-        return (!!input) ? input.replace(/[ensembl:|refseq:|uniprot:]/g, '').replace(/^\+/g, '').replace(/\+$/g,'') : '';
+        return (!!input) ? input.replace(/[ensembl:|refseq:|uniprot:]/g, '').replace(/^\++/g, '').replace(/\++$/g,'') : '';
     }
 });
 
