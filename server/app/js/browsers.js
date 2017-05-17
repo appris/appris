@@ -24,10 +24,10 @@ module.controller('BrowsersController', ['$scope', '$routeParams', '$filter', fu
         var ids = '';
         angular.forEach($filter('orderBy')(inids, 'transcript_id'), function(item) {
             if ( item.selected ) {
-                ids += item.transcript_id+',';
+                ids += item.transcript_id+';';
             }
         });
-        ids = ids.replace(/,$/g,'');
+        ids = ids.replace(/;$/g,'');
         var methods = 'appris,';
         angular.forEach(inmethods, function(item) {
             methods += item.name+',';
@@ -73,7 +73,7 @@ module.controller('BrowsersController', ['$scope', '$routeParams', '$filter', fu
             info:       '#infoBrowserSeq',
             template:   'templates/apprisBrowserSeq.tpl.html'
         }];
-        if ( !$scope.isSeqRunner && $scope.sc !== 'uniprot' && $scope.sc !== 'appris' ) {
+        if ( !$scope.isSeqRunner && $scope.sc !== 'uniprot' ) {
             $scope.browsers.push({
                 id:         'genome',
                 title:      'Genome Browser',

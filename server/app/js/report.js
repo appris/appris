@@ -253,7 +253,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
         var ids = '';
         angular.forEach($filter('orderBy')(inputs, 'transcript_id'), function(item) {
             if ( item.selected ) {
-                ids += item.transcript_id+',';
+                ids += item.transcript_id+';';
             }
         });
         ids = ids.replace(/,$/g,'');

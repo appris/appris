@@ -960,7 +960,7 @@ sub get_aln_annotations
 		}
 		my ($report);
 		if ( defined $ids ) {
-			foreach my $t ( split(',', $ids) ) {
+			foreach my $t ( split(';', $ids) ) {
 				if ( defined $t and ($t ne '') ) {
 					my ($st) = substr( $t, 0, 32);
 					if ( exists $talns->{$st} ) {
