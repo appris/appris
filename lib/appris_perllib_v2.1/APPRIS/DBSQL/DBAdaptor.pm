@@ -263,7 +263,7 @@ sub _add_condition_like {
 
 	foreach my $param (@params ) {
 		if (($param eq 'and') || ($param eq 'or')) {
-			$condition .= "%" . $param . "% ";
+			$condition .= $param . " ";
 		} else {
 			my %pair = %{$param};
 			for my $key (keys %pair) {
