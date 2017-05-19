@@ -448,7 +448,7 @@ sub parse_firestar_rst($)
 				if ( defined $residue_position and $residue_position ne '' )
 				{
 					#349     GLLCGGSAGSTVA   PLP[0.71,5.7,99.5]|Cat_Site_Atl[1.00,4,XXX]
-					if ( $transcript_result =~ /$residue_position\t+([^\t]*)\t+([^\n]*)[^\>]*>>>$id/ )
+					if ( $transcript_result =~ /$residue_position\t+([^\t]*)\t+([^\n]*)[^\>]*>>>\Q$id\E/ )
 					{
 						my ($domain) = $1;
 						my ($ligands) = $2; $ligands =~ s/^\s*//; $ligands =~ s/\s*$//; $ligands =~ s/\s+/\|/g; #$ligands = join('|',split(/\s+/,$ligands));
@@ -484,7 +484,7 @@ sub parse_firestar_rst($)
 				if ( defined $residue_position and $residue_position ne '' )
 				{
 					#349     GLLCGGSAGSTVA   PLP[0.71,6,99.5]|Cat_Site_Atl[1.00,4,XXX]					
-					if ( $transcript_result =~ /$residue_position\t+([^\t]*)\t+([^\n]*)[^\>]*>>\t+$id/ )
+					if ( $transcript_result =~ /$residue_position\t+([^\t]*)\t+([^\n]*)[^\>]*>>\t+\Q$id\E/ )
 					{
 						my ($domain) = $1;
 						my ($ligands) = $2; $ligands =~ s/^\s*//; $ligands =~ s/\s*$//; $ligands =~ s/\s+/\|/g; #$ligands = join('|',split(/\s+/,$ligands));
@@ -3127,7 +3127,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 		if ( !defined $ids ) { # by default all
 			$index = $entity->{'_index_transcripts'}->{$transcript_id};
 		}
-		elsif ( defined $ids and $ids =~ /$transcript_id/ ) {
+		elsif ( defined $ids and $ids =~ /\Q$transcript_id\E/ ) {
 			$index = $entity->{'_index_transcripts'}->{$transcript_id};
 		}
 		if ( defined $index ) {
