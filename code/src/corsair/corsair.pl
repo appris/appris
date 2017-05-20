@@ -413,6 +413,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			else
 			{
 					my ($aln_score,$aln_sms) = check_alignment($species,$faalen,$exons,$aln_report, $_);
+#print STDERR "CHECK_ALG: $aln_score $species\n";
 					if ( defined $aln_score and ($aln_score >= 0) ) {
 						# save global score for transc
 						if ( $aln_score > 0 ) {
@@ -507,14 +508,17 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 	my $candstart = $startc[0];
 	my $candend = $endc[$#endc];
 	
+#print STDERR "tarstart: $targstart\n";
 	if ($targstart > 4)						# reject if different N-terminal
 		{return (0,"It has different N-terminal")}
 	
 	my $length_start = abs($targstart - $candstart);
+#print STDERR "len_start: $length_start\n";
 	if ($length_start > 4)						# reject if subject has longer N-terminal
 		{return (0,"Subject has longer N-terminal")}
 	
 	my $length_end = abs($query_length - $candend);
+#print STDERR "len_end: $length_end = abs($query_length - $candend)\n";
 	if ($length_end > 6)						# reject if subject has longer C-terminal
 		{return (0,"Subject has longer C-terminal")}
 	
@@ -560,17 +564,34 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 		if ($totalres > 0) {
 			$identity = $identities/$totalres*100;
 			$gaps = $gapres/$totalres*100;
-		}			
-		if ($identity < 40 && $totalres > 8) { # reject if two exons are too different
-			$aln_sms = "Two exons are too different";
-			$cds_flag = 0;
-			$aln_flag = 0;
 		}
-		if ($gaps > 33) { # reject if exons have substantial gaps
-			$aln_sms = "Exons have substantial gaps";
-			$cds_flag = 0;
-			$aln_flag = 0;
+		# scores when there are exons info
+		if ( defined $gff_file and (-e $gff_file) and (-s $gff_file > 0) ) {
+			if ($identity < 40 && $totalres > 8) { # reject if two exons are too different
+				$aln_sms = "Two exons are too different";
+				$cds_flag = 0;
+				$aln_flag = 0;
+			}
+			if ($gaps > 33) { # reject if exons have substantial gaps
+				$aln_sms = "Exons have substantial gaps";
+				$cds_flag = 0;
+				$aln_flag = 0;
+			}
 		}
+		# scores when there are exons info
+		else {
+			if ($identity < 60) { # reject if the sequence is too different
+				$aln_sms = "Two exons are too different";
+				$cds_flag = 0;
+				$aln_flag = 0;
+			}
+			if ($gaps > 3.3) { # reject if sequence has substantial gaps
+				$aln_sms = "Exons have substantial gaps";
+				$cds_flag = 0;
+				$aln_flag = 0;
+			}			
+		}
+#print STDERR "ALN_FLAG:  total res: $totalres iden: $identity gaps: $gaps ($gapres/$totalres*100) => $aln_flag\n";
 
 		my ($cds_score) = $cds_flag*$specie_point;				
 		$$ref_report->{$pep_index}->{$specie} = {
