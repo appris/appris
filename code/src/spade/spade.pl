@@ -406,8 +406,8 @@ sub _run_pfamscan($$)
 	
 
 	# Run pfamscan
-	my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
-	#my ($pfamscan_sequence_file) = $ws_cache.'/seq.'.$PROG_DB;
+	#my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
+	my ($pfamscan_sequence_file) = $ws_cache.'/seq.'.$PROG_DB;
 	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Cached pfamscan
 	{
 		eval {
