@@ -102,33 +102,34 @@
 
 1. Create directory with date version. Eg. Pfam_201706
 
-	$ mkdir Pfam_201706
+	$ mkdir Pfam_201706 && cd Pfam_201706 
 
 2. Download release note file:
 
 	$ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/relnotes.txt
 	$ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam.version.gz
 		
-3. Get the Pfam database from:
+3. Get the Pfam database in a raw dir (and unzip them):
 
-	$ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam24.0/Pfam-A.hmm.*
+	$ mkdir raw && cd raw && wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam24.0/Pfam-A.hmm.* && gunzip Pfam-A.hmm.*.gz
 
-4. 	To use the active site option you will also need to	download the active site alignments:
+4. 	To use the active site option you will also need to	download the active site alignments (and unzip them):
 
-	$ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/active_site.dat.gz
+	$ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/active_site.dat.gz && gunzip active_site.dat.gz
 
-5. Unzip them if necessary
-
-    $ gunzip Pfam-A.hmm.*.gz active_site.dat.gz
-
-6. Grab and install HMMER, NCBI BLAST and Bioperl, and make sure your paths etc are set up properly.
+5. Grab and install HMMER, NCBI BLAST and Bioperl, and make sure your paths etc are set up properly.
 	TO REMAIND YOU, the last version of HMMER has to be: 3.1b2
 	
-7. Discard "bad" domains running the following script:
+6. Create Pfam database in HMM format with a given list of domains:
 
-	$ Pfam-A.hmm Pfam-A.hmm.dat
+	$ perl scripts/spade/selectGivenDomains.pl \
+		-d AllPfamDomainData.20170529.ID.txt \
+		-i1 ../../pfam_201706/raw/Pfam-A.hmm \
+		-i2 ../../pfam_201706/raw/Pfam-A.hmm.dat \
+		-o1 ../../pfam_201706/Pfam-A.hmm \
+		-o2 ../../pfam_201706/Pfam-A.hmm.dat
 	
-8. You will need to generate binary file for Pfam-A.hmm by running the following command:
+7. You will need to generate binary file for Pfam-A.hmm by running the following command:
 	
 	$ hmmpress Pfam-A.hmm
 	
