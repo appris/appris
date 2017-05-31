@@ -26,9 +26,9 @@ perl $BINDIR/parseXREF.pl \
 echo "-- create APPRIS protein sequences based on xref"
 perl $APPRIS_PROGRAMS_SRC_DIR/geneset/geneseqs.pl \
 	-x  $XREFDIR/xref.ens84_rs107_UPentry-gene.txt \
-	-e  $FEATDIR/e84_g24/Homo_sapiens.GRCh38.pep.all.extra.fa \
+	-e  $FEATDIR/e84/Homo_sapiens.GRCh38.pep.all.extra.fa \
 	-r  $FEATDIR/rs107/protein.extra.fa \
-	-u  $FEATDIR/up201606/uniprot-proteome.extra.fasta \
+	-u  $FEATDIR/up201606/uniprot-proteome.extra.no_genenames.fasta \
 	-o  $OUTDIR/appris_seqs.transl.fa \
 	--loglevel=info
 # 	--loglevel=debug --logfile=createAPPRISseqs.log
