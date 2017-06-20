@@ -29,11 +29,11 @@
                         {
                             "paramType": "path",
                             "name": "queryId",
-                            "description": "Ensembl gene/transcript identifier, e.g. ENSRNOG00000018184,ENSDARG00000002830",
+                            "description": "Ensembl gene/transcript identifier, e.g. ENSRNOG00000018184;ENSDARG00000002830",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "ENSG00000099899,ENSG00000099904"
+                            "defaultValue": "ENSG00000099899;ENSG00000099904"
                         },
                         {
                             "paramType": "query",
@@ -116,7 +116,7 @@
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "TPM1,TRMT2A"
+                            "defaultValue": "TPM1;TRMT2A"
                         },
                         {
                             "paramType": "query",
