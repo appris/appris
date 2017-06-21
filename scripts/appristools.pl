@@ -121,7 +121,7 @@ sub main()
 						#	get env vars for dataset
 						my ($conf_env_file) = ( $cfg_dataset->{'pipeline'}->{'envfile'} =~ /^\// ) ? $cfg_dataset->{'pipeline'}->{'envfile'} : $ENV{APPRIS_SCRIPTS_CONF_DIR}.'/'.$cfg_dataset->{'pipeline'}->{'envfile'};
 						my ($cfg_dataset_id) = $cfg_dataset->{'id'};
-						my ($cfg_dataset_name) = $cfg_dataset_id; $cfg_dataset_name =~ s/v[0-9]+\.[^\$]*$//g;
+						my ($cfg_dataset_name) = $cfg_dataset_id; $cfg_dataset_name =~ s/v[0-9]+\.*[^\$]*$//g;
 						# 	create tmp ini file for db
 						my ($conf_db_file) = create_tmp_db_ini($cfg_dataset);
 												
