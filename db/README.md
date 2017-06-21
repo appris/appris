@@ -123,15 +123,15 @@
 6. Create Pfam database in HMM format with a given list of domains:
 
 	$ perl scripts/spade/selectGivenDomains.pl \
-		-d AllPfamDomainData.20170529.ID.txt \
-		-i1 ../../pfam_201706/raw/Pfam-A.hmm \
-		-i2 ../../pfam_201706/raw/Pfam-A.hmm.dat \
-		-o1 ../../pfam_201706/Pfam-A.hmm \
-		-o2 ../../pfam_201706/Pfam-A.hmm.dat
+		-d scripts/spade/AllPfamDomainData.20170621.ID.txt \
+		-i1 pfam_201706/raw/Pfam-A.hmm \
+		-i2 pfam_201706/raw/Pfam-A.hmm.dat \
+		-o1 pfam_201706/Pfam-A.hmm \
+		-o2 pfam_201706/Pfam-A.hmm.dat
 	
 7. You will need to generate binary file for Pfam-A.hmm by running the following command:
 	
-	$ hmmpress Pfam-A.hmm
+	$ cd pfam_201706 && hmmpress Pfam-A.hmm
 	
 
     
