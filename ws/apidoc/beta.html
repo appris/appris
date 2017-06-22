@@ -110,8 +110,13 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li>
-                    <a href="http://appris-dev.bioinfo.cnio.es/#/tools">Tools</a>
+                <li class="dropdown" dropdown is-open="status.isopen">
+                    <a href="http://appris-dev.bioinfo.cnio.es/#/tools" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Tools <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="http://appris-dev.bioinfo.cnio.es/#/seeker">Database</a></li>
+                        <li><a href="http://appris-dev.bioinfo.cnio.es/#/server">WebServer</a></li>
+                        <li><a href="http://apprisws-dev.bioinfo.cnio.es/apidoc/">WebServices</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="http://appris-dev.bioinfo.cnio.es/#/downloads">Downloads</a>
