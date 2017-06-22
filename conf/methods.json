@@ -12,7 +12,7 @@
     "homologous_structure": {
         "order":        2,
         "id":          "homologous_structure",
-        "name":        "matador3d",
+        "name":        "matador3d2",
         "label":        "3D Structure Score",
         "desc":         "Regions with known 3D structure",
         "description":  "Matador3D analyses protein structural information for each variant",
