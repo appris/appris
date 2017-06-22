@@ -4015,6 +4015,10 @@ sub _parse_seq_data($)
 						
 						$main_id = $gene_id;
 					}
+					elsif ( scalar(@ids) > 1 and $ids[0] eq 'appris' ) {
+						$sequence_id = $ids[1];
+						$transl_id = $ids[1];
+					}
 					
 					my ($gene_ids);
 					if ( $seq->desc =~ /gene_ids\>([^\s]+)/ ) { $gene_ids = $1 }
