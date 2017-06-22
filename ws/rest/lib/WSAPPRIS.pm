@@ -389,7 +389,7 @@ sub _create_param_seq {
 			if ( defined $transl_cont and exists $transl_cont->{$transcript_id} and defined $transl_cont->{$transcript_id} ) {
 				my ($seq) = $transl_cont->{$transcript_id};
 				my ($len) = length($seq);
-				$gtransl_cont .= ">$transcript_id|$len\n";
+				$gtransl_cont .= ">appris|$transcript_id\_$len\n";
 				$gtransl_cont .= $seq."\n"
 			}			
 		}
@@ -435,7 +435,6 @@ sub _create_param_ensembl {
 			if ( $g_cond ne '' ) {					
 				eval {
 					my ($cmd) = "awk 'BEGIN{IGNORECASE=1} { if ( $g_cond ) {print \$0} }' $data_file >> $gdata_file";
-					info("** script: $cmd\n");
 					my (@cmd_out) = `$cmd`;
 				};
 				return undef if($@);			
