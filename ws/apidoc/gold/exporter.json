@@ -10,8 +10,8 @@
             "operations": [
                 {
                     "method": "GET",
-                    "summary": "Finds APPRIS data by a Ensembl identifier",
-                    "notes": "Finds APPRIS data from a given Ensembl gene/transcript identifier.",
+                    "summary": "Finds APPRIS data by a Ensembl/Entrez gene identifier",
+                    "notes": "Finds APPRIS data from a given Ensembl/Entrez gene identifier.<br/><br/>Note: For results from UniProt, the ID is a HUGO name.",
                     "nickname": "getAPPRISById",
                     "type": "",
                     "produces": ["application/json", "text/x-gtf", "text/x-bed"],
@@ -29,11 +29,11 @@
                         {
                             "paramType": "path",
                             "name": "queryId",
-                            "description": "Ensembl gene/transcript identifier, e.g. ENSRNOG00000018184,ENSDARG00000002830",
+                            "description": "Gene identifier, e.g. ENSRNOG00000018184; ENSDARG00000002830; 101882431 (danio_rerio)",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "ENSG00000099899,ENSG00000099904"
+                            "defaultValue": "ENSG00000099899"
                         },
                         {
                             "paramType": "query",
@@ -58,12 +58,30 @@
                         },
                         {
                             "paramType": "query",
-                            "name": "ens",
-                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "name": "as",
+                            "description": "Assembly version, e.g. hg19, mm10, or danRer10. By default, take the lastest one.",
                             "required": false,
-                            "type": "integer",
+                            "type": "string",
                             "allowMultiple": false,
-                            "enum": [74,77]
+                            "enum": ["hg19","mm10","danRer10"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sc",
+                            "description": "Source from gene (reference set): ensembl,refseq, or uniprot. By default, take all matches.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["ensembl","refseq","uniprot"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ds",
+                            "description": "Dataset name based on APPRIS versions. Ideal the check archive results. e.g. e87v22, or rs105v22.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["g12v22","e87v22"]
                         }
                     ],
                     "responseMessages": [
@@ -112,11 +130,11 @@
                         {
                             "paramType": "path",
                             "name": "queryName",
-                            "description": "HUGO gene/transcript name, e.g. ",
+                            "description": "HUGO gene name, e.g. TRMT2A",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "TPM1,TRMT2A"
+                            "defaultValue": "TPM1"
                         },
                         {
                             "paramType": "query",
@@ -141,12 +159,30 @@
                         },
                         {
                             "paramType": "query",
-                            "name": "ens",
-                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "name": "as",
+                            "description": "Assembly version, e.g. hg19, mm10, or danRer10. By default, take the lastest one.",
                             "required": false,
-                            "type": "integer",
+                            "type": "string",
                             "allowMultiple": false,
-                            "enum": [74,77]
+                            "enum": ["hg19","mm10","danRer10"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sc",
+                            "description": "Source from gene (reference set): ensembl,refseq, or uniprot. By default, take all matches.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["ensembl","refseq","uniprot"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ds",
+                            "description": "Dataset name based on APPRIS versions. Ideal the check archive results. e.g. e87v22, or rs105v22.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["g12v22","e87v22"]
                         }
                     ],
                     "responseMessages": [
@@ -190,16 +226,16 @@
                             "required": true,
                             "type": "string",
                             "allowMultiple": false,
-                            "defaultValue": "homo_sapiens"
+                            "defaultValue": "danio_rerio"
                         },
                         {
                             "paramType": "path",
                             "name": "queryPos",
-                            "description": "Genomic region (chr:start-end), e.g. chr22:30773835-30821305 or 22:30773835-30821305",
+                            "description": "Genomic region (chr:start-end), e.g. chr22:30773835-30821305 (human) or NC_007116.6:17534891-17542252 (zebra-fish)",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "chr22:30773835-30821305,chr15:63042632-63071915"
+                            "defaultValue": "NC_007116.6:17534891-17542252"
                         },
                         {
                             "paramType": "query",
@@ -224,12 +260,30 @@
                         },
                         {
                             "paramType": "query",
-                            "name": "ens",
-                            "description": "Ensembl version, e.g. 74 (GRCh37). By default, take the current one.<br/>Warning: take into account the ensembl version (assembly version) when you make the query",
+                            "name": "as",
+                            "description": "Assembly version, e.g. hg19, mm10, or danRer10. By default, take the lastest one.",
                             "required": false,
-                            "type": "integer",
+                            "type": "string",
                             "allowMultiple": false,
-                            "enum": [74,77]
+                            "enum": ["hg19","mm10","danRer10"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sc",
+                            "description": "Source from gene (reference set): ensembl, or refseq. By default, take all matches.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["ensembl","refseq"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ds",
+                            "description": "Dataset name based on APPRIS versions. Ideal the check archive results. e.g. e87v22, or rs105v22.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["g12v22","e87v22"]
                         }
                     ],
                     "responseMessages": [

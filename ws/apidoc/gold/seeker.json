@@ -10,8 +10,8 @@
             "operations": [
                 {
                     "method": "GET",
-                    "summary": "Finds genes/transcripts data",
-                    "notes": "Finds genes/transcripts data.",
+                    "summary": "Finds genes data",
+                    "notes": "Finds genes data.",
                     "nickname": "getGeneData",
                     "type": "",
                     "produces": ["application/json"],
@@ -20,20 +20,47 @@
                         {
                             "paramType": "path",
                             "name": "queryId",
-                            "description": "Ensembl gene/transcript identifier, or gene/transcript name, e.g. ENSG00000099899,RNF215",
+                            "description": "Gene identifier, or gene name, e.g. ENSG00000099899; RNF215; 101882431",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "ENSG00000099899,RNF215"
+                            "defaultValue": "ENSG00000099899"
                         },
                         {
                             "paramType": "query",
-                            "name": "ens",
-                            "description": "Ensembl version, e.g. 74. By default, take the current one",
+                            "name": "sp",
+                            "description": "Species name, e.g. 'homo_sapiens', or 'rattus_norvegicus'. By default, take all matches.",
                             "required": false,
-                            "type": "integer",
+                            "type": "string",
                             "allowMultiple": false,
-                            "enum": [77,74]
+                            "enum": ["homo_sapiens","mus_musculus","danio_rerio"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "as",
+                            "description": "Assembly version, e.g. hg19, mm10, or danRer10. By default, take the lastest one.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["hg19","mm10","danRer10"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sc",
+                            "description": "Source from gene (reference set): ensembl,refseq, or uniprot. By default, take all matches.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["ensembl","refseq","uniprot"]
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ds",
+                            "description": "Dataset name based on APPRIS versions. Ideal the check archive results. e.g. e87v22, or rs105v22.",
+                            "required": false,
+                            "type": "string",
+                            "allowMultiple": false,
+                            "enum": ["g12v22","e87v22"]
                         }
                     ],
                     "responseMessages": [
