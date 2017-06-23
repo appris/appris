@@ -2547,6 +2547,7 @@ sub parse_appris_rst($$)
 			my ($prin_isoform_annot) = $rst2[18];
 			my ($relia_annot) = $rst2[19];
 			
+			$cutoffs->{$transc_id}->{'length_aa'} = $aa_length;
 			$cutoffs->{$transc_id}->{'functional_residues_signal'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_signal'} = $con_struct_annot;
 			$cutoffs->{$transc_id}->{'vertebrate_conservation_signal'} = $vert_con_annot;

@@ -437,6 +437,10 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
                         id['id'] = key;
                         idList.push(id);
                         filtered['transcript_id'] = key;
+                        filtered['transcript_id_lbl'] = key;
+                        if ( angular.isDefined(item.length_aa) ) {
+                            filtered['length_aa'] = item.length_aa;
+                        }
                         if ( angular.isDefined(item.principal_isoform_signal) ) {
                             var sAnnot = '-';
                             if ( angular.isDefined(item.reliability) ) {
