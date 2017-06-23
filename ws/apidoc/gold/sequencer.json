@@ -33,7 +33,7 @@
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "ENSG00000099899,ENSG00000099904"
+                            "defaultValue": "ENSG00000099899"
                         },
                         {
                             "paramType": "query",
@@ -123,7 +123,7 @@
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "TPM1"
+                            "defaultValue": "TRMT2A"
                         },
                         {
                             "paramType": "query",
@@ -209,11 +209,11 @@
                         {
                             "paramType": "path",
                             "name": "queryPos",
-                            "description": "Genomic region (chr:start-end), e.g. chr22:30773835-30821305",
+                            "description": "Genomic region (chr:start-end), e.g. chr22:30773835-30821305 (human) or NC_007116.6:17534891-17542252 (zebra-fish)",
                             "required": true,
                             "type": "string",
                             "allowMultiple": true,
-                            "defaultValue": "chr22:30773835-30821305,chr15:63042632-63071915"
+                            "defaultValue": "NC_007116.6:17534891-17542252"
                         },
                         {
                             "paramType": "query",
