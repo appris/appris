@@ -475,11 +475,14 @@ function filterMethodsFromRes(methods, mclass) {
 }
 function createAnnotReferences($filter, query, residues, urlExporter, urlRunnerRst, urlFirestar, urlPDB, urlPfam) {
     var elem = '';
+    var charsTitle = 40;
     if ( angular.isArray(residues) ) {
         var accorHtml = '<accordion close-others="false">';
         angular.forEach(residues, function(item) {
             var id = item.id;
-            var id_lbl = $filter('deleteSrcNames')(id);
+            var lbl = $filter('deleteSrcNames')(id);
+            var id_lbl = lbl;
+            if ( lbl.length >= charsTitle) { id_lbl = lbl.substring(0,charsTitle-1) }
             var body = '<tabset>';
             angular.forEach(item.methods, function(method) {
                 var mid = method.id;
