@@ -276,9 +276,9 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
                                 }
                             });
                             var seqid = '';
-                            if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle) }
+                            if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle-1) }
                             else { seqid = tidx_lbl + Array(charsTitle - tidx_lbl.length ).join(" ") }
-                            elem += '<browser-seq-line tidx="'+tidx+'">' + seqid + seqline + '<br>' + '</browser-seq-line>';
+                            elem += '<browser-seq-line tidx="'+tidx+'">' + seqid + ' ' + seqline + '<br>' + '</browser-seq-line>';
                         }
                     }
                 });
@@ -286,7 +286,7 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
                 if ( angular.isDefined(spmatch.seq) && (spmatch.seq !== '') ) {
                     var seqline = spmatch.seq;
                     var seqid = Array(charsTitle).join(" ");
-                    elem += '<browser-seq-line match>' + seqid + seqline + '<br>' + '</browser-seq-line>';
+                    elem += '<browser-seq-line match>' + seqid + ' ' + seqline + '<br>' + '</browser-seq-line>';
                 }
                 elem += '<br>';
             }
