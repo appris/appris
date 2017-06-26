@@ -223,7 +223,7 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
         var splitmatch = splitMatchAlnRef(sequences.match);
         if ( angular.isArray(splitseqs) && angular.isArray(splitseqs[0].seqs) ) {
             elem += '<browser-seq-line>';
-            elem += Array(charsTitle).join(" ");
+            elem += Array(charsTitle+1).join(" ");
             for ( var i = 1; i <= resPerLine; i++ ) {
                 if ( i === 1 ) { elem += i }
                 else if ( i === resPerLine ) { elem += i }
