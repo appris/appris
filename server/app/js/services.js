@@ -312,7 +312,19 @@ apprisServices.factory('Sequencer', ['$http', '$q', 'serverHostWS', function($ht
             urlParams = params.tid+'/'+params.species+'/'+params.id;
         }
         if ( angular.isDefined(params.operation) ) { qParams.operation = params.operation }
-        if ( angular.isDefined(params.methods) && (params.methods != '') ) { qParams.methods = params.methods }
+
+        if ( angular.isDefined(params.methods) && (params.methods != '') ) {
+            // HARD-CORE: for ensembl/refseq dataset, the methods is the first version of Matador3D
+            if ( angular.isDefined(params.sc) && (params.sc == 'ensembl' || params.sc == 'refseq') ) {
+                var mets = params.methods;
+                mets = mets.replace(/matador3d2/g,'matador3d');
+                qParams.methods = mets;
+            }
+            else {
+                qParams.methods = params.methods;
+            }
+        }
+
         if ( angular.isDefined(params.ids) ) { qParams.ids = params.ids }
         if ( angular.isDefined(params.as) ) { qParams.as = params.as }
         if ( angular.isDefined(params.sc) ) { qParams.sc = params.sc }
