@@ -335,7 +335,7 @@ apprisFilters.filter('isSeqRunner', function() {
 });
 
 // Creates report from results with genome input
-apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter) {
+apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extractSrcNamesFilter) {
     return function(input) {
         var filtered = {};
         var idList = [];
@@ -384,16 +384,16 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter) {
                         id['length_aa'] = item.length_aa;
                     }
                     if ( angular.isDefined(item.ensembl_transcript_id) ) {
-                        id['ensembl_transcript_id'] = item.ensembl_transcript_id;
-                        filtered[iTrans]['ensembl_transcript_id'] = item.ensembl_transcript_id;
+                        id['ensembl_transcript_id'] =  extractSrcNamesFilter(iTrans, 'ensembl');
+                        filtered[iTrans]['ensembl_transcript_id'] = extractSrcNamesFilter(iTrans, 'ensembl');
                     }
                     if ( angular.isDefined(item.refseq_transcript_id) ) {
-                        id['refseq_transcript_id'] = item.refseq_transcript_id;
-                        filtered[iTrans]['refseq_transcript_id'] = item.refseq_transcript_id;
+                        id['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq');
+                        filtered[iTrans]['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq');
                     }
                     if ( angular.isDefined(item.uniprot_transcript_id) ) {
-                        id['uniprot_transcript_id'] = item.uniprot_transcript_id;
-                        filtered[iTrans]['uniprot_transcript_id'] = item.uniprot_transcript_id;
+                        id['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot');
+                        filtered[iTrans]['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot');
                     }
                     idList.push(id);
                 }

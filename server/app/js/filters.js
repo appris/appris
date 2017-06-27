@@ -137,6 +137,28 @@ apprisFilters.filter('deleteSrcNames', function(){
     }
 });
 
+// Extract the ids from data source
+apprisFilters.filter('extractSrcNames', function(){
+    return function(input, type) {
+        if ( type === 'ensembl' ) {
+            var found = input.match(/ensembl:([^\+]*)\+/);
+        }
+        else if ( type === 'refseq' ) {
+            var found = input.match(/refseq:([^\+]*)\+/);
+        }
+        else if ( type === 'uniprot' ) {
+            var found = input.match(/uniprot:([^\$]*)$/);
+        }
+        if ( angular.isArray(found) && found.length >= 1 ) {
+            var charsTitle = 100;
+            return ( found[1].length >= charsTitle ) ? found[1].substring(0,charsTitle) : found[1];
+        }
+        else {
+            return '';
+        }
+    }
+});
+
 
 /**
  * SPECIFIC FILTERS
