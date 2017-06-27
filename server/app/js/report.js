@@ -159,6 +159,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         $scope.alert.message = "Your query were not found. Refreshing page helps to fix the problem (clearing the cache). If problem persistent, Please, contact the administrators";
                     }
                     else {
+console.log(resultData);
                         $scope.resultAnnots = resultData[1];
                         $scope.browserDataMethods = angular.copy($scope.currentMethods);
                         $scope.addBrowserDatalSeqs();
@@ -340,6 +341,7 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
         var filtered = {};
         var idList = [];
         var selected = [];
+        var titleSize = 50;
         angular.forEach(input, function(item) {
             if ( angular.isDefined(item.annotation) ) {
                 var iTrans = item.transcript_id;
@@ -349,7 +351,7 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                 if ( !(filtered[iTrans]) ) {
                     filtered[iTrans] = {};
                     filtered[iTrans]['transcript_id'] = iTrans;
-                    filtered[iTrans]['transcript_id_lbl'] = iTrans_lbl;
+                    filtered[iTrans]['transcript_id_lbl'] = ( iTrans_lbl.length >= titleSize ) ? iTrans_lbl.substring(0,titleSize)+'...' : iTrans_lbl;
                     filtered[iTrans]['flags'] = '';
                     if ( angular.isDefined(item.transcript_name) ) {
                         filtered[iTrans]['transcript_name'] = item.transcript_name;
@@ -384,16 +386,16 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                         id['length_aa'] = item.length_aa;
                     }
                     if ( angular.isDefined(item.ensembl_transcript_id) ) {
-                        id['ensembl_transcript_id'] =  extractSrcNamesFilter(iTrans, 'ensembl');
-                        filtered[iTrans]['ensembl_transcript_id'] = extractSrcNamesFilter(iTrans, 'ensembl');
+                        id['ensembl_transcript_id'] =  extractSrcNamesFilter(iTrans, 'ensembl', titleSize);
+                        filtered[iTrans]['ensembl_transcript_id'] = extractSrcNamesFilter(iTrans, 'ensembl', titleSize);
                     }
                     if ( angular.isDefined(item.refseq_transcript_id) ) {
-                        id['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq');
-                        filtered[iTrans]['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq');
+                        id['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq', titleSize);
+                        filtered[iTrans]['refseq_transcript_id'] = extractSrcNamesFilter(iTrans, 'refseq', titleSize);
                     }
                     if ( angular.isDefined(item.uniprot_transcript_id) ) {
-                        id['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot');
-                        filtered[iTrans]['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot');
+                        id['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot', titleSize);
+                        filtered[iTrans]['uniprot_transcript_id'] = extractSrcNamesFilter(iTrans, 'uniprot', titleSize);
                     }
                     idList.push(id);
                 }
@@ -426,6 +428,7 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
     return function(input) {
         var idList = [];
         var selected = [];
+        var titleSize = 50;
         if ( angular.isDefined(input) && input.length > 0 ) {
             var data = input[0];
             if ( data.appris && angular.isObject(data.appris) ) {
@@ -437,7 +440,7 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
                         id['id'] = key;
                         idList.push(id);
                         filtered['transcript_id'] = key;
-                        filtered['transcript_id_lbl'] = key;
+                        filtered['transcript_id_lbl'] = ( key.length >= titleSize ) ? key.substring(0,titleSize)+'...' : key;
                         if ( angular.isDefined(item.length_aa) ) {
                             filtered['length_aa'] = item.length_aa;
                         }

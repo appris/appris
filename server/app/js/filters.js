@@ -139,7 +139,7 @@ apprisFilters.filter('deleteSrcNames', function(){
 
 // Extract the ids from data source
 apprisFilters.filter('extractSrcNames', function(){
-    return function(input, type) {
+    return function(input, type, size) {
         if ( type === 'ensembl' ) {
             var found = input.match(/ensembl:([^\+]*)\+/);
         }
@@ -150,8 +150,7 @@ apprisFilters.filter('extractSrcNames', function(){
             var found = input.match(/uniprot:([^\$]*)$/);
         }
         if ( angular.isArray(found) && found.length >= 1 ) {
-            var charsTitle = 100;
-            return ( found[1].length >= charsTitle ) ? found[1].substring(0,charsTitle) : found[1];
+            return ( found[1].length >= size ) ? found[1].substring(0,size)+'...' : found[1];
         }
         else {
             return '';
