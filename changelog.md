@@ -1,35 +1,69 @@
 ___
-## 2017_05.v23
+## 2017_06.v24
 ```
-SERVER-RELEASE:   2017_05.v23
-CODE-RELEASE:     4.7.2.16
+SERVER-RELEASE:   2017_06.v24
+CODE-RELEASE:     4.7.2.17
 ```
 
 ### Highlights
 
 
+### Server (4.7)
+
+### Code (2.17)
+
 TODO!!
++ SPADE
+	- New database with the curated domains of Pfam-A.
+
+	
+
+___
+## 2017_06.v23
+```
+SERVER-RELEASE:   2017_07.v23.pre
+CODE-RELEASE:     4.7.2.16
+```
+
+### Highlights
+
++ Ensembl 90. New annotations for the following species:
+	Human
+	Mouse
+	Zebra-fish
+	Pig		(new assembly Sscrofa11.1)
+	
+	
+### Server (4.7)
+
+### Code (2.16)
+
+
+___
+## 2017_06.v23
+```
+SERVER-RELEASE:   2017_06.v23
+CODE-RELEASE:     4.7.2.16
+```
+
+### Highlights
+
 + Creation of APPRIS gene-set (version a1) for all vertebrate species located: human, mouse, zebra-fish, rat, pig, chimp. 
 The APPRIS gene-set has been developed from the join of the gene sets of Ensembl and RefSeq, and enrich with the isoforms of UniProt.
 
-TODO!!
 + New APPRIS annotations using the gene dataset of RefSeq for the following species:
-	Human 		(version 108)
+	Human       (version 108)
+	Mouse       (version 106)
+	Zebra-fish  (version 105)
+	Rat         (version 106)
+	Pig         (version 105)
+	Chimp       (version 104)
 	
-	Mouse 		(version 106)
-	Zebra-fish	(version 105)
-	Rat 		(version 106)
-	Pig			(version 105)
-	Chimp		(version 104)
-	
-TODO!!
 + New APPRIS annotations using the gene names annotated in UniProt for the following species:
-	Human 		(version 2017_03)
-	Pig			(version 2017_02)
-	Chimp		(version 2017_02)
+	Human       (version 2017_03)
+	Pig         (version 2017_02)
+	Chimp       (version 2017_02)
 	
-TODO!!!
-New releases for RefSeq in HUMAN (rs108)
 
 ### Server (4.7)
 
@@ -38,19 +72,51 @@ New releases for RefSeq in HUMAN (rs108)
 + PROTEO
 	- Bug fixed printing the number of peptides. Eg. PDE3B
 
++ THUMP
+	- Bug Fixed: printing the TMH
+	Eg, http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ensembl:ENSG00000156869+refseq:391059?as=hg38&sc=appris&ds=a1v23		
+
++ Bug fixed: printing annotatios in the method pop-ups of Sequence Browser when the transcript id is too long.
+Eg. "ensembl:ENSG00000180509+refseq:3753"
+
++ Print the whole identifiers in the "Principal Isoforms" panel of the website report.
+Eg. http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ensembl:ENSG00000224712+refseq:642778?as=hg38&sc=appris&ds=a1v23 
+
++ Matador3D: print the Matador3D and Matador3D2 residues when the dataset comes from Ensembl and UniProt/APPRIS, respectively.
+Eg. from ensembl dataset http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ENSG00000196323?as=hg38&sc=ensembl&ds=e88v22
+Eg. from appris dataset http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ensembl:ENSG00000196323+refseq:29068?as=hg38&sc=appris&ds=a1v23
+Now, in this examples, is printing Matador3D2 in both cases. Not Matador3D and Matador3D2
+
+
 ### Code (2.16)
 
 + SPADE
 	- Bugs fixed: parsing the Pfam outputs for APPRIS databases.
 
-TODO!!!
++ Bug fixed: inserting genes as "ensembl:ENSG00000180509+refseq:3753" from the appris gene dataset (MSG: No a correct stable id).
+
++ Bug fixed: inserting firestar residues into database. for genes in appris dataset. 
+
 + Matador3D2
-	- New DB!!
-	- Include the 2 methods of Matador3D and appris has to choose
+	- New DB (PDB_70_with_pdb_seq)
+
++ APPRIS
+	- Matador3D2 is used for appris gene set and UniProt. Matador3D is used for the rest of the data-sets (Ensembl, RefSeq). 
+
++ PROTEO
+	- Bug fixed: saving the protemic experiments into appris results
+	Eg. http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ENSG00000049540?as=hg38&sc=ensembl&ds=e88v22	
 	
- 
-
-
++ CORSAIR
+	- Tuning the conservation score when there are not exon information
+	Eg. NM_001012720 in ensembl:ENSG00000148604+refseq:5995 
+	Eg. NM_001122842 in ensembl:ENSG00000111912+refseq:135112
+	Eg. XM_006722069 in ensembl:ENSG00000184922+refseq:752 
+	
++ THUMP
+	- Bug Fixed: getting on consensus section.
+	Eg, http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ensembl:ENSG00000156869+refseq:391059?as=hg38&sc=appris&ds=a1v23
+	
 
 
 ___
