@@ -159,7 +159,6 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                         $scope.alert.message = "Your query were not found. Refreshing page helps to fix the problem (clearing the cache). If problem persistent, Please, contact the administrators";
                     }
                     else {
-console.log(resultData);
                         $scope.resultAnnots = resultData[1];
                         $scope.browserDataMethods = angular.copy($scope.currentMethods);
                         $scope.addBrowserDatalSeqs();
