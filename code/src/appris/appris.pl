@@ -120,17 +120,12 @@ sub main()
 	my ($crash_result);
 	my ($inertia_result);
 	my ($proteo_result);
-	my ($involved_methods);
 
 	# determine the methods involved in the final decision
-	# If we have genome coordinates, then we use Matador3D. Otherwise, we use Matador3D2.
-	# By default, we use Matador3D
-	unless ( defined $data_file and defined $transcripts_file and defined $translations_file ) {
-		$involved_methods = $APPRIS_METHODS;
-		$involved_methods =~ s/matador3d/matador3d2/g;
-	}
-	else {
-		$involved_methods = $APPRIS_METHODS;
+	# By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
+	my ($involved_methods) = $APPRIS_METHODS;
+	if ( defined $data_file and defined $transcripts_file and defined $translations_file ) {
+		$involved_methods =~ s/matador3d2/matador3d/g;
 	}
 
 	# get sequence data

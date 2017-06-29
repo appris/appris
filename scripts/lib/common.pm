@@ -512,11 +512,10 @@ sub src_appris_decision($$$$$;$)
 	$main::THUMP_CUTOFF				= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
 	
 	# determine the methods involved in the final decision
-	# If we have genome coordinates, then we use Matador3D. Otherwise, we use Matador3D2.
-	# By default, we use Matador3D
+	# By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
+	# In this case, we don't have genome coordinates.
 	my ($involved_methods) = $main::APPRIS_METHODS;
-	$involved_methods =~ s/matador3d/matador3d2/g;
-	
+		
 	# create temporal sequence file for the given ids
 	my ($seq_content) = '';
 	my ($seq_tmpfile) = File::Temp->new( UNLINK => 1, SUFFIX => '.appris.seq' );
