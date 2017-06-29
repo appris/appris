@@ -502,6 +502,7 @@ sub src_appris_decision($$$$$;$)
 	# Declare appris cutoffs	
 	my ($cfg) = new Config::IniFiles( -file =>  $CONFIG_FILE );
 	$main::APPRIS_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'cutoff');
+	$main::APPRIS_METHODS			= $cfg->val( 'APPRIS_VARS', 'methods');
 	$main::FIRESTAR_MINRES			= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
 	$main::FIRESTAR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
 	$main::MATADOR3D_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
@@ -509,6 +510,12 @@ sub src_appris_decision($$$$$;$)
 	$main::CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 	$main::CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
 	$main::THUMP_CUTOFF				= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
+	
+	# determine the methods involved in the final decision
+	# If we have genome coordinates, then we use Matador3D. Otherwise, we use Matador3D2.
+	# By default, we use Matador3D
+	my ($involved_methods) = $main::APPRIS_METHODS;
+	$involved_methods =~ s/matador3d/matador3d2/g;
 	
 	# create temporal sequence file for the given ids
 	my ($seq_content) = '';
@@ -584,7 +591,7 @@ sub src_appris_decision($$$$$;$)
 	my ($reports) = parse_appris_methods($gene, undef, undef, undef, undef, undef, undef, undef, undef, undef, $main_result, $label_result);
 		
 	# get scores of methods for each transcript
-	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports);
+	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports, $involved_methods);
 	
 	# get annots of methods for each transcript
 	my ($annots) = appris::get_method_annots($gene, $s_scores);

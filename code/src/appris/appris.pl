@@ -83,7 +83,7 @@ our $THUMP_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
 # Required arguments
 unless ( defined $config_file and 
 		defined $translations_file and 
-		defined $firestar_file and (defined $matador3d_file or defined $matador3d2_file) and defined $corsair_file and defined $spade_file and
+		defined $firestar_file and defined $matador3d_file and defined $matador3d2_file and defined $corsair_file and defined $spade_file and
 		defined $output_main_file and defined $output_label_file )
 {
     print `perldoc $0`;
@@ -120,6 +120,18 @@ sub main()
 	my ($crash_result);
 	my ($inertia_result);
 	my ($proteo_result);
+	my ($involved_methods);
+
+	# determine the methods involved in the final decision
+	# If we have genome coordinates, then we use Matador3D. Otherwise, we use Matador3D2.
+	# By default, we use Matador3D
+	unless ( defined $data_file and defined $transcripts_file and defined $translations_file ) {
+		$involved_methods = $APPRIS_METHODS;
+		$involved_methods =~ s/matador3d/matador3d2/g;
+	}
+	else {
+		$involved_methods = $APPRIS_METHODS;
+	}
 
 	# get sequence data
 	$logger->info("-- get data files\n");
@@ -239,18 +251,18 @@ sub main()
 
 	# get scores of methods for each transcript
 	$logger->info("-- get scores of methods for each variant\n");
-	my ($scores,$s_scores) = appris::get_method_scores($gene, $reports);
+	my ($scores,$s_scores) = appris::get_method_scores($gene, $reports, $involved_methods);
 	$logger->debug("PRE_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE_S_SCORES:\n".Dumper($s_scores)."\n");
 	
 	# get annots of methods for each transcript
 	$logger->info("-- get annots of methods for each variant\n");
-	my ($annots) = appris::get_method_annots($gene, $s_scores);
+	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_methods);
 	$logger->debug("PRE_ANNOTS:\n".Dumper($annots)."\n");
 
 	# get scores/annots of appris for each transcript
 	$logger->info("--  get scores/annots of appris for each transcript\n");
-	my ($nscores) = appris::get_final_scores($gene, $annots, $scores, $s_scores);
+	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $scores, $s_scores);
 	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE2_S_SCORES:\n".Dumper($s_scores)."\n");
 	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");

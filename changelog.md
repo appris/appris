@@ -1,28 +1,8 @@
 ___
-## 2017_06.v24
+## 2017_07.v24
 ```
-SERVER-RELEASE:   2017_06.v24
+SERVER-RELEASE:   2017_07.v24.pre
 CODE-RELEASE:     4.7.2.17
-```
-
-### Highlights
-
-
-### Server (4.7)
-
-### Code (2.17)
-
-TODO!!
-+ SPADE
-	- New database with the curated domains of Pfam-A.
-
-	
-
-___
-## 2017_06.v23
-```
-SERVER-RELEASE:   2017_07.v23.pre
-CODE-RELEASE:     4.7.2.16
 ```
 
 ### Highlights
@@ -36,8 +16,10 @@ CODE-RELEASE:     4.7.2.16
 	
 ### Server (4.7)
 
-### Code (2.16)
+### Code (2.17)
 
++ SPADE
+	- New database with the curated domains of Pfam-A (pfam_201706)
 
 ___
 ## 2017_06.v23

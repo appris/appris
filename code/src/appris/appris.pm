@@ -93,9 +93,9 @@ $METHOD_WEIGHTED = {
 
 
 # get the main functional isoform from methods of appris
-sub get_method_scores($$)
+sub get_method_scores($$$)
 {
-	my ($gene, $reports) = @_;
+	my ($gene, $reports, $involved_methods) = @_;
 	my ($stable_id) = $gene->stable_id;
 	my ($scores, $s_scores);
 		
@@ -116,7 +116,7 @@ sub get_method_scores($$)
 			elsif ( $aa_length < $s_scores->{'aa_length'}->{'min'} ) {
 				$s_scores->{'aa_length'}->{'min'} = $aa_length;
 			}
-			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {				
+			foreach my $m ( split(',', $involved_methods) ) {				
 				if ( $m eq 'firestar' and $result and $result->analysis and $result->analysis->firestar ) {				
 					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
 					my ($analysis) = $result->analysis->firestar;
@@ -288,9 +288,9 @@ sub get_method_scores($$)
 } # End get_method_scores
 
 # get the main functional isoform from methods of appris
-sub get_method_scores_from_appris_rst($$)
+sub get_method_scores_from_appris_rst($$$)
 {
-	my ($gene, $reports) = @_;
+	my ($gene, $reports, $involved_methods) = @_;
 	my ($stable_id) = $gene->stable_id;
 	my ($scores, $s_scores);
 	
@@ -311,7 +311,7 @@ sub get_method_scores_from_appris_rst($$)
 			elsif ( $aa_length < $s_scores->{'aa_length'}->{'min'} ) {
 				$s_scores->{'aa_length'}->{'min'} = $aa_length;
 			}
-			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {
+			foreach my $m ( split(',', $involved_methods) ) {
 				if ( $m eq 'firestar' and $result and $result->analysis and $result->analysis->appris and defined $result->analysis->appris->functional_residues_score ) {				
 					my ($annot_sc) = $METHOD_LABELS->{$m}->[1];
 					my ($sc) = $result->analysis->appris->functional_residues_score;
@@ -456,9 +456,9 @@ sub get_method_scores_from_appris_rst($$)
 } # End get_method_scores_from_appris_rst
 
 # get the main functional isoform from methods of appris
-sub get_method_annots($$)
+sub get_method_annots($$$)
 {
-	my ($gene, $scores) = @_;	
+	my ($gene, $scores, $involved_methods) = @_;	
 	my ($stable_id) = $gene->stable_id;
 	my ($annots);
 		
@@ -466,7 +466,7 @@ sub get_method_annots($$)
 	foreach my $transcript (@{$gene->transcripts}) {	
 		my ($transcript_id) = $transcript->stable_id;
 		if ( $transcript->translate and $transcript->translate->sequence ) {			
-			foreach my $m ( split(',', $main::APPRIS_METHODS) ) {
+			foreach my $m ( split(',', $involved_methods) ) {
 				if ( $m eq 'firestar' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {				
 					my ($annot_label) = $METHOD_LABELS->{$m}->[0];
 					get_firestar_annots($gene, $scores->{$m}, $annot_label, \$annots);
@@ -505,9 +505,9 @@ sub get_method_annots($$)
 } # End get_method_annots
 
 # get gene scores of methods for appris
-sub get_final_scores($$\$\$)
+sub get_final_scores($$$\$\$)
 {
-	my ($gene, $annots, $ref_scores, $ref_s_scores) = @_;
+	my ($gene, $annots, $involved_methods, $ref_scores, $ref_s_scores) = @_;
 	my ($nscores);
 	
 	# obtain normalize scores (weighted normalize score) foreach method
@@ -516,7 +516,7 @@ sub get_final_scores($$\$\$)
 		my ($transcript_id) = $transcript->stable_id;
 		if ( $transcript->translate and $transcript->translate->sequence ) {
 			my ($appris_score) = 0;
-			foreach my $method ( split(',', $main::APPRIS_METHODS) ) {
+			foreach my $method ( split(',', $involved_methods) ) {
 				my ($n_sc) = 0;
 				my ($sc) = 0;
 				my ($max) = (exists $$ref_s_scores->{$method} and exists $$ref_s_scores->{$method}->{'max'})? $$ref_s_scores->{$method}->{'max'} : 0;
