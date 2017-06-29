@@ -411,7 +411,7 @@ sub _run_pfamscan($$)
 	unless(-e $pfamscan_sequence_file and (-s $pfamscan_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Cached pfamscan
 	{
 		eval {
-			my ($cmd) = "$RUN_PROGRAM -as -align -dir $PROG_DB_DIR -fasta $fasta_sequence_file -outfile $pfamscan_sequence_file &> /dev/null";
+			my ($cmd) = "rm -rf $pfamscan_sequence_file && $RUN_PROGRAM -as -align -dir $PROG_DB_DIR -fasta $fasta_sequence_file -outfile $pfamscan_sequence_file &> /dev/null";
 			$logger->debug("$cmd\n");                        
 			my @out = `$cmd`;
 			if (!(-e $pfamscan_sequence_file) or (-s $pfamscan_sequence_file <= 0) ) {
