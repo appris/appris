@@ -593,10 +593,10 @@ sub src_appris_decision($$$$$;$)
 	my ($scores,$s_scores) = appris::get_method_scores_from_appris_rst($gene, $reports, $involved_methods);
 	
 	# get annots of methods for each transcript
-	my ($annots) = appris::get_method_annots($gene, $s_scores);
+	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_methods);
 	
 	# get scores/annots of appris for each transcript
-	my ($nscores) = appris::get_final_scores($gene, $annots, $scores, $s_scores);
+	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $scores, $s_scores);
 
 	# get annotations indexing each transcript
 	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots);
