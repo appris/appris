@@ -100,6 +100,11 @@ module.controller('SeekerAdvancedController', ['consPathSeeker', '$scope', '$loc
             }
         };
 
+        // change form
+        $scope.onChangeSP = function () {
+            $scope.seekerAdvancedForm.dataset = null;
+        };
+
     }
 ]);
 

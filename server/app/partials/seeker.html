@@ -29,7 +29,8 @@
               data-target="#infoInputs"></span>
         <div class="input-group-addon" style="text-align: left;">
             <div class="form-inline">
-                <select class="form-control"  data-ng-model="seekerAdvancedForm.species" data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.group for ( specie_id, specie_val ) in species | showHousesGenomes | orderObjectBy:'order' ">
+                <select class="form-control"  data-ng-model="seekerAdvancedForm.species"
+                        data-ng-options="specie_val.scientific + ' (' + specie_val.common + ')' group by specie_val.group for ( specie_id, specie_val ) in species | showHousesGenomes | orderObjectBy:'order' " data-ng-change="onChangeSP()">
                     <option value="" selected>-- List of species --</option>
                 </select>
                 <br/><br/>
