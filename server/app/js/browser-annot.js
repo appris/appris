@@ -30,6 +30,7 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
 
     function createAnnotReferences(residues, methods) {
         var elem = '';
+        var charsTitle = 120;
         if ( angular.isArray(residues) ) {
             var accorHtml = '<accordion close-others="false">';
             angular.forEach(residues, function(item) {
@@ -109,9 +110,11 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
                     }
                 });
                 body += '</tabset>';
+                var seqid = id_lbl;
+                if ( id_lbl.length >= charsTitle) { seqid = id_lbl.substring(0,charsTitle-1) + '...' }
                 accorHtml += '<accordion-group class="accord">';
                 accorHtml += '<accordion-heading>'+
-                    id_lbl +
+                    seqid +
                     '<i class="pull-right glyphicon" ng-class="{\'glyphicon-chevron-down\': browserTabAnnots, \'glyphicon-chevron-right\': !browserTabAnnots}"></i>'+
                     '</accordion-heading>';
                 accorHtml += body;

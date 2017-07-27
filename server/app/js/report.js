@@ -340,7 +340,7 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
         var filtered = {};
         var idList = [];
         var selected = [];
-        var titleSize = 50;
+        var titleSize = 40;
         angular.forEach(input, function(item) {
             if ( angular.isDefined(item.annotation) ) {
                 var iTrans = item.transcript_id;

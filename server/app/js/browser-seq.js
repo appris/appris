@@ -205,8 +205,10 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
                         seqline += '<br>';
                     }
                 });
+                var seqid = tidx_lbl;
+                if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle-1) + '...' }
                 elem += '<browser-seq-line '+tidx+'>';
-                elem += '>' + tidx_lbl + '|' + splen +'<br>';
+                elem += '>' + seqid + '|' + splen +'<br>';
                 elem += seqline;
                 elem += '<br>';
                 elem += '</browser-seq-line>';
@@ -276,7 +278,7 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
                                 }
                             });
                             var seqid = '';
-                            if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle-1) }
+                            if ( tidx_lbl.length >= charsTitle) { seqid = tidx_lbl.substring(0,charsTitle-4) + '...'}
                             else { seqid = tidx_lbl + Array(charsTitle - tidx_lbl.length ).join(" ") }
                             elem += '<browser-seq-line tidx="'+tidx+'">' + seqid + ' ' + seqline + '<br>' + '</browser-seq-line>';
                         }
