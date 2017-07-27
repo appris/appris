@@ -253,14 +253,16 @@ sub get_annotations {
 			}
 			elsif ( defined $source and $source eq 'refseq' ) {
 				$ucscGeneTrack =
-					"browser full refGene"."\n".
+					"browser full refSeqComposite"."\n".
+					"browser full refGene"."\n". # deprecated
 					"browser full ccdsGene"."\n";				
 			}
 			else {
 				$ucscGeneTrack =
 					"browser full knownGene"."\n".
 					"browser full ensGene"."\n".
-					"browser full refGene"."\n".
+					"browser full refSeqComposite"."\n".
+					"browser full refGene"."\n". # deprecated
 					"browser full ccdsGene"."\n";	
 			}
 			$output =
