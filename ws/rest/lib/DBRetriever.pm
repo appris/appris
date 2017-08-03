@@ -344,7 +344,7 @@ sub get_features
 			if ( ($type eq 'id') and $inputs ) {
 				my ($query_type) = 'gene';
 				if ( defined $t_inputs ) { $query_type = 'transcript'; $inputs = $t_inputs; }
-				foreach my $input (split(';', $inputs)) {
+				foreach my $input (split(/[;,]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_stable_id($registry, $query_type, $input, $methods_str);
 					if ( defined $feat ) {
 						push(@{$features}, $feat) ;
@@ -352,7 +352,7 @@ sub get_features
 				}
 			}
 			elsif ( ($type eq 'name') and $inputs ) {
-				foreach my $input (split(';', $inputs)) {
+				foreach my $input (split(/[;,]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
 						foreach my $f (@{$feat}) { push(@{$features}, $f); }
@@ -360,7 +360,7 @@ sub get_features
 				}
 			}
 			elsif ( ($type eq 'position') and $inputs ) {
-				foreach my $input (split(';', $inputs)) {
+				foreach my $input (split(/[;,]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_region($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
 						foreach my $f (@{$feat}) { push(@{$features}, $f); }
