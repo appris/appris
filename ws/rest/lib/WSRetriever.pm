@@ -974,13 +974,14 @@ sub get_aln_annotations
 			}
 		}
 		else { $report->{'aln'} = $alns }
-		
-		$report->{'match'} = $aln->match_line();
-		$report->{'length'} = $aln->length;
-		$report->{'num'} = scalar(@{$report->{'aln'}});	
-		require JSON;
-		my ($json) = new JSON;
-		$result = $json->encode($report);
+		if ( defined $report ) {
+			$report->{'num'} = scalar(@{$report->{'aln'}});
+			$report->{'match'} = $aln->match_line();
+			$report->{'length'} = $aln->length;
+			require JSON;
+			my ($json) = new JSON;
+			$result = $json->encode($report);
+		}
 	}
 	elsif ( defined $format and ($format eq 'clw') and ($string ne '') ) {
 		$result = $string;
