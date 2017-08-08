@@ -1,7 +1,7 @@
 ___
 ## 2017_07.v24
 ```
-SERVER-RELEASE:   2017_07.v24.pre
+SERVER-RELEASE:   2017_08.v24
 CODE-RELEASE:     4.7.2.17
 ```
 
@@ -18,6 +18,12 @@ CODE-RELEASE:     4.7.2.17
 
 ### Code (2.17)
 
++ APPRIS:
+	- Now the decision of which Matador3D to use is automatic.
+	By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
+	- Bug fixed: although the variant has start/stop codon not found, the correct score of CORSAIR will be printed.
+	But the final annotation of APPRIS will be the same. 
+	
 + SPADE
 	- New database with the curated domains of Pfam-A (pfam_201706)
 
@@ -58,7 +64,7 @@ The APPRIS gene-set has been developed from the join of the gene sets of Ensembl
 	- Bug Fixed: printing the TMH
 	Eg, http://appris-dev.bioinfo.cnio.es/#/database/id/homo_sapiens/ensembl:ENSG00000156869+refseq:391059?as=hg38&sc=appris&ds=a1v23		
 
-+ Bug fixed: printing annotatios in the method pop-ups of Sequence Browser when the transcript id is too long.
++ Bug fixed: printing annotations in the method pop-ups of Sequence Browser when the transcript id is too long.
 Eg. "ensembl:ENSG00000180509+refseq:3753"
 
 + Print the whole identifiers in the "Principal Isoforms" panel of the website report.
@@ -306,7 +312,7 @@ CODE-RELEASE:     4.4.2.10
 - APPRIS
 	- Use the tag features to identify the "readthought_transcripts"
 	
-	- Fixed bug: It is wrong the assignation of Principal in the step of eldest CCDS and TSL. Eg. BAIAP2 TODO????? It's working correctly
+	- Fixed bug: It is wrong the assignation of Principal in the step of eldest CCDS and TSL. Eg. BAIAP2
 	
 	- Check tsl order in ensemble and gencode. Eg. BBS9
 	

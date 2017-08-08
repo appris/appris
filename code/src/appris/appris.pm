@@ -537,37 +537,6 @@ sub get_final_scores($$$\$\$)
 				$nscores->{$transcript_id}->{$method} = $n_sc;
 				
 				# apply weights to normalize scores
-#				if ( $method eq 'firestar' ) {
-#					if ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[4]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[3]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[3]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
-#					}
-#				}
-#				elsif ( $method eq 'corsair' ) {
-#					if ( $max >= $METHOD_WEIGHTED->{$method}->[2]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[2]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[1]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[1]->{'weight'}*$n_sc;
-#					}
-#					elsif ( $max >= $METHOD_WEIGHTED->{$method}->[0]->{'max'} ) {
-#						$appris_score += $METHOD_WEIGHTED->{$method}->[0]->{'weight'}*$n_sc;
-#					}
-#				}
-#				else {
-#					$appris_score += $METHOD_WEIGHTED->{$method}*$n_sc;
-#				}
 				my ($weight) = 0;
 				if ( $method eq 'firestar' ) {
 					if    ( $max >= $METHOD_WEIGHTED->{$method}->[4]->{'max'} ) { $weight = $METHOD_WEIGHTED->{$method}->[4]->{'weight'} }
@@ -585,10 +554,6 @@ sub get_final_scores($$$\$\$)
 					$weight = $METHOD_WEIGHTED->{$method};
 				}
 				$appris_score += $weight*$n_sc;
-				# discard transcripts when the transcripts does not pass the filters for each method (with weight)
-#				if ( ($appris_label eq $NO_LABEL) and ( (ref($METHOD_WEIGHTED->{$method}) eq 'ARRAY') or ($METHOD_WEIGHTED->{$method} > 0) ) ) {
-#					$appris_score = -1;
-#				}
 			}
 			
 			# filter by biotype
