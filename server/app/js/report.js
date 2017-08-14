@@ -36,6 +36,15 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
         $scope.runnerid = $routeParams.jobid;
         $scope.jobid = $scope.runnerid;
     }
+    // check the rest of parameters
+    if ( !angular.isDefined($routeParams.sc) || !angular.isDefined($routeParams.ds) || !angular.isDefined($routeParams.as) ) {
+        $rootScope.isLoadingScreen = false;
+        $scope.alert.enable = true;
+        $scope.alert.type = "Error";
+        $scope.alert.message = "Your query is malformed. Please, rephrase your query.";
+
+        return ;
+    }
 
     // APPRIS annots
 
