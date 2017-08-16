@@ -5,6 +5,17 @@
 var apprisDirectives = angular.module('apprisDirectives', []);
 
 
+apprisDirectives.directive('markdown', function() {
+    var converter = new showdown.Converter();
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs) {
+            var htmlText = converter.makeHtml(element.text());
+            element.html(htmlText);
+        }
+    }
+});
+
 /* TEMPLATES */
 
 apprisDirectives.directive('navbarTopTpl', function() {

@@ -26,6 +26,7 @@ var apprisApp = angular.module('apprisApp', [
     'mgcrea.ngStrap.popover',
     'ui.bootstrap',
 
+    'dytable',
     'pagination',
     'checklist',
     'download'

@@ -52,14 +52,60 @@
 //    }
 //});
 
+
+//module.directive('dirDytable', ['$compile', function($compile) {
+//    function createTDElement(directive) {
+//        var table = angular.element('<table><tr><td ' + directive + '></td></tr></table>');
+//        return table.find('td');
+//    }
+//
+//    function render(element, scope) {
+//        var column, html, i;
+//        for (i = 0; i < scope.columns.length; i++) {
+//            column = scope.columns[i];
+//            if (column.visible) {
+//                html = $compile(createTDElement(column.directive))(scope);
+//                element.append(html);
+//            }
+//        }
+//
+//    }
+//
+//    return {
+//        restrict: 'A',
+//        scope: {
+//            item: "=",
+//            columns: "="
+//        },
+//        controller: function($scope, $element) {
+//            $scope.$watch(function() {
+//                return $scope.columns;
+//            }, function(newvalue, oldvalue) {
+//                if (newvalue !== oldvalue) {
+//                    $element.children().remove();
+//                    render($element, $scope);
+//                    $compile($element.contents())($scope);
+//                }
+//            }, true);
+//        },
+//        compile: function() {
+//            return function(scope, element) {
+//                render(element, scope);
+//            }
+//
+//        }
+//    };
+
+//}]);
+
+
 /**
- * table - AngularJS module for dynamic columns ina angularjs datatable.
+ * dytable - AngularJS module for dynamic columns ina angularjs datatable.
  *
  */
 var module = angular.module('dytable', []);
 
-
-app.directive('item', function($compile) {
+module.directive('item', function($compile) {
     function createTDElement(directive) {
         var table = angular.element('<table><tr><td ' + directive + '></td></tr></table>');
         return table.find('td');
@@ -104,28 +150,28 @@ app.directive('item', function($compile) {
 
 });
 
-app.directive("firstcolumn", function() {
+module.directive("firstcolumn", function() {
     return {
         restrict: 'A',
         template: '{{item.id}}'
     }
 });
 
-app.directive("secondcolumn", function() {
+module.directive("secondcolumn", function() {
     return {
         restrict: 'A',
         template: '{{item.name}}'
     }
 });
 
-app.directive("thirdcolumn", function() {
+module.directive("thirdcolumn", function() {
     return {
         restrict: 'A',
         template: '{{item.country}}'
     }
 });
 
-app.directive("fourcolumn", function() {
+module.directive("fourcolumn", function() {
     return {
         restrict: 'A',
         template: '{{item.test}}'

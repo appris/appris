@@ -4,11 +4,6 @@
 
 var apprisServices = angular.module('apprisServices', ['ngResource']);
 
-/* CONFIG file of Changelogs */ /* OBSOLETE */
-apprisServices.factory('Changelogs', ['$resource', 'serverHostWS', function($resource, serverHostWS){
-    return $resource(serverHostWS+'/changelogs.json');
-}]);
-
 /* CONFIG file of used SERVER */
 apprisServices.factory('Server', ['$resource', 'serverHostWS', function($resource, serverHostWS){
     return $resource(serverHostWS+'/config.json');

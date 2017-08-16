@@ -251,13 +251,9 @@ apprisControllers.controller('ContactController', ['$scope',
     }
 ]);
 
-apprisControllers.controller('ChangelogsController', ['$scope', 'Changelogs',
-    function($scope, Changelogs) {
-        // init pagination
-        $scope.currentPage = 1;
-        $scope.pageSize = 4;
+apprisControllers.controller('ChangelogsController', ['$scope',
+    function($scope) {
 
-        $scope.changelogs = Changelogs.query();
     }
 ]);
 
