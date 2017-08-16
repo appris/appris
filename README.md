@@ -1,6 +1,6 @@
 Welcome to APPRIS - A system for annotating alternative splice isoforms
 =======================================================================
-[APPRIS] (http://appris.bioinfo.cnio.es) [1] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
+[APPRIS] (http://appris.bioinfo.cnio.es) [1,2] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
 
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
@@ -8,7 +8,6 @@ The server has been used in the context of the scale up of the [GENCODE] (http:/
   * Vertebrate genomes:
 	  * Human
 	  * Mouse
-	  * Rat
 	  * Zebrafish
 	  * Rat
 	  * Pig
@@ -31,135 +30,12 @@ The methods in APPRIS are the following:
   * Prediction of signal peptide and sub-cellular location, CRASH
   * Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
 
-![Image of APPRIS pipeline] (http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
+![Image of APPRIS pipeline](http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
 
 
-Requirements
-============
-
-- Linux x86_64 machine
-
-- Softwares:
-  	```
-	- gawk
-	- git
-	```
-	
-- Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
-
-	```
-	- FindBin
-	- Getopt::Long
-	- Config::IniFiles
-	- Bio::SeqIO
-	- Bio::SearchIO
-	- File::Temp
-	- File::Basename
-	- Data::Dumper
-	- JSON
-	- DBI
-	- POSIX
-	- Statistics::Descriptive
-	- Moose
-	- Class::Load
-	- Data::OptList
-	- Module::Implementation
-	- Class::Load::XS
-	- MRO::Compat
-	- Data::Printer
-	- IPC::Run
-	- CGI
-	- HTTP::Status
-	- Email::Valid
-	- MIME::Lite
-	- Parse::RecDescent
-	```
-	Note: See the lib/appris_perllib/Makefile.PL file
-	
-- [MySQL Client] (http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
-
-- [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
-
-- [Ensembl API] (http://www.ensembl.org/info/docs/api/api_installation.html)
-
-	
 Installation
 ============
-
-Steps you have to do to acquire APPRIS system
-
-1. Clone APPRIS code:
-	```
-	git clone https://github.com/appris/appris.git
-	```
-	
-2. Setting up the environment variables:
-
-	1. Add in your bash profile the following lines:
-		```  
-		export APPRIS_HOME="APPRIS HOME"
-		source ${APPRIS_HOME}/conf/apprisrc
-		source ${APPRIS_HOME}/conf/apprisrc.WS
-		```
-				
-	2. Setting up the environment variables for each execution in the sample configuration file "${APPRIS_HOME}/conf/scripts/apprisrc.*"
-
-3. Download databases for APPRIS code:
-	```
-	wget 
-	cd ${APPRIS_HOME}
-	tar -xf appris_local_db.${date_version}.tar.gz 
-	```
-	
-4. Setting up 'firestar' method:
-
-	1. Create FireDB database:
-		```
-		mysql> create user 'firedb'@'localhost';
-		mysql> grant all on FireDB.* to 'firedb'@'localhost';
-		mysql> create database FireDB;
-		```
-		
-	2. Import FireDB database:
-		```
-		mysql FireDB -h localhost -u firedb < ${APPRIS_HOME}/db/FireDB_*.sql
-		```
-		
-	3. Setting up the environment variables in the file "${APPRIS_HOME}/conf/code/fire_var.ini":
-
-		1. Include database variables:
-			```
-			database: FireDB
-			user: firedb
-			pwd:
-			```
-			
-		2. Change the env vars:
-			```
-			[PATHS]
-				home
-				DB
-				tmp
-				AFM
-			[CLUSTER_PATHS]
-				home
-				root
-				dir
-				DB
-			```
-						
-5. Setting up the variables for Ensembl database in the "${APPRIS_HOME}/conf/code/ensembldb.ini":
-	```
-	ENSEMBL_CORE_REGISTRY, ENSEMBL_COMPARA_REGISTRY
-	```
-				
-6. Take into account the temporal files coming for "${APPRIS_HOME}/code/opt" programs SignalP and TargetP:
-	```
-	cd signalp-3.0/tmp and targetp-1.1/tmp
-	chmod -R +t tmp
-	chmod -R 777 tmp
-	```
-
+For this section, read the 'INSTALL.md' file.
 
 Data access
 ===========
@@ -174,12 +50,16 @@ The APPRIS websites offer an export option, suitable for small amounts of data. 
 
 References
 ==========
-[1] Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A, Tress ML.
-APPRIS: annotation of principal and alternative splice isoforms. 
-Nucleic Acids Res. 2013 Jan;41(Database issue):D110-7.
+If you find APPRIS useful, please consider citing our latest publication:
 
-[2] Rodriguez JM, Carro A, Valencia A, Tress ML. APPRIS WebServer and WebServices.
-Nucleic Acids Res. 2015 Jul 1;43(W1):W455-9. doi: 10.1093/nar/gkv512.
+[1] APPRIS WebServer and WebServices.
+Rodriguez JM, Carro A, Valencia A, and Tress ML.
+Nucleic Acids Res. 2015 May 18.
+PUBMED:25990727 DOI:10.1093/nar/gkv512
+
+[2] APPRIS: annotation of principal and alternative splice isoforms.
+Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A, Tress ML.
+Nucleic Acids Res. 2013 Jan;41(Database issue):D110-7.
 
 
 Contact
@@ -190,6 +70,7 @@ This APPRIS website is powered by the Structural Computational Biology Group at
 	Instituto Nacional de Bioinformatica, ([INB] (http://www.inab.org))
 
 If you have questions or comments, please write to:
+    APPRIS mail, appris.cnio@gmail.com
 	Jose Manuel Rodríguez, jmrodriguez@cnio.es
 	Michael Tress, mtress@cnio.es.
 
