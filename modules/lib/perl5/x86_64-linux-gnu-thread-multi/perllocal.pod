@@ -328,3 +328,47 @@ C<EXE_FILES: >
 
 =back
 
+=head2 Fri Aug 18 11:01:04 2017: C<Module> L<Exporter::Tiny|Exporter::Tiny>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.000000>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Fri Aug 18 11:01:06 2017: C<Module> L<List::MoreUtils|List::MoreUtils>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.419>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
