@@ -14,7 +14,7 @@ The server has been used in the context of the scale up of the [GENCODE] (http:/
 	  * Chimpanzee
   * Invertebrate genomes:
   	  * Fruitfly
-  	  * C. elegans  	
+  	  * C. elegans
 
 
 System overview
@@ -35,17 +35,17 @@ The methods in APPRIS are the following:
 
 Installation
 ============
-For this section, read the 'INSTALL.md' file.
+For this section, read the [INSTALL readme file](docs/INSTALL.md).
 
 Data access
 ===========
 The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.
 
-  * Web Services, APPRIS data can be returned remotely using web services.
-  http://apprisws.bioinfo.cnio.es/
-
   * Downloads, APPRIS data text files.
   http://appris.bioinfo.cnio.es/#/downloads
+
+  * Web Services, APPRIS data can be returned remotely using web services.
+  http://apprisws.bioinfo.cnio.es/
 
 
 References
@@ -58,8 +58,9 @@ Nucleic Acids Res. 2015 May 18.
 PUBMED:25990727 DOI:10.1093/nar/gkv512
 
 [2] APPRIS: annotation of principal and alternative splice isoforms.
-Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A, Tress ML.
-Nucleic Acids Res. 2013 Jan;41(Database issue):D110-7.
+Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A and Tress ML.
+Nucleic acids research 2013;41;Database issue;D110-7
+PUBMED:23161672 DOI:10.1093/nar/gks1058
 
 
 Contact

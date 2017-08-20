@@ -8,3 +8,15 @@ Now that you have your Dockerfile, you can build your image. The docker build co
 ```
 $ docker build -t appris/core -f build/appris_core.dockerfile .
 ```
+
+Running APPRIS-Docker container
+-------------------------------
+
+```
+$ docker run appris/appris
+```
+
+Running APPRIS-Docker container
+-------------------------------
+
+docker run -it -v /local/jmrodriguez/appris/db/:/mnt/ 278d76e17d86
