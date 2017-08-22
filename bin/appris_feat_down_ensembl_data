@@ -72,8 +72,8 @@ USAGE="
 \n
 \n
 Example:\n
-appris_feat_down_pre-datafiles -u http://ftp.ensembl.org/pub/   -s 'homo_sapiens' -e 90 -o ~/projects/APPRIS/features/\n
-appris_feat_down_pre-datafiles -u http://www.ebi.ac.uk/~maurel/ -s 'homo_sapiens' -e 88 -o /tmp/
+appris_feat_down_ensembl_data -u http://ftp.ensembl.org/pub/   -s 'homo_sapiens' -e 90 -o ~/projects/APPRIS/features/\n
+appris_feat_down_ensembl_data -u http://www.ebi.ac.uk/~maurel/ -s 'homo_sapiens' -e 88 -o /tmp/
 \n
 \n
  Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
@@ -150,12 +150,9 @@ download_datafile() {
 		DATAFILE=$(grep "${SUFFIX}" "${TMPFILE}" | grep -o 'href="[^"]*"' | sed 's/"//g' | sed 's/href=//g')
 		
 		echo dowload data file...
-		#wget "${ENSEMBL_URL}/${DATAFILE}" -O "${OUTFILE}"
-		
-		echo wget "${ENSEMBL_URL}/${DATAFILE}" -P ${OUTDIR}
-		echo "cd ${OUTDIR} && gzip -d ${DATAFILE} && ln -s ${DATAFILE%.gz} ${OUTFILE}"
-		
 		wget "${ENSEMBL_URL}/${DATAFILE}" -P ${OUTDIR}
+
+		echo uncompress and rename...		
 		cd ${OUTDIR} && gzip -d ${DATAFILE} && ln -s ${DATAFILE%.gz} ${OUTFILE}
 		
 		echo delete index...
@@ -176,15 +173,9 @@ download_species_datafile() {
 	prepare_workspace "${SPECIES_OUTDIR}"
 	
 	echo download files...	
-	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}/${SPECIES_ID}.annot.gtf.gz"	
-	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}/${SPECIES_ID}.transc.fa.gz"	
-	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}/${SPECIES_ID}.transl.fa.gz"
 	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}" "${SPECIES_ID}.annot.gtf"	
 	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}" "${SPECIES_ID}.transc.fa"	
-	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}" "${SPECIES_ID}.transl.fa"
-	
-	echo uncompress files...
-	#gzip -d ${SPECIES_OUTDIR}/*.gz
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}" "${SPECIES_ID}.transl.fa"	
 }
 
 # -----------------------------------------------------------------------------
