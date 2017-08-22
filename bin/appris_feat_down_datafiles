@@ -72,6 +72,7 @@ USAGE="
 \n
 \n
 Example:\n
+appris_feat_down_pre-datafiles -u http://ftp.ensembl.org/pub/   -s 'homo_sapiens' -e 90 -o ~/projects/APPRIS/features/\n
 appris_feat_down_pre-datafiles -u http://www.ebi.ac.uk/~maurel/ -s 'homo_sapiens' -e 88 -o /tmp/
 \n
 \n
@@ -134,7 +135,8 @@ fi
 download_datafile() {
 	local ENSEMBL_URL=$1
 	local SUFFIX=$2
-	local OUTFILE=$3
+	local OUTDIR=$3
+	local OUTFILE=$4
 	
 	TMPFILE=/tmp/kk.html
 
@@ -148,7 +150,13 @@ download_datafile() {
 		DATAFILE=$(grep "${SUFFIX}" "${TMPFILE}" | grep -o 'href="[^"]*"' | sed 's/"//g' | sed 's/href=//g')
 		
 		echo dowload data file...
-		wget "${ENSEMBL_URL}/${DATAFILE}" -O "${OUTFILE}"
+		#wget "${ENSEMBL_URL}/${DATAFILE}" -O "${OUTFILE}"
+		
+		echo wget "${ENSEMBL_URL}/${DATAFILE}" -P ${OUTDIR}
+		echo "cd ${OUTDIR} && gzip -d ${DATAFILE} && ln -s ${DATAFILE%.gz} ${OUTFILE}"
+		
+		wget "${ENSEMBL_URL}/${DATAFILE}" -P ${OUTDIR}
+		cd ${OUTDIR} && gzip -d ${DATAFILE} && ln -s ${DATAFILE%.gz} ${OUTFILE}
 		
 		echo delete index...
 		rm "${TMPFILE}"
@@ -162,19 +170,21 @@ download_species_datafile() {
 	local SPECIES_ID=$1
 	local SPECIES_FILENAME=$2
 	local ENSEMBL=$3
-	local RENAME=$4
 		
 	echo prepare workspace...
 	SPECIES_OUTDIR="${OUTPUT_DIR}/${SPECIES_ID}/e${ENSEMBL}"
 	prepare_workspace "${SPECIES_OUTDIR}"
 	
 	echo download files...	
-	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}/${SPECIES_ID}.annot.gtf.gz"	
-	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}/${SPECIES_ID}.transc.fa.gz"	
-	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}/${SPECIES_ID}.transl.fa.gz"
+	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}/${SPECIES_ID}.annot.gtf.gz"	
+	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}/${SPECIES_ID}.transc.fa.gz"	
+	#download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}/${SPECIES_ID}.transl.fa.gz"
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/gtf/${SPECIES_ID}"         "${ENSEMBL}.gtf.gz"  "${SPECIES_OUTDIR}" "${SPECIES_ID}.annot.gtf"	
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/cdna"  ".cdna.all.fa.gz"    "${SPECIES_OUTDIR}" "${SPECIES_ID}.transc.fa"	
+	download_datafile "${ENSEMBL_PUB_URL}/release-${ENSEMBL}/fasta/${SPECIES_ID}/pep"   ".pep.all.fa.gz"     "${SPECIES_OUTDIR}" "${SPECIES_ID}.transl.fa"
 	
 	echo uncompress files...
-	gzip -d ${SPECIES_OUTDIR}/*.gz
+	#gzip -d ${SPECIES_OUTDIR}/*.gz
 }
 
 # -----------------------------------------------------------------------------
@@ -184,7 +194,7 @@ if [[  "${SPECIES}" != "" ]]; then
 	SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
 	SPECIES_FILENAME="${SPECIES}"
 			
-	download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${OUTPUT_DIR} ${RENAME}
+	download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${OUTPUT_DIR}
 else
 	if [[  "${INFILE}" != "" ]]; then
 		while IFS='' read -r line || [[ -n "$line" ]]; do
@@ -192,8 +202,8 @@ else
 			SPECIES_ID=$(echo ${SPECIES} | sed 's/\..*$//' | tr "[:upper:]" "[:lower:]")
 			SPECIES_FILENAME="${SPECIES}"
 			ENSEMBL=$(echo ${line} | cut -d " " -f 2)
-			echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
-			download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL} ${RENAME}
+			echo download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL}
+			download_species_datafile ${SPECIES_ID} ${SPECIES_FILENAME} ${ENSEMBL}
 		done < "${INFILE}"
 	fi
 fi
