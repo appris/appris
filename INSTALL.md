@@ -30,6 +30,36 @@ run` command.
 > __Note:__ For more information about how to run *__APPRIS-Docker container__*,
 read the [DOCKER readme file](DOCKER.md)
 
+Create a working directory
+--------------------------
+Create a working directory where the database files from APPRIS, and the input files will be locate.
+```
+$ mkdir ${working_dir}
+```
+
+Download databases for APPRIS code
+----------------------------------
+Download the database files that the code needs into the **working directory**
+
+```
+$ cd ${working_dir} && \
+  wget TODO!!!!!!!!!!!! && \
+  tar -xf appris_local_db.${date_version}.tar.gz
+```
+
+Create/Download the **features** input files
+--------------------------------------------
+Create
+
+
+
+Running APPRIS-Docker container
+-------------------------------
+
+```
+$ docker run -itd -v ${working_dir}/db/:/opt/appris/db appris/code
+```
+
 
 Installation from Scratch
 =========================

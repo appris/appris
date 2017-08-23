@@ -19,14 +19,24 @@
 .vim/
 .vimrc
 
+# 'server' dir
 server/logs/
 server/node_modules/
+
+# 'annotations' dir
+!annotations/README.md
+!annotations/wserver
 
 # 'data' dir
 !data/.gitignore
 
+# 'cache' dir
+!cache/README.md
+!cache/wserver
+
 # 'features' dir
 !features/.gitignore
+!features/README.md
 
 # 'db' dir
 db/*
