@@ -74,34 +74,201 @@ firestar
 --------
 Output of *__firestar__* method.
 
+### In detail (for each isoform)
+- the peptide position,
+- the functional amino acid,
+- PDB ligand id,
+- Some scores:
+    - motif frequency
+    - and a score of all predicted catalytic residues. It is a measure of prediction reliablity. The score
+should be close to six.
+    - identity
+- 'C>>' sequence id, consensus residues compared with another isoform
+- 'F>>' sequence id, final no. functional residues
+
+```
+######
+13	LMLQQTCPLCKFN	ZN[1.00,6.0,77.8]
+16	QQTCPLCKFNVLD	ZN[1.00,6.0,77.8]
+>>>ENST00000421022	2	13,16
+----------------------------------------------------------------------
+F>>	ENST00000421022	2	2
+```
+
 matador3d
 ---------
 Output of *__Matador3D__* method.
+
+### In detail (for each isoform)
+- '>' sequence id and 3D structure score
+- '-' List of CDS coordinates with the 3D str. score
+    - List of fragment of CDS with
+        - the protein coord. and align coord.,
+        - the 3D str. score,
+        - and the best PDB template with the percentage identity of the alignment.
+
+```
+>ENST00000215798	1.28
+- 1:32[1]	0
+	1:32	-
+- 33:80[2]	0
+	33:80	-
+...
+- 274:342[8]	1.08
+	274:284[274:284]	0.33[1*1*0.33]	4V3K_F[81.82]
+	285:285	-
+	286:305[286:305]	0.75[1*1*0.75]	4V3K_F[55.00]
+	306:334[306:313]	0[0*1*0.75]	4V3K_F[12.50]
+	335:342	-
+```
+
 > __Note:__ Optional output. It is generated when the input of pipeline has exon features.
 
 matador3d2
 ----------
 Output of *__Matador3D2__* method (version 2 of **Matador3D**).
 
+### In detail (for each isoform)
+- Gene id
+- Sequence id
+- 3D Structure score (sum of bit-scores)
+- List of the best PDB templates
+    - bit-score
+    - region alignment
+```
+ensembl:ENSG00000099999+refseq:200312	ensembl:ENST00000215798+refseq:+uniprot:H0Y2L4	143	4c9r_A;84.7;0.2;8-145;138	4v3l_C;58.3;6.1;257-305;49
+```
+
 spade
 -----
 Output of *__SPADE__* method.
+
+### In detail (for each isoform)
+- '>' sequence id with
+    - Sum of bit-score,
+    - No. functional domains,
+    - No. possibly damaged domains,
+    - No. damaged domains,
+    - No. wrong domains.
+- Label of type domain
+- PfamScan alignment result (*)
+- '>' sequence id with
+    - PfamScan alignment result (*)
+        - seq id,
+        - alignment start,
+        - alignment end,
+        - envelope start,
+        - envelope end,
+        - hmm acc,
+        - hmm name,
+        - type,
+        - hmm start,
+        - hmm end,
+        - hmm length,
+        - bit score,
+        - E-value,
+        - significance,
+        - clan,
+        - predicted_active_site_residues
+
+```
+>ENST00000215798	30.1	1	0	0	0
+domain	263	303	263	303	PF00097.18	zf-C3HC4	Domain	1	42	42	30.1	2.5e-07	1	CL0229
+>ENST00000215798    263    303    263    303 PF00097.18  zf-C3HC4          Domain     1    42    42     30.1   2.5e-07   1 CL0229
+#HMM       CriCleeaeepn.llltpCkhkvcssClrkwlksskkvkCplC
+#MATCH     C++Cl+ + +++ l ++pCkh+++++C+  wl    +++CplC
+#PP        ************999******************..7788****
+#SEQ       CAVCLDYFCNKQwLRVLPCKHEFHRDCVDPWLM--LQQTCPLC
+```
 
 corsair
 -------
 Output of *__CORSAIR__* method.
 
+### In detail (for each isoform)
+- '>' sequence id with conservation score
+- List of nearest homologue species with
+    - the percentage of identity,
+    - and the species points
+- List of CDS coordinates with the consv. score for the region
+    - List of nearest homologue species for this CDS with
+        - the percentage of identity,
+        - and the species points
+
+```
+>ENST00000382363	2.7
+Homo sapiens	100.00	0.5
+Mus musculus	88.13	1.1
+Rattus norvegicus	89.45	1.1
+	- 30387029:30387313[1:95]	2.7
+		Rattus norvegicus	83.16	1.1
+		Homo sapiens	100.00	0.5
+		Mus musculus	78.95	1.1
+...
+	- 30379603:30379622[372:377]	2.7
+		Rattus norvegicus	83.33	1.1
+		Homo sapiens	100.00	0.5
+		Mus musculus	83.33	1.1
+```
+
 thump
 -----
 Output of *__THUMP__* method.
+
+### In detail (for each isoform)
+- '>' sequence id with the length of sequence
+- Helix start,
+- Helix end,
+- and flag if the helix is damaged.
+
+```
+>ENST00000354749        length 2025 a.a.
+helix number 1 start: 534       end: 549
+helix number 2 start: 532       end: 542        damaged
+```
 
 crash
 -----
 Output of *__CRASH__* method.
 
+### In detail (for each isoform)
+- '>' sequence id with
+- start position of signal
+- end position of signal
+- s_mean
+- d_score
+- c_max
+- s_prob
+- sp_score
+- peptide signal
+- localization
+- reliability
+- tp_score
+- mitochondrial_signal
+
+
+```
+----------------------------------------------------------------------
+id	start	end	s_mean	d_score	c_max	s_prob	sp_score	peptide_signal	localization	reliability	tp_score	mitochondrial_signal
+>ENST00000302347	1	23	0.933	0.901	0.999	0.992	4	YES	S	1	-1	NO
+>ENST00000320216	1	25	0.056	0.049	0.001	0.000	-4	NO	_	2	-5	NO
+```
+
 proteo
 ------
 Output of *__PROTEO__* method.
+
+### In detail (for each isoform)
+- peptide sequence
+- Gene id
+- Isoform id
+- No. experiments found
+
+```
+AGPGSLELCGLPSQK,ENSG00000160208.12,ENST00000340648.5,,7
+APAMQPAEIQFAQR,ENSG00000160208.12,ENST00000340648.5,,6
+```
+
 > __Note:__ Optional output. It is generated when we have already annotations from proteomic data. For the
 moment, only for the human gene set of GENCODE/Ensembl.
 
@@ -109,13 +276,67 @@ appris
 ------
 Output of *__APPRIS__* with the scores for all methods and the final annotation.
 
+### In detail (for each isoform)
+- Gene id
+- Gene name
+- Transcript id
+- Protein id
+- TRANSLATION/NO_TRANSLATION tag
+- Biotype of transcript
+- Start/stop codons found
+- CCDS id
+- TSL type
+- No. functional residues
+- 3D structure score
+- Conservation score
+- Domains score
+- No. transmembrane helices
+- Scores of peptide signal and mitochondrial_signal
+- '-' (INERTIA score - DEPRECATED)
+- No. mapping peptides
+- Principal isoform score
+- Principal isoform label
+
+```
+ENSG00000160255	ITGB2	ENST00000355153	ENSP00000347279	TRANSLATION	protein_coding	-	CCDS13716	2	769	15	14.84	2.6	557.6	1	4,-1	-	36	18	PRINCIPAL:1
+ENSG00000160255	ITGB2	ENST00000397854	ENSP00000380952	TRANSLATION	protein_coding	-	-	1	712	9	13.18	0	484.8	1	4,-1	-	32	14.142	MINOR
+ENSG00000160255	ITGB2	ENST00000522688	ENSP00000428125	TRANSLATION	protein_coding	stop	-	4	49	0	1.33	0	0	0	-4,-5	-	1	-1	MINOR
+```
+
 appris.label
 ------------
 Output of *__APPRIS__* with the labels for all methods and the final annotation.
 
+### In detail (for each isoform)
+- Gene id
+- Gene name
+- Transcript id
+- Protein id
+- TRANSLATION/NO_TRANSLATION tag
+- Biotype of transcript
+- Start/stop codons found
+- CCDS id
+- TSL type
+- firestar label
+- Matador3D (or Matador3D2) label
+- CORSAIR label
+- SPADE label
+- THUMP label
+- CRASH label
+- '-' (INERTIA label - DEPRECATED)
+- '-' (PROTEO label - NOT USED)
+- APPRIS label
+- Principal isoform label
+
+```
+ENSG00000160255	ITGB2	ENST00000355153	ENSP00000347279	TRANSLATION	protein_coding	-	CCDS13716	2	769	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	UNKNOWN	YES,NO	-	-	YES	PRINCIPAL:1
+ENSG00000160255	ITGB2	ENST00000397854	ENSP00000380952	TRANSLATION	protein_coding	-	-	1	712	NO	NO	NO	NO	UNKNOWN	YES,NO	-	-	NO	MINOR
+ENSG00000160255	ITGB2	ENST00000522688	ENSP00000428125	TRANSLATION	protein_coding	stop	-	4	49	NO	NO	NO	NO	NO	NO,NO	-	-	NO	MINOR
+```
+
 appris.nscore
 -------------
-Output of *__APPRIS__* with the normalize scores for all methods and the final annotation.
+Output of *__APPRIS__* with the normalized scores for all methods and the final annotation.
 
 log
 ---
