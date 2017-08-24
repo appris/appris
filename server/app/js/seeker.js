@@ -90,9 +90,11 @@ module.controller('SeekerAdvancedController', ['consPathSeeker', '$scope', '$loc
                 $scope.seekerAdvancedForm.species = $scope.species[sp_id];
                 angular.forEach($scope.species[sp_id].assemblies, function(assembly) {
                     if ( assembly.id == as ) {
+                        var keepGoing = true; // get the first datasource version
                         angular.forEach(assembly.datasets, function(dataset) {
-                            if ( dataset.source.name == sc ) {
+                            if ( dataset.source.name == sc && keepGoing ) {
                                 $scope.seekerAdvancedForm.dataset = dataset;
+                                keepGoing = false;
                             }
                         });
                     }
