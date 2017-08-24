@@ -1,6 +1,6 @@
 Data files
 ==========
-In this directory we save the *__data files__* from APPRIS annotations.
+In this directory we would save the *__data files__* from APPRIS annotations.
 
 
 Directory structure
@@ -8,17 +8,44 @@ Directory structure
 This directory contains the following subdirectories:
 
 ```
-{APPRIS_version}
-        |
-        |___ {species_name}
+current_release /* Release in production */
+	|
+	|___ datafiles
+			|
+            |___ {species_name}
                     |
                     |__ {datasource_version}
                                 |
                                 |__ /data_files/
+
+releases        /* Dir with all releases */
+    |
+    |___ {APPRIS_version}
+            |
+            |___ datafiles
+                    |
+                    |___ {species_name}
+                                |
+                                |__ {datasource_version}
+                                            |
+                                            |__ /data_files/
+
+trackHub        /* Dir with all releases */
+    |
+    |___ {genome_assembly_versions_for_species}
+                        |
+                        |__ /trackhub_data_files/
+
+
+trackHubPROTEO  /* Dir with all releases */
+    |
+    |___ {human_genome_assemblies}
+                    |
+                    |__ /trackhub_data_files/
+
 ```
 
-> __Note__: In the server, we have differences in the directory structure. See below under section [Directory
-structure in the server](#directory-structure-in-the-server)
+> __Note__: Internally, when APPRIS pipeline is running, the data directory would be different. See below under section [Directory structure running the pipeline](#directory-structure-running-the-pipeline)
 
 APPRIS data files
 =================
@@ -255,44 +282,16 @@ These GTF files are text/plain files with tabular format whose columns are the f
 		- Attributes end in a semicolon
 
 
-Directory structure in the server
-=================================
-In the data directory for the server, there are a few differences in the structure:
+Directory structure running the pipeline
+========================================
+Internally, when APPRIS pipeline is running, the data directory would be different:
 
 ```
-current_release /* Release in production */
-	|
-	|___ datafiles
-			|
-            |___ {species_name}
+{APPRIS_version}
+        |
+        |___ {species_name}
                     |
                     |__ {datasource_version}
                                 |
                                 |__ /data_files/
-
-releases        /* Dir with all releases */
-    |
-    |___ {APPRIS_version}
-            |
-            |___ datafiles
-                    |
-                    |___ {species_name}
-                                |
-                                |__ {datasource_version}
-                                            |
-                                            |__ /data_files/
-
-trackHub        /* Dir with all releases */
-    |
-    |___ {genome_assembly_versions_for_species}
-                        |
-                        |__ /data_files/
-
-
-trackHubPROTEO  /* Dir with all releases */
-    |
-    |___ {human_genome_assemblies}
-                    |
-                    |__ /data_files/
-
 ```

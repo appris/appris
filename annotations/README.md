@@ -1,11 +1,11 @@
 Annotations
 ===========
-In this directory we save the *__raw outputs__* of APPRIS per gene.
+In this directory we would save the *__raw outputs__* of APPRIS per gene.
 
 
 Directory structure
 ===================
-This directory contains the following subdirectories:
+This directory would contains the following subdirectories:
 
 ```
 {APPRIS_version}
