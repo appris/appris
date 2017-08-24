@@ -207,7 +207,7 @@ sub upload_annotfiles()
 		}
 	}
 	if ( $rel_notes ne '' ) {
-		my ($relnotes_file) = $loc_reldir.'/relnotes.txt';
+		my ($relnotes_file) = $loc_reldir.'/relnotes.md';
 		my ($plog) = printStringIntoFile($rel_notes, $relnotes_file);
 		throw("Printing _get_ccds_stats_content\n") unless(defined $plog);		
 	}
