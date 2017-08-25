@@ -18,7 +18,7 @@ Files that execute the APPRIS pipeline (appristools*)
 
 * __appristools__, executes all steps in the APPRIS pipeline from a config file
     1. Executes APPRIS pipeline
-    2. Retrieves the list of principal isoforms and Compare stats between versions
+    2. Retrieves the list of principal isoforms and compares stats between versions
     3. Inserts the annotations into database
     4. Retrieves the data files of methods
 
@@ -38,28 +38,6 @@ appristools -p 1234 -d conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'example@appris
 ```
 appristools_srv -p 3 -r 2016_06.v17  -n changelog.md -c ws/config.json
 ```
-
-
-Files that retrieves information from APPRIS annotations (appris\_retrieve\_*)
-------------------------------------------------------------------------------
-
-* __appris_retrieve_main_data__, retrieves statistics and data from APPRIS methods
-
-* __appris_retrieve_method_data__, retrieves annotations from APPRIS methods. These files will be downloaded from the
- website.
-
-> __Note:__ Theses files are executed within __appristools__ bin file.
-
-
-Files that retrieves information from APPRIS annotations (appris\_retrieve\_*)
-------------------------------------------------------------------------------
-
-* __appris_retrieve_main_data__, retrieves statistics and data from APPRIS methods
-
-* __appris_retrieve_method_data__, retrieves annotations from APPRIS methods. These files will be downloaded from the
- website.
-
-> __Note:__ Theses files are executed within __appristools__ bin file.
 
 
 Files that operate with the APPRIS database (appris\_db\_*)
@@ -90,6 +68,19 @@ appris_db_backup -d appris_homo_sapiens_gencode_19_dev -h localhost -u appris -o
 ```
 
 
+Files that retrieves information from APPRIS annotations (appris\_retrieve\_*)
+------------------------------------------------------------------------------
+
+* __appris_retrieve_main_data__, retrieves statistics and data from APPRIS methods
+
+* __appris_retrieve_method_data__, retrieves annotations from APPRIS methods. These files will be downloaded from the
+ website.
+
+> __Note:__ Theses files are also executed within __appristools__ bin file.
+
+
+
+
 Files that creates the APPRIS gene sets (appris\_gs\_*)
 -------------------------------------------------------
 
@@ -102,7 +93,44 @@ Files that creates the APPRIS gene sets (appris\_gs\_*)
  -iu /home/jmrodriguez/projects/APPRIS/features/danio_rerio/up201610 \
  -o /home/jmrodriguez/projects/APPRIS/features/danio_rerio/a1
  ```
-> __Note:__ the gene sets of human have been obtained manually. For that reaso,
-the script is the following __appris_gs_create_human__
+> __Note:__ the gene sets of human have been obtained manually. For that reason, the script is the following __appris_gs_create_human__
+
+
+
+
+Internal files
+--------------
+
+* __appris_run_appris__, executes APPRIS pipeline.
+
+* __appris_insert_appris__, inserts the APPRIS annotations into database.
+
+> __Note:__ Theses files are also executed within __appristools__ bin file.
+
+* __appris_feat_down_ensembl_data__, download the input datafiles from Ensembl.
+
+* __appris\_bin\_*__, scripts that operate the pipeline steps for a gene:
+    - g -> run pipeline
+    - i -> insert annotations
+    - r -> retreive annotatins
+
+* __appris\_feat\_*\_report__, retrieve statistics from the reference gene sets (ensembl, gencode, refseq).
+
+* __appris_srv_delete_tmp__, removes temporal files that are cached in the server.
+
+* __appris_killall__, kills all APPRIS processes.
+
+
+
+Deprecated files
+----------------
+
+* appris\_check\_*
+
+* appris_retrieve_exon_data
+
+* retrieve_method_annots
+
+
 
 
