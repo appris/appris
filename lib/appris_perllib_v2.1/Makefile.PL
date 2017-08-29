@@ -42,6 +42,7 @@ requires 'Class::Load::XS'				=> '0.06';
 requires 'MRO::Compat'					=> '0.12';
 requires 'Data::Printer'				=> '0.35';
 requires 'XML::DOM'						=> '1.44';
+requires 'XML::Parser'					=> '2.44';
 requires 'CGI'							=> '3.63';
 requires 'HTTP::Status'					=> '6.03';
 requires 'Email::Valid'					=> '1.202';
