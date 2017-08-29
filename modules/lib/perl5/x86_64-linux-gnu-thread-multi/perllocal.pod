@@ -394,3 +394,47 @@ C<EXE_FILES: >
 
 =back
 
+=head2 Fri Aug 25 15:18:21 2017: C<Module> L<IO::String|IO::String>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.08>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Tue Aug 29 15:31:31 2017: C<Module> L<XML::Parser|XML::Parser>
+
+=over 4
+
+=item *
+
+C<installed into: /local/jmrodriguez/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.44>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
