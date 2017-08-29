@@ -34,9 +34,9 @@ data/*
 
 # 'cache' dir
 cache/*
+cache/wserver/*
 !cache/README.md
 !cache/wserver
-cache/wserver/*
 
 # 'features' dir
 features/*
