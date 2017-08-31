@@ -1012,8 +1012,11 @@ sub iframe_generator{
 	my @seq=split(//,$fire->{sequence});
 	unshift(@seq,"-");
 	my $variables=Config::IniFiles->new(-file => $fire->{config_file});
-        my $autoafmpath=$variables->val('PROGRAMS','square_test');
-	my @autoafm=`$autoafmpath $fire->{sequence} $fire->{sequence} $fire->{tmpfile}`;
+    my $autoafmpath=$variables->val('PROGRAMS','square_test');
+    # BEGIN: jmrc
+    # change for APPRIS configuration
+	my @autoafm=`$autoafmpath $fire->{config_file} $fire->{sequence} $fire->{sequence} $fire->{tmpfile}`;
+	# END: jmrc
 	my @seq_conserv=split(//,$autoafm[3]);
 	unshift(@seq_conserv,"-");
 	my @pockets=pocket_clustering($join);			# uses %all_bind_res

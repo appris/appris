@@ -518,7 +518,10 @@ sub site_info_extractor{
 		if ($parameters{identities}=~/\d+\/\d+\s+\((\d+)%\)/ && $psiout{$key}[10] eq "PSI"){$parameters{identit}=$1;}
 		elsif ($parameters{identities}=~/Identities=(\d+)%,/ && $psiout{$key}[10] eq "HHS"){$parameters{identit}=$1;}
 	#	if ($parameters{identit}>45){next;}			# line used for firestar evaluation
-		my @afmout=`$afmpath $psiout{$key}[1] $psiout{$key}[3] $parameters{template}`;		# aqui se lanza el programa another_fire_mess_web; 
+		# BEGIN: jmrc
+		# change for APPRIS configuration
+		my @afmout=`$afmpath $this->{config_file} $psiout{$key}[1] $psiout{$key}[3] $parameters{template}`;		# aqui se lanza el programa another_fire_mess_web;
+		# END: jmrc 
 		for(@afmout){chomp $_;$_=~s/\s+//g;}
 		$parameters{afm_query}=$afmout[1];
 		$parameters{afm_tempt}=$afmout[0];
