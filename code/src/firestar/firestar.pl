@@ -18,6 +18,7 @@ use vars qw(
 	$LOCAL_PWD	
 	$DEFAULT_CONFIG_FILE
 	$DEFALULT_FIRESTAR_CONFIG_FILE
+	$APPRIS_HOME
 	$WSPACE_TMP
 	$WSPACE_CACHE
 	$CACHE_FLAG
@@ -61,6 +62,7 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 my ($cfg) 				= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD				= $FindBin::Bin;
 $DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
+$APPRIS_HOME			= $ENV{APPRIS_HOME};
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $CACHE_FLAG				= $cfg->val('FIRESTAR_VARS', 'cache');
@@ -176,6 +178,7 @@ sub main()
 		};
 
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
+		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__HOME', $APPRIS_HOME);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
 		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
 		my ($firePredText_file) = $ws_cache.'/'.'seq.firestar';				
