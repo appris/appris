@@ -7,7 +7,6 @@ my ($config) = $ARGV[0];
 my $variables=Config::IniFiles->new(-file => $config);
 # END: jmrc
 
-
 # Will have a program that aligns template sequence to sequence of linked chad via glopez linked_file by ssearch
 # So each residue's matrix scores will come via this alignment. No need for "line up"
 #

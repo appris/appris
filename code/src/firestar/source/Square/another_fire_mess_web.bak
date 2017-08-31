@@ -2,10 +2,8 @@
 use FindBin;
 my $cwd=$FindBin::Bin;
 use Config::IniFiles;
-# BEGIN: jmrc
-my ($config) = $ARGV[0];
-my $variables=Config::IniFiles->new(-file => $config);
-# END: jmrc
+my $variables=Config::IniFiles->new(-file => "$cwd/../CONFIG_fire_var.ini");
+
 
 # Will have a program that aligns template sequence to sequence of linked chad via glopez linked_file by ssearch
 # So each residue's matrix scores will come via this alignment. No need for "line up"
@@ -36,13 +34,11 @@ my $mtx_path=$variables->val('PATHS','chads')."/chads_$release";
 $offset = 0; $offsetres = 0;
 
 # These are the three inputs, self explanatory
-# BEGIN: jmrc
-$target_sequence = $ARGV[1]; 
-$template_sequence = $ARGV[2];
-$pdb_code = $ARGV[3]; 
-if($ARGV[4] =~ /.../){$scoring_type = $ARGV[4];}
+$target_sequence = $ARGV[0]; 
+$template_sequence = $ARGV[1];
+$pdb_code = $ARGV[2]; 
+if($ARGV[3] =~ /.../){$scoring_type = $ARGV[3];}
 else{$scoring_type = "psi";}
-# END: jmrc
 
 # These options are optimised for PSI-BLAST alignments
 # you can change them if you want by hand!)
