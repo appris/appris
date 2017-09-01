@@ -9,6 +9,8 @@ RUN apt-get install -y acl git vim perl-doc nodejs npm
 
 # Clone APPRIS code
 RUN cd /opt && git clone https://github.com/appris/appris.git
+# delete packages because they produces some erros
+RUN rm -rf /opt/appris/modules/lib/perl5/XML /opt/appris/modules/lib/perl5/x86_64-linux-gnu-thread-multi/auto/XML* /opt/appris/modules/lib/perl5/Module
 
 # Install mysql-server
 ENV DEBIAN_FRONTEND noninteractive
@@ -31,13 +33,10 @@ RUN cpan -f  -i Module::Build
 RUN cpan -f  -i Module::Runtime
 RUN cpan -f  -i Module::Implementation
 RUN cpan -f  -i IPC::Run
-# delete packages because they produces some erros
-RUN rm -rf /local/jmrodriguez/appris/modules/lib/perl5/XML /local/jmrodriguez/appris/modules/lib/perl5/x86_64-linux-gnu-thread-multi/auto/XML* /local/jmrodriguez/appris/modules/lib/perl5/Module
 
 # Setting up the enviroment of 'root' and 'appris' users
-#COPY build/setup.root.sh /tmp/.
-#RUN cat "/tmp/setup.root.sh" >> /root/.bashrc
-RUN cat "${APPRIS_HOME}/docker/build/setup.root.sh" >> /root/.bashrc
+COPY build/setup.root.sh /tmp/.
+RUN cat "/tmp/setup.root.sh" >> /root/.bashrc
 RUN chmod -R og+w /opt/appris/cache /opt/appris/tmp
 
 RUN addgroup appris
@@ -45,10 +44,8 @@ RUN adduser --ingroup appris --disabled-password --gecos '' appris
 #RUN apt-get install -y sudo
 #RUN echo 'appris.appris' | adduser --ingroup appris --gecos '' appris
 #RUN usermod -aG sudo appris
-
-#COPY build/setup.appris.sh /tmp/.
-#RUN cat "/tmp/setup.appris.sh" >> /home/appris/.bashrc
-RUN cat "${APPRIS_HOME}/docker/build/setup.appris.sh" >> /home/appris/.bashrc
+COPY build/setup.appris.sh /tmp/.
+RUN cat "/tmp/setup.appris.sh" >> /home/appris/.bashrc
 
 # APPRIS-CORE ----
 # Setting up the environment variables
