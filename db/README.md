@@ -222,12 +222,13 @@ $ tar -cf - \
   db/refseq_vert* \
   db/refseq_invert* \
   db/APD8_a2_sortu.2.csv \
-  db/firestar \
   db/firestar_22Aug2013 \
+  db/firestar \
   db/pdb_70.with_pdb_seq* \
   db/components.cif \
   db/BLOSUM62 \
-  db/pdb_20170420* \
+  db/pdb_20170420.* \
+  db/pdb_20170420 \
   db/pfam_201706 \
   db/README.md \
   db/scripts | gzip -9c > ../appris_db_archives/appris_db_archives.2017_08.v24.tar.gz

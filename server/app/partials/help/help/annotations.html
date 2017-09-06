@@ -8,7 +8,10 @@
     <p>firestar predicts functionally important residues. The box shows the total number of functional residues detected by firestar for each transcript.</p>
 
     <h4>Tertiray Structure Score</h4>
-    <p>Matador3D analyses protein structural information for each variant. The score is based on the number of exons that can be mapped to structural homologues. This score is only comparable for transcripts within the same gene and should not be used to compare between genes.</p>
+    <p>Matador3D analyses protein structural information for each variant. But whether we have genomic information or not, we use Matador3D or Matador3Dv2.</p>
+    <p>The score of Matador3D is based on the number of exons that can be mapped to structural homologues, and the score of Matador3Dv2 represents the sum of bitscores in PDB alignment.</p>
+    <p>This score is only comparable for transcripts within the same gene and should not be used to compare between
+        genes.</p>
 
     <h4>Conservation score (vertebrates)</h4>
     <p>CORSAIR carries out BLAST searches against vertebrates to determine the most likely principal isoform. The score approximates to the number of species that have isoforms that can be aligned to each tested isoform without introducing gaps.</p>
@@ -22,5 +25,10 @@
 
     <h4>Signal Peptide Sequences and Mitochondrial Signal Sequences</h4>
     <p>CRASH predicts the presence and location of signal peptides and cleavage sites in amino acid sequences using an especially reliable form of SignalP and TargetP. Isoforms that are predicted to have reliable signal sequences are marked.</p>
+
+    <h4>No. Mapping Peptides</h4>
+    <p>Proteomic evidence only for the human genome (GENCODE gene set).</p>
+    <p>PROTEO collects peptides from seven separate MS sources. Two came from large-scale proteomics databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and <a href="http://peptide.nist.gov/">NIST</a>. Another four datasets that were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as “CNIO") in house from an <a href="http://www.ncbi.nlm.nih.gov/pubmed/14558131">X!Tandem</a> search against spectra from the <a href="http://www.ncbi.nlm.nih.gov/pubmed/15595733">GPM</a> and PeptideAtlas databases, following the protocol set out in <a href="http://www.ncbi.nlm.nih.gov/pubmed/22446687">Ezkurdia et al</a> with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.</p>
+    <p>In order to improve reliability the peptides from each of these studies were filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.</p>
 
 </div>

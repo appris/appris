@@ -161,7 +161,7 @@ apprisControllers.controller('DownloadsController', ['$rootScope', '$scope', '$f
         $scope.pageSize = 4;
 
         // load all data files
-        $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.txt';
+        $scope.urlREADME = $rootScope.serverConf.hostWS + '/pub/README.md';
         $scope.urlDOWNLOAD = $rootScope.serverConf.hostWS + '/pub';
         if ( $rootScope.serverConf.type == "gold" ) {
             $scope.baseUrlDownload = $rootScope.serverConf.hostWS + '/pub/current_release/datafiles';
