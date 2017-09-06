@@ -30,20 +30,19 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
     if ( angular.isDefined($routeParams.tid) && angular.isDefined($routeParams.species) && angular.isDefined($routeParams.id) ) {
         $scope.exporterid = $routeParams.tid+'/'+$routeParams.species+'/'+$routeParams.id;
         $scope.jobid = $scope.exporterid;
+        // check the rest of parameters
+        if ( !angular.isDefined($routeParams.sc) || !angular.isDefined($routeParams.ds) || !angular.isDefined($routeParams.as) ) {
+            $rootScope.isLoadingScreen = false;
+            $scope.alert.enable = true;
+            $scope.alert.type = "Error";
+            $scope.alert.message = "Your query is malformed. Please, rephrase your query.";
+            return ;
+        }
     }
     // RUNNER mode (idRUNNER and seqRUNNER)
     else if ( angular.isDefined($routeParams.jobid) ) {
         $scope.runnerid = $routeParams.jobid;
         $scope.jobid = $scope.runnerid;
-    }
-    // check the rest of parameters
-    if ( !angular.isDefined($routeParams.sc) || !angular.isDefined($routeParams.ds) || !angular.isDefined($routeParams.as) ) {
-        $rootScope.isLoadingScreen = false;
-        $scope.alert.enable = true;
-        $scope.alert.type = "Error";
-        $scope.alert.message = "Your query is malformed. Please, rephrase your query.";
-
-        return ;
     }
 
     // APPRIS annots
