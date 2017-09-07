@@ -38,7 +38,7 @@
                         {
                             "paramType": "query",
                             "name": "methods",
-                            "description": "Retrieved methods<br/>For more information: <a href='http://appris.bioinfo.cnio.es/#/help/intro' target='_blank'>APPRIS System</a>",
+                            "description": "Retrieved methods<br/>For more information: <a href='http://appris-tools.org/#/help/intro' target='_blank'>APPRIS System</a>",
                             "required": false,
                             "type": "string",
                             "allowMultiple": true,

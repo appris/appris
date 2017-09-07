@@ -17,15 +17,16 @@
                         <strong>evidence from cross-species alignments</strong>.
                     </p>
                     <p>The server has been used to annotate the Human genome as part of the
-                        <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a> consortium but {APPRIS} also has annotations for other vertebrate species. The main data source for {APPRIS} are the <a href="http://www.ensembl.org" target="_blank">Ensembl</a> annotations and sequences.
+                        <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a> consortium but {APPRIS} also has annotations for other vertebrate species. The main data source for {APPRIS} are the <a href="http://www.ensembl.org" target="_blank">Ensembl</a> annotations and sequences, but we have increased the gene sets including the <a href="https://www.ncbi.nlm.nih.gov/refseq/rsg" target="_blank">RefSeqGene</a> reference sets, and <a href="http://www.uniprot.org/" target="_blank">UniProt</a> proteomes. In addition, we have created new gene sets based on the merge of <b>Ensembl</b>+<b>RefSeqGene</b>+<b>UniProtKB</b> isoforms for each gene.
                     </p>
                     <p>
                         <img src="img/APPRIS_tools.png" class="img-thumbnail img-responsive">
                     </p>
                     <p>There are three ways to retrieve annotations for alternative splice isoforms:
                     <ul>
-                    <li>The <a href="#/help/database">APPRIS Database</a>, a web database that houses splice isoform annotations and principal isoforms for five vertebrate species (human, mouse, rat, pig, and zebrafish).</li>
-                    <li>The <a href="#/help/server">APPRIS WebServer</a>, web server that provides annotations of alternative splice isoforms and identifies principal isoforms for six other vertebrate species (dog, cat, cow, opossum, chicken and fugu).</li>
+                    <li>The <a href="#/help/database">APPRIS Database</a>, a web database that houses splice isoform annotations and principal isoforms for six vertebrate species (human, mouse, rat, pig, chimp, and zebra-fish),
+                        and two invertebrate species (fruit-fly and <i>C.elegans</i>).</li>
+                    <li>The <a href="#/help/server">APPRIS WebServer</a>, web server that provides annotations of alternative splice isoforms and identifies principal isoforms for other species (see the list of <a href="#/help/species">available species</a>).</li>
                     <li>The <a href="#/help/services">APPRIS WebServices</a>, a collection of RESTful web services that provides automatic access to annotations from the server and database for the two lists of vertebrate species.</li>
                     </ul>
                     </p>
@@ -53,6 +54,25 @@
                 <div class="panel-heading"><h2>Help & Docs <small>The APPRIS Database</small></h2></div>
                 <div class="panel-body">
                     <help-database></help-database>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'methods'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>The APPRIS Methods</small></h2></div>
+                <div class="panel-body">
+                    <help-methods></help-methods>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'database/query'">
+            <div class="panel panel-default">
+                <div
+                        class="panel-heading"><h2>Help & Docs <small>Query, what do you need to start</small></h2></div>
+                <div class="panel-body">
+                    <help-db-query></help-db-query>
                 </div>
             </div>
         </div>
@@ -99,6 +119,15 @@
                 <div class="panel-heading"><h2>Help & Docs <small>The APPRIS WebServices</small></h2></div>
                 <div class="panel-body">
                     <help-services></help-services>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'docker'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Docker</small></h2></div>
+                <div class="panel-body">
+                    <help-docker></help-docker>
                 </div>
             </div>
         </div>

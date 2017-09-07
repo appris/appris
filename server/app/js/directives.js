@@ -84,6 +84,13 @@ apprisDirectives.directive('helpMethods', function() {
     };
 });
 
+apprisDirectives.directive('helpDbQuery', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/dbquery.html'
+    };
+});
 
 apprisDirectives.directive('helpQueries', function() {
     return {
@@ -297,6 +304,14 @@ apprisDirectives.directive('resultInfoBrowserGenTpl', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'partials/help/result/infoBrowserGen.html'
+    };
+});
+
+apprisDirectives.directive('helpDocker', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/docker.html'
     };
 });
 

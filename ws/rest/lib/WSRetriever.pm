@@ -1906,7 +1906,7 @@ sub get_xml_report($)
 	my ($xml_doc) = XML::LibXML::Document->new('1.0','UTF-8');
 	
 	my ($e_query) = $xml_doc->createElement('query');
-	$e_query->setNamespace("http://appris.bioinfo.cnio.es", "appris", 0);
+	$e_query->setNamespace("http://appris-tools.org", "appris", 0);
 	$xml_doc->setDocumentElement($e_query);
 	my ($a_query) = $xml_doc->createAttribute('query', $report->{'query'});
 	$e_query->setAttributeNode($a_query);

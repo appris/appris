@@ -235,10 +235,10 @@ sub load_registry {
 		# For each assembly. By default, all assemblies
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			my ($found_as) = 0;
-			my ($cfg_datasets) = $cfg_assembly->{'datasets'}; #Êby default, scan all datasets
+			my ($cfg_datasets) = $cfg_assembly->{'datasets'}; #ï¿½by default, scan all datasets
 			if ( defined $assembly ) {				
 				if ( lc($assembly) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
-				#ÊNOTE!!! scan only one (the first, the newest)
+				#ï¿½NOTE!!! scan only one (the first, the newest)
 				if ( !defined $dataset and !(defined $source) ) { $cfg_datasets = [$cfg_assembly->{'datasets'}[0]] }					
 			} else {
 				#if ( lc($cfg_species->{'official'}) eq lc($cfg_assembly->{'id'}) ) { $found_as = 1 }
@@ -908,7 +908,7 @@ sub seek_features
 #	my ($xml_doc) = XML::LibXML::Document->new('1.0','UTF-8');
 #	
 #	my ($e_query) = $xml_doc->createElement('query');
-#	$e_query->setNamespace("http://appris.bioinfo.cnio.es", "appris", 0);
+#	$e_query->setNamespace("http://appris-tools.org", "appris", 0);
 #	$xml_doc->setDocumentElement($e_query);
 #	my ($a_query) = $xml_doc->createAttribute('query', $report->{'query'});
 #	$e_query->setAttributeNode($a_query);

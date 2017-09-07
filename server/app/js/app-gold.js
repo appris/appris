@@ -36,7 +36,7 @@ apprisApp.config(['$provide', function ($provide) {
     // GOLD server - production
     $provide.value("serverName", '{APPRIS}');
     $provide.value("serverType", 'gold');
-    $provide.value("serverHost", 'http://appris.bioinfo.cnio.es');
+    $provide.value("serverHost", 'http://appris-tools.org');
     $provide.value("serverHostWS", 'http://apprisws.bioinfo.cnio.es');
 
     // CONSTANTS

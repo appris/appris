@@ -3,7 +3,6 @@
     that cannot be defined in the simple search (panel at top, right).
 </p>
 <seeker-info-gene-tpl></seeker-info-gene-tpl>
-<seeker-info-inputs-tpl></seeker-info-inputs-tpl>
 
 <form name="seekerAdvancedForm" role="form" class="form-horizontal" data-ng-submit="runJob(seekerAdvancedForm)" novalidate>
 
@@ -26,7 +25,7 @@
     <div class="control-group runner-input">
         <label>2: Optional queries</label>
         <span class="glyphicon glyphicon-info-sign runner-info pointer" aria-hidden="true" data-toggle="modal"
-              data-target="#infoInputs"></span>
+              data-target="#infoGene"></span>
         <div class="input-group-addon" style="text-align: left;">
             <div class="form-inline">
                 <select class="form-control"  data-ng-model="seekerAdvancedForm.species"
