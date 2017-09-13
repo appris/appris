@@ -1,10 +1,7 @@
 Installation from the Docker repository
-=======================================
+---------------------------------------
 
-> __Note:__ For more detail, read the related section in the [INSTALL readme file](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
-
-Build the image
-===============
+> __Note:__ For more detail, read the section in the text file [INSTALL.md](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md).
 
 Build the image of APPRIS/core
 ------------------------------
@@ -21,9 +18,6 @@ The following files are required:
 + build/FireDB_{data_version}.sql.gz
 
 
-Running APPRIS-Docker container
-===============================
-
 Run the APPRIS/core container
 -------------------------------
 The next step is to run the *__appris/core__* image mounting the database directory and the _working directory_
@@ -35,7 +29,7 @@ $ docker run -itd \
     appris/code
 ```
 
-> __Note:__ For more information about the *__{database_dir}__* and *__{working_dir}__*, read the related sections in the [INSTALL readme file](INSTALL.md#installation-from-the-docker-repository)
+> __Note:__ For more detail of the *__{database_dir}__* and *__{working_dir}__*, read the section in the text file [INSTALL.md](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
 
 Now, we run APPRIS commands in a running container. We have to run the container with _appris_ user:
 
