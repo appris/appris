@@ -1,3 +1,8 @@
+Installation from the Docker repository
+=======================================
+
+> __Note:__ For more detail, read the related section in the [INSTALL readme file](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
+
 Build the image
 ===============
 

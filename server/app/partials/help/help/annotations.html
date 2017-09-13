@@ -1,17 +1,19 @@
 <div>
-    <!--<help-methods></help-methods>-->
-    <p>The “APPRIS annotations” section shows the scores of the <a href="#/help/database">APPRIS modules</a>.</p>
+    <p>The “APPRIS annotations” section shows the scores of the <a href="#/help/methods">APPRIS modules</a>.</p>
     <p>
-        <img src="img/report-annots.png" class="img-thumbnail img-responsive img-center" style="width: 80%">
+        <img src="img/report-annots.png" class="img-thumbnail img-responsive img-center" style="width: 100%">
     </p>
-    <h4>Num. Functional Residues</h4>
+    <h4>No. Functional Residues</h4>
     <p>firestar predicts functionally important residues. The box shows the total number of functional residues detected by firestar for each transcript.</p>
 
     <h4>Tertiray Structure Score</h4>
-    <p>Matador3D analyses protein structural information for each variant. But whether we have genomic information or not, we use Matador3D or Matador3Dv2.</p>
-    <p>The score of Matador3D is based on the number of exons that can be mapped to structural homologues, and the score of Matador3Dv2 represents the sum of bitscores in PDB alignment.</p>
-    <p>This score is only comparable for transcripts within the same gene and should not be used to compare between
-        genes.</p>
+    <p>Matador3D (and Matador3Dv2) analyze protein structural information for each isoform. For both, protein sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>, but we have genomic information or not, the score is calculated in two ways.</p>
+    <p>When we made use of genomic coordinates, the score is based on the number of exons that can be mapped
+        to structural homologues. When we don't know the genomic coordinates, the score is the sum of bit-scores in
+        PDB alignment.
+    </p>
+    <p>This score is only comparable for transcripts within the same gene and should not be used to compare
+        between genes.</p>
 
     <h4>Conservation score (vertebrates)</h4>
     <p>CORSAIR carries out BLAST searches against vertebrates to determine the most likely principal isoform. The score approximates to the number of species that have isoforms that can be aligned to each tested isoform without introducing gaps.</p>
@@ -20,7 +22,7 @@
     <p>SPADE identifies the functional domains present in a transcript and detects those domains that are damaged
         (not whole). The number represents the sum of bitscores in Pfam alignment.</p>
 
-    <h4>Num. Transmembrane Helices</h4>
+    <h4>No. Transmembrane Helices</h4>
     <p>THUMP makes unanimous predictions of trans-membrane helices. The score shows the number of trans-membrane helices predicted by THUMP for each variant.</p>
 
     <h4>Signal Peptide Sequences and Mitochondrial Signal Sequences</h4>

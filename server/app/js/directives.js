@@ -84,6 +84,15 @@ apprisDirectives.directive('helpMethods', function() {
     };
 });
 
+apprisDirectives.directive('helpScores', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/scores.html'
+    };
+});
+
+
 apprisDirectives.directive('helpDbQuery', function() {
     return {
         restrict: 'E',
@@ -100,6 +109,14 @@ apprisDirectives.directive('helpQueries', function() {
     };
 });
 
+apprisDirectives.directive('helpSeeker', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/seeker.html'
+    };
+});
+
 apprisDirectives.directive('helpReport', function() {
     return {
         restrict: 'E',
@@ -113,6 +130,14 @@ apprisDirectives.directive('helpServer', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'partials/help/help/server.html'
+    };
+});
+
+apprisDirectives.directive('helpStatus', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/status.html'
     };
 });
 

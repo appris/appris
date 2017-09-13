@@ -1,0 +1,34 @@
+<div>
+    <p><strong><a href="#/seeker">APPRIS Database</a></strong> was originally developed for the <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a>/<a href="http://www.ensembl.org" target="_blank">Ensembl</a> gene sets that are updated periodically. APPRIS has now been extended to two other public genome annotations, <a href="https://www.ncbi.nlm.nih.gov/refseq/rsg" target="_blank">RefSeq</a> and the <a href="http://www.uniprot.org/" target="_blank">UniProt</a> proteomes.
+    </p>
+
+    <p>In addition, we have created new gene sets based on the merge of <strong>Ensembl</strong>+<strong>RefSeq</strong>+<strong>UniProt</strong> isoforms for each gene. For the human genome we established a common gene set with the GENCODE, RefSeq, and UniProt reference sets. The initial cross-reference was generated with the data-mining tool, <a href="http://www.ensembl.org/biomart" target="_blank">BioMart</a>, and from there we re-annotated the cross-database relationships manually. For the remaining species we generated the common gene sets with the BioMart tool, although these relationships are not yet manually annotated.
+    </p>
+
+    <p>The APPRIS Database needs:</p>
+    <ul>
+        <li><p>Gene identifier or gene name (<strong>required</strong>),</p>
+        </li>
+        <li><p>Species name and the reference gene set (<strong>optional</strong>).</p>
+        </li>
+    </ul>
+    <p>The Gene IDs could be <strong>Ensembl</strong> (eg. <i>ENSG00000099904</i>) and <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3013746/" target="_blank">Entrez gene ID</a> (<strong>RefSeq</strong>) (eg. <i>27037</i>).
+    </p>
+    <p>The Gene Names are from <a href="http://www.genenames.org/">HUGO</a> (eg. <i>RNF215</i>). Using a Gene name, the query is done in all reference gene sets (<strong>Ensembl</strong>, <strong>RefSeq</strong>, and <strong>UniProt</strong>).
+    </p>
+    <p>
+        <img src="img/databaseForm_query.png" class="img-thumbnail img-responsive img-center" style="width: 50%">
+    </p>
+    <p>Optionally, the user can provide the species name and the reference gene set. If the user does not provide the optional parameters, the gene is searched in all references sets.
+    </p>
+    <p>
+        <img src="img/databaseForm_query_opt1.png" class="img-thumbnail img-responsive img-center" style="width: 50%">
+    </p>
+    <p>The list of gene sets depends on the species but in most of cases the reference gene sets are the following: <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a>/<a href="http://www.ensembl.org" target="_blank">Ensembl</a>, <a href="https://www.ncbi.nlm.nih.gov/refseq/rsg" target="_blank">RefSeq</a> and the <a href="http://www.uniprot.org/" target="_blank">UniProt</a> proteomes.
+    </p>
+    <p>
+        <img src="img/databaseForm_query_opt2.png" class="img-thumbnail img-responsive img-center" style="width: 50%">
+    </p>
+    <p>The list of available species and the reference gene sets are <a href="#/help/species">here</a>.
+    </p>
+</div>

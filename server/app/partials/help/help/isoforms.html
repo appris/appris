@@ -1,26 +1,34 @@
 <div>
     <p>The “Principal Isoforms” section shows all the variants and highlights the principal isoforms. The isoforms are tagged with the flags PRINCIPAL, and ALTERNATIVE based on the range of protein features.</p>
     <p>
-    <img src="img/report-isoform.png" class="img-thumbnail img-responsive img-center" style="width: 80%">
+    <img src="img/report-isoform.png" class="img-thumbnail img-responsive img-center" style="width: 100%">
     </p>
-    <h4>Seq IDs and Names</h4>
-    <p>In the case of the APPRIS Database, the IDs and Names come from Ensembl transcript identifiers and transcript names, respectively. For the APPRIS WebServer, the IDS come from the sequence identifier of the FASTA sequence file.
+    <h4>Seq IDs</h4>
+    <p>In the case of the APPRIS Database, the IDs come from Ensembl transcript identifiers, or RefSeq transcript ids., or the UniProt entries. For the APPRIS WebServer, the IDS come from the sequence identifier of the FASTA sequence file.
     </p>
-    <h4>Biotype</h4>
-    <p>A gene or transcript classification. Transcript types include protein coding, pseudogene, and long non-coding and short non-coding RNAs. For human, mouse and selected other species we incorporate the manual annotations from <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a>. Where a gene o
-        r transcript has been manually annotated, we use the manually assigned biotype. The full list of biotypes used by GENCODE are <a href="http://www.gencodegenes.org/gencode_biotypes.html" target="_blank">here</a>.
+
+    <h4>Seq Names</h4>
+    <p>It shows the Ensembl transcript name.
     </p>
-    <h4>Codons <small>(for APPRIS Database)</small></h4>
-    <p>If the transcript contains a variation whose alternative allele has a population frequency of at least 10% and is causing the loss or gain of a stop codon in a HapMap population, the variation and affected populations are listed.
+    <i>Note: This column only appears when the query comes from Ensembl gene identifier.</i>
+
+    <h4>Length (aa)</h4>
+    <p>Length of Amino-acid sequences.
     </p>
+
+    <h4>Biotype <small>(for APPRIS Database)</small></h4>
+    <p>A gene or transcript classification. Transcript types include protein coding, pseudogene, and long non-coding and short non-coding RNAs. For human, mouse and selected other species we incorporate the manual annotations from <a href="http://www.gencodegenes.org" target="_blank">GENCODE</a>. Where a gene or transcript has been manually annotated, we use the manually assigned biotype. The full list of biotypes used by GENCODE are <a href="http://www.gencodegenes.org/gencode_biotypes.html" target="_blank">here</a>.
+    </p>
+    <i>Note: This column only applies when the query comes from Ensembl gene identifier.</i>
+
     <h4>CCDS <small>(for APPRIS Database)</small></h4>
     <p>If the transcript has a Consensus Coding Sequence, the
         <a href="http://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi" target="_blank">CCDS</a> ID will be listed.
     </p>
 
-    <h4>Principal Isoforms</h4>
-    <p>APPRIS defines the principal variant by combining protein structural and functional information and
-        information from the conservation of related species.
+    <h4>Flags <small>(for APPRIS Database)</small></h4>
+    <p>It shows metadata information for a variant such as we have Not Found the start/end codon, <a
+            href="https://www.ensembl.org/Help/Glossary?id=492" target="_blank">Transcript Support Level</a>, etc.
     </p>
 
     <help-flags></help-flags>

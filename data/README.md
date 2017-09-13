@@ -178,7 +178,7 @@ Tabular file that prints the scores of APPRIS methods. The description of the co
 
     _Matador3D_, the score is based on the number of exons that can be mapped to structural homologues.
 
-    _Matador3Dv2_, the number represents the sum of bitscores in PDB alignment.
+    _Matador3Dv2_, the number represents the sum of bit-scores in PDB alignment.
 
 + The __number of vertebrate species__ that have an isoform that aligns to the human isoform over the whole sequence
 and without gaps (_CORSAIR_).

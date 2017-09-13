@@ -111,8 +111,6 @@ $ docker exec --user appris -it {CONTAINER_ID} \
 > __Note:__ For more detail, read the related section in the [DOCKER readme file](DOCKER.md#running-appris-docker-container)
 
 
-
-
 Installation from Scratch
 =========================
 
@@ -192,9 +190,12 @@ Steps you have to do to acquire APPRIS system
 
 3. Download databases for APPRIS code:
 	```
-	cd ${APPRIS_HOME} && \
     wget http://apprisws.bioinfo.cnio.es/db_archives/appris_db_archives.${appris_version}.tar.gz && \
     tar -xf appris_db_archives.${appris_version}.tar.gz
+
+	wget
+	cd ${APPRIS_HOME}
+	tar -xf appris_local_db.${date_version}.tar.gz
 	```
 
 4. Setting up 'firestar' method:

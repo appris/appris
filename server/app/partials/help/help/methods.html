@@ -1,6 +1,5 @@
 <div>
-<p>APPRIS analysis is based on a range of complementary computational methods. The methods in APPRIS are the
-    following:</p>
+    <p>APPRIS annotates variants with biological data such as <strong>protein structural information</strong>, <strong>functionally important residues</strong>, <strong>conservation of functional domains</strong> and <strong>evidence of cross-species conservation</strong>. For that, APPRIS pipeline is based on a range of complementary computational methods, which are the following:</p>
 <ol>
     <li>Functionally important residues, <strong>firestar</strong></li>
     <li>Protein structural information, <strong>Matador3D</strong></li>
@@ -24,8 +23,12 @@
     important residues based on the <a href="http://firedb.bioinfo.cnio.es/Php/FireDB.php" target="_blank">fireDB</a> database. The predictions are based on the local evaluation of alignments between the query sequence and the structures with functional information that are stored in FireDB. The reliability of predictions is assessed with <a href="http://firedb.bioinfo.cnio.es/Php/square.php" target="_blank">SQUARE</a> and the functional information is highlighted along with a reliability score.</p>
 <p>Functional residues are highly conserved, even across large evolutionary distances. Since these residues are unlikely to have arisen by chance we can also use this to help determine the principal isoform. Variants that have "lost" conserved functional residues are unlikely to be the principal isoform.</p>
 
-<h4>Matador3D: Protein structural information</h4>
-<p>Protein structural information is analysed with <strong>Matador3D</strong>. In practice variant sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>.</p>
+<h4>Matador3D (and Matador3Dv2): Protein structural information</h4>
+<p><strong>Matador3D</strong> and <strong>Matador3Dv2</strong> are two methods that analyze protein structural information for each isoform. For both methods, protein sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>, but we have or not the genomic information, the score is calculated in two ways:</p>
+    <ul>
+    <li>Matador3D, the score is based on the number of exons that can be mapped to structural homologues.</li>
+    <li>Matador3Dv2, the number represents the sum of bit-scores in PDB alignment.</li>
+    </ul>
 <p>Protein structure is much more conserved than sequence and isoforms with large inserts or deletions relative to homologous crystal structures are also not likely to be principal.</p>
 
 <h4>SPADE: Scanning Pfam Alignments for Damaged Entities</h4>

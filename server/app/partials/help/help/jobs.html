@@ -1,16 +1,21 @@
 <div>
-    <p>The "Query" section shows a panel with information about the query gene:</p>
+    <p>The "Query" section shows a panel with information about the query gene.</p>
+    <p>The showed information depends on whether the type of query:
+    </p>
     <ul>
         <li>
-            When the query input is protein sequences, the panel contains the identifier of the job and the species name.
+            <p>When the query is a <i>gene identifier/name</i> (from APPRIS Database or from APPRIS WebServer), the panel contains the name and the identifier of the gene, the species name, and the genome location of the gene and the assembly version. Optionally, the classification (biotype) of the gene could be appear if the gene ID comes from Ensembl.
+            </p>
             <p>
-                <img src="img/report-jobSeq.png" class="img-thumbnail img-responsive" style="width: 80%">
+                <img src="img/report-jobGen.png" class="img-thumbnail img-responsive" style="width: 100%">
             </p>
         </li>
-        <li>
-            When the query is a gene name (or Ensembl identifier), the panel contains the name and the identifier of the gene, the species name, the genome location of the gene, and the Ensembl classification (biotype) of the gene.
+        <li><p>
+            When the query input is protein sequences (only from APPRIS WebServer), the panel contains one
+            identifier of the sequence and the species name.
+            </p>
             <p>
-                <img src="img/report-jobGen.png" class="img-thumbnail img-responsive" style="width: 80%">
+                <img src="img/report-jobSeq.png" class="img-thumbnail img-responsive" style="width: 100%">
             </p>
         </li>
     </ul>
