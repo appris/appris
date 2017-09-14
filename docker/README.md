@@ -1,7 +1,9 @@
 Installation from the Docker repository
 ---------------------------------------
 
-> __Note:__ For more detail, read the section in the text file [INSTALL.md](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md).
+> __Note:__ For more detail, read the section *__Installation from the Docker repository__* in the text file [INSTALL
+.md](http://apprisws.bioinfo.cnio
+.es/pub/docs/INSTALL.md).
 
 Build the image of APPRIS/core
 ------------------------------
