@@ -340,6 +340,14 @@ apprisDirectives.directive('helpDocker', function() {
     };
 });
 
+apprisDirectives.directive('changeLogs', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/changelogs.html'
+    };
+});
+
 apprisDirectives.directive('license', function() {
     return {
         restrict: 'E',
