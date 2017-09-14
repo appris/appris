@@ -227,12 +227,15 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
         name: "Protein seq. as",
         format: "fasta",
         mimetype:   "text/plain"
-    },{
-        type: "genome",
-        name: "Genome annot. as",
-        format: "bed",
-        mimetype:   "text/plain"
     }];
+    if ( angular.isDefined($routeParams.sc) && $routeParams.sc != 'appris' && $routeParams.sc != 'uniprot' ) {
+        $scope.saveAs.push({
+            type: "genome",
+            name: "Genome annot. as",
+            format: "bed",
+            mimetype:   "text/plain"
+        });
+    }
     $scope.exportData = function(save) {
         // init vars
         var inputs = $scope.resultAnnots;
