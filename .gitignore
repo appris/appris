@@ -30,7 +30,9 @@ annotations/*
 
 # 'data' dir
 data/*
+data/wserver/*
 !data/README.md
+!data/wserver
 
 # 'cache' dir
 cache/*
