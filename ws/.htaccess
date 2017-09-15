@@ -9,6 +9,6 @@
     RewriteRule ^/downloads$ http://appris.cnio.es:3000/#/downloads [R=301,NC,L]
     RewriteRule ^/about$ http://appris.cnio.es:3000/#/about [R=301,NC,L]
     RewriteRule ^/help http://appris.cnio.es:3000/#/help [R=301,NC,L]
-    Redirect 301 /db_archives/appris_db_archives.2016_11.v19.tar.gz https://www.dropbox.com/s/5su6yr3eabh5tin/appris_local_db.2016_11.tar.gz?dl=0
-    Redirect 301 /db_archives/appris_db_archives.2017_08.v24.tar.gz https://www.dropbox.com/s/6e0nx07nqv3qbyw/appris_db_archives.2017_08.v24.tar.gz?dl=0
+    Redirect 301 /archives/db/appris_db_archives.2017_08.v24.tar.gz https://www.dropbox.com/s/6e0nx07nqv3qbyw/appris_db_archives.2017_08.v24.tar.gz?dl=0
+    Redirect 301 /archives/data/appris_data_archives.2017_08.v24.tar.gz https://www.dropbox.com/s/5su6yr3eabh5tin/appris_local_db.2016_11.tar.gz?dl=0
 </IfModule>
