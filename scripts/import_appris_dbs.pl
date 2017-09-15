@@ -23,7 +23,7 @@ my ($loglevel) = undef;
 );
 
 # Check required parameters
-unless ( defined $conf_file and defined ) {
+unless ( defined $conf_file and defined $indir ) {
 	print `perldoc $0`;
 	print "\nBad option combination of input data\n\n";
 	exit 1;
