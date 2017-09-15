@@ -1,3 +1,4 @@
+# APPRIS-CORE ----
 # our base image
 FROM ubuntu
 
@@ -47,7 +48,6 @@ RUN adduser --ingroup appris --disabled-password --gecos '' appris
 COPY build/setup.appris.sh /tmp/.
 RUN cat "/tmp/setup.appris.sh" >> /home/appris/.bashrc
 
-# APPRIS-CORE ----
 # Setting up the environment variables
 #USER appris
 #ENV HOME /home/appris
