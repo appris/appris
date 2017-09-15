@@ -108,28 +108,18 @@ sub main()
 		copy_genefiles();
 	}
 
-	# Step 3: import database annotations to localhost
+	# Step 3: upload annotation files to server
 	if ( $steps =~ /3/ )
 	{
 		if ( defined $release and defined $relnotes_file and defined $conf_file ) {
-			info("-- import database annotations to localhost...");
-			import_annotdb();
-		}
-		else { throw("you need to add all parameters") }
-	}
-
-	# Step 4: upload annotation files to server
-	if ( $steps =~ /4/ )
-	{
-		if ( defined $release and defined $relnotes_file and defined $conf_file ) {
 			info("-- upload annotation files to server...");
-			upload_annotfiles();
+			upload_annotfiles();		
 		}
 		else { throw("you need to add all parameters") }
 	}
 	
-	# Step 5: upload gene data files to server
-	if ( $steps =~ /5/ )
+	# Step 4: upload gene data files to server
+	if ( $steps =~ /4/ )
 	{		
 		info("-- upload gene data-files to server...");
 		upload_genefiles();
@@ -149,48 +139,6 @@ sub main()
 ####################
 # SubMethod bodies #
 ####################
-
-sub _import_adb($)
-{
-	my ($srv_reldir) = @_;
-	my ($cmd_imp) = "";
-	foreach my $species_id ( @CFG_SPECIES ) {
-		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
-		
-		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
-				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
-					my ($ds_id) = $cfg_dataset->{'id'};
-					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
-					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
-					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
-					my ($srv_db_file) = $srv_reldat_dir.'/appris_db.dump.gz';
-					$cmd_imp .= "appris_db_import -d $ds_db -h $SRV_DB_HOST -u root -i $srv_db_file && ";
-				}
-			}			
-		}		
-	}
-	return $cmd_imp;
-}
-
-sub import_annotdb()
-{
-	# declare local variables
-	my ($srv_reldir) = $SRV_PUB_RELEASE_DIR.'/'.$release;
-	
-	# import databases into server
-	info("-- import databases into localhost...");
-	my ($cmd_imp) = _import_adb($srv_reldir);
-	if ( $cmd_imp ne '' ) {
-		eval {
-			$cmd_imp =~ s/\s*\&\&\s*$//g;
-			my ($cmd) = "$cmd_imp";
-			info($cmd);
-			system($cmd);
-		};
-		throw("importing databases in localhost") if($@);		
-	}
-}
 
 sub upload_annotfiles()
 {
@@ -275,24 +223,23 @@ sub upload_annotfiles()
 	
 	# import databases into server
 	info("-- import databases into server...");
-	my ($cmd_imp) = _import_adb($srv_reldir);
-#	my ($cmd_imp) = "";
-#	foreach my $species_id ( @CFG_SPECIES ) {
-#		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
-#		
-#		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-#			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
-#				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
-#					my ($ds_id) = $cfg_dataset->{'id'};
-#					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
-#					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
-#					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
-#					my ($srv_db_file) = $srv_reldat_dir.'/appris_db.dump.gz';
-#					$cmd_imp .= "appris_db_import -d $ds_db -h $SRV_DB_HOST -u root -i $srv_db_file && ";
-#				}
-#			}			
-#		}		
-#	}
+	my ($cmd_imp) = "";
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		
+		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
+			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
+				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
+					my ($ds_id) = $cfg_dataset->{'id'};
+					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
+					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
+					my ($srv_reldat_dir) = $srv_relspe_dir.'/'.$ds_id;
+					my ($srv_db_file) = $srv_reldat_dir.'/appris_db.dump.gz';
+					$cmd_imp .= "appris_db_import -d $ds_db -h $SRV_DB_HOST -u root -i $srv_db_file && ";
+				}
+			}			
+		}		
+	}
 	if ( $cmd_imp ne '' ) {
 		eval {
 			$cmd_imp =~ s/\s*\&\&\s*$//g;
@@ -600,9 +547,8 @@ Executes all APPRIS 'steps
   -p, --steps {string} <Process steps>
 	* 1 - Download gene data files -\n
 	* 2 - Copy gene data to workspace space -\n	
-	* 3 - Import database annotations into localhost -\n
-	* 4 - Upload annotation files to server -\n
-	* 5 - Upload gene data files to server -\n
+	* 3 - Upload annotation files to server -\n
+	* 4 - Upload gene data files to server -\n
   
   -r, --release   {string} <Release identifier>
   
