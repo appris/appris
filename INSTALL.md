@@ -44,7 +44,7 @@ Download the database files that the code needs into the **working directory**
 
 ```
 $ cd ${working_dir} && \
-  wget http://apprisws.bioinfo.cnio.es/db_archives/appris_db_archives.${appris_version}.tar.gz && \
+  wget http://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
   tar -xf appris_db_archives.${appris_version}.tar.gz
 ```
 
@@ -190,7 +190,7 @@ Steps you have to do to acquire APPRIS system
 
 3. Download databases for APPRIS code:
 	```
-    wget http://apprisws.bioinfo.cnio.es/db_archives/appris_db_archives.${appris_version}.tar.gz && \
+    wget http://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
     tar -xf appris_db_archives.${appris_version}.tar.gz
 
 	wget
@@ -249,3 +249,69 @@ Steps you have to do to acquire APPRIS system
 	```
 
 
+Build the images of APPRIS
+==========================
+
+
+Build the image of APPRIS/core
+------------------------------
+Now that you have your Dockerfile, you can build your image. The docker build command does the heavy-lifting of creating a docker image from a Dockerfile.
+
+```
+$ docker build -t appris/core -f build/appris_core.dockerfile .
+```
+The following files are required:
+
++ build/appris_core.dockerfile
++ build/setup.sh
++ build/entrypoint.sh
++ build/FireDB_{data_version}.sql.gz
+
+
+Build the image of APPRIS/server
+------------------------------
+Now that you have your Dockerfile, you can build your image. The docker build command does the heavy-lifting of creating a docker image from a Dockerfile.
+
+```
+$ docker build -t appris/server -f build/appris_server.dockerfile .
+```
+
+### Download data files for APPRIS server that server needs into the {data_directory}
+We have to ways to obtain the data files:
+
+1. Download the data files from external repository
+```
+$ wget http://apprisws.bioinfo.cnio.es/archives/data/appris_data_archives.${appris_version}.tar.gz && \
+  tar -xf appris_data_archives.${appris_version}.tar.gz
+```
+> __WARNING__: The data file is quite big (around 7Gb). Take care!
+
+2. Where *__appristools__* saves the annotations
+
+
+### Import databases of APPRIS annotations
+1. Run the *__appris/server__* image mounting the data directory
+```
+$ docker run -itd \
+    -v ${data_dir}:/opt/appris/data \
+    appris/server
+```
+
+2. Import the databases files within the Docker image
+
+> __WARNING__: You will need around 50Gb in the system to import database files. Think on that!
+
+    2.1 Run a *_bash_* in the running *__appris/server__* container
+    ```
+    $ docker exec --user appris -it {CONTAINER_ID} bash
+    ```
+
+    2.1 Import databases
+    ```
+    $ docker exec --user appris -it {CONTAINER_ID} \
+        bash -c "source /opt/appris/conf/apprisrc.docker && \
+                perl /opt/appris/docker/scripts/import_appris_dbs.pl \
+                    -c /opt/appris/conf/config_{appris_version}.json \
+                    -d /opt/appris/data \
+                    -l info"
+    ```

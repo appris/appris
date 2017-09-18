@@ -5,21 +5,6 @@ Installation from the Docker repository
 .md](http://apprisws.bioinfo.cnio
 .es/pub/docs/INSTALL.md).
 
-Build the image of APPRIS/core
-------------------------------
-Now that you have your Dockerfile, you can build your image. The docker build command does the heavy-lifting of creating a docker image from a Dockerfile.
-
-```
-$ docker build -t appris/core -f build/appris_core.dockerfile .
-```
-The following files are required:
-
-+ build/appris_core.dockerfile
-+ build/setup.sh
-+ build/entrypoint.sh
-+ build/FireDB_{data_version}.sql.gz
-
-
 Run the APPRIS/core container
 -------------------------------
 The next step is to run the *__appris/core__* image mounting the database directory and the _working directory_
@@ -33,7 +18,28 @@ $ docker run -itd \
 
 > __Note:__ For more detail of the *__{database_dir}__* and *__{working_dir}__*, read the section in the text file [INSTALL.md](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
 
-Now, we run APPRIS commands in a running container. We have to run the container with _appris_ user:
+Now, we will be ablle to run APPRIS commands in a running container with _appris_ user.
+```
+$ docker exec --user appris -it {CONTAINER_ID} \
+    bash -c "source /opt/appris/conf/apprisrc.docker && \
+            appris_run_appris \
+                -c /home/appris/ws/test.ws.env \
+                -m firestar,matador3d,matador3d2,spade,corsair,thump,crash,proteo,appris \
+                -l info"
+```
+
+### Samples
+
+For example, using the files in the "docker" samples. We run the following APPRIS commands with _appris_ user:
+
+```
+$ docker run -itd \
+    -v /local/appris/db:/opt/appris/db \
+    -v /local/appris/docker/ws:/home/appris/ws \
+    appris/code
+```
+
++ Run simple test (cached):
 
 ```
 $ docker exec --user appris -it {CONTAINER_ID} \
@@ -43,3 +49,5 @@ $ docker exec --user appris -it {CONTAINER_ID} \
                 -m firestar,matador3d,matador3d2,spade,corsair,thump,crash,proteo,appris \
                 -l info"
 ```
+
+

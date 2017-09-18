@@ -2,9 +2,6 @@ Data files
 ==========
 In this directory we would save the *__data files__* from APPRIS annotations.
 
-
-Directory structure
-===================
 This directory contains the following subdirectories:
 
 ```

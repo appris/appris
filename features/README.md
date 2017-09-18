@@ -1,63 +1,36 @@
-UNIPROT DATA SOURCE
-===================
+Features files
+==============
+Files with the inputs for the APPRIS pipeline.
 
-#Êinfo files
+There are three (four) different gene sets:
+ 1. Ensembl/GENCODE
+ 2. RefSeq Gene
+ 3. UniProt
+ 4. Intersection
 
-ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/README
+Files you need for each gene sets:
 
-# Download data files
-
-http://www.uniprot.org/uniprot/?sort=&desc=&compress=yes&query=proteome:UP000005640&force=no&preview=false&format=tab&columns=id,entry%20name,genes(PREFERRED),database(CCDS),length
-
-http://www.uniprot.org/uniprot/?sort=&desc=&compress=yes&query=proteome:UP000005640&fil=&force=no&preview=false&format=fasta&include=yes
-
-
-REFSEQ DATA SOURCE
-==================
+1.
 
 
-# info files
-
-## release
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Mus_musculus/README_CURRENT_RELEASE
-
-##Êchromosome info
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Mus_musculus/Assembled_chromosomes/chr_accessions_GRCm38.p4
-
-## Get RefSeq gene to GeneName Symbol
-ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/RefSeqGene/gene_RefSeqGene
+2.
 
 
-# Download data files
+3.
 
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Mus_musculus/GFF/ref_GRCm38.p4_top_level.gff3.gz
-
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Mus_musculus/RNA/rna.fa.gz
-
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Mus_musculus/protein/protein.fa.gz
-
-
-# Extract the Cross-Reference with Ensembl (for mouse)
-wget ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz
-zgrep "^10090" gene2ensembl > xref.refseq_ensembl.txt
-
-# Add extra values (DEPRECATED)
-#perl /local/jmrodriguez/appris/scripts/add_extraVals_into_GTF.pl \
-#	-r \
-#	--xref=xref.refseq_ensembl.txt \
-#	--data=ref_GRCm38.p4_top_level.gff3 \
-#	--seq-data=protein.fa \
-#	--extra-data=../e86_gM11/gencode.vM11.annotation.gtf \
-#	--outfile=ref_GRCm38.p4_top_level.extra.gff3 \
-#	--loglevel=info \
-#	--logfile=add_extraVals_into_GTF.log
-#
-#
-## Get the ReadThrought tags
-#perl /local/jmrodriguez/appris/scripts/add_RT_into_GFF3.pl --gdata=e81_g23/gencode.v23.annotation.gtf --rdata=rs105/ref_GRCh37.p13_top_level.gff3 --xref=rs105/xref.rs107_ensembl.txt --outfile=rs105/ref_
-#GRCh37.p13_top_level.RT.gff3 --loglevel=info
-#perl /local/jmrodriguez/appris/scripts/add_RT_into_GFF3.pl --gdata=e81_g23/gencode.v23.annotation.gtf --rdata=rs107/ref_GRCh38.p2_top_level.gff3 --xref=rs107/xref.rs107_ensembl.txt --outfile=rs107/ref_G
-#RCh38.p2_top_level.RT.gff3 --loglevel=info
+In a general way, you can download the *_gene data files_* using the *__appristools_srv__* script.
+```
+appristools_srv -p 1 -c ws/config.json
+```
 
 
-
+4. In the creation of the intersection gene set, you have to execute the *__appris_gs_create__* script.
+```
+ appris_gs_create \
+ -s danio_rerio \
+ -ie /home/jmrodriguez/projects/APPRIS/features/danio_rerio/e87 \
+ -ir /home/jmrodriguez/projects/APPRIS/features/danio_rerio/rs105 \
+ -iu /home/jmrodriguez/projects/APPRIS/features/danio_rerio/up201610 \
+ -o /home/jmrodriguez/projects/APPRIS/features/danio_rerio/a1
+ ```
+ > Note: There is specific sccript for the manual cross-references in human *__appris_gs_create_human__*
