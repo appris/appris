@@ -1,4 +1,5 @@
 # APPRIS-CORE ----
+
 # our base image
 FROM ubuntu
 
@@ -64,8 +65,10 @@ RUN /etc/init.d/mysql start && \
 	mysql FireDB -h localhost -u root < /tmp/FireDB_22Aug2013.sql && \
 	rm /tmp/FireDB_22Aug2013.sql
 
+# Setting up appris DB's
+RUN /etc/init.d/mysql start && \
+        mysql -h localhost -e 'create user appris@localhost; grant all privileges on appris_*.* to appris@localhost'
 
-# APPRIS-DATABASE ----
 
 # APPRIS-SERVER ----
 # Setting up the environment variables
