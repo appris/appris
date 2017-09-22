@@ -31,7 +31,8 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
         $scope.exporterid = $routeParams.tid+'/'+$routeParams.species+'/'+$routeParams.id;
         $scope.jobid = $scope.exporterid;
         // check the rest of parameters
-        if ( !angular.isDefined($routeParams.sc) || !angular.isDefined($routeParams.ds) || !angular.isDefined($routeParams.as) ) {
+        //if ( !angular.isDefined($routeParams.sc) || !angular.isDefined($routeParams.ds) || !angular.isDefined($routeParams.as) ) {
+        if ( !angular.isDefined($routeParams.sc) ) {
             $rootScope.isLoadingScreen = false;
             $scope.alert.enable = true;
             $scope.alert.type = "Error";
