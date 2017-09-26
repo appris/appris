@@ -107,7 +107,7 @@ $logger->init_log($str_params);
 # Method prototypes #
 #####################
 sub parse_blast($$$);
-sub check_alignment($$$\$$);
+sub check_alignment($$$$\$$);
 
 #################
 # Method bodies #
@@ -346,6 +346,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 
 	my $string = "";
 	my $length = 0;
+	my $length_diff = 0;
 	my $faalen = 0;
 	my $species = "";
 
@@ -378,14 +379,13 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 		{
 			my @data = split " ";
 			my @iden = split /\//, $data[2];
-			$length = $length - $faalen;
-			$length = abs($length);				# difference in length between query and subject
+			$length_diff = abs($length - $faalen); # difference in length between query and subject
 			my @identities = split " ", $iden[0];
 			my $identity = $iden[0]/$iden[1]*100;
 			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : "";			
 			if ($identity < 50)				# gets no points for this sequence
 				{ }
-			elsif ($length > $PROG_MINLEN) # gets no points for this sequence
+			elsif ($length_diff > $PROG_MINLEN) # gets no points for this sequence
 				{ }
 			elsif (exists $species_found->{$species}) # gets no points for this sequence
 				{ }
@@ -393,7 +393,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 				{ }
 			else
 			{
-					my ($aln_score,$aln_sms) = check_alignment($species,$faalen,$exons,$aln_report, $_);
+					my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$exons,$aln_report, $_);
 					if ( defined $aln_score and ($aln_score > 0) ) {
 						# get identity score
 						my ($aln_iden) = sprintf '%.2f', $identity;
@@ -479,8 +479,9 @@ sub divtime_score($)
 	return $score;
 }
 
-sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
+sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 {
+	my $length = shift;
 	my $specie = shift;	
 	my $query_length = shift;
 	my $exons = shift;
@@ -526,7 +527,7 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 	my $targstart = $startq[0];
 	my $targend = $endq[$#endq];
 	my $candstart = $startc[0];
-	my $candend = $endc[$#endc];
+	my $candend = $length;
 	
 	if ($targstart > 4)						# reject if different N-terminal
 		{return (0,"It has different N-terminal")}
