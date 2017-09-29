@@ -463,7 +463,7 @@ sub iden_score($)
 	return $score;
 }
 
-#Ê(Normalized) Score based on diverge time
+# (Normalized) Score based on diverge time
 sub divtime_score($)
 {
 	my ($species) = shift;
@@ -559,6 +559,8 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 			{ $boundaries[0] = $targstart; }
 		my $identities = 0;
 		my $gapres = 0;
+		my ($gapresconttarg, $gaprescontcand) = (0,0);
+		my ($gapconttarg, $gapcontcand) = ('false','false');
 		my $totalres = $boundaries[1] - $boundaries[0] + 1;
 		my $res = 0;
 		my $j = 0;
@@ -568,10 +570,22 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 				{				
 					if ($target[$res] eq $candidate[$res])
 						{$identities++}
-					if ($target[$res] eq "-")
-						{$gapres++;$j--}
-					if ($candidate[$res]eq "-")
-						{$gapres++;}
+					if ($target[$res] eq "-") {
+						$gapres++;$j--;$gapconttarg = 'true';
+						if ( $gapconttarg eq 'true' ) {
+							$gapresconttarg++;
+							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }
+						}
+					}
+					if ($candidate[$res] eq "-") {
+						$gapres++; $gapcontcand = 'true';
+						if ( $gapcontcand eq 'true' ) {
+							$gaprescontcand++;
+							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }
+						}
+					}
+					if ($target[$res] ne "-") {$gapconttarg = 'false';$gapresconttarg=0}
+					if ($candidate[$res] ne "-") {$gapcontcand = 'false';$gaprescontcand=0}
 				}
 			}
 		$loopstart = $res;
