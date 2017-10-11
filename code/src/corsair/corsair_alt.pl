@@ -79,6 +79,7 @@ $LOCAL_PWD			= $FindBin::Bin;
 $GIVEN_SPECIES		= $cfg->val('APPRIS_PIPELINE', 'species');
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+#$WSPACE_CACHE		= '/home/jmrodriguez/projects/APPRIS/workspaces/ALT_predictor/appriscache';
 $RUN_PROGRAM		= $cfg->val( 'CORSAIR_VARS', 'program');
 $PROG_DB_V			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_v');
 $PROG_DB_INV		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_inv');
@@ -481,9 +482,9 @@ sub divtime_score($)
 
 sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 {
-	my $length = shift;
+	my $candlength = shift;
 	my $specie = shift;	
-	my $query_length = shift;
+	my $targlength = shift;
 	my $exons = shift;
 	my $ref_report = shift;
 	my $oldinput = "dummy";
@@ -493,10 +494,21 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	my @candidate = ();
 	my @startc = ();
 	my @endc = ();
+	my $longestunmatches = 0;
 	my ($aln_score) = 0;
 	my ($aln_sms) = '';
 	my ($specie_point) = 1;
-
+	
+	my $longest_elem = sub {
+	    my $max = -1;
+	    for (@_) {
+	        if (length > $max) {  # no temp variable, length() twice is faster
+	            $max = length;
+	        }
+	    }
+	    return $max;
+	};
+	
 	while (<BLASTFILE>)
 		{
 		chomp;
@@ -514,11 +526,22 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 			push @startc, $subject[1];
 			push @endc, $subject[3];
 			}
+		if (/^\s+/)						# read in match line
+		{
+			my $aln = $_;
+			$aln =~ s/^\s+//g;
+			my @unmatches = $aln =~ /[\s\+]{4,}/g;
+			if (scalar(@unmatches) > 0) {
+				my $unmatches = $longest_elem->(@unmatches);
+				if ( defined $unmatches and $unmatches > $longestunmatches )
+				  { $longestunmatches = $unmatches } 
+			}
+		}
 		if ($_ eq $oldinput)					# two carriage returns in a row mean alignment has ended
 			{last}
 		$oldinput = $_;
 		}
-	
+		
 	# process alignment ...
 	
 	my $target = join "", @target;
@@ -527,19 +550,17 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	my $targstart = $startq[0];
 	my $targend = $endq[$#endq];
 	my $candstart = $startc[0];
-	my $candend = $length;
-	
-	if ($targstart > 4)						# reject if different N-terminal
+	my $candend = $endc[$#endc];	
+		
+	if ($targstart > 4 or $candstart > 4)		# reject if different N-terminal
 		{return (0,"It has different N-terminal")}
 	
-	my $length_start = abs($targstart - $candstart);
-	if ($length_start > 4)						# reject if subject has longer N-terminal
-		{return (0,"Subject has longer N-terminal")}
-	
-	my $length_end = abs($query_length - $candend);
-	if ($length_end > 6)						# reject if subject has longer C-terminal
+	if ( (abs($candlength - $candend) > 4) or (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal
 		{return (0,"Subject has longer C-terminal")}
-	
+
+	if ( $longestunmatches > 4 ) # reject if subject has longer unmatches
+		{return (0,"Subject has longer unmatches")}
+
 	@target = split "", $target;
 	@candidate = split "", $candidate;
 	
@@ -574,14 +595,14 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 						$gapres++;$j--;$gapconttarg = 'true';
 						if ( $gapconttarg eq 'true' ) {
 							$gapresconttarg++;
-							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }
+							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }			
 						}
 					}
 					if ($candidate[$res] eq "-") {
 						$gapres++; $gapcontcand = 'true';
 						if ( $gapcontcand eq 'true' ) {
 							$gaprescontcand++;
-							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }
+							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }			
 						}
 					}
 					if ($target[$res] ne "-") {$gapconttarg = 'false';$gapresconttarg=0}
@@ -602,7 +623,8 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 			$cds_flag = 0;
 			$aln_flag = 0;
 		}
-		if ($gaps > 33) { # reject if exons have substantial gaps
+		#if ($gaps > 33) { # reject if exons have substantial gaps
+		if ($gapres > 4) { # reject if exons have substantial gaps
 			$aln_sms = "Exons have substantial gaps";
 			$cds_flag = 0;
 			$aln_flag = 0;
