@@ -296,6 +296,12 @@ $ docker run -itd \
     -v ${data_dir}:/opt/appris/data \
     appris/server
 ```
+```
+Eg.
+$ docker run -itd \
+    -v /home/{user}/projects/APPRIS/data/2017_08.v24:/opt/appris/data \
+    appris/server
+```
 
 2. Import the databases files within the Docker image
 
@@ -314,4 +320,13 @@ $ docker run -itd \
                     -c /opt/appris/conf/config_{appris_version}.json \
                     -d /opt/appris/data \
                     -l info"
+    ```
+    ```
+    Eg.
+    $ docker exec --user appris -it {CONTAINER_ID} \
+        bash -c "source /opt/appris/conf/apprisrc.docker && \
+            perl /opt/appris/docker/scripts/import_appris_dbs.pl \
+                -c /opt/appris/conf/config_2017_08.v24.reduced.json \
+                -d /opt/appris/data \
+                -l info"
     ```

@@ -1,4 +1,32 @@
 ___
+## 2017_10.v25
+```
+SERVER-RELEASE:   2017_10.v25
+CODE-RELEASE:     4.7.2.18
+```
+
+### Highlights
++ New annotations for the following species and gene sets
+	Human: e90v25, rs108v25, up201703v25, a1v25
+	Mouse: e90v25, rs106v25, up201610v25, a1v25
+	Zebra-fish: e90v25, rs105v25, up201610v25, a1v25
+	Rat: e88v25, rs106v25, up201610v25, a1v25
+	Pig: e90v25, rs105v25, up201702v25, a1v25
+	Chimp: rs104v25, e88v25, up201702v25, a1v25	
+	Fruitfly: e88v25
+	C.elegans: e88v25
+	
+### Server (4.7)
+
+### Code (2.18)
+
++ CORSAIR:
+	- Bug fixed: Taking into account the "gaps" for the all length of subject sequence.
+	- Now, it does not take into account the exon coordinates.
++ APPRIS:
+	- Now, it does not take into account the exon coordinates.
+	
+___
 ## 2017_08.v24
 ```
 SERVER-RELEASE:   2017_08.v24

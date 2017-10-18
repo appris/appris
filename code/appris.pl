@@ -645,7 +645,6 @@ sub run_pipeline($$$)
 			my ($cmd) = "perl $SRC_DIR/corsair/corsair.pl ".
 							"--conf='".$config_file."' ".
 							"--input='".$files->{'transl'}."' ".
-							"--gff='".$files->{'pannot'}."' ".
 							"--output='".$files->{$m}."' ".							
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");

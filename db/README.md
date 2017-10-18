@@ -172,29 +172,34 @@ CORSAIR
 -------
 RefSeq Vertebrate database comes from "vertebrate_mamalian" and "vertebrate_other" (ftp://ftp.ncbi.nlm.nih.gov/refseq/release/)
 
-1. Get RefSeq database for 'vertebrate' and 'invertebrate' from
+1. Prepare workspace for the data files
+```
+	$ mkdir refseq_{dataversion}
+	$ cd refseq_{dataversion}
+	$ mkdir raw
+	$ cd raw
+```
+2. Get RefSeq database for 'vertebrate' and 'invertebrate' from
 ```
 	$ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_mammalian.*.protein.faa.gz
-	$ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_other.*.protein.faa.gz
-
+	$ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_other.*.protein.faa.gz (DEPRECATED)
 	$ wget ftp://ftp.ncbi.nih.gov/refseq/release/invertebrate/invertebrate.*.protein.faa.gz
 ```
-2. Unzip them
+3. Unzip them
 ```
 	$ gzip -d vertebrate_*
-
 	$ gzip -d invertebrate.*
 ```
-3. Concatenate them
+4. Concatenate them
 ```
-	$ cat vertebrate_mammalian.* vertebrate_other.* >> refseq_vert
-
-	$ cat invertebrate.* >> refseq_invert
+	$ cat vertebrate_mammalian.* vertebrate_other.* >> refseq_vert (DEPRECATED)
+	$ cat vertebrate_mammalian.* >> ../refseq_vert
+	$ cat invertebrate.* >> ../refseq_invert	
 ```
-4. Index database
+5. Index database
 ```
+	$ cd ..
     $ formatdb -i refseq_vert -p T
-
     $ formatdb -i refseq_invert -p T
 ```
 

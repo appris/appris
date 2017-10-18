@@ -45,7 +45,6 @@ use vars qw(
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
 my ($config_file) = undef;
-my ($gff_file) = undef;
 my ($input_file) = undef;
 my ($output_file) = undef;
 my ($appris) = undef;
@@ -55,14 +54,13 @@ my ($logappend) = undef;
 my ($loglevel) = undef;
 &GetOptions(
 	'conf=s'			=> \$config_file,
-	'input=s'			=> \$input_file,
-	'output=s'			=> \$output_file,
-	'gff=s'				=> \$gff_file,
+	'input=s'		=> \$input_file,
+	'output=s'		=> \$output_file,
 	'appris'			=> \$appris,
 	'loglevel=s'		=> \$loglevel,
-	'logfile=s'			=> \$logfile,
-	'logpath=s'			=> \$logpath,
-	'logappend'			=> \$logappend,	
+	'logfile=s'		=> \$logfile,
+	'logpath=s'		=> \$logpath,
+	'logappend'		=> \$logappend,	
 );
 
 # Required arguments
@@ -105,7 +103,7 @@ $logger->init_log($str_params);
 # Method prototypes #
 #####################
 sub parse_blast($$$);
-sub check_alignment($$$\$$);
+sub check_alignment($$$$\$$);
 sub _get_specie_score($);
 
 #################
@@ -181,33 +179,8 @@ sub main()
 			
 			# If apply, use exon data
 			my ($exons);
-			if ( defined $gff_file and (-e $gff_file) and (-s $gff_file > 0) ) {			
-				my(@global_sequence_exon_info)=`grep $sequence_id $gff_file`;
-				foreach my $sequence_exon_info (@global_sequence_exon_info)
-				{
-					my(@exon_info) = split /\t/, $sequence_exon_info;				
-					my($edges) = join ":", $exon_info[3], $exon_info[4];
-					my ($attributes) = $exon_info[8];
-					my ($trans_edges);
-					if ( $attributes =~ /cds\_coord\>([^\-]*)\-([^\:]*)\:([\-|\+])/ ) {
-						$trans_edges = $1.':'.$2;
-					}
-					elsif ( ($attributes =~ /start\_cds \"([^\"]*)\"/) and ($attributes =~ /end\_cds \"([^\"]*)\"/) ) {
-						if ( $attributes =~ /start\_cds \"([^\"]*)\"/ ) { $trans_edges = $1; }
-						if ( $attributes =~ /end\_cds \"([^\"]*)\"/ ) {	$trans_edges = $trans_edges.":".$1; }						
-					}
-					if ( defined $edges and defined $trans_edges ) {
-						$exons->{$edges} =  $trans_edges;			
-					}
-					else {
-						$logger->error("getting protein coords\n");	
-					}
-				}
-			}
-			else {
-				my ($edges) = join ":", 1, $sequence_length;
-				$exons->{$edges} =  undef;
-			}
+			my ($edges) = join ":", 1, $sequence_length;
+			$exons->{$edges} =  undef;
 			
 			# Run blast
 			my ($blast_sequence_file) = $ws_cache.'/seq.refseq';
@@ -362,6 +335,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 
 	my $string = "";
 	my $length = 0;
+	my $length_diff = 0;
 	my $faalen = 0;
 	my $species = "";
 
@@ -396,13 +370,12 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 		{
 			my @data = split " ";
 			my @iden = split /\//, $data[2];
-			$length = $length - $faalen;
-			$length = abs($length);				# difference in length between query and subject
+			$length_diff = abs($length - $faalen); # difference in length between query and subject
 			my @identities = split " ", $iden[0];
 			my $identity = $iden[0]/$iden[1]*100;
 			if ($identity < 50)				# gets no points for this sequence
 				{ }
-			elsif ($length > $PROG_MINLEN) # gets no points for this sequence
+			elsif ($length_diff > $PROG_MINLEN) # gets no points for this sequence
 				{ }
 			elsif (exists $species_found->{$species})				# gets no points for this sequence
 				{ }
@@ -412,7 +385,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			#	{ }
 			else
 			{
-					my ($aln_score,$aln_sms) = check_alignment($species,$faalen,$exons,$aln_report, $_);
+					my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$exons,$aln_report, $_);
 					if ( defined $aln_score and ($aln_score >= 0) ) {
 						# save global score for transc
 						if ( $aln_score > 0 ) {
@@ -458,10 +431,11 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 }
 
 
-sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
+sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 {
+	my $candlength = shift;	
 	my $specie = shift;	
-	my $query_length = shift;
+	my $targlength = shift;
 	my $exons = shift;
 	my $ref_report = shift;
 	my $oldinput = "dummy";
@@ -471,9 +445,19 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 	my @candidate = ();
 	my @startc = ();
 	my @endc = ();
+	my $longestunmatches = 0;
 	my ($aln_score) = 0;
 	my ($aln_sms) = '';
 	my ($specie_point) = _get_specie_score($specie);
+	
+	# func that gets the longest elem of array
+	my $longest_elem = sub {
+	    my $max = -1;
+	    for (@_) {
+	        if (length > $max) { $max = length }
+	    }
+	    return $max;
+	};
 
 	while (<BLASTFILE>)
 		{
@@ -492,6 +476,17 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 			push @startc, $subject[1];
 			push @endc, $subject[3];
 			}
+		if (/^\s+/)						# read in match line
+		{
+			my $aln = $_;
+			$aln =~ s/^\s+//g;
+			my @unmatches = $aln =~ /[\s\+]{4,}/g;
+			if (scalar(@unmatches) > 0) {
+				my $unmatches = $longest_elem->(@unmatches);
+				if ( defined $unmatches and $unmatches > $longestunmatches )
+				  { $longestunmatches = $unmatches } 
+			}
+		}			
 		if ($_ eq $oldinput)					# two carriage returns in a row mean alignment has ended
 			{last}
 		$oldinput = $_;
@@ -505,18 +500,16 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 	my $targstart = $startq[0];
 	my $targend = $endq[$#endq];
 	my $candstart = $startc[0];
-	my $candend = $endc[$#endc];
+	my $candend = $endc[$#endc];	
 	
-	if ($targstart > 4)						# reject if different N-terminal
+	if ($targstart > 4 or $candstart > 4)		# reject if different N-terminal
 		{return (0,"It has different N-terminal")}
 	
-	my $length_start = abs($targstart - $candstart);
-	if ($length_start > 4)						# reject if subject has longer N-terminal
-		{return (0,"Subject has longer N-terminal")}
-	
-	my $length_end = abs($query_length - $candend);
-	if ($length_end > 6)						# reject if subject has longer C-terminal
+	if ( (abs($candlength - $candend) > 4) or (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal
 		{return (0,"Subject has longer C-terminal")}
+
+	if ( $longestunmatches > 4 ) # reject if subject has longer unmatches
+		{return (0,"Subject has longer unmatches")}
 	
 	@target = split "", $target;
 	@candidate = split "", $candidate;
@@ -537,6 +530,8 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 			{ $boundaries[0] = $targstart; }
 		my $identities = 0;
 		my $gapres = 0;
+		my ($gapresconttarg, $gaprescontcand) = (0,0);
+		my ($gapconttarg, $gapcontcand) = ('false','false');		
 		my $totalres = $boundaries[1] - $boundaries[0] + 1;
 		my $res = 0;
 		my $j = 0;
@@ -546,10 +541,22 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 				{				
 					if ($target[$res] eq $candidate[$res])
 						{$identities++}
-					if ($target[$res] eq "-")
-						{$gapres++;$j--}
-					if ($candidate[$res]eq "-")
-						{$gapres++;}
+					if ($target[$res] eq "-") {
+						$gapres++;$j--;$gapconttarg = 'true';
+						if ( $gapconttarg eq 'true' ) {
+							$gapresconttarg++;
+							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }			
+						}
+					}
+					if ($candidate[$res] eq "-") {
+						$gapres++; $gapcontcand = 'true';
+						if ( $gapcontcand eq 'true' ) {
+							$gaprescontcand++;
+							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }			
+						}
+					}
+					if ($target[$res] ne "-") {$gapconttarg = 'false';$gapresconttarg=0}
+					if ($candidate[$res] ne "-") {$gapcontcand = 'false';$gaprescontcand=0}
 				}
 			}
 		$loopstart = $res;
@@ -560,32 +567,16 @@ sub check_alignment($$$\$$) #parses BLAST alignments exon by exon
 		if ($totalres > 0) {
 			$identity = $identities/$totalres*100;
 			$gaps = $gapres/$totalres*100;
+		}			
+		if ($identity < 40 && $totalres > 8) { # reject if two exons are too different
+			$aln_sms = "Two exons are too different";
+			$cds_flag = 0;
+			$aln_flag = 0;
 		}
-		# scores when there are exons info
-		if ( defined $gff_file and (-e $gff_file) and (-s $gff_file > 0) ) {
-			if ($identity < 40 && $totalres > 8) { # reject if two exons are too different
-				$aln_sms = "Two exons are too different";
-				$cds_flag = 0;
-				$aln_flag = 0;
-			}
-			if ($gaps > 33) { # reject if exons have substantial gaps
-				$aln_sms = "Exons have substantial gaps";
-				$cds_flag = 0;
-				$aln_flag = 0;
-			}
-		}
-		# scores when there are exons info
-		else {
-			if ($identity < 60) { # reject if the sequence is too different
-				$aln_sms = "Two exons are too different";
-				$cds_flag = 0;
-				$aln_flag = 0;
-			}
-			if ($gaps > 3.3) { # reject if sequence has substantial gaps
-				$aln_sms = "Exons have substantial gaps";
-				$cds_flag = 0;
-				$aln_flag = 0;
-			}			
+		if ($gapres > 4) { # reject if exons have substantial gaps
+			$aln_sms = "Exons have substantial gaps";
+			$cds_flag = 0;
+			$aln_flag = 0;
 		}
 
 		my ($cds_score) = $cds_flag*$specie_point;				
@@ -715,8 +706,6 @@ Run CORSAIR program
 
 =head2 Optional arguments:
 
-	--gff <GFF file that contains exon information>
-	
 	--appris <Flag that enables the output for APPRIS (default: NONE)>
 	
 	--loglevel=LEVEL <define log level (default: NONE)>	
@@ -734,8 +723,6 @@ perl corsair.pl
 
 	--conf=../conf/pipeline.ini
 
-	--gff=example/peptide_cds_chr9.gff
-	
 	--input=example/OTTHUMG00000020713.faa
 	
 	--output=example/OTTHUMG00000020713.output
