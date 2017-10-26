@@ -112,6 +112,7 @@ sub main()
 			foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 				for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
 					my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
+					next if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} eq 'current' ); 
 					if ( exists $cfg_dataset->{'id'} and
 						 exists $cfg_dataset->{'pipeline'} and exists $cfg_dataset->{'pipeline'}->{'envfile'} and
 						 exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} and
