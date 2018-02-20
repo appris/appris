@@ -1,4 +1,24 @@
 ___
+## 2017_11.v26
+```
+SERVER-RELEASE:   2017_11.v26
+CODE-RELEASE:     4.7.2.19
+```
+
+### Highlights
++ Ensembl 91!! New annotations for the following species:
+	Human
+	Mouse
+	Chimp		(new assembly Pan_tro_3.0)
+	
+### Server (4.7)
++ No changes
+
+### Code (2.19)
++ CORSAIR:
+	- New release of RefSeq database (201709)
+
+___
 ## 2017_10.v25
 ```
 SERVER-RELEASE:   2017_10.v25
@@ -23,6 +43,7 @@ CODE-RELEASE:     4.7.2.18
 + CORSAIR:
 	- Bug fixed: Taking into account the "gaps" for the all length of subject sequence.
 	- Now, it does not take into account the exon coordinates.
+	- New release of RefSeq database (201709)
 + APPRIS:
 	- Now, it does not take into account the exon coordinates.
 	
