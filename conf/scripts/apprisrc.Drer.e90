@@ -24,31 +24,33 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Rattus norvegicus"
+export APPRIS_SPECIES="Danio rerio"
 
-export APPRIS_ASSEMBLY="Rnor_6.0"
+export APPRIS_ASSEMBLY="GRCz10"
 
-export APPRIS_CHR_LIST="NC_005100.4 NC_005101.4 NC_005102.4 NC_005103.4 NC_005104.4 NC_005105.4 NC_005106.4 NC_005107.4 NC_005108.4 NC_005109.4 NC_005110.4 NC_005111.4 NC_005112.4 NC_005113.4 NC_005114.4 NC_005115.4 NC_005116.4 NC_005117.4 NC_005118.4 NC_005119.4 NC_005120.4 NC_024475.1 NC_001665.2"
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.annot.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.transc.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/rattus_norvegicus.transl.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/danio_rerio.transl.fa"
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/rn6.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=86
 
 #export APPRIS_GENE_LIST=""
 
 #export APPRIS_TYPE_ALIGN=compara
 
-#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=fish
 
 # --------------------------------#
 # Setting up the vars for cluster #

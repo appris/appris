@@ -66,10 +66,10 @@ $SRV_FEATURES_DIR		= $SRV_WSDIR.'/features';
 $LOC_WSDIR				= '/tmp/appris';
 $LOC_FEATURES_DIR		= $LOC_WSDIR.'/features';
 
-#$APPRIS_DATA_DIR 		= $ENV{APPRIS_DATA_DIR};
-#$APPRIS_FEATURES_DIR	= $ENV{APPRIS_FEATURES_DIR};
-$APPRIS_DATA_DIR		= '/home/jmrodriguez/projects/APPRIS/data';
-$APPRIS_FEATURES_DIR	= '/home/jmrodriguez/projects/APPRIS/features';
+$APPRIS_DATA_DIR 		= $ENV{APPRIS_DATA_DIR};
+$APPRIS_FEATURES_DIR	= $ENV{APPRIS_FEATURES_DIR};
+#$APPRIS_DATA_DIR		= '/home/jmrodriguez/projects/APPRIS/data';
+#$APPRIS_FEATURES_DIR	= '/home/jmrodriguez/projects/APPRIS/features';
 
 $FTP_ENSEMBL_PUB		= 'ftp://ftp.ensembl.org/pub';
 $FTP_REFSEQ_PUB			= 'ftp://ftp.ncbi.nlm.nih.gov';

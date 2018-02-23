@@ -6,7 +6,7 @@
 # Setting up vars of workspaces directories #
 # ------------------------------------------#
 
-export APPRIS_WORKSPACE="/home/jmrodriguez/projects/APPRIS"
+export APPRIS_WORKSPACE="/local/ljmrodriguez/appris"
 
 # ------------------------------------------#
 # Setting up vars of workspaces directories #
