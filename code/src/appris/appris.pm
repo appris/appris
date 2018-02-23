@@ -557,7 +557,7 @@ sub get_final_scores($$$\$\$)
 			}
 			
 			# filter by biotype
-			if ( $transcript->biotype and ($transcript->biotype eq 'nonsense_mediated_decay') ) {
+			if ( $transcript->biotype and ( ($transcript->biotype eq 'nonsense_mediated_decay') or ($transcript->biotype eq 'polymorphic_pseudogene') ) ) {
 				$appris_score = -1;
 			}
 			# filter by readthrough_transcript

@@ -79,7 +79,6 @@ $LOCAL_PWD			= $FindBin::Bin;
 $GIVEN_SPECIES		= $cfg->val('APPRIS_PIPELINE', 'species');
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-#$WSPACE_CACHE		= '/home/jmrodriguez/projects/APPRIS/workspaces/ALT_predictor/appriscache';
 $RUN_PROGRAM		= $cfg->val( 'CORSAIR_VARS', 'program');
 $PROG_DB_V			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_v');
 $PROG_DB_INV		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_inv');
