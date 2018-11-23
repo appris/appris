@@ -3865,7 +3865,7 @@ sub _parse_inseq_transc($)
 				my ($id2) = $2;
 				$sequence_id = $id1;
 			}
-			elsif ( $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
+			elsif ( $seq->id =~ /^ref\|([^|]*)/ or $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
 				my ($id1) = $1;
 				$sequence_id = $id1;
 			}
@@ -3935,7 +3935,7 @@ sub _parse_inseq_transl($)
 				my ($id2) = $2;
 				$sequence_id = $id1;
 			}
-			elsif ( $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
+			elsif ( $seq->id =~ /^ref\|([^|]*)/ or $seq->id =~ /^gi\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
 				my ($id1) = $1;
 				$sequence_id = $id1;
 			}
