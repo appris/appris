@@ -34,6 +34,7 @@ use vars qw(
 	$PROG_EVALUE
 	$PROG_MINLEN
 	$PROG_CUTOFF
+	$PROG_MAXPRO
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
@@ -79,15 +80,16 @@ $LOCAL_PWD			= $FindBin::Bin;
 $GIVEN_SPECIES		= $cfg->val('APPRIS_PIPELINE', 'species');
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 #$WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
-$WSPACE_CACHE		= '/home/jmrodriguez/projects/APPRIS/workspaces/ALT_predictor/appriscache_new_refseq_db';
+$WSPACE_CACHE		= $cfg->val( 'CORSAIR_VARS', 'cache_dir');
 $RUN_PROGRAM		= $cfg->val( 'CORSAIR_VARS', 'program');
 $PROG_DB_V			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_v');
 $PROG_DB_INV		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_inv');
 # $PROG_DB			= $PROG_DB_V; # vertebrate by default
-$PROG_DB			= '/local/ljmrodriguez/appris/db/refseq_201811/refseq';
+$PROG_DB			= $cfg->val('CORSAIR_VARS', 'db');
 $PROG_EVALUE		= $cfg->val('CORSAIR_VARS', 'evalue');
 $PROG_MINLEN		= $cfg->val('CORSAIR_VARS', 'minlen');
-$PROG_CUTOFF		= $cfg->val( 'CORSAIR_VARS', 'cutoff');
+$PROG_CUTOFF		= $cfg->val('CORSAIR_VARS', 'cutoff');
+$PROG_MAXPRO		= $cfg->val('CORSAIR_VARS', 'maxpro');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
@@ -203,7 +205,7 @@ sub main()
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e0.0001 -o $blast_sequence_file";
+					my ($cmd) = "$RUN_PROGRAM -a $PROG_MAXPRO -d $PROG_DB -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file";
 					$logger->debug("$cmd\n");						
 					system($cmd);
 				};
@@ -407,7 +409,6 @@ if ( $divtime_score == 0 ) {
 }
 						# save global score for transc
 						if ( $aln_score > 0 ) {
-							#push(@{$species_report}, "$species\t$aln_iden\t$iden_score\t$divtime_score"); # Record species and score
 							push(@{$species_report}, "$species\t$iden_score\t$divtime_score"); # Record species and score
 							$species_found->{$species} = 1;							
 						}
@@ -439,7 +440,7 @@ if ( $divtime_score == 0 ) {
 								}
 							}
 						}
-						$species_score += ($iden_score*$divtime_score);
+						$species_score = $divtime_score if ( $divtime_score > $species_score );
 					}
 			}
 		}
