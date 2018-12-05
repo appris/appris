@@ -1,4 +1,19 @@
 ___
+## 2018_12.v28
+```
+SERVER-RELEASE:   2018_12.v28
+CODE-RELEASE:     4.7.2.19
+```
+
+### Highlights
++ RefSeq gene set has been updated for Human. Release 109.
+
+### Server (4.7)
++ No changes
+
+### Code (2.19)
++ No changes
+___
 ## 2018_02.v26
 ```
 SERVER-RELEASE:   2018_02.v26
