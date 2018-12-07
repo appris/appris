@@ -374,7 +374,8 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 		# Extract the species name
 		if(/Length =/)						
 		{
-			if ( $string =~ /\[([^\]]*)\]\s*Length = ([0-9]*)/ ) {
+			# get the name from RefSeq db and UniProt db
+			if ( $string =~ /\[([^\]]*)\]\s*Length = ([0-9]*)/ or $string =~ /OS=([^\s]*\s+[^\s]*)\s*.*Length = ([0-9]*)\s*$/ ) {
 				$species = $1;
 				$length = $2;
 			}
@@ -386,7 +387,8 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			$length_diff = abs($length - $faalen); # difference in length between query and subject
 			my @identities = split " ", $iden[0];
 			my $identity = $iden[0]/$iden[1]*100;
-			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : "";			
+			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : ""; #get the name from RefSeq db and UniProt db
+
 			if ($identity < 50)				# gets no points for this sequence
 				{ }
 			elsif ($length_diff > $PROG_MINLEN) # gets no points for this sequence
