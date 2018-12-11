@@ -76,7 +76,6 @@ sub main()
 		foreach my $spe_rep (@{$species_rep}) {
 			my ($spe_name) = $spe_rep->{'name'};
 			$spe_name =~ s/ /_/g;
-			$logger->info("APPRISDATA:$spe_name\n".Dumper($spe_rep)."\n");
 			my ($query) = '';
 			# if ( exists $spe_rep->{'tax_id'} ) {
 			# 	my ($s) = $spe_rep->{'tax_id'};
