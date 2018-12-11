@@ -78,23 +78,10 @@ sub main()
 			$spe_name =~ s/ /_/g;
 			$logger->info("APPRISDATA:$spe_name\n".Dumper($spe_rep)."\n");
 			my ($query) = '';
-			# if ( exists $spe_rep->{'tax_id'} ) {
-			# 	my ($s) = $spe_rep->{'tax_id'};
-			# 	$query .= 'organism:'.$s;
-			# }
-			# elsif ( exists $spe_rep->{'name'} ) {
-			if ( exists $spe_rep->{'name'} ) {
-				my ($s) = $spe_rep->{'name'};
-				$query .= 'organism:'.$s;
-			}
-			# if ( exists $spe_rep->{'proteome_id'} ) {
-			# 	my ($s) = $spe_rep->{'proteome_id'};
-			# 	$query .= '%20AND%20proteome:'.$s;
-			# }
 			eval
 			{
 				$logger->info("Running blast\n");
-				my ($cmd) = "wget \"https://www.uniprot.org/uniprot/?query=$query&format=fasta&include=yes&force=true&compress=yes\" -O $output_dir/$spe_name.fasta.gz";
+				my ($cmd) = "wget \"ftp://ftp.ncbi.nih.gov/genomes/$spe_name/protein/protein.fa.gz\" -O $output_dir/$spe_name.fasta.gz";
 				$logger->debug("$cmd\n");
 				system($cmd);
 			};
