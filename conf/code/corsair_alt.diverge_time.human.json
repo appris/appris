@@ -194,9 +194,7 @@
 	{"name":"Petromyzon marinus","common":"Lamprey","tax_id":7757,"weight":"10","age":601,"norm":0.8864307}
 ],
 "Ciona":[
-	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"11","age":678,"norm":1}
-],
-"Ciona":[
+	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"11","age":678,"norm":1},
 	{"name":"Ciona savignyi","common":"C.savignyi","tax_id":51511,"proteome_id":"UP000007875","weight":"11","age":678,"norm":1}
 ]
 }
