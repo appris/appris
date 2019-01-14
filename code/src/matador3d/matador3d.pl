@@ -451,28 +451,50 @@ sub _check_alignment($$$)
 			my $totalgaps = 0;
 			my $gaps = 0;
 			$gaps = ( $gapres / ($mini_cds_residues + $targ_gapres) ) *100;
+			# if ($gaps <= 3)
+			# 	{$totalgaps = 1}
+			# elsif ($gaps <= 6)
+			# 	{$totalgaps = 0.80}
+			# elsif ($gaps <= 10)
+			# 	{$totalgaps = 0.50}
+			# elsif ($gaps <= 14)
+			# 	{$totalgaps = 0.33}
+			# elsif ($gaps <= 18)
+			# 	{$totalgaps = 0.20}
+			# elsif ($gaps > 80)
+			# 	{$totalgaps = -1}
+			# elsif ($gaps > 66)
+			# 	{$totalgaps = -0.75}
+			# elsif ($gaps > 50)
+			# 	{$totalgaps = -0.5}
+			# elsif ($gaps > 33)
+			# 	{$totalgaps = -0.25}
+			# elsif ($gaps > 20)
+			# 	{$totalgaps = 0}
+			# else
+			# 	{$totalgaps = 0}
 			if ($gaps <= 3)
 				{$totalgaps = 1}
 			elsif ($gaps <= 6)
 				{$totalgaps = 0.80}
 			elsif ($gaps <= 10)
 				{$totalgaps = 0.50}
-			elsif ($gaps <= 14)
+			elsif ($gaps <= 15)
 				{$totalgaps = 0.33}
-			elsif ($gaps <= 18)
+			elsif ($gaps <= 20)
 				{$totalgaps = 0.20}
-			elsif ($gaps > 80)
-				{$totalgaps = -1}
-			elsif ($gaps > 66)
-				{$totalgaps = -0.75}
+			elsif ($gaps <= 25)
+				{$totalgaps = 0}
 			elsif ($gaps > 50)
+				{$totalgaps = -1}
+			elsif ($gaps > 40)
+				{$totalgaps = -0.75}
+			elsif ($gaps > 30)
 				{$totalgaps = -0.5}
-			elsif ($gaps > 33)
+			elsif ($gaps > 25)
 				{$totalgaps = -0.25}
-			elsif ($gaps > 20)
-				{$totalgaps = 0}
 			else
-				{$totalgaps = 0}
+				{$totalgaps = 0}			
 			$logger->debug("\tGaps: $gaps = $gapres/$mini_cds_residues*100\n");
 			$logger->debug("\tTotal gaps: $totalgaps\n");
 	
