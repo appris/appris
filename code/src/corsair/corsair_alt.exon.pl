@@ -424,6 +424,13 @@ sub _get_cds_coordinates_from_gff($)
 				$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 			}		
 		}
+		elsif ( exists $cds_coords->{'coord'} and scalar(@{$cds_coords->{'coord'}}) == 1 )
+		{
+			my ($coords) = $cds_coords->{'coord'};
+			my ($strand) = $cds_coords->{'strand'};
+			my ($cdsblock_comp) = $coords->[0]."_".$sequence_id;
+			$cdsblock_coords->{$cdsblock_comp}->{$coords->[0]} = $strand;
+		}
     }
 
     return ($trans_cds_coords, $cdsblock_coords);	
