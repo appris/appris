@@ -484,23 +484,29 @@ sub _create_block_cdsseq_file($$$)
 		if ( $cdsblock_seq ne '' ) {
 			my ($cdsblock_comp) = $cdsblock_index;
 			$cdsblock_comp =~ s/\_(\w*)//g;
-			my ($cdsblock_cds_coord) = join("", keys($cdsblock_comps));
-			my ($cdsblock_trans) = join("", keys($trans_list));
-			$cdsblock_report->{$cdsblock_seq}->{$cdsblock_comp}->{'coord'}->{$cdsblock_cds_coord} = "";
-			$cdsblock_report->{$cdsblock_seq}->{$cdsblock_comp}->{'trans'}->{$cdsblock_trans} = "";
+			while(my ($cdsblock_cds_coord, $cdsblock_cds_rep) = each(%{$cdsblock_comps}))
+			{
+				# my ($cdsblock_cds_coord) = join("", keys($cdsblock_comps));
+				my ($cdsblock_trans) = join("", keys($trans_list));
+				$cdsblock_report->{$cdsblock_seq}->{$cdsblock_comp}->{'coord'}->{$cdsblock_cds_coord} = "";
+				$cdsblock_report->{$cdsblock_seq}->{$cdsblock_comp}->{'trans'}->{$cdsblock_trans} = "";
+			}
 		}
 	}
 	$logger->debug("CDSBLOCK Report ---------------\n".Dumper($cdsblock_report));	
 
 	# Create the FASTA sequences with the CDSblocks
-    while(my ($cdsblock_seq,$cdsblock_rep) = each(%{$cdsblock_report}))
+    while(my ($cdsblock_seq, $cdsblock_rep) = each(%{$cdsblock_report}))
     {
-		while(my ($cdsblock_comp,$cdsblock_c) = each(%{$cdsblock_rep}))
+		while(my ($cdsblock_comp, $cdsblock_c) = each(%{$cdsblock_rep}))
 		{
 			my ($cdsblock_trns) = join("+", keys($cdsblock_c->{'trans'}));
-			my ($cdsblock_cds_id) = join("+", keys($cdsblock_c->{'coord'}));
-			my ($block_cds_com) = $cdsblock_cds_id."_".$cdsblock_trns."|".$cdsblock_comp;
-			$cdsblock_seqs .= ">".$block_cds_com."\n".$cdsblock_seq."\n";
+			while(my ($cdsblock_cds_id, $cdsblock_cds_rep) = each(%{$cdsblock_c->{'coord'}}))
+			{
+				# my ($cdsblock_cds_id) = join("+", keys($cdsblock_c->{'coord'}));
+				my ($block_cds_com) = $cdsblock_cds_id."_".$cdsblock_trns."|".$cdsblock_comp;
+				$cdsblock_seqs .= ">".$block_cds_com."\n".$cdsblock_seq."\n";
+			}
 		}
 	}
 
