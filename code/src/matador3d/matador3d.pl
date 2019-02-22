@@ -887,7 +887,7 @@ sub _get_cds_coordinates_from_gff($$)
         {
             my ($sequence_id) = $2;
             if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
-			$transcript_codition .= ' $9 ~ /'.$sequence_id.'/ ||';
+			$transcript_codition .= ' $9 ~ /transcript_id \"'.$sequence_id.'\"/ ||';
         }
     }    
     if ($transcript_codition ne '') {
