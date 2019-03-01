@@ -81,5 +81,5 @@ app.get('/download/*', function(req, res){
 app.get('/report.html', function(req, res){
 //    res.status(500).json({ error: 'message' })
 //    console.log("PARAMS: " + util.inspect(req.params, false, null));
-    res.redirect('http://appris.bioinfo.cnio.es/#/database' + '/id' + '/'+req.query.specie+ '/'+req.query.id );
+    res.redirect('http://appris.bioinfo.cnio.es/#/database' + '/id' + '/'+req.query.specie+ '/'+req.query.id +"?sc=ensembl" );
 });
