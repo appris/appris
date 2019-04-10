@@ -59,7 +59,7 @@ $SRV_NAME				= 'appris@appris';
 $SRV_DB_HOST			= 'localhost';
 $SRV_DB_USER			= 'appris';
 $SRV_DB_PWD				= 'appris.appris';
-$SRV_WSDIR				= '/local/appris';
+$SRV_WSDIR				= '/local2/appris';
 $SRV_PUB_RELEASE_DIR	= $SRV_WSDIR.'/pub/releases';
 $SRV_FEATURES_DIR		= $SRV_WSDIR.'/features';
 
@@ -125,7 +125,7 @@ sub main()
 		upload_genefiles();
 	}
 
-#	#ÊDelete local workspace
+#	#ï¿½Delete local workspace
 #	info("-- delete local workspace...");
 #	eval {
 #		my ($cmd) = "rm -rf $LOC_WSDIR";
@@ -248,8 +248,37 @@ sub upload_annotfiles()
 			system($cmd);
 		};
 		throw("importing databases in the server") if($@);		
+	}
+
+	# link to archives
+	info("-- link to archives...");
+	my ($cmd_imp) = "";
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		
+		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
+			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
+				if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} =~ /^archive:(.*)$/ ) {
+					my ($ds_id) = $cfg_dataset->{'id'};
+					my ($srv_arhdir) = $SRV_PUB_RELEASE_DIR.'/'.$1;
+					my ($srv_arhspe_dir) = $srv_arhdir.'/datafiles/'.$species_id;
+					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
+					$cmd_imp .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
+				}
+			}			
+		}		
+	}
+	if ( $cmd_imp ne '' ) {
+		eval {
+			$cmd_imp =~ s/\s*\&\&\s*$//g;
+			my ($cmd) = "ssh $SRV_NAME '$cmd_imp'";
+			info($cmd);
+			system($cmd);
+		};
+		throw("linking to archives") if($@);		
 	}		
-} #Êend upload_annotfiles
+
+} #ï¿½end upload_annotfiles
 
 sub upload_genefiles()
 {
@@ -260,7 +289,7 @@ sub upload_genefiles()
 		system($cmd);
 	};
 	throw("updating genefiles to server") if($@);
-} #Êend upload_genefiles
+} #ï¿½end upload_genefiles
 
 sub copy_genefiles()
 {
@@ -304,7 +333,7 @@ sub copy_genefiles()
 			}			
 		}		
 	}
-} #Êend copy_genefiles
+} #ï¿½end copy_genefiles
 
 sub download_genefiles()
 {
@@ -323,7 +352,7 @@ sub download_genefiles()
 					
 					# don't download archive datasets
 					if ( $ds_type ne 'archive' ) {
-						#Êcreate data workspace
+						#ï¿½create data workspace
 						eval {
 							my ($cmd) = "mkdir -p $relspe_dir";
 							info($cmd);
@@ -354,7 +383,7 @@ sub _download_genefiles_ensembl($$$$)
 	my ($outfile_transc) = $species_id.'.transc.fa';
 	my ($outfile_transl) = $species_id.'.transl.fa';
 	
-	#Êcreate data workspace
+	#ï¿½create data workspace
 	eval {
 		my ($cmd) = "mkdir -p $datadir";
 		info($cmd);
@@ -362,7 +391,7 @@ sub _download_genefiles_ensembl($$$$)
 	};
 	throw("creating genedata workspace") if($@);
 	
-	#Êdownload files	
+	#ï¿½download files	
 	eval {
 		my ($i) = "$species_filename.$e_version.gtf";
 		my ($cmd) = "wget $FTP_ENSEMBL_PUB/release-$e_version/gtf/$species_id/$i.gz           -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
@@ -419,7 +448,7 @@ sub _download_genefiles_refseq($$$$)
 	my ($outfile_transc) = $species_id.'.transc.fa';
 	my ($outfile_transl) = $species_id.'.transl.fa';
 	
-	#Êcreate data workspace
+	#ï¿½create data workspace
 	eval {
 		my ($cmd) = "mkdir -p $datadir";
 		info($cmd);
@@ -427,7 +456,7 @@ sub _download_genefiles_refseq($$$$)
 	};
 	throw("creating genedata workspace") if($@);
 	
-	#Êdownload files	
+	#ï¿½download files	
 	eval {
 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/README_CURRENT_RELEASE                  -P $datadir";
 		info($cmd);
