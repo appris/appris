@@ -1,4 +1,47 @@
 ___
+## 2019_05.v29
+```
+SERVER-RELEASE:   2019_05.v29
+CODE-RELEASE:     4.7.2.20
+```
+
+### Highlights
++ New release of Ensembl (e97 version), for the species:
+	- Homo sapiens
+	- Mus musculus
+	- Caenorhabditis elegans
+
+### Server (4.7)
++ No changes
+
+### Code (2.20)
++ No changes
+
+___
+## 2019_02.v29
+```
+SERVER-RELEASE:   2019_02.v29
+CODE-RELEASE:     4.7.2.20
+```
+
+### Highlights
++ New release of Ensembl (e96 version), for the species:
+	- Homo sapiens
+	- Mus musculus
+	- Bos taurus
+	- Drosophila melanogaster
+
+### Server (4.7)
++ No changes
+
+### Code (2.20)
++ Matador3D: Fixing some bugs:
+	- Changing the ranges of decision in the gaps
+	- Take into account the frame for the comparision between alignments coming from different isoforms.
+	- Bug fixed getting the CDS for Celegans and fruitfly, (eg. FBtr0305654)
+
+
+___
 ## 2018_12.v28
 ```
 SERVER-RELEASE:   2018_12.v28

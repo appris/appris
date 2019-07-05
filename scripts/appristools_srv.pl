@@ -176,15 +176,6 @@ sub upload_annotfiles()
 						system($cmd);
 					};
 					throw("creating local workspace") if($@);
-					
-					if ( exists $cfg_dataset->{'type'} and ($cfg_dataset->{'type'} eq 'current') and $i == 0 ) { # create assembly link to first current dataset
-						eval {
-							my ($cmd) = "cd $relspe_dir ; ln -s $ds_id $as_name";
-							info($cmd);
-							system($cmd);
-						};
-						throw("creating assembly link") if($@);						
-					}
 				}
 			}			
 		}		
@@ -255,17 +246,25 @@ sub upload_annotfiles()
 	my ($cmd_imp) = "";
 	foreach my $species_id ( @CFG_SPECIES ) {
 		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
-		
+		my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
-			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
+			my ($as_name) = $cfg_assembly->{'name'};
+			my ($as_ds_id) = '';
+			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
+				my ($ds_id) = $cfg_dataset->{'id'};
+				# link to the archives for each dataset
 				if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} =~ /^archive:(.*)$/ ) {
-					my ($ds_id) = $cfg_dataset->{'id'};
 					my ($srv_arhdir) = $SRV_PUB_RELEASE_DIR.'/'.$1;
 					my ($srv_arhspe_dir) = $srv_arhdir.'/datafiles/'.$species_id;
-					my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;
 					$cmd_imp .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
 				}
-			}			
+				# get the FIRST dataset id from the current assembly
+				$as_ds_id = $ds_id if ( exists $cfg_dataset->{'type'} and ($cfg_dataset->{'type'} eq 'current' or $cfg_dataset->{'type'} =~ /^archive:(.*)$/) and $as_ds_id eq '' );
+			}
+			# create assembly link to first current dataset
+			if ( $as_ds_id ne '' ) {
+				$cmd_imp .= "cd $srv_relspe_dir && ln -s $as_ds_id $as_name && ";
+			}
 		}		
 	}
 	if ( $cmd_imp ne '' ) {
