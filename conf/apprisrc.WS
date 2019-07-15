@@ -47,3 +47,4 @@ export APPRIS_WSERVER_OUTPUT_ENCODING="text/plain"
 #export APPRIS_WSERVER_REST_URL="http://apprisws.bioinfo.cnio.es/rest"
 
 #export APPRIS_WSERVER_REPORT_URL="http://appris.bioinfo.cnio.es/#/server/result"
+export APPRIS_WSERVER_REPORT_URL="http://appris-tools.org/#/server/result"
