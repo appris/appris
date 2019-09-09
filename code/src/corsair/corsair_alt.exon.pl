@@ -125,7 +125,7 @@ sub main()
 	my (@seq_list);
 	my ($seq_report);
 	my ($seq_e_report);
-	my ($vert_score);
+	my ($vert_score); #DEPRECATED
 	
 	# Get the CDS coordinates info from gff file ---------------
 	$logger->info("Get cds coordinates from gff ---------------\n");
@@ -149,11 +149,9 @@ sub main()
 		if ( $seq->id=~/([^|]*)/ )
 		{
 			my ($cds_id) = $1;
-			my ($sequence_id) = $cds_id;
-			if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
 			my ($sequence) = $seq->seq;
 			my ($sequence_length) = $seq->length;			
-			$logger->info("$sequence_id ---------------\n");
+			$logger->info("$cds_id ---------------\n");
 			
 			# Create cache obj
 			my ($cache) = APPRIS::Utils::CacheMD5->new(
@@ -184,7 +182,7 @@ sub main()
 			# If apply, use exon data
 			my ($exons);
 			if ( defined $gff_file and (-e $gff_file) and (-s $gff_file > 0) ) {			
-				my(@global_sequence_exon_info)=`grep $sequence_id $gff_file`;
+				my(@global_sequence_exon_info)=`grep $cds_id $gff_file`;
 				foreach my $sequence_exon_info (@global_sequence_exon_info)
 				{
 					my(@exon_info) = split /\t/, $sequence_exon_info;				
@@ -219,7 +217,7 @@ sub main()
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -a $PROG_MAXPRO -d $PROG_DB -i $fasta_sequence_file -e$PROG_EVALUE -o $blast_sequence_file";
+					my ($cmd) = "$RUN_PROGRAM -a $PROG_MAXPRO -d $PROG_DB -i $fasta_sequence_file -e0.001 -G 13 -o $blast_sequence_file";
 					$logger->debug("$cmd\n");						
 					system($cmd);
 				};
@@ -231,115 +229,59 @@ sub main()
 			my ($species_score, $species_report, $exon_species_report) = parse_blast($blast_sequence_file, $exons, $sequence_length);
 			
 			# Save score data
-			push(@{$vert_score->{$species_score}},$sequence_id);
-			
-			# Save specie report
-			$seq_report->{$sequence_id} = {
+			push(@{$vert_score->{$species_score}},$cds_id); # DEPRECATED
+					
+			# Save specie report exon per exon
+			# $seq_e_report->{$sequence_id} = $exon_species_report;
+			$seq_e_report->{$cds_id} = {
 				'score'		=> $species_score,
 				'report'	=> $species_report
 			};
-			
-			# Save specie report exon per exon
-			$seq_e_report->{$sequence_id} = $exon_species_report;
+
+			# Get the Maximum value of Blast of the middle exons which that have been created from 3 combinations
+			my ($sequence_id) = $cds_id;
+			$sequence_id =~ s/\_\_\d//;
+			if ( exists $seq_report->{$sequence_id} ) {
+				if ( $species_score > $seq_report->{$sequence_id}->{'score'} ) {
+					$logger->debug("MAXIMIM in ".$sequence_id." for CDS_ID: ".$cds_id."\n");
+					$seq_report->{$sequence_id} = {
+						'score'		=> $species_score,
+						'report'	=> $species_report
+					};
+				}
+			}
+			else {
+				$seq_report->{$sequence_id} = {
+					'score'		=> $species_score,
+					'report'	=> $species_report
+				};
+			}
 			
 			# Save seq ids
 			push(@seq_list, $sequence_id);
-			
 		}
 	}
-	
-	# Get the best score among exon sequences (only for exon reports)
-	my ($best_seq_e_report);
-	while ( my ($seq_id, $seq_rep) = each (%{$seq_e_report}) ) {
-		while ( my ($e_coord, $e_rep) = each (%{$seq_rep}) ) {
-			if ( exists $e_rep->{'score'} ) {
-				my ($e_score) = $e_rep->{'score'};
-				unless ( exists $best_seq_e_report->{$e_coord} ) {
-					$best_seq_e_report->{$e_coord} = { $e_score => "$seq_id|" };
-				}
-				else { 
-					if ( exists $best_seq_e_report->{$e_coord}->{$e_score} ) {
-						$best_seq_e_report->{$e_coord}->{$e_score} .= "$seq_id|";
-					}
-					else {
-						my (@e_scores) = keys(%{$best_seq_e_report->{$e_coord}});
-						my ($old_e_score) = $e_scores[0];
-						if ( $e_score > $old_e_score ) {
-							$best_seq_e_report->{$e_coord} = { $e_score => "$seq_id|" };
-						}
-						elsif ( $e_score == $old_e_score ) {
-							$best_seq_e_report->{$e_coord}->{$e_score} .= "$seq_id|";
-						}						
-					}
-				}				
-			}			
-		}		
-	}
+	$logger->debug("Seq Exon report ---------------\n".Dumper($seq_e_report));
+	$logger->debug("Seq report ---------------\n".Dumper($seq_report));
 	
 	# Print records per sequence
 	my ($output_content) = "";
-	foreach my $seq_id (@seq_list) {
-		# scores of species for global aligns
-		if ( exists $seq_report->{$seq_id} ) {
-			my ($seq_rep) = $seq_report->{$seq_id};
-			my ($seq_score) = $seq_rep->{'score'};
-			my ($sp_rep) = $seq_rep->{'report'};
-			$output_content .= ">".$seq_id."\t".$seq_score."\n";
-			foreach my $sp_found (@{$sp_rep}) {
-				$output_content .= $sp_found."\n";
-			}			
-		}
-		# scores of species for aligns exons by exon (sorted exons)
-		if ( exists $seq_e_report->{$seq_id} ) {
-			my ($seq_rep) = $seq_e_report->{$seq_id};
-			my (@sort_exon_species_report) = sort { # sort by transc start coord
-							my ($a2,$b2);
-							$seq_rep->{$a}->{'pep_index'} =~ /^([^\:]*)\:/; $a2=$1;
-							$seq_rep->{$b}->{'pep_index'} =~ /^([^\:]*)\:/; $b2=$1;
-							$a2 <=> $b2
-						} keys %{$seq_rep};			
-			foreach my $exon_coords_txt (@sort_exon_species_report) {
-				my ($exon_sp_rep) = $seq_rep->{$exon_coords_txt};				
-				if ( exists $exon_sp_rep->{'pep_index'} and exists $exon_sp_rep->{'score'} and exists $exon_sp_rep->{'species'} and (scalar($exon_sp_rep->{'species'}) > 0) ) {
-					my ($exon_pep_index) = $exon_sp_rep->{'pep_index'};
-					my ($exon_score) = $exon_sp_rep->{'score'};
-					my ($exon_score_txt) = $exon_score;										
-					if ( exists $best_seq_e_report->{$exon_coords_txt} and defined $best_seq_e_report->{$exon_coords_txt} ) { # get the best score from other aligned seq
-						my ($best_e_rep) = $best_seq_e_report->{$exon_coords_txt};
-						my (@best_e_scores) = keys(%{$best_e_rep});
-						if ( scalar(@best_e_scores) > 0 ) {
-							my ($best_e_score) = $best_e_scores[0];
-							my ($best_e_score_int) = sprintf '%.1f', $best_e_scores[0];
-							my ($exon_score_int) = sprintf '%.1f', $exon_score;
-							if ( $best_e_score_int > $exon_score_int ) {
-								my ($best_seq_txt) = '';;
-								if ( exists $best_e_rep->{$best_e_score} ) {
-									my ($seq_list) = $best_e_rep->{$best_e_score};
-									$seq_list =~ s/\|$//;									
-									$best_seq_txt = "{".$best_e_score."-".$seq_list."}";
-								}
-								$exon_score_txt = $exon_score." ".$best_seq_txt;
-							}							
-						}						
-					}					
-					$output_content .= "\t- ".$exon_coords_txt."[".$exon_pep_index."]"."\t".$exon_score_txt."\n";
-					while (my ($sp,$sp_rep) = each(%{$exon_sp_rep->{'species'}}) ) {
-						if ( exists $sp_rep->{'score'} and exists $sp_rep->{'iden'} ) {
-							my ($sc) = $sp_rep->{'score'};
-							my ($si) = sprintf '%.2f', $sp_rep->{'iden'};
-							$output_content .= "\t\t".$sp."\t".$si."\t".$sc."\n";							
-						}
-					}
-				}
-			}			
-		}
-	}	
+	while ( my ($seq_id, $seq_rep) = each (%{$seq_report}) ) {
+		my ($seq_score) = $seq_rep->{'score'};
+		my ($sp_rep) = $seq_rep->{'report'};
+		$output_content .= ">".$seq_id."\t".$seq_score."\n";
+		foreach my $sp_found (@{$sp_rep}) {
+			$output_content .= $sp_found."\n";
+		}			
+	}
 	
 	# Get the annotations for the main isoform /* APPRIS */ ----------------
+	# BEGIN: DEPRECATED
 	if ( defined $appris )
 	{		
 		$output_content .= get_appris_annotations($vert_score);
 	}
+	# END: DEPRECATED
 	
 	# Print records by transcript ---------------
 	my ($print_out) = printStringIntoFile($output_content, $output_file);
@@ -416,12 +358,21 @@ sub _get_cds_coordinates_from_gff($)
 				my ($cdsblock_comp);
 				if ($i == 0) {
 					$cdsblock_comp = $coords->[$i]."_".$sequence_id   ."+". $coords->[$i+1]."_".$sequence_id;
+					$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 				} elsif ($i == (scalar(@{$coords})-1) ) {
 					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id;
+					$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 				} else {
+					my ($c) = $coords->[$i]."__0";
 					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
+					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
+					my ($c) = $coords->[$i]."__1";
+					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id;
+					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
+					my ($c) = $coords->[$i]."__2";
+					$cdsblock_comp = $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
+					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
 				}
-				$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 			}		
 		}
 		elsif ( exists $cds_coords->{'coord'} and scalar(@{$cds_coords->{'coord'}}) == 1 )
