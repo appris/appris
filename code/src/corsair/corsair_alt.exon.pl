@@ -519,25 +519,27 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			my $identity = $iden[0]/$iden[1]*100;
 			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : ""; #get the name from RefSeq db and UniProt db
 
-			if ($identity < 50)				# gets no points for this sequence
-				{ }
-			elsif (exists $species_found->{$species}) # gets no points for this sequence
+print STDERR "PASS:$species\n";
+
+			# if ($identity < 50)				# gets no points for this sequence
+			# 	{ }
+			# elsif (exists $species_found->{$species}) # gets no points for this sequence
+			if (exists $species_found->{$species}) # gets no points for this sequence
 				{ }
 			elsif ( exists $PRIMATES->{$species_firstname} ) # only we accept species out of primates
 				{ }
 			else
 			{
 				my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$exons,$aln_report, $_);
+
+print STDERR "PASS_SCORE: $aln_score - $aln_sms\n";
+
 				if ( defined $aln_score and ($aln_score > 0) ) {
 					# get identity score
 					my ($aln_iden) = sprintf '%.2f', $identity;
-					#my ($iden_score) = iden_score($aln_iden);
 					my ($iden_score) = $aln_iden/100;
 					my ($divtime_score) = divtime_score($species);
-					
-if ( $divtime_score == 0 ) {
-	print STDERR "DIVTIME_ZERO:$species\n";
-}
+
 					# save global score for transc
 					if ( $aln_score > 0 ) {
 						push(@{$species_report}, "$species\t$iden_score\t$divtime_score"); # Record species and score
@@ -579,23 +581,6 @@ if ( $divtime_score == 0 ) {
 
 	return ($species_score, $species_report, $exon_species_report);
 } # end parse_blast
-
-# Score based on identity percentage
-sub iden_score($)
-{
-	my ($identity) = shift;
-	my ($score) = 0;
-	if ( $identity >= 90 ) {
-		$score = 1;
-	}
-	elsif ( $identity >= 75 ) {
-		$score = 0.75;
-	}
-	elsif ( $identity >= 60 ) {
-		$score = 0.5;
-	}
-	return $score;
-}
 
 # (Normalized) Score based on diverge time
 sub divtime_score($)
@@ -688,11 +673,11 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	if ($targstart > 4)		# reject if different N-terminal, only for the Query
 		{return (0,"It has different N-terminal")}
 	
-	if ( (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal, only for the Query
-		{return (0,"Subject has longer C-terminal")}
+	# if ( (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal, only for the Query
+	# 	{return (0,"Subject has longer C-terminal")}
 
-	if ( $longestunmatches > 4 ) # reject if subject has longer unmatches
-		{return (0,"Subject has longer unmatches")}
+	# if ( $longestunmatches > 4 ) # reject if subject has longer unmatches
+	# 	{return (0,"Subject has longer unmatches")}
 
 	@target = split "", $target;
 	@candidate = split "", $candidate;
