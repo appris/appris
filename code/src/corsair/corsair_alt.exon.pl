@@ -519,8 +519,6 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			my $identity = $iden[0]/$iden[1]*100;
 			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : ""; #get the name from RefSeq db and UniProt db
 
-print STDERR "PASS:$species\n";
-
 			# if ($identity < 50)				# gets no points for this sequence
 			# 	{ }
 			# elsif (exists $species_found->{$species}) # gets no points for this sequence
@@ -531,9 +529,6 @@ print STDERR "PASS:$species\n";
 			else
 			{
 				my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$exons,$aln_report, $_);
-
-print STDERR "PASS_SCORE: $aln_score - $aln_sms\n";
-
 				if ( defined $aln_score and ($aln_score > 0) ) {
 					# get identity score
 					my ($aln_iden) = sprintf '%.2f', $identity;
