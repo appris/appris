@@ -112,8 +112,8 @@ $logger->init_log($str_params);
 #####################
 sub _get_cds_coordinates_from_gff($);
 sub _create_block_cdsseq_file($$$);
-sub parse_blast($$$);
-sub check_alignment($$$$\$$);
+sub parse_blast($$);
+sub check_alignment($$$\$$);
 
 #################
 # Method bodies #
@@ -124,14 +124,13 @@ sub main()
 	# Declare variables
 	my (@seq_list);
 	my ($seq_report);
-	my ($seq_e_report);
-	my ($vert_score); #DEPRECATED
+	# my ($seq_e_report);
 	
 	# Get the CDS coordinates info from gff file ---------------
-	$logger->info("Get cds coordinates from gff ---------------\n");
+	# $logger->info("Get cds coordinates from gff ---------------\n");
 	my ($trans_cds_coords, $cdsblock_coords) = _get_cds_coordinates_from_gff($gff_file);
-    $logger->debug("CDS coordenates ---------------\n".Dumper($trans_cds_coords));
-    $logger->debug("Sorted CDS coordenates ---------------\n".Dumper($cdsblock_coords));
+    # $logger->debug("CDS coordenates ---------------\n".Dumper($trans_cds_coords));
+    # $logger->debug("Sorted CDS coordenates ---------------\n".Dumper($cdsblock_coords));
 
 	# Create fasta file with the joined CDS for the analysis by exons
 	my ($cds_file) = _create_block_cdsseq_file($cdsblock_coords, $input_file, $output_file);
@@ -178,37 +177,7 @@ sub main()
 					$logger->error("Can not create tmp file: $!\n");
 				}
 			}
-			
-			# If apply, use exon data
-			my ($exons);
-			if ( defined $gff_file and (-e $gff_file) and (-s $gff_file > 0) ) {			
-				my(@global_sequence_exon_info)=`grep $cds_id $gff_file`;
-				foreach my $sequence_exon_info (@global_sequence_exon_info)
-				{
-					my(@exon_info) = split /\t/, $sequence_exon_info;				
-					my($edges) = join ":", $exon_info[3], $exon_info[4];
-					my ($attributes) = $exon_info[8];
-					my ($trans_edges);
-					if ( $attributes =~ /cds\_coord\>([^\-]*)\-([^\:]*)\:([\-|\+])/ ) {
-						$trans_edges = $1.':'.$2;
-					}
-					elsif ( ($attributes =~ /start\_cds \"([^\"]*)\"/) and ($attributes =~ /end\_cds \"([^\"]*)\"/) ) {
-						if ( $attributes =~ /start\_cds \"([^\"]*)\"/ ) { $trans_edges = $1; }
-						if ( $attributes =~ /end\_cds \"([^\"]*)\"/ ) {	$trans_edges = $trans_edges.":".$1; }						
-					}
-					if ( defined $edges and defined $trans_edges ) {
-						$exons->{$edges} =  $trans_edges;			
-					}
-					else {
-						$logger->error("getting protein coords\n");	
-					}
-				}
-			}
-			else {
-				my ($edges) = join ":", 1, $sequence_length;
-				$exons->{$edges} =  undef;
-			}
-			
+					
 			# Run blast
 			my ($blast_sequence_file) = $ws_cache.'/seq.refseq';
 			$logger->debug("Blast file: $blast_sequence_file\n");
@@ -226,42 +195,46 @@ sub main()
 			
 			# Parse blast
 			$logger->info("Parsing blast\n");			
-			my ($species_score, $species_report, $exon_species_report) = parse_blast($blast_sequence_file, $exons, $sequence_length);
+			my ($species_score, $species_report) = parse_blast($blast_sequence_file, $sequence_length);
 			
 			# Save score data
-			push(@{$vert_score->{$species_score}},$cds_id); # DEPRECATED
+			# push(@{$vert_score->{$species_score}},$cds_id); # DEPRECATED
 					
-			# Save specie report exon per exon
-			# $seq_e_report->{$sequence_id} = $exon_species_report;
-			$seq_e_report->{$cds_id} = {
+			# # Save specie report exon per exon
+			# $seq_e_report->{$cds_id} = {
+			# 	'score'		=> $species_score,
+			# 	'report'	=> $species_report
+			# };
+
+			# # Get the Maximum value of Blast of the middle exons which that have been created from 3 combinations
+			# my ($sequence_id) = $cds_id;
+			# $sequence_id =~ s/\_\_\d//;
+			# if ( exists $seq_report->{$sequence_id} ) {
+			# 	if ( $species_score > $seq_report->{$sequence_id}->{'score'} ) {
+			# 		$logger->debug("MAXIMIM in ".$sequence_id." for CDS_ID: ".$cds_id."\n");
+			# 		$seq_report->{$sequence_id} = {
+			# 			'score'		=> $species_score,
+			# 			'report'	=> $species_report
+			# 		};
+			# 	}
+			# }
+			# else {
+			# 	$seq_report->{$sequence_id} = {
+			# 		'score'		=> $species_score,
+			# 		'report'	=> $species_report
+			# 	};
+			# }
+
+			# Save specie report
+			$seq_report->{$cds_id} = {
 				'score'		=> $species_score,
 				'report'	=> $species_report
 			};
 
-			# Get the Maximum value of Blast of the middle exons which that have been created from 3 combinations
-			my ($sequence_id) = $cds_id;
-			$sequence_id =~ s/\_\_\d//;
-			if ( exists $seq_report->{$sequence_id} ) {
-				if ( $species_score > $seq_report->{$sequence_id}->{'score'} ) {
-					$logger->debug("MAXIMIM in ".$sequence_id." for CDS_ID: ".$cds_id."\n");
-					$seq_report->{$sequence_id} = {
-						'score'		=> $species_score,
-						'report'	=> $species_report
-					};
-				}
-			}
-			else {
-				$seq_report->{$sequence_id} = {
-					'score'		=> $species_score,
-					'report'	=> $species_report
-				};
-			}
-			
 			# Save seq ids
-			push(@seq_list, $sequence_id);
+			push(@seq_list, $cds_id);
 		}
 	}
-	$logger->debug("Seq Exon report ---------------\n".Dumper($seq_e_report));
 	$logger->debug("Seq report ---------------\n".Dumper($seq_report));
 	
 	# Print records per sequence
@@ -274,15 +247,7 @@ sub main()
 			$output_content .= $sp_found."\n";
 		}			
 	}
-	
-	# Get the annotations for the main isoform /* APPRIS */ ----------------
-	# BEGIN: DEPRECATED
-	if ( defined $appris )
-	{		
-		$output_content .= get_appris_annotations($vert_score);
-	}
-	# END: DEPRECATED
-	
+		
 	# Print records by transcript ---------------
 	my ($print_out) = printStringIntoFile($output_content, $output_file);
 	unless( defined $print_out ) {
@@ -358,21 +323,21 @@ sub _get_cds_coordinates_from_gff($)
 				my ($cdsblock_comp);
 				if ($i == 0) {
 					$cdsblock_comp = $coords->[$i]."_".$sequence_id   ."+". $coords->[$i+1]."_".$sequence_id;
-					$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 				} elsif ($i == (scalar(@{$coords})-1) ) {
 					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id;
-					$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 				} else {
-					my ($c) = $coords->[$i]."__0";
 					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
-					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
-					my ($c) = $coords->[$i]."__1";
-					$cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id;
-					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
-					my ($c) = $coords->[$i]."__2";
-					$cdsblock_comp = $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
-					$cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
+					# my ($c) = $coords->[$i]."__0";
+					# $cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
+					# $cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
+					# $c = $coords->[$i]."__1";
+					# $cdsblock_comp = $coords->[$i-1]."_".$sequence_id ."+". $coords->[$i]."_".$sequence_id;
+					# $cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
+					# $c = $coords->[$i]."__2";
+					# $cdsblock_comp = $coords->[$i]."_".$sequence_id ."+". $coords->[$i+1]."_".$sequence_id;
+					# $cdsblock_coords->{$cdsblock_comp}->{$c} = $strand;
 				}
+				$cdsblock_coords->{$cdsblock_comp}->{$coords->[$i]} = $strand;
 			}		
 		}
 		elsif ( exists $cds_coords->{'coord'} and scalar(@{$cds_coords->{'coord'}}) == 1 )
@@ -418,7 +383,7 @@ sub _create_block_cdsseq_file($$$)
 			}
 		}	
 	}
-	$logger->debug("CDS Report ---------------\n".Dumper($report));	
+	# $logger->debug("CDS Report ---------------\n".Dumper($report));	
 
 	# Create a report with the CDSblocks
     while(my ($cdsblock_index, $cdsblock_comps) = each(%{$cdsblock_coords}))
@@ -444,7 +409,7 @@ sub _create_block_cdsseq_file($$$)
 			}
 		}
 	}
-	$logger->debug("CDSBLOCK Report ---------------\n".Dumper($cdsblock_report));	
+	# $logger->debug("CDSBLOCK Report ---------------\n".Dumper($cdsblock_report));	
 
 	# Create the FASTA sequences with the CDSblocks
     while(my ($cdsblock_seq, $cdsblock_rep) = each(%{$cdsblock_report}))
@@ -469,10 +434,10 @@ sub _create_block_cdsseq_file($$$)
 	return ($outfile);
 }
 
-sub parse_blast($$$)				# reads headers for each alignment in the blast output
+sub parse_blast($$)				# reads headers for each alignment in the blast output
 {
-	my ($blast_file,$exons,$sequence_length) = @_;
-	my ($species_score, $species_report, $exon_species_report) = (0, undef, undef);
+	my ($blast_file,$sequence_length) = @_;
+	my ($species_score, $species_report) = (0, undef);
 	my ($species_found);
 	my ($aln_report);
 
@@ -519,16 +484,16 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 			my $identity = $iden[0]/$iden[1]*100;
 			my $species_firstname = ( $species =~ /^([^\s]*)/ ) ? $1 : ""; #get the name from RefSeq db and UniProt db
 
-			# if ($identity < 50)				# gets no points for this sequence
-			# 	{ }
-			# elsif (exists $species_found->{$species}) # gets no points for this sequence
 			if (exists $species_found->{$species}) # gets no points for this sequence
 				{ }
 			elsif ( exists $PRIMATES->{$species_firstname} ) # only we accept species out of primates
 				{ }
 			else
 			{
-				my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$exons,$aln_report, $_);
+				my ($aln_score,$aln_sms) = check_alignment($length,$species,$faalen,$aln_report, $_);
+
+# print STDERR "PASS_SCORE: $species > $aln_score - $aln_sms\n";
+
 				if ( defined $aln_score and ($aln_score > 0) ) {
 					# get identity score
 					my ($aln_iden) = sprintf '%.2f', $identity;
@@ -540,41 +505,13 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 						push(@{$species_report}, "$species\t$iden_score\t$divtime_score"); # Record species and score
 						$species_found->{$species} = 1;							
 					}
-					# save scores per exons (genomics region), if apply
-					if ( defined $aln_report ) {
-						while ( my ($pep_index, $aln_rep) = each(%{$aln_report}) ) {
-							if ( defined $aln_rep ) {
-								if ( defined $exons->{$pep_index} ) { # apply
-									my ($transc_index) = $exons->{$pep_index};
-									my ($exon_species_score) = 0;
-									my ($exon_species);
-									while (my ($spe, $spe_rep) = each(%{$aln_rep}) ) {
-										if ( exists $spe_rep->{'score'} and exists $spe_rep->{'iden'} ) {
-											my ($spe_sc) = $spe_rep->{'score'};
-											my ($spe_iden) = $spe_rep->{'iden'};
-											$exon_species_score += $spe_sc;
-											$exon_species->{$spe} = {
-												'score'	=> $spe_sc,
-												'iden'	=> $spe_iden
-											};										
-										}
-									}
-									$exon_species_report->{$transc_index} = {
-										'pep_index'	=> $pep_index,
-										'score'		=> $exon_species_score,
-										'species'	=> $exon_species
-									};
-								}
-							}
-						}
-					}
 					$species_score = $divtime_score if ( $divtime_score > $species_score );
 				}
 			}
 		}
 	}
 
-	return ($species_score, $species_report, $exon_species_report);
+	return ($species_score, $species_report);
 } # end parse_blast
 
 # (Normalized) Score based on diverge time
@@ -593,12 +530,11 @@ sub divtime_score($)
 	return $score;
 }
 
-sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
+sub check_alignment($$$\$$) #parses BLAST alignments
 {
 	my $candlength = shift;
 	my $specie = shift;	
 	my $targlength = shift;
-	my $exons = shift;
 	my $ref_report = shift;
 	my $oldinput = "dummy";
 	my @target = ();
@@ -607,6 +543,7 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	my @candidate = ();
 	my @startc = ();
 	my @endc = ();
+	my $longestgap = 0;
 	my $longestunmatches = 0;
 	my ($aln_score) = 0;
 	my ($aln_sms) = '';
@@ -625,25 +562,38 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	while (<BLASTFILE>)
 		{
 		chomp;
-		if (/^Query:/)						# read in query line
-			{
+		if (/^Query:/) {  					# read in query line
 			my @query = split " ";
 			push @target, $query[2];
 			push @startq, $query[1];
 			push @endq, $query[3];
+			# get the longest gap (in Query or Subject)
+			my $aln = join "", @target;
+ 			my @unmatches = $aln =~ /[\-]{4,}/g; # number GAPS (-) together (more than 4 gaps)
+			if (scalar(@unmatches) > 0) {
+				my $unmatches = $longest_elem->(@unmatches);
+				if ( defined $unmatches and $unmatches > $longestgap )
+				  { $longestgap = $unmatches } 
 			}
-		if (/^Sbjct:/)						# read in subject line
-			{
+		}
+		if (/^Sbjct:/) { 					# read in subject line
 			my @subject = split " ";
 			push @candidate, $subject[2];
 			push @startc, $subject[1];
 			push @endc, $subject[3];
+			# get the longest gap (in Query or Subject)
+			my $aln = join "", @candidate;
+ 			my @unmatches = $aln =~ /[\-]{4,}/g; # number GAPS (-) together (more than 4 gaps)
+			if (scalar(@unmatches) > 0) {
+				my $unmatches = $longest_elem->(@unmatches);
+				if ( defined $unmatches and $unmatches > $longestgap )
+				  { $longestgap = $unmatches } 
 			}
-		if (/^\s+/)						# read in match line
-		{
+		}
+		if (/^\s+/) {						# read in match line
 			my $aln = $_;
 			$aln =~ s/^\s+//g;
-			my @unmatches = $aln =~ /[\s\+]{4,}/g;
+			my @unmatches = $aln =~ /[\s\+]{4,}/g; # number unmatches (blanks) in total) together (more than 4 gaps)
 			if (scalar(@unmatches) > 0) {
 				my $unmatches = $longest_elem->(@unmatches);
 				if ( defined $unmatches and $unmatches > $longestunmatches )
@@ -656,103 +606,26 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 		}
 		
 	# process alignment ...
-	
-	my $target = join "", @target;
-	my $candidate = join "", @candidate;
-	
 	my $targstart = $startq[0];
 	my $targend = $endq[$#endq];
 	my $candstart = $startc[0];
 	my $candend = $endc[$#endc];	
-		
+
+# print STDERR "TARGET_LENGTH: $targlength - $targend\n";
+# print STDERR "LONGEST_GAP: $longestgap\n";
+
 	if ($targstart > 4)		# reject if different N-terminal, only for the Query
 		{return (0,"It has different N-terminal")}
 	
-	# if ( (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal, only for the Query
-	# 	{return (0,"Subject has longer C-terminal")}
+	if ( (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal, only for the Query
+		{return (0,"Subject has longer C-terminal")}
 
-	# if ( $longestunmatches > 4 ) # reject if subject has longer unmatches
-	# 	{return (0,"Subject has longer unmatches")}
+	if ( $longestgap >= 4 ) # reject if query/subject have longer gaps
+		{return (0,"Query/Subject have longer gaps")}
 
-	@target = split "", $target;
-	@candidate = split "", $candidate;
-	
-	my $aln_flag = 1;
-	my $loopstart = 0;
-	my (@sort_pep_exons) = sort { # sort pep coord from start value
-							my ($a2,$b2);
-							$a =~ /([^\:]*)\:/; $a2=$1;
-							$b =~ /([^\:]*)\:/; $b2=$1;
-							$a2 <=> $b2
-						} keys %{$exons};
-	for (my $i=0; $i < scalar(@sort_pep_exons); $i++)
-	{
-		my $pep_index = $sort_pep_exons[$i];
-		my @boundaries = split ":", $pep_index;
-		if ($boundaries[0] < $targstart)
-			{ $boundaries[0] = $targstart; }
-		my $identities = 0;
-		my $gapres = 0;
-		my ($gapresconttarg, $gaprescontcand) = (0,0);
-		my ($gapconttarg, $gapcontcand) = ('false','false');
-		my $totalres = $boundaries[1] - $boundaries[0] + 1;
-		my $res = 0;
-		my $j = 0;
-		for ($res=$loopstart,$j=$boundaries[0];$j<=$boundaries[1];$j++,$res++)
-			{
-				if(defined $target[$res] and $candidate[$res])
-				{				
-					if ($target[$res] eq $candidate[$res])
-						{$identities++}
-					if ($target[$res] eq "-") {
-						$gapres++;$j--;$gapconttarg = 'true';
-						if ( $gapconttarg eq 'true' ) {
-							$gapresconttarg++;
-							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }			
-						}
-					}
-					if ($candidate[$res] eq "-") {
-						$gapres++; $gapcontcand = 'true';
-						if ( $gapcontcand eq 'true' ) {
-							$gaprescontcand++;
-							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }			
-						}
-					}
-					if ($target[$res] ne "-") {$gapconttarg = 'false';$gapresconttarg=0}
-					if ($candidate[$res] ne "-") {$gapcontcand = 'false';$gaprescontcand=0}
-				}
-			}
-		$loopstart = $res;
-		
-		my $cds_flag = 1;
-		my $identity = 0;
-		my $gaps = 0;
-		if ($totalres > 0) {
-			$identity = $identities/$totalres*100;
-			$gaps = $gapres/$totalres*100;
-		}			
-		if ($identity < 40 && $totalres > 8) { # reject if two exons are too different
-			$aln_sms = "Two exons are too different";
-			$cds_flag = 0;
-			$aln_flag = 0;
-		}
-		if ($gapres > 4) { # reject if exons have substantial gaps
-			$aln_sms = "Exons have substantial gaps";
-			$cds_flag = 0;
-			$aln_flag = 0;
-		}
 
-		my ($cds_score) = $cds_flag*$specie_point;				
-		$$ref_report->{$pep_index}->{$specie} = {
-			'score'		=> $cds_score,
-			'iden'		=> $identity,
-			'gaps'		=> $gaps,
-			'totalres'	=> $totalres
-		};		
-	}
-	
 	# score of global align
-	$aln_score = $aln_flag*$specie_point;
+	$aln_score = $specie_point;
 	
 	return ($aln_score,$aln_sms);							# if sequence passes all tests
 	
