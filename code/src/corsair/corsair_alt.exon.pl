@@ -235,7 +235,7 @@ sub main()
 			push(@seq_list, $cds_id);
 		}
 	}
-	$logger->debug("Seq report ---------------\n".Dumper($seq_report));
+	# $logger->debug("Seq report ---------------\n".Dumper($seq_report));
 	
 	# Print records per sequence
 	my ($output_content) = "";
