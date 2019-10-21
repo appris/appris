@@ -1,4 +1,23 @@
 ___
+## 2019_11.v29
+```
+SERVER-RELEASE:   2019_11.v29
+CODE-RELEASE:     4.7.2.20
+```
+
+### Highlights
++ New release of Ensembl (e99 version), for the species:
+	- Homo sapiens
+	- Mus musculus
+	- Drosophila melanogaster
+
+### Server (4.7)
++ No changes
+
+### Code (2.20)
++ No changes
+
+___
 ## 2019_09.v29
 ```
 SERVER-RELEASE:   2019_09.v29
