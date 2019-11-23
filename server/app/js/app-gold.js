@@ -87,7 +87,8 @@ apprisApp.run(['$rootScope', '$location', '$window', '$templateCache', function(
 
         
 
-apprisApp.config(['$routeProvider', function ($routeProvider) {
+apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+
         $routeProvider.
             when('/species', {
                 templateUrl: 'partials/species.html'
@@ -158,5 +159,7 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
             otherwise({
                 templateUrl: 'templates/page_not_found.html'
             });
+        // use the HTML5 History API
+        $locationProvider.html5Mode(true);
   }]);
 

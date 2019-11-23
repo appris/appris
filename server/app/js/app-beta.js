@@ -79,7 +79,7 @@ apprisApp.run(function($rootScope, $templateCache) {
     });
 });
 
-apprisApp.config(['$routeProvider', function ($routeProvider) {
+apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 //        console.log($httpProvider.defaults.headers);
 //        $httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
 //        $httpProvider.defaults.headers.post['Accept'] = 'application/json, text/javascript';
@@ -173,5 +173,7 @@ apprisApp.config(['$routeProvider', function ($routeProvider) {
             otherwise({
                 templateUrl: 'templates/page_not_found.html'
             });
+        // use the HTML5 History API
+        $locationProvider.html5Mode(true);
   }]);
 
