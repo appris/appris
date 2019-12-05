@@ -109,9 +109,9 @@ while ( my ($met_id,$met_report) = each(%{$methods_report}) ) {
 # The first value of array of assemblies is the default value.
 my ($SPECIES_ASSEMBLIES)	= undef;
 my ($SPECIES_ASSEMBLY)		= undef;
-my ($species_json_str) = &appris_http::rest_request($BASE_URL.'/species.json');
+my ($species_json_str) = &appris_http::rest_request($BASE_URL.'/config.json');
 my ($species_report) = JSON->new->decode($species_json_str);
-while ( my ($spe_id,$spe_report) = each(%{$species_report}) ) {
+while ( my ($spe_id,$spe_report) = each(%{$species_report->{'species'}}) ) {
 	my ($spe_name) = lc($spe_report->{'common'});
 	my ($spe_sci) = $spe_report->{'scientific'};
 	my ($assemblies) = $spe_report->{'assemblies'};
@@ -173,8 +173,8 @@ sub check_parameters()
 		}		
 		# Obtain ensembl (gene dataset) version
 		foreach my $assembly_rep (@{$SPECIES_ASSEMBLIES->{$species}}) {
-			if ( ($assembly_rep->{'name'} =~ /\|$assembly$/i) or ($assembly_rep->{'name'} =~ /$assembly\|/i) ) {
-				$ensembl = $assembly_rep->{'dataset'};
+			if ( $assembly_rep->{'id'} eq $assembly ) {
+				$ensembl = $assembly_rep->{'datasets'}->[0]->{'source'}->{'version'};
 			}
 		}
 		unless ( defined $ensembl ) {
