@@ -7,6 +7,8 @@ use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
 use Exporter;
 
+use Env qw(APPRIS_SCORE_MODE);
+
 use vars qw(@ISA @EXPORT);
 
 @ISA = qw(Exporter);
@@ -528,9 +530,17 @@ sub get_final_scores($$$\$\$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
-					if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
-					else { $n_sc = 0 }
+					if ( $method eq 'spade' && $APPRIS_SCORE_MODE eq 'INVERTED' ) {
+						if ( $max != 0.0 ) {
+							$n_sc = $max - $sc < 100.0 ? (100.0 - ($max - $sc)) / 100.0 : 0.0;
+						} else {
+							$n_sc = 0;
+						}
+					} else {
+						if ( $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
+						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
+						else { $n_sc = 0 }
+					}
 				}
 				if ( $n_sc < 0 ) { $n_sc = 0 }
 				$n_sc = sprintf("%.3f",$n_sc);
