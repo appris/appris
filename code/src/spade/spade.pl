@@ -215,7 +215,7 @@ sub _get_best_domain($$$)
 	# Discard original overlapping
 	$best_domains = $exist_domains;
 	if ( defined $exist_domains ) {
-		my (@sorted_hmm_index) = sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1}; if($b=~/^([0-9]*)/){$b1=$1}; $a1<=>$b1} keys($exist_domains);
+		my (@sorted_hmm_index) = sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1}; if($b=~/^([0-9]*)/){$b1=$1}; $a1<=>$b1} keys(%{$exist_domains});
 		for (my $i=0; $i< scalar(@sorted_hmm_index); $i++) {
 			my ($hmm_index_i) = $sorted_hmm_index[$i];
 			if ( defined $exist_domains->{$hmm_index_i} ) {
