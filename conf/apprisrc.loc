@@ -40,7 +40,7 @@ export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_CONF_DIR}/scripts"
 
 export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_BIN_DIR}"
 
-export APPRIS_SCORE_MODE="REGULAR"
+export SPADE_SCORE_MODE=regular
 
 # -------------------------------------#
 # Setting up vars of APPRIS's programs #

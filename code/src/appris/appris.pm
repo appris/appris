@@ -7,7 +7,7 @@ use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
 use Exporter;
 
-use Env qw(APPRIS_SCORE_MODE);
+use Env qw(SPADE_SCORE_MODE);
 
 use vars qw(@ISA @EXPORT);
 
@@ -530,7 +530,7 @@ sub get_final_scores($$$\$\$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $method eq 'spade' && $APPRIS_SCORE_MODE eq 'INVERTED' ) {
+					if ( $method eq 'spade' && $SPADE_SCORE_MODE eq 'alternative' ) {
 						if ( $max != 0.0 ) {
 							$n_sc = $max - $sc < 100.0 ? (100.0 - ($max - $sc)) / 100.0 : 0.0;
 						} else {
