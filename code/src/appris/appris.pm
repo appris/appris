@@ -7,7 +7,10 @@ use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
 use Exporter;
 
-use Env qw(SPADE_SCORE_MODE);
+use Env qw(
+	MATADOR_SCORE_MODE
+	SPADE_SCORE_MODE
+);
 
 use vars qw(@ISA @EXPORT);
 
@@ -531,8 +534,16 @@ sub get_final_scores($$$\$\$)
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
 					if ( $method eq 'spade' && $SPADE_SCORE_MODE eq 'alternative' ) {
-						if ( $max != 0.0 ) {
-							$n_sc = $max - $sc < 100.0 ? (100.0 - ($max - $sc)) / 100.0 : 0.0;
+						my $effective_range = 100.0;
+						if ( $max > 0.0 ) {
+							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
+						} else {
+							$n_sc = 0;
+						}
+					} elsif ( $method =~ /^matador3d2?$/ && $MATADOR_SCORE_MODE eq 'alternative' ) {
+						my $effective_range = 3.0;
+						if ( $max > 0.0 ) {
+							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
 						} else {
 							$n_sc = 0;
 						}

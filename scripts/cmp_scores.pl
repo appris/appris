@@ -6,14 +6,14 @@ use File::stat;
 use Set::Scalar;
 
 
-my ($reg_dir_file, $inv_dir_file, $output_file) = @ARGV;
+my ($ref_dir_file, $alt_dir_file, $output_file) = @ARGV;
 
 # Cutoff time to distinguish newly created output files.
 my $cutoff_time = 1575936000;  # midnight on 2019-12-10
 
 my %dir_files = (
-	'regular' => $reg_dir_file,
-	'inverted' => $inv_dir_file,
+	'ref' => $ref_dir_file,
+	'alt' => $alt_dir_file,
 );
 
 my %cmp_info;
@@ -59,14 +59,14 @@ while (my($cmp_key, $dir_file) = each %dir_files) {
 my %diff_info;
 while (my($gene_id, $gene_info) = each %cmp_info) {
 
-	my @transc_ids = keys %{$cmp_info{$gene_id}{'regular'}};
+	my @transc_ids = keys %{$cmp_info{$gene_id}{'ref'}};
 	my %p1_set_info = (
-		'regular' => Set::Scalar->new(),
-		'inverted' => Set::Scalar->new()
+		'ref' => Set::Scalar->new(),
+		'alt' => Set::Scalar->new()
 	);
 	
 	foreach my $transc_id (@transc_ids) {
-		foreach my $cmp_key (('regular', 'inverted')) {
+		foreach my $cmp_key (('ref', 'alt')) {
 			my $pi_label = $cmp_info{$gene_id}{$cmp_key}{$transc_id}{'pi_label'};
 			if ($pi_label eq 'PRINCIPAL:1') {
 				$p1_set_info{$cmp_key}->insert($transc_id);
@@ -74,18 +74,18 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 		}
 	}
 	
-	if ( ! $p1_set_info{'regular'}->is_equal($p1_set_info{'inverted'}) ) {
+	if ( ! $p1_set_info{'ref'}->is_equal($p1_set_info{'alt'}) ) {
 		foreach my $transc_id (@transc_ids) {
-			my $pi_label_regular = $cmp_info{$gene_id}{'regular'}{$transc_id}{'pi_label'};
-			my $pi_label_inverted = $cmp_info{$gene_id}{'inverted'}{$transc_id}{'pi_label'};
-			if ( grep(/^PRINCIPAL:1$/, ($pi_label_regular, $pi_label_inverted)) ) {
+			my $pi_label_ref = $cmp_info{$gene_id}{'ref'}{$transc_id}{'pi_label'};
+			my $pi_label_alt = $cmp_info{$gene_id}{'alt'}{$transc_id}{'pi_label'};
+			if ( grep(/^PRINCIPAL:1$/, ($pi_label_ref, $pi_label_alt)) ) {
 				my %transc_info = (
 					'gene_id' => $gene_id,
-					'gene_name' => $cmp_info{$gene_id}{'regular'}{$transc_id}{'gene_name'},
+					'gene_name' => $cmp_info{$gene_id}{'ref'}{$transc_id}{'gene_name'},
 					'transc_id' => $transc_id,
-					'pi_label_regular' => $pi_label_regular,
-					'pi_label_inverted' => $pi_label_inverted,
-					'ccds_id' => $cmp_info{$gene_id}{'regular'}{$transc_id}{'ccds_id'}
+					'pi_label_ref' => $pi_label_ref,
+					'pi_label_alt' => $pi_label_alt,
+					'ccds_id' => $cmp_info{$gene_id}{'ref'}{$transc_id}{'ccds_id'}
 				);
 				$diff_info{$gene_id}{$transc_id} = \%transc_info;
 			}
@@ -95,8 +95,8 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 
 open(OUTFILE, '>', $output_file)
 	or die("failed to open file '${output_file}'");
-my @field_names = ('gene_id', 'gene_name', 'transc_id', 'pi_label_regular',
-				   'pi_label_inverted', 'ccds_id');
+my @field_names = ('gene_id', 'gene_name', 'transc_id', 'pi_label_ref',
+				   'pi_label_alt', 'ccds_id');
 print OUTFILE join("\t", @field_names)."\n";
 foreach my $gene_info (values %diff_info) {
 	foreach my $transc_info (values %{$gene_info}) {
@@ -104,8 +104,8 @@ foreach my $gene_info (values %diff_info) {
 			$transc_info->{'gene_id'},
 			$transc_info->{'gene_name'},
 			$transc_info->{'transc_id'},
-			$transc_info->{'pi_label_regular'},
-			$transc_info->{'pi_label_inverted'},
+			$transc_info->{'pi_label_ref'},
+			$transc_info->{'pi_label_alt'},
 			$transc_info->{'ccds_id'}
 		); 
 		my $line = join("\t", @row);
@@ -127,16 +127,16 @@ Compare annotations under different scoring methods, summarise differences.
 
 =head2 Required arguments:
 	
-	reg_dir_file	Text file listing annotation directories with regular scores.
+	ref_dir_file	Text file listing annotation directories with reference method scores.
 
-	inv_dir_file	Text file listing annotation directories with inverted scores.
+	alt_dir_file	Text file listing annotation directories with alternative method scores.
 
 	output_file		TSV file summarising transcripts with different annotations
 					under the different scoring methods.
 
 =head1 EXAMPLE
 
-perl cmp_scores.pl dirs_regular.txt dirs_inverted.txt score_cmp.tab
+perl cmp_scores.pl dirs_ref.txt dirs_alt.txt score_cmp.tab
 	
 =cut
 
