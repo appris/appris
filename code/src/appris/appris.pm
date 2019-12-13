@@ -542,7 +542,7 @@ sub get_final_scores($$$$\$\$)
 
 						my $variant_tag;
 						foreach my $method_variant (@method_variants) {
-							($variant_tag) = $_ =~ /^matador3d:(.+)$/;
+							($variant_tag) = $method_variant =~ /^matador3d:(.+)$/;
 							if ( defined($variant_tag) ) {
 								last;
 							}
