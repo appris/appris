@@ -529,36 +529,35 @@ sub get_final_scores($$$$\$\$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $method eq 'spade' && grep(/^spade:alt$/, @method_variants) ) {
+					if ( $method eq 'spade' ) {
 
-						my $effective_range = 100.0;
+						my $eff_range = 100.0;
 						if ( $max > 0.0 ) {
-							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
+							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
 						} else {
 							$n_sc = 0;
 						}
 
-					} elsif ( $method =~ /^matador3d$/ && grep(/^matador3d:.+$/, @method_variants) ) {
+					} elsif ( $method eq 'matador3d' ) {
 
-						my $variant_tag;
-						foreach my $method_variant (@method_variants) {
-							($variant_tag) = $method_variant =~ /^matador3d:(.+)$/;
-							if ( defined($variant_tag) ) {
-								last;
-							}
-						}
-
-						my $effective_range;
-						if ($variant_tag eq 'alt0.33') {
-							$effective_range = 2.0;
-						} elsif ($variant_tag eq 'alt0.5') {
-							$effective_range = 3.0;
-						} else {
-							die("unknown Matador3D method variant tag: '${variant_tag}'");
-						}
+						my $eff_range = 3.0;  # 0.5 (default)
+						# if ( grep(/^matador3d:.+$/, @method_variants) ) {
+						# 	my $variant_tag;
+						# 	foreach my $method_variant (@method_variants) {
+						# 		($variant_tag) = $method_variant =~ /^matador3d:(.+)$/;
+						# 		if ( defined($variant_tag) ) {
+						# 			last;
+						# 		}
+						# 	}
+						# 	if ($variant_tag eq '0.33') {
+						# 		$eff_range = 2.0;
+						# 	} else {
+						# 		die("unknown Matador3D method variant tag: '${variant_tag}'");
+						# 	}
+						# }
 
 						if ( $max > 0.0 ) {
-							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
+							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
 						} else {
 							$n_sc = 0;
 						}
