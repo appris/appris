@@ -36,6 +36,7 @@ my ($thump_file) = undef;
 my ($crash_file) = undef;
 my ($inertia_file) = undef;
 my ($proteo_file) = undef;
+my ($method_variants) = undef;
 my ($output_main_file) = undef;
 my ($output_nscore_file) = undef;
 my ($output_label_file) = undef;
@@ -58,6 +59,7 @@ my ($loglevel) = undef;
 	'crash=s'			=> \$crash_file,
 	'inertia=s'			=> \$inertia_file,
 	'proteo=s'			=> \$proteo_file,
+	'method-variants=s'	=> \$method_variants,
 	'output=s'			=> \$output_main_file,
 	'output_nscore=s'	=> \$output_nscore_file,	
 	'output_label=s'	=> \$output_label_file,
@@ -257,7 +259,7 @@ sub main()
 
 	# get scores/annots of appris for each transcript
 	$logger->info("--  get scores/annots of appris for each transcript\n");
-	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $scores, $s_scores);
+	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $method_variants, $scores, $s_scores);
 	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE2_S_SCORES:\n".Dumper($s_scores)."\n");
 	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");

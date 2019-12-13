@@ -7,11 +7,6 @@ use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
 use Exporter;
 
-use Env qw(
-	MATADOR_SCORE_MODE
-	SPADE_SCORE_MODE
-);
-
 use vars qw(@ISA @EXPORT);
 
 @ISA = qw(Exporter);
@@ -510,12 +505,13 @@ sub get_method_annots($$$)
 } # End get_method_annots
 
 # get gene scores of methods for appris
-sub get_final_scores($$$\$\$)
+sub get_final_scores($$$$\$\$)
 {
-	my ($gene, $annots, $involved_methods, $ref_scores, $ref_s_scores) = @_;
+	my ($gene, $annots, $involved_methods, $method_variant_param, $ref_scores, $ref_s_scores) = @_;
 	my ($nscores);
-	
+
 	# obtain normalize scores (weighted normalize score) foreach method
+	my @method_variants = split(',', $method_variant_param);
 	my ($max_appris_score) = 0;
 	foreach my $transcript (@{$gene->transcripts}) {	
 		my ($transcript_id) = $transcript->stable_id;
@@ -533,20 +529,40 @@ sub get_final_scores($$$\$\$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $method eq 'spade' && $SPADE_SCORE_MODE eq 'alternative' ) {
+					if ( $method eq 'spade' && grep(/^spade:alt$/, @method_variants) ) {
+
 						my $effective_range = 100.0;
 						if ( $max > 0.0 ) {
 							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
 						} else {
 							$n_sc = 0;
 						}
-					} elsif ( $method =~ /^matador3d2?$/ && $MATADOR_SCORE_MODE eq 'alternative' ) {
-						my $effective_range = 3.0;
+
+					} elsif ( $method =~ /^matador3d$/ && grep(/^matador3d:.+$/, @method_variants) ) {
+
+						my $variant_tag;
+						foreach my $method_variant (@method_variants) {
+							($variant_tag) = $_ =~ /^matador3d:(.+)$/;
+							if ( defined($variant_tag) ) {
+								last;
+							}
+						}
+
+						my $effective_range;
+						if ($variant_tag eq 'alt0.33') {
+							$effective_range = 2.0;
+						} elsif ($variant_tag eq 'alt0.5') {
+							$effective_range = 3.0;
+						} else {
+							die("unknown Matador3D method variant tag: '${variant_tag}'");
+						}
+
 						if ( $max > 0.0 ) {
 							$n_sc = $max - $sc < $effective_range ? ($effective_range - ($max - $sc)) / $effective_range : 0.0;
 						} else {
 							$n_sc = 0;
 						}
+
 					} else {
 						if ( $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
 						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min

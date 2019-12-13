@@ -8,8 +8,7 @@
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
-# export APPRIS_PROGRAMS_CACHE_DIR="/home/jmrodriguez/projects/APPRIS/appriscache/md5"
-export APPRIS_PROGRAMS_CACHE_DIR="/media/ltwalsh/APPRIS/appriscache/md5"
+export APPRIS_PROGRAMS_CACHE_DIR="/home/jmrodriguez/projects/APPRIS/appriscache/md5"
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"
 
@@ -40,9 +39,6 @@ export APPRIS_WSERVER_CONF_DIR="${APPRIS_CONF_DIR}/ws"
 export APPRIS_SCRIPTS_CONF_DIR="${APPRIS_CONF_DIR}/scripts"
 
 export APPRIS_SCRIPTS_BIN_DIR="${APPRIS_BIN_DIR}"
-
-export MATADOR_SCORE_MODE=regular
-export SPADE_SCORE_MODE=regular
 
 # -------------------------------------#
 # Setting up vars of APPRIS's programs #
