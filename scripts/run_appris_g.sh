@@ -2,9 +2,9 @@
 
 set -e
 
-
 anno_dir="$1";
 dir_list_file="$2";
+method_variants="$3";
 
 find "$anno_dir" -type d -name "ENSG*" > "$dir_list_file"
 
@@ -16,7 +16,7 @@ do
   then
     echo "Running singĺe-gene APPRIS in: ${gene_dir}"
 	# TODO: use all APPRIS modules
-    appris_bin_g -s "Homo sapiens" -m fm1scra -l info > log 2>&1;
+    appris_bin_g -s "Homo sapiens" -x "$method_variants" -m fm1scra -l info > log 2>&1;
   fi
   cd "$o_dir";
 done < "$dir_list_file"
