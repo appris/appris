@@ -81,31 +81,9 @@ apprisApp.run(function($rootScope, $templateCache) {
 });
 
 apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-//        console.log($httpProvider.defaults.headers);
-//        $httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
-//        $httpProvider.defaults.headers.post['Accept'] = 'application/json, text/javascript';
-//        $httpProvider.defaults.headers.post['Access-Control-Max-Age'] = '1728000';
-//        $httpProvider.defaults.headers.common['Access-Control-Max-Age'] = '1728000';
-//        $httpProvider.defaults.headers.common['Accept'] = 'application/json, text/javascript';
-//        $httpProvider.defaults.headers.common['Content-Type'] = 'application/json; charset=utf-8';
-//        $httpProvider.defaults.useXDomain = true;
-//        delete $httpProvider.defaults.headers.common['X-Requested-With'];
-//        console.log($httpProvider.defaults.headers);
-
-
-//        $locationProvider.html5Mode(true);
-//        $locationProvider.html5Mode('requireBase:true');
-
-//        //initialize get if not there
-//        if (!$httpProvider.defaults.headers.get) {
-//            $httpProvider.defaults.headers.get = {};
-//        }
-//        //disable IE ajax request caching
-//        $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
         $routeProvider.
             when('/species', {
-//                controller: 'SpeciesController',
                 templateUrl: 'partials/species.html'
             }).
             when('/server', {
@@ -175,6 +153,6 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 templateUrl: 'templates/page_not_found.html'
             });
         // use the HTML5 History API
-        $locationProvider.html5Mode(true);
+        // $locationProvider.html5Mode(true);
   }]);
 

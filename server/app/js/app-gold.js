@@ -160,6 +160,6 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 templateUrl: 'templates/page_not_found.html'
             });
         // use the HTML5 History API
-        $locationProvider.html5Mode(true);
+        // $locationProvider.html5Mode(true);
   }]);
 
