@@ -170,37 +170,95 @@ The URL from the PfamScan code is in ftp://ftp.ebi.ac.uk/pub/databases/Pfam/Tool
 
 CORSAIR
 -------
-RefSeq Vertebrate database comes from "vertebrate_mamalian" and "vertebrate_other" (ftp://ftp.ncbi.nlm.nih.gov/refseq/release/)
+__RefSeq__ databases ["vertebrate_mamalian"+"vertebrate_other", "invertebrate"]  (ftp://ftp.ncbi.nlm.nih.gov/refseq/release/)
 
 1. Prepare workspace for the data files
 ```
-	$ mkdir refseq_{dataversion}
-	$ cd refseq_{dataversion}
-	$ mkdir raw
-	$ cd raw
+  $ mkdir refseq_{dataversion}
+  $ cd refseq_{dataversion}
+  $ mkdir raw
+  $ cd raw
 ```
 2. Get RefSeq database for 'vertebrate' and 'invertebrate' from
 ```
-	$ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_mammalian.*.protein.faa.gz
-	$ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_other.*.protein.faa.gz (DEPRECATED)
-	$ wget ftp://ftp.ncbi.nih.gov/refseq/release/invertebrate/invertebrate.*.protein.faa.gz
+  $ wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/vertebrate_mammalian/vertebrate_mammalian.*.protein.faa.gz
+  $ wget ftp://ftp.ncbi.nih.gov/refseq/release/vertebrate_other/vertebrate_other.*.protein.faa.gz
+  $ wget ftp://ftp.ncbi.nih.gov/refseq/release/invertebrate/invertebrate.*.protein.faa.gz
 ```
 3. Unzip them
 ```
-	$ gzip -d vertebrate_*
-	$ gzip -d invertebrate.*
+  $ gzip -d vertebrate_*
+  $ gzip -d invertebrate.*
 ```
 4. Concatenate them
 ```
-	$ cat vertebrate_mammalian.* vertebrate_other.* >> refseq_vert (DEPRECATED)
-	$ cat vertebrate_mammalian.* >> ../refseq_vert
-	$ cat invertebrate.* >> ../refseq_invert	
+  $ cat vertebrate_mammalian.* vertebrate_other.* >> ../refseq_vert
+  $ cat invertebrate.* >> ../refseq_invert
+  $ cat vertebrate_mammalian.* vertebrate_other.* invertebrate.* >> ../refseq
 ```
 5. Index database
 ```
-	$ cd ..
-    $ formatdb -i refseq_vert -p T
-    $ formatdb -i refseq_invert -p T
+  $ cd ..
+  $ formatdb -i refseq_vert -p T
+  $ formatdb -i refseq_invert -p T
+  $ formatdb -i refseq -p T
+```
+
+Another way to download the databases:
+
+1. Prepare workspace for the data files
+```
+  $ mkdir refseq_{dataversion}
+  $ cd refseq_{dataversion}
+  $ mkdir raw
+  $ cd raw
+```
+2. Get databases
+```
+  $ perl appris/db/scripts/corsair/download_refseq.pl -c appris/conf/code/corsair_alt.diverge_time.human.json -o db/refseq_{dataversion}/raw --loglevel=debug
+```
+3. Unzip them
+```
+  $ gzip -d *.gz
+```
+4. Concatenate them
+```
+  $ cat *.fasta >> ../refseq
+```
+5. Index database
+```
+  $ cd ..
+  $ formatdb -i refseq -p T
+```
+
+> Note: There are some species that have been downloaded manually.
+
+
+__UniProt__ databases ["vertebrate", "invertebrate"] (ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/):
+
+1. Prepare workspace for the data files
+```
+  $ mkdir uniprot_{dataversion}
+  $ cd uniprot_{dataversion}
+  $ mkdir raw
+  $ cd raw
+```
+2. Get UniProt databases
+```
+  $ perl appris/db/scripts/corsair/download_uniprot.pl -c appris/conf/code/corsair_alt.diverge_time.human.json -o db/uniprot_{dataversion}/raw --loglevel=debug
+```
+3. Unzip them
+```
+  $ gzip -d *.gz
+```
+4. Concatenate them
+```
+  $ cat *.fasta >> ../uniprot
+```
+5. Index database
+```
+  $ cd ..
+  $ formatdb -i uniprot -p T
 ```
 
 

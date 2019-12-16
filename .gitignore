@@ -51,3 +51,6 @@ db/*
 
 # RStudio project
 .Rproj.user
+
+# modules
+modules

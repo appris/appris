@@ -32,10 +32,10 @@
                              data-ng-click="isCollapsed = !isCollapsed"
                              data-ng-show="(seekerRst.match | filter:{namespace:'Gene_Id'} | filter:{type:'archive'}).length > 0">
                             <span tooltip-placement="top" tooltip="Show/Hide" class="pull-right pointer glyphicon" data-ng-class="{'glyphicon-chevron-right': isCollapsed, 'glyphicon-chevron-down': !isCollapsed}"></span>
-                            <span data-ng-show="isCollapsed">Show</span><span data-ng-show="!isCollapsed">Hide</span> archive data-sets
+                            <span data-ng-show="isCollapsed">Hide</span><span data-ng-show="!isCollapsed">Show</span> archive data-sets
                         </div>
                         <div collapse="isCollapsed">
-                            <tr class="archive" collapse="isCollapsed"
+                            <tr class="archive" collapse="!isCollapsed"
                                     data-ng-repeat="queryRst in seekerRst.match | filter:{namespace:'Gene_Id'} | filter:{type:'archive'}"
                                     data-ng-if="queryRst.namespace == 'Gene_Id'">
                                 <td>[Archive] {{queryRst.source.label}}</td>
