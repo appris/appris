@@ -36,7 +36,7 @@ my ($thump_file) = undef;
 my ($crash_file) = undef;
 my ($inertia_file) = undef;
 my ($proteo_file) = undef;
-my ($method_variants) = undef;
+my ($exp_features) = undef;
 my ($output_main_file) = undef;
 my ($output_nscore_file) = undef;
 my ($output_label_file) = undef;
@@ -59,7 +59,7 @@ my ($loglevel) = undef;
 	'crash=s'			=> \$crash_file,
 	'inertia=s'			=> \$inertia_file,
 	'proteo=s'			=> \$proteo_file,
-	'method-variants=s'	=> \$method_variants,
+	'exp:s'         => \$exp_features,
 	'output=s'			=> \$output_main_file,
 	'output_nscore=s'	=> \$output_nscore_file,	
 	'output_label=s'	=> \$output_label_file,
@@ -77,6 +77,7 @@ our $FIRESTAR_MINRES		= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
 our $FIRESTAR_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
 our $MATADOR3D_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
 our $MATADOR3D2_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d2_cutoff');
+our $SPADE_INTEGRITY_CUTOFF = $cfg->val( 'APPRIS_VARS', 'spade_integrity_cutoff');
 our $SPADE_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'spade_cutoff');
 our $CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 our $CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
@@ -252,21 +253,24 @@ sub main()
 	$logger->debug("PRE_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE_S_SCORES:\n".Dumper($s_scores)."\n");
 	
-	# get annots of methods for each transcript
+	# get list of metrics from list of involved methods
+	my $involved_metrics = get_method_metric_names($involved_methods);
+
+	# get annots of methods for each transcriptq
 	$logger->info("-- get annots of methods for each variant\n");
-	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_methods);
+	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_metrics);
 	$logger->debug("PRE_ANNOTS:\n".Dumper($annots)."\n");
 
-	# get scores/annots of appris for each transcript
-	$logger->info("--  get scores/annots of appris for each transcript\n");
-	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $method_variants, $scores, $s_scores);
+	# get normalized scores of methods for each transcript
+	$logger->info("-- get normalized scores of methods for each variant\n");
+	my ($nscores) = appris::get_normalized_method_scores($gene, $involved_metrics, $scores, $s_scores, $annots, $exp_features);
 	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE2_S_SCORES:\n".Dumper($s_scores)."\n");
 	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots);
+	appris::get_final_annotations($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_features);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs

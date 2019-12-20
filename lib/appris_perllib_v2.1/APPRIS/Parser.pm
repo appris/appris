@@ -1154,18 +1154,20 @@ sub parse_spade_rst($)
         if ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
 		{
 			my ($id) = $1;
-			my ($bitscore) = $2;
-			my ($num_domains) = $3;
-			my ($num_possibly_damaged_domains) = $4;
-			my ($num_damaged_domains) = $5;
-			my ($num_wrong_domains) = $6;
+			my ($domain_integrity) = $2;
+			my ($bitscore) = $3;
+			my ($num_domains) = $4;
+			my ($num_possibly_damaged_domains) = $5;
+			my ($num_damaged_domains) = $6;
+			my ($num_wrong_domains) = $7;
+			$cutoffs->{$id}->{'domain_integrity'} = $domain_integrity;
 			$cutoffs->{$id}->{'bitscore'} = $bitscore;
 			$cutoffs->{$id}->{'num_domains'} = $num_domains;
 			$cutoffs->{$id}->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 			$cutoffs->{$id}->{'num_damaged_domains'} = $num_damaged_domains;
 			$cutoffs->{$id}->{'num_wrong_domains'} = $num_wrong_domains;
 	
-			# <type_domain>
+			# <type_domain> <domain score>
 			# <alignment start> <alignment end> <envelope start> <envelope end>
 			# <hmm acc> <hmm name> <type> <hmm start> <hmm end> <hmm length> <bit score> <E-value>
 			# <significance> <clan> <predicted_active_site_residues> -optional values-
@@ -1387,6 +1389,7 @@ sub parse_spade($$)
 							-num_possibly_damaged_domains	=> $report->{'num_possibly_damaged_domains'},
 							-num_damaged_domains			=> $report->{'num_damaged_domains'},
 							-num_wrong_domains				=> $report->{'num_wrong_domains'},
+							-domain_integrity		=> $report->{'domain_integrity'},
 							-bitscore						=> $report->{'bitscore'}
 			);
 			$method->regions($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
