@@ -620,12 +620,14 @@ sub get_normalized_method_scores($$\$\$$$)
 							my $eff_range = $max;
 							if ( grep(/^spade_.+$/, @exp_features) ) {
 							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^spade_(.+)$/;
+							    my ($feature_tag) = $exp_feature =~ /^spade_(\d+\.\d+)$/;
 							    if ( defined($feature_tag) ) {
 							      $eff_range = $feature_tag;
-							      if ( $eff_range <= 0.0 || $eff_range > $max ) {
-							        die("invalid feature: '$exp_feature'");
-							      }
+										if ($eff_range > $max) {
+											$eff_range = $max;
+										} elsif ($eff_range == 0.0) {
+											die("invalid feature: '$exp_feature'");
+										}
 							      last;
 							    }
 							  }
@@ -656,9 +658,11 @@ sub get_normalized_method_scores($$\$\$$$)
 							    my ($feature_tag) = $exp_feature =~ /^matador3d_(.+)$/;
 							    if ( defined($feature_tag) ) {
 							      $eff_range = $feature_tag;
-							      if ( $eff_range <= 0.0 || $eff_range > $max ) {
-							        die("invalid feature: '$exp_feature'");
-							      }
+										if ($eff_range > $max) {
+											$eff_range = $max;
+										} elsif ($eff_range == 0.0) {
+											die("invalid feature: '$exp_feature'");
+										}
 							      last;
 							    }
 							  }
