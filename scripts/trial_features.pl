@@ -54,12 +54,16 @@ sub match_ensembl_gene_dir ($) {
 
 my @baseline_gene_dirs;
 my @baseline_run_dirs;
-my %baseline_run_info;
+if ( ! -d $baseline_dir ) {
+	die("baseline directory not found: ${baseline_dir}");
+}
 find({wanted => sub { match_ensembl_gene_dir(\@baseline_gene_dirs) }, follow => 1}, $baseline_dir);
 
 my @test_gene_dirs;
 my @test_run_dirs;
-my %test_run_info;
+if ( ! -d $test_dir ) {
+	die("test directory not found: ${test_dir}");
+}
 find({wanted => sub { match_ensembl_gene_dir(\@test_gene_dirs) }, follow => 1}, $test_dir);
 
 my $feat_sets_info = {
@@ -76,6 +80,7 @@ my $feat_sets_info = {
 };
 
 while (my ($feat_set_key, $feat_set_info) = each(%{$feat_sets_info}) ) {
+
 	my $feat_set = $feat_set_info->{'feat_set'};
 	my $gene_dirs = $feat_set_info->{'gene_dirs'};
 	my $run_dirs = $feat_set_info->{'run_dirs'};
@@ -84,7 +89,7 @@ while (my ($feat_set_key, $feat_set_info) = each(%{$feat_sets_info}) ) {
 		chdir $gene_dir;
 		if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' ) {
 			print "Running singĺe-gene APPRIS in: ${gene_dir}\n";
-			my @cmds = ('bash', 'appris_bin_g', '-s', 'Homo sapiens', '-x', "$feat_set", '-m', 'fm1scra',
+			my @cmds = ('appris_bin_g', '-s', 'Homo sapiens', '-x', "$feat_set", '-m', 'fm1sctra',
 			            '-l', 'info');
 			_run_system_call(\@cmds, 'log');
 			push(@{$run_dirs}, $gene_dir);
