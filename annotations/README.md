@@ -142,6 +142,7 @@ Output of *__SPADE__* method.
 
 ### In detail (for each isoform)
 - '>' sequence id with
+    - Domain integrity score
     - Sum of bit-score,
     - No. functional domains,
     - No. possibly damaged domains,
