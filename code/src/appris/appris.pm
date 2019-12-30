@@ -618,9 +618,9 @@ sub get_normalized_method_scores($$\$\$$$)
 						if ( $max > 0.0 ) {
 
 							my $eff_range = $max;
-							if ( grep(/^spade_.+$/, @exp_features) ) {
+							if ( grep(/^spade_integrity_.+$/, @exp_features) ) {
 							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^spade_(\d+\.\d+)$/;
+							    my ($feature_tag) = $exp_feature =~ /^spade_integrity_(\d+(?:\.\d+)?)$/;
 							    if ( defined($feature_tag) ) {
 							      $eff_range = $feature_tag;
 										if ($eff_range > $max) {
@@ -642,8 +642,25 @@ sub get_normalized_method_scores($$\$\$$$)
 					} elsif ( $metric eq 'spade_bitscore' ) {
 
 						if ( $max > 0.0 ) {
-							my $eff_range = 100.0;
+
+							my $eff_range = $max;
+							if ( grep(/^spade_bitscore_.+$/, @exp_features) ) {
+							  foreach my $exp_feature (@exp_features) {
+							    my ($feature_tag) = $exp_feature =~ /^spade_bitscore_(\d+(?:\.\d+)?)$/;
+							    if ( defined($feature_tag) ) {
+							      $eff_range = $feature_tag;
+										if ($eff_range > $max) {
+											$eff_range = $max;
+										} elsif ($eff_range == 0.0) {
+											die("invalid feature: '$exp_feature'");
+										}
+							      last;
+							    }
+							  }
+							}
+
 							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
+
 						} else {
 							$n_sc = 0;
 						}
@@ -652,10 +669,10 @@ sub get_normalized_method_scores($$\$\$$$)
 
 						if ( $max > 0.0 ) {
 
-							my $eff_range = 3.0;
+							my $eff_range = $max;
 							if ( grep(/^matador3d_.+$/, @exp_features) ) {
 							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^matador3d_(.+)$/;
+							    my ($feature_tag) = $exp_feature =~ /^matador3d_(\d+(?:\.\d+)?)$/;
 							    if ( defined($feature_tag) ) {
 							      $eff_range = $feature_tag;
 										if ($eff_range > $max) {
@@ -790,12 +807,16 @@ sub get_final_annotations($$$$$$$)
 
 	my @exp_features = split(',', $exp_feature_str);
 
-	if ( grep { $_ eq 'phased' } @exp_features ) {
+	if ( grep { $_ eq 'appris_phased' } @exp_features ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, 1);
 		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores, $annots);
-	} else {
-		my $unphased_metrics = default_metric_filter($involved_metrics);
-		get_appris_scores($gene, $unphased_metrics, $scores, $s_scores, $nscores, $annots);
+	}
+	elsif ( grep { $_ eq 'appris_all' } @exp_features ) {
+		# include all metrics independently, even those from the same method
+		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots);
+	} else {  # i.e. appris_default
+		my $default_metrics = default_metric_filter($involved_metrics);
+		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores, $annots);
 	}
 
 	# scan transcripts sorted by appris score
@@ -813,7 +834,7 @@ sub get_final_annotations($$$$$$$)
 			return $tag;
 		}
 
-		if ( grep { $_ eq 'phased' } @exp_features ) {
+		if ( grep { $_ eq 'appris_phased' } @exp_features ) {
 
 			# 1.2 acquire the dominant transcripts from second-phase appris score.
 			my $phase_2_metrics = phase_metric_filter($involved_metrics, 2);
