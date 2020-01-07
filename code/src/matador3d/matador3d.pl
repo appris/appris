@@ -713,6 +713,7 @@ sub _get_biggest_mini_cds($$$)
 							$logger->debug("Into:_get_biggest_mini_cds: $sequence_id [".$trans_mini_cds->{'coord'}."] - ".$trans_mini_cds->{'index'}." > ".$trans_mini_cds->{'score'}."\n");
 							$external_id = $sequence_id;
 							$biggest_mini_pdb_cds_score = $trans_mini_cds->{'score'};
+							$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
 							$mini_pdb_cds_report = $trans_mini_cds;
 						}						
 					}
