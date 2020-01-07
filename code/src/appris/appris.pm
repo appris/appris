@@ -45,7 +45,10 @@ $METHOD_METRICS = {
 	'matador3d'	=> ['matador3d'],
 	'matador3d2' => ['matador3d2'],
 	'corsair'	=> ['corsair'],
-	'spade' => ['spade_integrity', 'spade_bitscore'],
+	'spade' => [
+		'spade_integrity',
+		'spade'  # Spade bitscore
+	],
 	'thump' => ['thump'],
 	'crash' => ['crash'],
 	'inertia' => ['inertia'],
@@ -57,7 +60,7 @@ $METRIC_DEFAULTS = [
 	'matador3d',
 	'matador3d2',
 	'corsair',
-	'spade_bitscore',
+	'spade',  # Spade bitscore
 	'thump',
 	'crash',
 	'inertia',
@@ -70,7 +73,7 @@ $METRIC_LABELS = {
 	'matador3d2'=> [ 'conservation_structure',		'score_homologous_structure'						],
 	'corsair'	=> [ 'vertebrate_signal',			'score_vertebrate_signal'							],
 	'spade_integrity' => [ 'domain_integrity_signal',	'score_domain_integrity_signal'],
-	'spade_bitscore' => [ 'domain_signal',	'score_domain_signal'],
+	'spade' => [ 'domain_signal',	'score_domain_signal'],  # Spade bitscore
 	'thump'		=> [ 'transmembrane_signal',		'score_transmembrane_signal'						],
 	'crash'		=> [ 'peptide_signal',				'score_peptide_signal',
 					 'mitochondrial_signal',		'score_mitochondrial_signal'						],
@@ -84,7 +87,7 @@ $METRIC_PHASES = {
 	'matador3d2' => [1, 2],
 	'corsair'	=> [1, 2],
 	'spade_integrity' => [1],
-	'spade_bitscore' => [2],
+	'spade' => [2],  # Spade bitscore
 	'thump' => [1, 2],
 	'crash' => [1, 2],
 	'inertia' => [1, 2],
@@ -115,7 +118,7 @@ $METRIC_WEIGHTED = {
 	'matador3d'	=> 6,
 	'matador3d2'=> 6,
 	'spade_integrity' => 6,
-	'spade_bitscore' => 6,
+	'spade' => 6,  # Spade bitscore
 	'corsair'	=> [{
 					  'max'    => 3,
 				  	  'weight' => 1.5	
@@ -280,7 +283,7 @@ sub get_method_scores($$$)
 					my ($analysis) = $result->analysis->spade;
 					my %metric_map = (
 						'spade_integrity' => $analysis->domain_integrity,
-						'spade_bitscore' => $analysis->bitscore
+						'spade' => $analysis->bitscore  # Spade bitscore
 					);
 					while (my ($metric_key, $metric_val) = each(%metric_map) ) {
 						my ($annot_sc) = $METRIC_LABELS->{$metric_key}->[1];
@@ -564,7 +567,8 @@ sub get_method_annots($$$)
 					my ($annot_label) = $METRIC_LABELS->{$m}->[0];
 					get_spade_integrity_annots($gene, $scores->{$m}, $annot_label, \$annots);
 				}
-				elsif ( $m eq 'spade_bitscore' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {
+				elsif ( $m eq 'spade' and defined $scores and exists $scores->{$m} and exists $scores->{$m}->{'scores'} ) {
+					# Spade bitscore
 					my ($annot_label) = $METRIC_LABELS->{$m}->[0];
 					get_spade_bitscore_annots($gene, $scores->{$m}, $annot_label, \$annots);
 				}
@@ -639,7 +643,7 @@ sub get_normalized_method_scores($$\$\$$$)
 							$n_sc = 0;
 						}
 
-					} elsif ( $metric eq 'spade_bitscore' ) {
+					} elsif ( $metric eq 'spade' ) {  # Spade bitscore
 
 						if ( $max > 0.0 ) {
 
@@ -1808,7 +1812,7 @@ sub get_spade_integrity_annots($$$\$)
 		$$ref_annots->{$transc_id}->{$annot_label} = $NO_LABEL;
 	}
 
-} # end get_spade_bitscore_annots
+} # end get_spade_integrity_annots
 
 sub get_spade_bitscore_annots($$$\$)
 {
