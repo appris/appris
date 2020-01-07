@@ -60,9 +60,9 @@ find({wanted => sub { match_ensembl_gene_dir(\@gene_dirs) }, follow => 1}, $anno
 
 foreach my $gene_dir (@gene_dirs) {
 	chdir $gene_dir;
-	if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' ) {
+	if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' && -f 'appris' ) {
 		print "Running singĺe-gene APPRIS in: ${gene_dir}\n";
-		my @cmds = ('appris_bin_g', '-s', 'Homo sapiens', '-x', "$exp_features", '-m', 'fm1sctra',
+		my @cmds = ('appris_bin_g', '-s', 'Homo sapiens', '-x', "$exp_features", '-m', 'fm1scra',
 		            '-l', 'info');
 		_run_system_call(\@cmds, 'log');
 		push(@run_dirs, $gene_dir);
