@@ -713,9 +713,24 @@ sub get_normalized_method_scores($$\$\$$$)
 } # End get_normalized_method_scores
 
 # get gene scores of methods for appris
-sub get_appris_scores($$\$\$\$$)
+sub get_appris_scores($$\$\$\$)
 {
-	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores, $annots) = @_;
+	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores) = @_;
+
+	# clear any existing APPRIS scores, so that we can get APPRIS score multiple times
+	foreach my $transcript_id ( keys(%{$$ref_scores}) ) {
+		if ( exists $$ref_scores->{$transcript_id}->{'score_principal_isoform'} ) {
+			delete $$ref_scores->{$transcript_id}->{'score_principal_isoform'};
+		}
+	}
+	if ( exists $$ref_s_scores->{'appris'} ) {
+		delete $$ref_s_scores->{'appris'};
+	}
+	foreach my $transcript_id ( keys(%{$$ref_n_scores}) ) {
+		if ( exists $$ref_n_scores->{$transcript_id}->{'appris'} ) {
+			delete $$ref_n_scores->{$transcript_id}->{'appris'};
+		}
+	}
 
 	# obtain normalize scores (weighted normalize score) foreach method
 	foreach my $transcript (@{$gene->transcripts}) {
@@ -813,14 +828,14 @@ sub get_final_annotations($$$$$$$)
 
 	if ( grep { $_ eq 'appris_phased' } @exp_features ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, 1);
-		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores, $annots);
+		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores);
 	}
 	elsif ( grep { $_ eq 'appris_all' } @exp_features ) {
 		# include all metrics independently, even those from the same method
-		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots);
+		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores);
 	} else {  # i.e. appris_default
 		my $default_metrics = default_metric_filter($involved_metrics);
-		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores, $annots);
+		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores);
 	}
 
 	# scan transcripts sorted by appris score
@@ -828,7 +843,7 @@ sub get_final_annotations($$$$$$$)
 	{
 		# 1.1 acquire the dominant transcripts from first-phase appris score.
 		# They have to pass the cutoff to be added into "principal" list
-		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method}, $annots);
+		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 #		warning("GENE_2: \n".Dumper($gene)."\n");
 #		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
 #		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
@@ -842,7 +857,8 @@ sub get_final_annotations($$$$$$$)
 
 			# 1.2 acquire the dominant transcripts from second-phase appris score.
 			my $phase_2_metrics = phase_metric_filter($involved_metrics, 2);
-			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method}, $annots);
+			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
+			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 
 			if ( is_unique($princ_list, $isof_report) ) {
 				$tag = 1;
@@ -948,13 +964,13 @@ sub is_unique($$)
 	
 } # end is_unique
 
-sub step_appris($$$)
+sub step_appris($$)
 {
-	my ($gene, $s_scores, $annots) = @_;
+	my ($gene, $s_scores) = @_;
 	my ($gene_id) = $gene->stable_id;
 	my ($princ_list, $isof_report);
 	my ($ccds_ids);
-	
+
 	# scan the transcripts from the sorted APPRIS scores
 	my ($highest_score) = $s_scores->{'max'};
 	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$s_scores->{'scores'}});			
