@@ -82,17 +82,32 @@ $METRIC_LABELS = {
 	'appris'	=> [ 'principal_isoform',			'score_principal_isoform',			'reliability'	]
 };
 $METRIC_PHASES = {
-	'firestar'	=>  [1, 2],
-	'matador3d'	=> [1, 2],
-	'matador3d2' => [1, 2],
-	'corsair'	=> [1, 2],
-	'spade_integrity' => [1],
-	'spade' => [2],  # Spade bitscore
-	'thump' => [1, 2],
-	'crash' => [1, 2],
-	'inertia' => [1, 2],
-	'proteo' => [1, 2],
-	'appris' => [1, 2]
+	'appris_phased_bi' => {
+		'firestar'	=>  [1, 2],
+		'matador3d'	=> [1, 2],
+		'matador3d2' => [1, 2],
+		'corsair'	=> [1, 2],
+		'spade' => [1],  # Spade bitscore
+		'spade_integrity' => [2],
+		'thump' => [1, 2],
+		'crash' => [1, 2],
+		'inertia' => [1, 2],
+		'proteo' => [1, 2],
+		'appris' => [1, 2]
+	},
+	'appris_phased_ib' => {
+		'firestar'	=>  [1, 2],
+		'matador3d'	=> [1, 2],
+		'matador3d2' => [1, 2],
+		'corsair'	=> [1, 2],
+		'spade_integrity' => [1],
+		'spade' => [2],  # Spade bitscore
+		'thump' => [1, 2],
+		'crash' => [1, 2],
+		'inertia' => [1, 2],
+		'proteo' => [1, 2],
+		'appris' => [1, 2]
+	}
 };
 $METRIC_WEIGHTED = {
 	'firestar'	=> [{
@@ -157,12 +172,12 @@ sub default_metric_filter($) {
 	return join(',', @default_metrics);
 }
 
-sub phase_metric_filter($$) {
-	my ($metrics_str, $phase) = @_;
+sub phase_metric_filter($$$) {
+	my ($metrics_str, $phasing_type, $phase) = @_;
 	my @metrics = split(',', $metrics_str);
 	my @phase_metrics;
 	foreach my $metric (@metrics) {
-		if ( grep {$_ == $phase} @{$METRIC_PHASES->{$metric}} ) {
+		if ( grep {$_ == $phase} @{$METRIC_PHASES->{$phasing_type}->{$metric}} ) {
 			push(@phase_metrics, $metric);
 		}
 	}
@@ -825,9 +840,16 @@ sub get_final_annotations($$$$$$$)
 	my ($tag) = 0;
 
 	my @exp_features = split(',', $exp_feature_str);
-
-	if ( grep { $_ eq 'appris_phased' } @exp_features ) {
-		my $phase_1_metrics = phase_metric_filter($involved_metrics, 1);
+	my $phasing_type;
+	if ( grep { $_ =~ /^appris_phased_/ } @exp_features ) {
+		if ( grep { $_ eq 'appris_phased_bi' } @exp_features ) {
+			$phasing_type = 'appris_phased_bi';
+		} elsif ( grep { $_ eq 'appris_phased_ib' } @exp_features ) {
+			$phasing_type = 'appris_phased_ib';
+		} else {
+			die('unknown phasing type');
+		}
+		my $phase_1_metrics = phase_metric_filter($involved_metrics, $phasing_type, 1);
 		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores);
 	}
 	elsif ( grep { $_ eq 'appris_all' } @exp_features ) {
@@ -853,10 +875,9 @@ sub get_final_annotations($$$$$$$)
 			return $tag;
 		}
 
-		if ( grep { $_ eq 'appris_phased' } @exp_features ) {
-
+		if ( grep { $_ =~ /^appris_phased_/ } @exp_features ) {
 			# 1.2 acquire the dominant transcripts from second-phase appris score.
-			my $phase_2_metrics = phase_metric_filter($involved_metrics, 2);
+			my $phase_2_metrics = phase_metric_filter($involved_metrics, $phasing_type, 2);
 			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
 			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 
