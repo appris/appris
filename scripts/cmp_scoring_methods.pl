@@ -53,6 +53,11 @@ while (my ($trial_key, $trial_file) = each(%file_map) ) {
 my %diff_info;
 while (my($gene_id, $gene_info) = each %cmp_info) {
 
+	next unless ( exists $cmp_info{$gene_id}{'a'} && exists $cmp_info{$gene_id}{'b'} );
+	my $transc_set_a = Set::Scalar->new(keys %{$cmp_info{$gene_id}{'a'}});
+	my $transc_set_b = Set::Scalar->new(keys %{$cmp_info{$gene_id}{'b'}});
+	next unless ( $transc_set_a->is_equal($transc_set_b) );
+
 	my @transc_ids = keys %{$cmp_info{$gene_id}{'a'}};
 	my %p1_set_info = (
 		'a' => Set::Scalar->new(),
