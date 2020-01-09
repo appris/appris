@@ -31,6 +31,7 @@ my ($str_params) = join "\n", @ARGV;
 my ($config_file) = undef;
 my ($input_file) = undef;
 my ($output_file) = undef;
+my ($exp_features) = undef;
 my ($appris) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -41,6 +42,7 @@ my ($loglevel) = undef;
 	'conf=s'			=> \$config_file,
 	'input=s'			=> \$input_file,
 	'output=s'			=> \$output_file,
+	'exp:s'			  => \$exp_features,
 	'appris'			=> \$appris,	
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -75,6 +77,8 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGLEVEL     => $loglevel,
 );
 $logger->init_log($str_params);
+
+my $si_dropoff = scalar( grep { $_ eq 'si_dropoff' } split(',', $exp_features) ) > 0 ? 1 : 0 ;
 
 #####################
 # Method prototypes #
@@ -367,11 +371,12 @@ sub _get_best_domain($$$)
 	$pfam_report->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
 	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
-	$pfam_report->{'domain_integrity'} = ($num_domains*1) +
-																			 ($num_possibly_damaged_domains*0.75) +
-																			 ($num_damaged_domains*0.5) +
-																			 ($num_wrong_domains*0.25);
 	
+	$pfam_report->{'domain_integrity'} = ($num_domains*1) + ($num_possibly_damaged_domains*0.75);
+	if ( ! $si_dropoff ) {
+		$pfam_report->{'domain_integrity'} += ($num_damaged_domains*0.5) + ($num_wrong_domains*0.25);
+	}
+
 	return $pfam_report;	
 }
 

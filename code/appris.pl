@@ -635,6 +635,7 @@ sub run_pipeline($$$$)
 							"--conf='".$config_file."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
+							"--exp=".$exp_features." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
