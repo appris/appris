@@ -11,11 +11,13 @@ use Getopt::Long;
 my ($anno_dir) = undef;
 my ($exp_features) = undef;
 my ($out_file) = undef;
+my ($loglevel) = undef;
 
 &GetOptions(
 	'anno-dir=s' => \$anno_dir,
 	'exp:s' => \$exp_features,
-	'out-file=s' => \$out_file
+	'out-file=s' => \$out_file,
+	'loglevel|l:s' => \$loglevel,
 );
 
 my $curr_dir = getcwd();
@@ -63,7 +65,7 @@ foreach my $gene_dir (@gene_dirs) {
 	if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' && -f 'appris' ) {
 		print "Running singĺe-gene APPRIS in: ${gene_dir}\n";
 		my @cmds = ('appris_bin_g', '-s', 'Homo sapiens', '-x', "$exp_features", '-m', 'fm1scra',
-		            '-l', 'info');
+		            '-l', $loglevel);
 		_run_system_call(\@cmds, 'log');
 		push(@run_dirs, $gene_dir);
 	}
