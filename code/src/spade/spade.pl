@@ -78,7 +78,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
-my @exp_features = split(',', $exp_feature_str);
+my @exp_features = split(',', $exp_features);
 my $si_score_scheme = 'si_default';
 if ( grep { $_ eq 'si_dropoff' } @exp_features ) {
 	$si_score_scheme = 'si_dropoff';
@@ -171,6 +171,29 @@ sub _get_best_score($$)
 			$transcript_report->{$sequence_id}->{'result'} = $trans_report->{'result'};
 		}
 	}		
+}
+
+# calculate the domain integrity score
+sub _calc_domain_integrity_score($$$$) {
+
+	my ($num_domains, $num_possibly_damaged_domains, $num_damaged_domains, $num_wrong_domains) = @_;
+
+	my $domain_integrity_score;
+	if ( $si_score_scheme eq 'si_dropoff' ) {
+		$domain_integrity_score = ($num_domains*1)
+		                        + ($num_possibly_damaged_domains*0.75);
+	} elsif ( $si_score_scheme eq 'si_thirds' ) {
+		$domain_integrity_score = ($num_domains*1)
+		                        + ($num_possibly_damaged_domains*0.667)
+													  + ($num_damaged_domains*0.333);
+	} else {  # i.e. $si_score_scheme eq 'si_default'
+		$domain_integrity_score = ($num_domains*1)
+		                        + ($num_possibly_damaged_domains*0.75)
+										        + ($num_damaged_domains*0.5)
+											      + ($num_wrong_domains*0.25);
+	}
+
+	return $domain_integrity_score
 }
 
 # Get the first domain that we have found
@@ -377,21 +400,11 @@ sub _get_best_domain($$$)
 	$pfam_report->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
 	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
+	$pfam_report->{'domain_integrity'} = _calc_domain_integrity_score($num_domains,
+																																	  $num_possibly_damaged_domains,
+																																		$num_damaged_domains,
+																																		$num_wrong_domains);
 	
-	if ( $si_score_scheme eq 'si_dropoff' ) {
-		$pfam_report->{'domain_integrity'} = ($num_domains*1)
-		                                   + ($num_possibly_damaged_domains*0.75);
-	} elsif ( $si_score_scheme eq 'si_thirds' ) {
-		$pfam_report->{'domain_integrity'} = ($num_domains*1)
-		                                   + ($num_possibly_damaged_domains*0.667)
-																			 + ($num_damaged_domains*0.333);
-	} else {  # i.e. $si_score_scheme eq 'si_default'
-		$pfam_report->{'domain_integrity'} = ($num_domains*1)
-		                                   + ($num_possibly_damaged_domains*0.75)
-																			 + ($num_damaged_domains*0.5)
-																			 + ($num_wrong_domains*0.25);
-	}
-
 	return $pfam_report;	
 }
 
@@ -603,10 +616,10 @@ sub _parse_pfamscan($$)
 	$cutoffs->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 	$cutoffs->{'num_damaged_domains'} = $num_damaged_domains;
 	$cutoffs->{'num_wrong_domains'} = $num_wrong_domains;
-	$cutoffs->{'domain_integrity'} = ($num_domains*1) +
-																	 ($num_possibly_damaged_domains*0.75) +
-																	 ($num_damaged_domains*0.5) +
-																	 ($num_wrong_domains*0.25);
+  $cutoffs->{'domain_integrity'} = _calc_domain_integrity_score($num_domains,
+																															  $num_possibly_damaged_domains,
+																																$num_damaged_domains,
+																																$num_wrong_domains);
 
 	# Save result for each transcript
 	$cutoffs->{'result'} = $transcript_result;		
