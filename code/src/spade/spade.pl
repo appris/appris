@@ -78,7 +78,13 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
-my $si_dropoff = scalar( grep { $_ eq 'si_dropoff' } split(',', $exp_features) ) > 0 ? 1 : 0 ;
+my @exp_features = split(',', $exp_feature_str);
+my $si_score_scheme = 'si_default';
+if ( grep { $_ eq 'si_dropoff' } @exp_features ) {
+	$si_score_scheme = 'si_dropoff';
+} elsif ( grep { $_ eq 'si_thirds' } @exp_features ) {
+	$si_score_scheme = 'si_thirds';
+}
 
 #####################
 # Method prototypes #
@@ -372,9 +378,18 @@ sub _get_best_domain($$$)
 	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
 	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
 	
-	$pfam_report->{'domain_integrity'} = ($num_domains*1) + ($num_possibly_damaged_domains*0.75);
-	if ( ! $si_dropoff ) {
-		$pfam_report->{'domain_integrity'} += ($num_damaged_domains*0.5) + ($num_wrong_domains*0.25);
+	if ( $si_score_scheme eq 'si_dropoff' ) {
+		$pfam_report->{'domain_integrity'} = ($num_domains*1)
+		                                   + ($num_possibly_damaged_domains*0.75);
+	} elsif ( $si_score_scheme eq 'si_thirds' ) {
+		$pfam_report->{'domain_integrity'} = ($num_domains*1)
+		                                   + ($num_possibly_damaged_domains*0.667)
+																			 + ($num_damaged_domains*0.333);
+	} else {  # i.e. $si_score_scheme eq 'si_default'
+		$pfam_report->{'domain_integrity'} = ($num_domains*1)
+		                                   + ($num_possibly_damaged_domains*0.75)
+																			 + ($num_damaged_domains*0.5)
+																			 + ($num_wrong_domains*0.25);
 	}
 
 	return $pfam_report;	
