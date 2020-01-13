@@ -11,7 +11,7 @@ use Getopt::Long;
 my ($anno_dir) = undef;
 my ($exp_features) = undef;
 my ($out_file) = undef;
-my ($loglevel) = undef;
+my ($loglevel) = 'info';
 
 &GetOptions(
 	'anno-dir=s' => \$anno_dir,
