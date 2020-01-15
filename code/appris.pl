@@ -609,6 +609,7 @@ sub run_pipeline($$$$)
 							"--gff='".$files->{'annot'}."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
+							"--exp=".$exp_features." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
