@@ -706,17 +706,20 @@ sub _get_biggest_mini_cds($$$)
 					my ($trans_mini_cds_list) = $trans_pdb_cds_report->{'mini_cds'};	
 					foreach my $trans_mini_cds (@{$trans_mini_cds_list})			
 					{
+						if ( ! defined $trans_mini_cds->{'score'} || $trans_mini_cds->{'score'} eq '-' ) {
+							next;
+						}
+
 						my ($trans_mini_cds_index) = $trans_mini_cds->{'index'};
 						my ($trans_mini_cds_seq) = $trans_mini_cds->{'seq'};
 						my (@trans_mini_cds) = split(':',$trans_mini_cds->{'coord'}); # Sticking paster for reverse strand
 						my ($trans_mini_cds_coord_aux) = $trans_mini_cds[1].':'.$trans_mini_cds[0];
-						my ($trans_mini_cds_score) = ( $trans_mini_cds->{'score'} ne '-' ) ? $trans_mini_cds->{'score'} : 0;
 						my ($trans_mini_cds_pdb) = ( exists $trans_mini_cds->{'pdb'} and defined $trans_mini_cds->{'pdb'}
 																		     and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
 						if(
 							(($trans_mini_cds->{'coord'} eq $biggest_mini_pdb_cds_coord) or ($trans_mini_cds_coord_aux eq $biggest_mini_pdb_cds_coord))
 							and 
-							($trans_mini_cds_score > $biggest_mini_pdb_cds_score)
+							($trans_mini_cds->{'score'} > $biggest_mini_pdb_cds_score)
 						){
 							$logger->debug("Into:_get_biggest_mini_cds: $sequence_id [".$trans_mini_cds->{'coord'}."] - ".$trans_mini_cds->{'index'}." > ".$trans_mini_cds->{'score'}."\n");
 							$external_id = $sequence_id;
