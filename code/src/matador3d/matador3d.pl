@@ -1,12 +1,14 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
+use warnings::register;
 use FindBin;
 use Getopt::Long;
 use Bio::SeqIO;
 use Bio::SearchIO;
 use Config::IniFiles;
 use Data::Dumper;
+use POSIX qw(ceil);
 
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
@@ -116,7 +118,6 @@ sub main()
 	my ($trans_cds_coords, $sort_total_cds_coords) = _get_cds_coordinates_from_gff($input_file, $gff_file);
     $logger->debug("##CDS coordenates ---------------\n".Dumper($trans_cds_coords));
     $logger->debug("##Sorted CDS coordenates ---------------\n".Dumper($sort_total_cds_coords));
-
 
 	# For every sequence run the method ---------------
     my ($transcript_report);
@@ -501,7 +502,7 @@ sub _check_alignment($$$)
 			my ($escore) = $totalidentity*$totalgaps*$totalres;
 			if ( $totalgaps < 0 ) { $escore = $totalgaps*$totalres }
 			$logger->debug("\tScore: $escore\n");
-									
+
 			my ($mini_cds_report) = {
 						'index'			=> $mini_cds_index,
 						'coord'			=> $mini_cds_coord,
@@ -514,12 +515,12 @@ sub _check_alignment($$$)
 						'score_desc'	=> "$totalidentity*$totalgaps*$totalres",
 						'pdb'			=> $pdb_id,
 						'pdb_identity'	=> $identity,
-						'alignment_start' => $align_start, 
+						'alignment_start' => $align_start,
 						'alignment_end'   => $align_end,
-						'alignment_iden'   => $align_identity						
-			};		
+						'alignment_iden'   => $align_identity
+			};
 			$mini_cds_score_list->{$mini_cds_index} = $mini_cds_report;
-			$mini_score += $escore;			
+			$mini_score += $escore;
 		}
 		
 		my ($cds_report) = {
@@ -701,13 +702,6 @@ sub _get_biggest_mini_cds($$$)
 			{
 				# Check if the frame between the compared isoforms are equal
 				my ($trans_cds_frame) = $trans_pdb_cds_report->{'frame'};
-
-				if ( $calc_frames ) {
-					$logger->debug('main_seq_id: '.$main_seq_id."\n");
-					$logger->debug('sequence_id: '.$sequence_id."\n");
-					$logger->debug('biggest_mini_pdb_cds_frame: '.$biggest_mini_pdb_cds_frame."\n");
-					$logger->debug('trans_cds_frame: '.$trans_cds_frame."\n");
-				}
 				if ( $biggest_mini_pdb_cds_frame eq $trans_cds_frame ) {
 					my ($trans_mini_cds_list) = $trans_pdb_cds_report->{'mini_cds'};	
 					foreach my $trans_mini_cds (@{$trans_mini_cds_list})			
@@ -989,14 +983,13 @@ sub _get_cds_coordinates_from_gff($$)
 sub _get_peptide_coordinate($$$$$$)
 {
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
-	
+
 	my ($pep_cds_start) = $pep_cds_end+1;
 	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
-	my ($pep_cds_frame_len) = $pep_cds_len - $frame;
-	my ($pep_cds_end_div) = int($pep_cds_frame_len / 3);
-	my ($pep_cds_end_mod) = $pep_cds_frame_len % 3;
+	my ($offset_pep_cds_len) = $pep_cds_len - $frame;
+	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # include partial codon at end, if present
+	my ($pep_cds_end_mod) = $offset_pep_cds_len % 3;
 
-	my ($accumulate) = 0;
 	my $next_frame;
 	if($pep_cds_end_mod == 1)
 	{
@@ -1005,22 +998,20 @@ sub _get_peptide_coordinate($$$$$$)
 	elsif($pep_cds_end_mod == 2)
 	{
 		$next_frame=1;
-		$accumulate=1;
 	}
 	else
 	{
 		$next_frame=0;
 	}
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+		warnings::warn("CDS is shorter than 1 codon\n");
 		$pep_cds_end=$pep_cds_start;
 		$next_frame=0;
 	}
-	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
-		$pep_cds_end+=$pep_cds_end_div+$accumulate;
+	if ( $num_cds == ($cds_order_id+1) && $next_frame != 0 ) {
+		warnings::warn("CDS has incomplete reading frame\n");
 	}
-	else {
-		$pep_cds_end+=$pep_cds_end_div;
-	}
+	$pep_cds_end+=$pep_cds_end_div;
 
 	if ($calc_frames) {
 		return ($pep_cds_start,$pep_cds_end,$next_frame);
@@ -1035,11 +1026,10 @@ sub _get_mini_peptide_coordinate($$$$$$$)
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_start, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
 
 	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
-	my ($pep_cds_frame_len) = $pep_cds_len - $frame;
-	my ($pep_cds_end_div) = int($pep_cds_frame_len / 3);
-	my ($pep_cds_end_mod) = $pep_cds_frame_len % 3;
+	my ($offset_pep_cds_len) = $pep_cds_len - $frame;
+	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # include partial codon at end, if present
+	my ($pep_cds_end_mod) = $offset_pep_cds_len % 3;
 
-	my ($accumulate) = 0;
 	my $next_frame;
 	if($pep_cds_end_mod == 1)
 	{
@@ -1048,22 +1038,17 @@ sub _get_mini_peptide_coordinate($$$$$$$)
 	elsif($pep_cds_end_mod == 2)
 	{
 		$next_frame=1;
-		$accumulate=1;
 	}
 	else
 	{
 		$next_frame=0;
 	}
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+		warnings::warn("mini-CDS is shorter than 1 codon\n");
 		$pep_cds_end=$pep_cds_start;
 		$next_frame=0;
 	}
-	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
-		$pep_cds_end+=$pep_cds_end_div+$accumulate;
-	}
-	else {
-		$pep_cds_end+=$pep_cds_end_div;
-	}
+	$pep_cds_end+=$pep_cds_end_div;
 
 	if ($calc_frames) {
 		return ($pep_cds_start,$pep_cds_end,$next_frame);
@@ -1179,7 +1164,7 @@ sub _get_init_report($$$$)
 					} else {
 						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $mini_num_cds);
 					}
-					
+
 					my ($mini_cds_edges) = join ":", $mini_pep_cds_start,$mini_pep_cds_end;
 					my ($mini_cds_seq) = substr($sequence, $mini_pep_cds_start-1, ($mini_pep_cds_end - $mini_pep_cds_start) + 1 );
 					my ($mini_exon_edges);
