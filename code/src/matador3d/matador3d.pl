@@ -102,8 +102,10 @@ sub _get_biggest_mini_cds($$$);
 sub _get_record_annotations($);
 sub _get_appris_annotations($);
 sub _get_cds_coordinates_from_gff($$);
-sub _get_peptide_coordinate($$$$$$);
-sub _get_mini_peptide_coordinate($$$$$$$);
+sub _get_peptide_coordinate_with_frames($$$$$$);
+sub _get_peptide_coordinate_sans_frames($$$$$$);
+sub _get_mini_peptide_coordinate_with_frames($$$$$$$);
+sub _get_mini_peptide_coordinate_sans_frames($$$$$$$);
 sub _get_init_report($$$$);
 
 
@@ -685,10 +687,14 @@ sub _get_biggest_mini_cds($$$)
 	my ($external_id);
 	my ($biggest_mini_pdb_cds_score) = $main_mini_pdb_cds_report->{'score'};
 	my ($biggest_mini_pdb_cds_coord) = $main_mini_pdb_cds_report->{'coord'};
-	my ($biggest_mini_pdb_cds_pdb) = ( exists $main_mini_pdb_cds_report->{'pdb'} and defined $main_mini_pdb_cds_report->{'pdb'} ) ? $main_mini_pdb_cds_report->{'pdb'} : '' ;
+	my ($biggest_mini_pdb_cds_pdb);
+	if ( $calc_frames ) {
+		$biggest_mini_pdb_cds_pdb = ( exists $main_mini_pdb_cds_report->{'pdb'} and defined $main_mini_pdb_cds_report->{'pdb'} ) ? $main_mini_pdb_cds_report->{'pdb'} : '' ;
+	} else {
+		$biggest_mini_pdb_cds_pdb = defined $main_mini_pdb_cds_report->{'pdb'} ? $main_mini_pdb_cds_report->{'pdb'} : '' ;
+	}
 	my ($biggest_mini_pdb_cds_frame) = ( exists $main_mini_pdb_cds_report->{'frame'} ) ? $main_mini_pdb_cds_report->{'frame'} : "-";
 	$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
-	$biggest_mini_pdb_cds_pdb = '' unless (defined $biggest_mini_pdb_cds_pdb );
 
 	# If we found one CDS coming from the same exon and it had bigger score than 
 	# the given cds, we get it
@@ -706,20 +712,28 @@ sub _get_biggest_mini_cds($$$)
 					my ($trans_mini_cds_list) = $trans_pdb_cds_report->{'mini_cds'};	
 					foreach my $trans_mini_cds (@{$trans_mini_cds_list})			
 					{
-						if ( ! defined $trans_mini_cds->{'score'} || $trans_mini_cds->{'score'} eq '-' ) {
-							next;
+						my $trans_mini_cds_score;
+						my $trans_mini_cds_pdb;
+						if ( $calc_frames ) {
+							if ( ! defined $trans_mini_cds->{'score'} || $trans_mini_cds->{'score'} eq '-' ) {
+								next;
+							}
+							$trans_mini_cds_score = $trans_mini_cds->{'score'};
+							$trans_mini_cds_pdb = ( exists $trans_mini_cds->{'pdb'} and defined $trans_mini_cds->{'pdb'}
+																      and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
+						} else {
+						  $trans_mini_cds_score = ( $trans_mini_cds->{'score'} ne '-' ) ? $trans_mini_cds->{'score'} : 0;
+							$trans_mini_cds_pdb = ( exists $trans_mini_cds->{'pdb'} and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
 						}
 
 						my ($trans_mini_cds_index) = $trans_mini_cds->{'index'};
 						my ($trans_mini_cds_seq) = $trans_mini_cds->{'seq'};
 						my (@trans_mini_cds) = split(':',$trans_mini_cds->{'coord'}); # Sticking paster for reverse strand
 						my ($trans_mini_cds_coord_aux) = $trans_mini_cds[1].':'.$trans_mini_cds[0];
-						my ($trans_mini_cds_pdb) = ( exists $trans_mini_cds->{'pdb'} and defined $trans_mini_cds->{'pdb'}
-																		     and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
 						if(
 							(($trans_mini_cds->{'coord'} eq $biggest_mini_pdb_cds_coord) or ($trans_mini_cds_coord_aux eq $biggest_mini_pdb_cds_coord))
 							and 
-							($trans_mini_cds->{'score'} > $biggest_mini_pdb_cds_score)
+							($trans_mini_cds_score > $biggest_mini_pdb_cds_score)
 						){
 							$logger->debug("Into:_get_biggest_mini_cds: $sequence_id [".$trans_mini_cds->{'coord'}."] - ".$trans_mini_cds->{'index'}." > ".$trans_mini_cds->{'score'}."\n");
 							$external_id = $sequence_id;
@@ -983,7 +997,44 @@ sub _get_cds_coordinates_from_gff($$)
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_peptide_coordinate($$$$$$)
+sub _get_peptide_coordinate_sans_frames($$$$$$)
+{
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
+
+	my ($pep_cds_start) = $pep_cds_end+1;
+	my ($pep_cds_end_div) = int(abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) / 3);
+	my ($pep_cds_end_mod) = abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) % 3;
+	my ($accumulate) = 0;
+	if($pep_cds_end_mod == 1)
+	{
+		$frame=1;
+	}
+	elsif($pep_cds_end_mod == 2)
+	{
+		$frame=2;
+		$accumulate=1;
+	}
+	else
+	{
+		$frame=0;
+	}
+	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+		$pep_cds_end=$pep_cds_start;
+		$frame=0;
+	}
+	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
+		$pep_cds_end+=$pep_cds_end_div+$accumulate;
+	}
+	else {
+		$pep_cds_end+=$pep_cds_end_div;
+	}
+
+	#return ($pep_cds_start,$pep_cds_end,$frame);
+	return ($pep_cds_start,$pep_cds_end);
+}
+
+# Get relative coordinates of peptide coming from transcriptome coordinates
+sub _get_peptide_coordinate_with_frames($$$$$$)
 {
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
 
@@ -1024,7 +1075,44 @@ sub _get_peptide_coordinate($$$$$$)
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_mini_peptide_coordinate($$$$$$$)
+sub _get_mini_peptide_coordinate_sans_frames($$$$$$$)
+{
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_start, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
+
+	#my ($pep_cds_start) = $pep_cds_end+1;
+	my ($pep_cds_end_div) = int(abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) / 3);
+	my ($pep_cds_end_mod) = abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) % 3;
+	my ($accumulate) = 0;
+	if($pep_cds_end_mod == 1)
+	{
+		$frame=1;
+	}
+	elsif($pep_cds_end_mod == 2)
+	{
+		$frame=2;
+		$accumulate=1;
+	}
+	else
+	{
+		$frame=0;
+	}
+	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+		$pep_cds_end=$pep_cds_start;
+		$frame=0;
+	}
+	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
+		$pep_cds_end+=$pep_cds_end_div+$accumulate;
+	}
+	else {
+		$pep_cds_end+=$pep_cds_end_div;
+	}
+
+	#return ($pep_cds_start,$pep_cds_end,$frame);
+	return ($pep_cds_start,$pep_cds_end);
+}
+
+# Get relative coordinates of peptide coming from transcriptome coordinates
+sub _get_mini_peptide_coordinate_with_frames($$$$$$$)
 {
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_start, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
 
@@ -1081,13 +1169,13 @@ sub _get_init_report($$$$)
 		my ($trans_cds_end) = $boundaries[1];
 		my ($trans_cds_frame) = $boundaries[2];
 
-		if ( $cds_order_id == 0 ) {
-			$pep_cds_end_frame = $trans_cds_frame;
-		}
-		$pep_cds_start_frame = $pep_cds_end_frame;
-
 		if ($calc_frames) {
-			($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
+			if ( $cds_order_id == 0 ) {
+				$pep_cds_end_frame = $trans_cds_frame;
+			}
+			$pep_cds_start_frame = $pep_cds_end_frame;
+
+			($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate_with_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
 			if ( $cds_order_id + 1 < $num_cds ) {
 				my ($pred_next_frame) = $pep_cds_end_frame;
 				my ($next_coords) = $trans_cds_coords->{$sequence_id}->{'coord'}->[$cds_order_id + 1];
@@ -1098,7 +1186,7 @@ sub _get_init_report($$$$)
 				}
 			}
 		} else {
-			($pep_cds_start,$pep_cds_end) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
+			($pep_cds_start,$pep_cds_end) = _get_peptide_coordinate_sans_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, 0, $cds_order_id, $num_cds);
 		}
 
 		my ($cds_index) = "$pep_cds_start:$pep_cds_end";
@@ -1137,7 +1225,6 @@ sub _get_init_report($$$$)
 					push(@{$mini_cds_list}, {
 								'index'	=> $mini_cds_edges,
 								'coord'	=> $mini_exon_edges,
-								# 'frame'	=> $frame,
 								'score'	=> '-',
 								'seq'	=> $mini_cds_seq,
 					});
@@ -1156,16 +1243,16 @@ sub _get_init_report($$$$)
 				{
 					$mini_trans_cds_start = $mini_cds_coord_list[$k-1];
 					$mini_trans_cds_end = $mini_cds_coord_list[$k];
-					
-					if ( $k == 1 ) {
-						$mini_pep_end_frame = $pep_cds_start_frame;
-					}
-					$mini_pep_start_frame = $mini_pep_end_frame;
 
 					if ($calc_frames) {
-						($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_end_frame) = _get_mini_peptide_coordinate($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $mini_num_cds);
+						if ( $k == 1 ) {
+							$mini_pep_end_frame = $pep_cds_start_frame;
+						}
+						$mini_pep_start_frame = $mini_pep_end_frame;
+
+						($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_end_frame) = _get_mini_peptide_coordinate_with_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $mini_num_cds);
 					} else {
-						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $mini_num_cds);
+						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate_sans_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, 0, $k, $mini_num_cds);
 					}
 
 					my ($mini_cds_edges) = join ":", $mini_pep_cds_start,$mini_pep_cds_end;
@@ -1190,7 +1277,6 @@ sub _get_init_report($$$$)
 							push(@{$mini_cds_list}, {
 										'index' => $mini_cds_edges,
 										'coord' => $mini_exon_edges,
-										# 'frame' => $mini_pep_frame,
 										'score'	=> '-',
 										'seq'	=> $mini_cds_seq,
 							});
@@ -1229,7 +1315,6 @@ sub _get_init_report($$$$)
 							push(@{$mini_cds_list}, {
 										'index' => $mini_cds_edges,
 										'coord' => $mini_exon_edges,
-										# 'frame' => $mini_pep_frame,
 										'score'	=> '-',
 										'seq'	=> $mini_cds_seq,
 							});
