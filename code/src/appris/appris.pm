@@ -710,7 +710,33 @@ sub get_normalized_method_scores($$\$\$$$)
 							$n_sc = 0;
 						}
 
-					} else {
+					} elsif ( $metric eq 'firestar' ) {
+
+						if ( $max > 0.0 ) {
+
+							my $eff_range = $max;
+							if ( grep(/^firestar_.+$/, @exp_features) ) {
+								foreach my $exp_feature (@exp_features) {
+									my ($feature_tag) = $exp_feature =~ /^firestar_(\d+(?:\.\d+)?)$/;
+									if ( defined($feature_tag) ) {
+										$eff_range = $feature_tag;
+										if ($eff_range > $max) {
+											$eff_range = $max;
+										} elsif ($eff_range == 0.0) {
+											die("invalid feature: '$exp_feature'");
+										}
+										last;
+									}
+								}
+							}
+
+							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
+
+						} else {
+							$n_sc = 0;
+						}
+
+          } else {
 						if ( defined $appris_label && $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
 						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
 						else { $n_sc = 0 }
