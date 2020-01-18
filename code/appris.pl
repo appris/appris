@@ -32,6 +32,7 @@ use vars qw(
 );
 
 $LOCAL_PWD				= $FindBin::Bin;
+
 $SRC_DIR				= $LOCAL_PWD.'/src/';
 $DEFAULT_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/pipeline.ini';
 $DEFAULT_CFG			= new Config::IniFiles( -file => $DEFAULT_CONFIG_FILE );
@@ -51,7 +52,7 @@ my ($species) = undef;
 my ($e_version) = undef;
 my ($outpath) = undef;
 my ($methods) = undef;
-my ($exp_features) = undef;
+my ($exp_conf_file) = undef;
 my ($type_of_input) = undef;
 my ($type_of_align) = undef;
 my ($cached_path) = undef;
@@ -71,7 +72,7 @@ my ($loglevel) = undef;
 	'inpath=s'				=> \$inpath,
 	'outpath=s'				=> \$outpath,		
 	'methods=s'				=> \$methods,
-	'exp:s'						=> \$exp_features,
+	'exp-conf:s'			=> \$exp_conf_file,
 	't-align=s'				=> \$type_of_align,
 	'cached-path=s'			=> \$cached_path,
 	'loglevel=s'			=> \$loglevel,
@@ -214,7 +215,7 @@ sub main()
 
 	# Run methods
 	$logger->info("-- run pipeline\n");
-	my ($output) = run_pipeline($config_file, $input_files, $methods, $exp_features);
+	my ($output) = run_pipeline($config_file, $input_files, $methods, $exp_conf_file);
 
 	# Delete tmp dir if ...
 	if ( !defined $loglevel or (defined $loglevel and $loglevel ne 'debug') ) {	
@@ -569,7 +570,7 @@ sub create_inputs($)
 
 sub run_pipeline($$$$)
 {
-	my ($config_file, $files, $methods_list, $exp_features) = @_;
+	my ($config_file, $files, $methods_list, $exp_conf_file) = @_;
 	
 	# acquire the outputs for each method
 	foreach my $method ( split(',',$methods_list) ) {		
@@ -609,7 +610,7 @@ sub run_pipeline($$$$)
 							"--gff='".$files->{'annot'}."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
-							"--exp=".$exp_features." ".
+							"--exp-conf=".$exp_conf_file." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -636,7 +637,7 @@ sub run_pipeline($$$$)
 							"--conf='".$config_file."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
-							"--exp=".$exp_features." ".
+							"--exp-conf=".$exp_conf_file." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -728,7 +729,7 @@ sub run_pipeline($$$$)
 						"--inertia='".$files->{$m}->{'inertia'}."' ".
 						"--proteo='".$files->{$m}->{'proteo'}."' ".
 
-						"--exp=".$exp_features." ".
+						"--exp-conf=".$exp_conf_file." ".
 
 						"--output='".$files->{$m}->{'appris'}."' ".
 						"--output_nscore='".$files->{$m}->{'appris'}.".nscore' ".

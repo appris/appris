@@ -31,7 +31,7 @@ my ($str_params) = join "\n", @ARGV;
 my ($config_file) = undef;
 my ($input_file) = undef;
 my ($output_file) = undef;
-my ($exp_features) = undef;
+my ($exp_conf_file) = undef;
 my ($appris) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -42,7 +42,7 @@ my ($loglevel) = undef;
 	'conf=s'			=> \$config_file,
 	'input=s'			=> \$input_file,
 	'output=s'			=> \$output_file,
-	'exp:s'			  => \$exp_features,
+	'exp-conf:s' => \$exp_conf_file,
 	'appris'			=> \$appris,	
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -78,13 +78,8 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
-my @exp_features = split(',', $exp_features);
-my $si_score_scheme = 'si_default';
-if ( grep { $_ eq 'si_dropoff' } @exp_features ) {
-	$si_score_scheme = 'si_dropoff';
-} elsif ( grep { $_ eq 'si_thirds' } @exp_features ) {
-	$si_score_scheme = 'si_thirds';
-}
+my ($exp_cfg) = new Config::IniFiles( -file =>  $exp_conf_file );
+my $si_score_mode = $exp_cfg->val( 'spade_integrity', 'score_mode', 'default' );
 
 #####################
 # Method prototypes #
@@ -179,18 +174,20 @@ sub _calc_domain_integrity_score($$$$) {
 	my ($num_domains, $num_possibly_damaged_domains, $num_damaged_domains, $num_wrong_domains) = @_;
 
 	my $domain_integrity_score;
-	if ( $si_score_scheme eq 'si_dropoff' ) {
+	if ( $si_score_mode eq 'dropoff' ) {
 		$domain_integrity_score = ($num_domains*1)
 		                        + ($num_possibly_damaged_domains*0.75);
-	} elsif ( $si_score_scheme eq 'si_thirds' ) {
+	} elsif ( $si_score_mode eq 'thirds' ) {
 		$domain_integrity_score = ($num_domains*1)
 		                        + ($num_possibly_damaged_domains*0.667)
 													  + ($num_damaged_domains*0.333);
-	} else {  # i.e. $si_score_scheme eq 'si_default'
+	} elsif ( $si_score_mode eq 'default' ) {
 		$domain_integrity_score = ($num_domains*1)
 		                        + ($num_possibly_damaged_domains*0.75)
 										        + ($num_damaged_domains*0.5)
 											      + ($num_wrong_domains*0.25);
+	} else {
+		die("unknown Spade integrity score mode: ${si_score_mode}");
 	}
 
 	return $domain_integrity_score

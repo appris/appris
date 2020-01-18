@@ -74,7 +74,7 @@ do
 			shift
 			;;
 		-x )
-			EXP_FEATURES=$2
+			EXP_CONF_FILE=$2
 			shift
 			;;
 		-l )
@@ -174,7 +174,7 @@ echo "perl ${SCRIPT} \\ "
 echo " --species=\"${SPECIES}\" \\ "
 echo "${INDATA_PARAMETERS}"
 echo " --methods=${METHODS_PARAM} \\ "
-echo " --exp=${EXP_FEATURES} \\ "
+echo " --exp-conf=${EXP_CONF_FILE} \\ "
 echo " --outpath=${PWD} \\ "
 echo " --loglevel=${LOG_LEVEL}\ "
 
@@ -183,7 +183,7 @@ perl ${SCRIPT} \
 --species="${SPECIES}" \
 ${INDATA_PARAMETERS} \
 --methods=${METHODS_PARAM} \
---exp=${EXP_FEATURES} \
+--exp-conf="${EXP_CONF_FILE}" \
 --outpath=${PWD} \
 --loglevel=${LOG_LEVEL}
 echo "================="

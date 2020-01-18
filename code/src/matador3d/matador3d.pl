@@ -36,7 +36,7 @@ my ($config_file) = undef;
 my ($gff_file) = undef;
 my ($input_file) = undef;
 my ($output_file) = undef;
-my ($exp_features) = undef;
+my ($exp_conf_file) = undef;
 my ($appris) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -49,7 +49,7 @@ my ($loglevel) = undef;
 	'input=s'			=> \$input_file,
 	'output=s'			=> \$output_file,
 	'appris'			=> \$appris,	
-	'exp:s'			  => \$exp_features,
+	'exp-conf:s'	  => \$exp_conf_file,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
 	'logpath=s'			=> \$logpath,
@@ -85,10 +85,8 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
-my $calc_frames = 0;
-if ( grep { $_ eq 'm1_calc_frames' } split(',', $exp_features) ) {
-	$calc_frames = 1;
-}
+my ($exp_cfg) = new Config::IniFiles( -file =>  $exp_conf_file );
+my $calc_frames = $exp_cfg->val( 'matador3d', 'calc_frames', 0 );
 
 #####################
 # Method prototypes #

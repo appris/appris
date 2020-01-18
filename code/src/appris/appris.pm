@@ -2,6 +2,7 @@ package appris;
 
 use strict;
 use Data::Dumper;
+use Scalar::Util qw(looks_like_number);
 
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
@@ -82,7 +83,7 @@ $METRIC_LABELS = {
 	'appris'	=> [ 'principal_isoform',			'score_principal_isoform',			'reliability'	]
 };
 $METRIC_PHASES = {
-	'appris_phased_bi' => {
+	'phased_bi' => {
 		'firestar'	=>  [1, 2],
 		'matador3d'	=> [1, 2],
 		'matador3d2' => [1, 2],
@@ -95,7 +96,7 @@ $METRIC_PHASES = {
 		'proteo' => [1, 2],
 		'appris' => [1, 2]
 	},
-	'appris_phased_ib' => {
+	'phased_ib' => {
 		'firestar'	=>  [1, 2],
 		'matador3d'	=> [1, 2],
 		'matador3d2' => [1, 2],
@@ -611,10 +612,10 @@ sub get_method_annots($$$)
 # get normalized scores of methods
 sub get_normalized_method_scores($$\$\$$$)
 {
-	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $annots, $exp_feature_str) = @_;
+	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $annots, $exp_cfg) = @_;
 	my ($nscores);
 
-	my @exp_features = split(',', $exp_feature_str);
+	my @exp_metrics = ('firestar', 'matador3d', 'spade', 'spade_integrity');
 
 	# obtain normalized scores for each method
 	foreach my $transcript (@{$gene->transcripts}) {
@@ -632,106 +633,18 @@ sub get_normalized_method_scores($$\$\$$$)
 				# create normalize scores
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
-					if ( $metric eq 'spade_integrity' ) {
+
+					if ( grep { $_ eq $metric } @exp_metrics ) {
 
 						if ( $max > 0.0 ) {
-
-							my $eff_range = $max;
-							if ( grep(/^si_score_.+$/, @exp_features) ) {
-							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^si_score_(\d+(?:\.\d+)?)$/;
-							    if ( defined($feature_tag) ) {
-							      $eff_range = $feature_tag;
-										if ($eff_range > $max) {
-											$eff_range = $max;
-										} elsif ($eff_range == 0.0) {
-											die("invalid feature: '$exp_feature'");
-										}
-							      last;
-							    }
-							  }
+							my $eff_range = $exp_cfg->val( $metric, 'effective_range', $max );
+							if ( looks_like_number($eff_range) && $eff_range > 0.0 ) {
+								$eff_range = $eff_range <= $max ? $eff_range : $max ;
+							} else {
+								die("invalid effective range: $eff_range");
 							}
 
 							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
-
-						} else {
-							$n_sc = 0;
-						}
-
-					} elsif ( $metric eq 'spade' ) {  # Spade bitscore
-
-						if ( $max > 0.0 ) {
-
-							my $eff_range = $max;
-							if ( grep(/^sb_score_.+$/, @exp_features) ) {
-							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^sb_score_(\d+(?:\.\d+)?)$/;
-							    if ( defined($feature_tag) ) {
-							      $eff_range = $feature_tag;
-										if ($eff_range > $max) {
-											$eff_range = $max;
-										} elsif ($eff_range == 0.0) {
-											die("invalid feature: '$exp_feature'");
-										}
-							      last;
-							    }
-							  }
-							}
-
-							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
-
-						} else {
-							$n_sc = 0;
-						}
-
-					} elsif ( $metric eq 'matador3d' ) {
-
-						if ( $max > 0.0 ) {
-
-							my $eff_range = $max;
-							if ( grep(/^matador3d_.+$/, @exp_features) ) {
-							  foreach my $exp_feature (@exp_features) {
-							    my ($feature_tag) = $exp_feature =~ /^matador3d_(\d+(?:\.\d+)?)$/;
-							    if ( defined($feature_tag) ) {
-							      $eff_range = $feature_tag;
-										if ($eff_range > $max) {
-											$eff_range = $max;
-										} elsif ($eff_range == 0.0) {
-											die("invalid feature: '$exp_feature'");
-										}
-							      last;
-							    }
-							  }
-							}
-
-							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
-
-						} else {
-							$n_sc = 0;
-						}
-
-					} elsif ( $metric eq 'firestar' ) {
-
-						if ( $max > 0.0 ) {
-
-							my $eff_range = $max;
-							if ( grep(/^firestar_.+$/, @exp_features) ) {
-								foreach my $exp_feature (@exp_features) {
-									my ($feature_tag) = $exp_feature =~ /^firestar_(\d+(?:\.\d+)?)$/;
-									if ( defined($feature_tag) ) {
-										$eff_range = $feature_tag;
-										if ($eff_range > $max) {
-											$eff_range = $max;
-										} elsif ($eff_range == 0.0) {
-											die("invalid feature: '$exp_feature'");
-										}
-										last;
-									}
-								}
-							}
-
-							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
-
 						} else {
 							$n_sc = 0;
 						}
@@ -756,7 +669,7 @@ sub get_normalized_method_scores($$\$\$$$)
 # get gene scores of methods for appris
 sub get_appris_scores($$\$\$\$$)
 {
-	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores, $exp_feature_str) = @_;
+	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores, $exp_cfg) = @_;
 
 	# clear any existing APPRIS scores, so that we can get APPRIS score multiple times
 	foreach my $transcript_id ( keys(%{$$ref_scores}) ) {
@@ -774,7 +687,6 @@ sub get_appris_scores($$\$\$\$$)
 	}
 
 	# obtain normalize scores (weighted normalize score) foreach method
-	my @exp_features = split(',', $exp_feature_str);
 	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		if ( $transcript->translate and $transcript->translate->sequence ) {
@@ -799,19 +711,7 @@ sub get_appris_scores($$\$\$\$$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
-					$weight = $METRIC_WEIGHTED->{$metric};
-					if ( grep(/^si_weight_.+$/, @exp_features) ) {
-						foreach my $exp_feature (@exp_features) {
-							my ($feature_tag) = $exp_feature =~ /^si_weight_(\d+(?:\.\d+)?)$/;
-							if ( defined($feature_tag) ) {
-								$weight = $feature_tag;
-								if ($weight < 0.0) {
-									die("invalid feature: '$exp_feature'");
-								}
-								last;
-							}
-						}
-					}
+					my $weight = $exp_cfg->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
 				}
 				else {
 					$weight = $METRIC_WEIGHTED->{$metric};
@@ -876,30 +776,23 @@ sub get_appris_scores($$\$\$\$$)
 # get the final annotation
 sub get_final_annotations($$$$$$$)
 {
-	my ($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_feature_str) = @_;
+	my ($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_cfg) = @_;
 	my ($method) = 'appris';
 	my ($annotations);
 	my ($tag) = 0;
 
-	my @exp_features = split(',', $exp_feature_str);
-	my $phasing_type;
-	if ( grep { $_ =~ /^appris_phased_/ } @exp_features ) {
-		if ( grep { $_ eq 'appris_phased_bi' } @exp_features ) {
-			$phasing_type = 'appris_phased_bi';
-		} elsif ( grep { $_ eq 'appris_phased_ib' } @exp_features ) {
-			$phasing_type = 'appris_phased_ib';
-		} else {
-			die('unknown phasing type');
-		}
-		my $phase_1_metrics = phase_metric_filter($involved_metrics, $phasing_type, 1);
-		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores, $exp_feature_str);
-	}
-	elsif ( grep { $_ eq 'appris_all' } @exp_features ) {
+	my $appris_score_mode = $exp_cfg->val( 'appris', 'score_mode', 'default' );
+	if ( $appris_score_mode =~ /^phased_/ ) {
+		my $phase_1_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 1);
+		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+	} elsif ( $appris_score_mode eq 'all' ) {
 		# include all metrics independently, even those from the same method
-		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores, $exp_feature_str);
-	} else {  # i.e. appris_default
+		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+	} elsif ( $appris_score_mode eq 'default' ) {
 		my $default_metrics = default_metric_filter($involved_metrics);
-		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores, $exp_feature_str);
+		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+	} else {
+		die("unknown APPRIS score mode: ${appris_score_mode}");
 	}
 
 	# scan transcripts sorted by appris score
@@ -917,10 +810,10 @@ sub get_final_annotations($$$$$$$)
 			return $tag;
 		}
 
-		if ( grep { $_ =~ /^appris_phased_/ } @exp_features ) {
+		if ( $appris_score_mode =~ /^phased_/ ) {
 			# 1.2 acquire the dominant transcripts from second-phase appris score.
-			my $phase_2_metrics = phase_metric_filter($involved_metrics, $phasing_type, 2);
-			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores, $exp_feature_str);
+			my $phase_2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
+			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores, $exp_cfg);
 			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 
 			if ( is_unique($princ_list, $isof_report) ) {

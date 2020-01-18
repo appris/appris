@@ -36,7 +36,7 @@ my ($thump_file) = undef;
 my ($crash_file) = undef;
 my ($inertia_file) = undef;
 my ($proteo_file) = undef;
-my ($exp_features) = undef;
+my ($exp_conf_file) = undef;
 my ($output_main_file) = undef;
 my ($output_nscore_file) = undef;
 my ($output_label_file) = undef;
@@ -59,7 +59,7 @@ my ($loglevel) = undef;
 	'crash=s'			=> \$crash_file,
 	'inertia=s'			=> \$inertia_file,
 	'proteo=s'			=> \$proteo_file,
-	'exp:s'         => \$exp_features,
+	'exp-conf:s'    => \$exp_conf_file,
 	'output=s'			=> \$output_main_file,
 	'output_nscore=s'	=> \$output_nscore_file,	
 	'output_label=s'	=> \$output_label_file,
@@ -261,16 +261,18 @@ sub main()
 	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_metrics);
 	$logger->debug("PRE_ANNOTS:\n".Dumper($annots)."\n");
 
+	my ($exp_cfg) = new Config::IniFiles( -file =>  $exp_conf_file );
+
 	# get normalized scores of methods for each transcript
 	$logger->info("-- get normalized scores of methods for each variant\n");
-	my ($nscores) = appris::get_normalized_method_scores($gene, $involved_metrics, $scores, $s_scores, $annots, $exp_features);
+	my ($nscores) = appris::get_normalized_method_scores($gene, $involved_metrics, $scores, $s_scores, $annots, $exp_cfg);
 	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE2_S_SCORES:\n".Dumper($s_scores)."\n");
 	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	appris::get_final_annotations($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_features);
+	appris::get_final_annotations($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_cfg);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs
