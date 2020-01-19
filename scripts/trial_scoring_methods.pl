@@ -3,7 +3,7 @@
 use strict;
 
 use Capture::Tiny 'capture_merged';
-use Cwd qw(realpath);
+use Cwd qw(getcwd realpath);
 use File::Find;
 use Getopt::Long;
 
