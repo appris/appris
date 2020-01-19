@@ -3,7 +3,7 @@
 use strict;
 
 use Capture::Tiny 'capture_merged';
-use Cwd qw(abs_path getcwd);
+use Cwd qw(realpath);
 use File::Find;
 use Getopt::Long;
 
@@ -20,10 +20,9 @@ my ($loglevel) = 'info';
 	'loglevel|l:s' => \$loglevel,
 );
 
-my $curr_dir = getcwd();
-$anno_dir = abs_path($curr_dir.'/'.$anno_dir);
-$exp_conf_file = abs_path($curr_dir.'/'.$exp_conf_file) if ( -f $exp_conf_file );
-$out_file = abs_path($curr_dir.'/'.$out_file);
+$anno_dir = realpath($anno_dir);
+$exp_conf_file = realpath($exp_conf_file) if ( -f $exp_conf_file );
+$out_file = realpath($out_file);
 
 sub _run_system_call($$) {
 	my ($cmds, $log_file) = @_;
@@ -60,7 +59,7 @@ if ( ! -d $anno_dir ) {
 }
 find({wanted => sub { match_ensembl_gene_dir(\@gene_dirs) }, follow => 1}, $anno_dir);
 
-
+my $curr_dir = getcwd();
 foreach my $gene_dir (@gene_dirs) {
 	chdir $gene_dir;
 	if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' && -f 'appris' ) {
