@@ -73,10 +73,6 @@ do
 			METHODS=$2
 			shift
 			;;
-		-x )
-			EXP_CONF_FILE=$2
-			shift
-			;;
 		-l )
 			case "$2" in
 				info | debug )
@@ -174,7 +170,6 @@ echo "perl ${SCRIPT} \\ "
 echo " --species=\"${SPECIES}\" \\ "
 echo "${INDATA_PARAMETERS}"
 echo " --methods=${METHODS_PARAM} \\ "
-echo " --exp-conf=${EXP_CONF_FILE} \\ "
 echo " --outpath=${PWD} \\ "
 echo " --loglevel=${LOG_LEVEL}\ "
 
@@ -183,7 +178,6 @@ perl ${SCRIPT} \
 --species="${SPECIES}" \
 ${INDATA_PARAMETERS} \
 --methods=${METHODS_PARAM} \
---exp-conf="${EXP_CONF_FILE}" \
 --outpath=${PWD} \
 --loglevel=${LOG_LEVEL}
 echo "================="

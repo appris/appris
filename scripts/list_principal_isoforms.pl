@@ -28,7 +28,7 @@ find({wanted => sub { match_ensembl_gene_dir(\@gene_dirs) }, follow => 1}, $anno
 my @pi_recs;
 my $origin_dir = getcwd();
 foreach my $gene_dir (@gene_dirs) {
-  
+
 	chdir $gene_dir;
   if ( -f 'annot.gtf' && -f 'pannot.gtf' && -f 'transc.fa' && -f 'transl.fa' ) {
 		open my $fh, 'appris'

@@ -31,7 +31,6 @@ my ($str_params) = join "\n", @ARGV;
 my ($config_file) = undef;
 my ($input_file) = undef;
 my ($output_file) = undef;
-my ($exp_conf_file) = undef;
 my ($appris) = undef;
 my ($logfile) = undef;
 my ($logpath) = undef;
@@ -42,7 +41,6 @@ my ($loglevel) = undef;
 	'conf=s'			=> \$config_file,
 	'input=s'			=> \$input_file,
 	'output=s'			=> \$output_file,
-	'exp-conf:s' => \$exp_conf_file,
 	'appris'			=> \$appris,	
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
@@ -69,6 +67,7 @@ $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('SPADE_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('SPADE_VARS', 'cutoff');
 
+
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
 	-LOGFILE      => $logfile,
@@ -78,8 +77,9 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
-my ($exp_cfg) = new Config::IniFiles( -file =>  $exp_conf_file );
-my $si_score_mode = $exp_cfg->val( 'spade_integrity', 'score_mode', 'default' );
+my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
+my $si_score_mode = $EXP_CFG->val( 'spade_integrity', 'score_mode', 'default' );
+$logger->debug("si_score_mode: $si_score_mode\n");
 
 #####################
 # Method prototypes #

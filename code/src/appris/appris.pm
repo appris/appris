@@ -610,9 +610,9 @@ sub get_method_annots($$$)
 } # End get_method_annots
 
 # get normalized scores of methods
-sub get_normalized_method_scores($$\$\$$$)
+sub get_normalized_method_scores($$$\$\$)
 {
-	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $annots, $exp_cfg) = @_;
+	my ($gene, $annots, $involved_metrics, $ref_scores, $ref_s_scores) = @_;
 	my ($nscores);
 
 	my @exp_metrics = ('firestar', 'matador3d', 'spade', 'spade_integrity');
@@ -637,12 +637,13 @@ sub get_normalized_method_scores($$\$\$$$)
 					if ( grep { $_ eq $metric } @exp_metrics ) {
 
 						if ( $max > 0.0 ) {
-							my $eff_range = $exp_cfg->val( $metric, 'effective_range', $max );
+							my $eff_range = $main::EXP_CFG->val( $metric, 'effective_range', $max );
 							if ( looks_like_number($eff_range) && $eff_range > 0.0 ) {
 								$eff_range = $eff_range <= $max ? $eff_range : $max ;
 							} else {
 								die("invalid effective range: $eff_range");
 							}
+							print("eff_range: $eff_range\n");
 
 							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
 						} else {
@@ -667,9 +668,9 @@ sub get_normalized_method_scores($$\$\$$$)
 } # End get_normalized_method_scores
 
 # get gene scores of methods for appris
-sub get_appris_scores($$\$\$\$$)
+sub get_appris_scores($$\$\$\$)
 {
-	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores, $exp_cfg) = @_;
+	my ($gene, $involved_metrics, $ref_scores, $ref_s_scores, $ref_n_scores) = @_;
 
 	# clear any existing APPRIS scores, so that we can get APPRIS score multiple times
 	foreach my $transcript_id ( keys(%{$$ref_scores}) ) {
@@ -711,7 +712,8 @@ sub get_appris_scores($$\$\$\$$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
-					my $weight = $exp_cfg->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
+					my $weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
+					print("weight: $weight\n");
 				}
 				else {
 					$weight = $METRIC_WEIGHTED->{$metric};
@@ -774,26 +776,27 @@ sub get_appris_scores($$\$\$\$$)
 } # End get_appris_scores
 
 # get the final annotation
-sub get_final_annotations($$$$$$$)
+sub get_final_annotations($$$$$$)
 {
-	my ($gene, $involved_metrics, $scores, $s_scores, $nscores, $annots, $exp_cfg) = @_;
+	my ($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics) = @_;
 	my ($method) = 'appris';
 	my ($annotations);
 	my ($tag) = 0;
 
-	my $appris_score_mode = $exp_cfg->val( 'appris', 'score_mode', 'default' );
+	my $appris_score_mode = $main::EXP_CFG->val( 'appris', 'score_mode', 'default' );
 	if ( $appris_score_mode =~ /^phased_/ ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 1);
-		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores);
 	} elsif ( $appris_score_mode eq 'all' ) {
 		# include all metrics independently, even those from the same method
-		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores);
 	} elsif ( $appris_score_mode eq 'default' ) {
 		my $default_metrics = default_metric_filter($involved_metrics);
-		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores);
 	} else {
 		die("unknown APPRIS score mode: ${appris_score_mode}");
 	}
+	$logger->debug("appris_score_mode: $appris_score_mode\n");
 
 	# scan transcripts sorted by appris score
 	if ( defined $s_scores and exists $s_scores->{$method} and exists $s_scores->{$method}->{'scores'} and scalar(keys(%{$s_scores->{$method}->{'scores'}})) > 0 )
@@ -813,7 +816,7 @@ sub get_final_annotations($$$$$$$)
 		if ( $appris_score_mode =~ /^phased_/ ) {
 			# 1.2 acquire the dominant transcripts from second-phase appris score.
 			my $phase_2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
-			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores, $exp_cfg);
+			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
 			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 
 			if ( is_unique($princ_list, $isof_report) ) {

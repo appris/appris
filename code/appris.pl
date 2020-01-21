@@ -52,7 +52,6 @@ my ($species) = undef;
 my ($e_version) = undef;
 my ($outpath) = undef;
 my ($methods) = undef;
-my ($exp_conf_file) = undef;
 my ($type_of_input) = undef;
 my ($type_of_align) = undef;
 my ($cached_path) = undef;
@@ -72,7 +71,6 @@ my ($loglevel) = undef;
 	'inpath=s'				=> \$inpath,
 	'outpath=s'				=> \$outpath,		
 	'methods=s'				=> \$methods,
-	'exp-conf:s'			=> \$exp_conf_file,
 	't-align=s'				=> \$type_of_align,
 	'cached-path=s'			=> \$cached_path,
 	'loglevel=s'			=> \$loglevel,
@@ -156,7 +154,7 @@ sub create_ini($);
 sub create_inputs($);
 sub run_getmafucsc($$$$);
 sub run_getecompara($$$$$);
-sub run_pipeline($$$$);
+sub run_pipeline($$$);
 
 sub _subs_template($$$);
 sub _rm_files($);
@@ -215,7 +213,7 @@ sub main()
 
 	# Run methods
 	$logger->info("-- run pipeline\n");
-	my ($output) = run_pipeline($config_file, $input_files, $methods, $exp_conf_file);
+	my ($output) = run_pipeline($config_file, $input_files, $methods);
 
 	# Delete tmp dir if ...
 	if ( !defined $loglevel or (defined $loglevel and $loglevel ne 'debug') ) {	
@@ -568,9 +566,9 @@ sub create_inputs($)
 	return $input_files;
 }
 
-sub run_pipeline($$$$)
+sub run_pipeline($$$)
 {
-	my ($config_file, $files, $methods_list, $exp_conf_file) = @_;
+	my ($config_file, $files, $methods_list) = @_;
 	
 	# acquire the outputs for each method
 	foreach my $method ( split(',',$methods_list) ) {		
@@ -610,7 +608,6 @@ sub run_pipeline($$$$)
 							"--gff='".$files->{'annot'}."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
-							"--exp-conf=".$exp_conf_file." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -637,7 +634,6 @@ sub run_pipeline($$$$)
 							"--conf='".$config_file."' ".
 							"--input='".$files->{'transl'}."' ".
 							"--output='".$files->{$m}."' ".
-							"--exp-conf=".$exp_conf_file." ".
 							"$LOGGER_CONF ";
 			$logger->info("\n** script: $cmd\n");
 			system ($cmd);
@@ -728,8 +724,6 @@ sub run_pipeline($$$$)
 						"--crash='".$files->{$m}->{'crash'}."' ".
 						"--inertia='".$files->{$m}->{'inertia'}."' ".
 						"--proteo='".$files->{$m}->{'proteo'}."' ".
-
-						"--exp-conf=".$exp_conf_file." ".
 
 						"--output='".$files->{$m}->{'appris'}."' ".
 						"--output_nscore='".$files->{$m}->{'appris'}.".nscore' ".
