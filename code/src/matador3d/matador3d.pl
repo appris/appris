@@ -84,7 +84,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
-my $calc_frames = $exp_cfg->val( 'matador3d', 'calc_frames', 0 );
+my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
 $logger->debug("calc_frames: $calc_frames\n");
 
 #####################
