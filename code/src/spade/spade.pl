@@ -79,7 +79,6 @@ $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $si_score_mode = $EXP_CFG->val( 'spade_integrity', 'score_mode', 'default' );
-$logger->debug("si_score_mode: $si_score_mode\n");
 
 #####################
 # Method prototypes #

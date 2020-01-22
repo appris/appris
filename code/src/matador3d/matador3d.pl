@@ -85,7 +85,6 @@ $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
-$logger->debug("calc_frames: $calc_frames\n");
 
 #####################
 # Method prototypes #
@@ -1055,14 +1054,13 @@ sub _get_peptide_coordinate_with_frames($$$$$$)
 		$next_frame=0;
 	}
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
-		warnings::warn("CDS is shorter than 1 codon\n");
-		$pep_cds_end=$pep_cds_start;
-		$next_frame=0;
+			$pep_cds_end=$pep_cds_start;
+	} else {
+		$pep_cds_end+=$pep_cds_end_div;
 	}
-	if ( $num_cds == ($cds_order_id+1) && $next_frame != 0 ) {
+	if ( $cds_order_id == ($num_cds - 1) && $next_frame != 0 ) {
 		warnings::warn("CDS has incomplete reading frame\n");
 	}
-	$pep_cds_end+=$pep_cds_end_div;
 
 	if ($calc_frames) {
 		return ($pep_cds_start,$pep_cds_end,$next_frame);
@@ -1132,11 +1130,10 @@ sub _get_mini_peptide_coordinate_with_frames($$$$$$$)
 		$next_frame=0;
 	}
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
-		warnings::warn("mini-CDS is shorter than 1 codon\n");
-		$pep_cds_end=$pep_cds_start;
-		$next_frame=0;
+			$pep_cds_end=$pep_cds_start;
+	} else {
+			$pep_cds_end+=$pep_cds_end_div;
 	}
-	$pep_cds_end+=$pep_cds_end_div;
 
 	if ($calc_frames) {
 		return ($pep_cds_start,$pep_cds_end,$next_frame);

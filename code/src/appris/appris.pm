@@ -643,7 +643,6 @@ sub get_normalized_method_scores($$$\$\$)
 							} else {
 								die("invalid effective range: $eff_range");
 							}
-							print("eff_range: $eff_range\n");
 
 							$n_sc = $max - $sc < $eff_range ? ($eff_range - ($max - $sc)) / $eff_range : 0.0;
 						} else {
@@ -713,7 +712,6 @@ sub get_appris_scores($$\$\$\$)
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
 					my $weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
-					print("weight: $weight\n");
 				}
 				else {
 					$weight = $METRIC_WEIGHTED->{$metric};
@@ -796,7 +794,6 @@ sub get_final_annotations($$$$$$)
 	} else {
 		die("unknown APPRIS score mode: ${appris_score_mode}");
 	}
-	$logger->debug("appris_score_mode: $appris_score_mode\n");
 
 	# scan transcripts sorted by appris score
 	if ( defined $s_scores and exists $s_scores->{$method} and exists $s_scores->{$method}->{'scores'} and scalar(keys(%{$s_scores->{$method}->{'scores'}})) > 0 )
