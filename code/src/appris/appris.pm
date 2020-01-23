@@ -781,6 +781,7 @@ sub get_final_annotations($$$$$$)
 	my ($annotations);
 	my ($tag) = 0;
 
+	my $mane_select = $main::EXP_CFG->val( 'appris', 'mane_select', 0 );
 	my $appris_score_mode = $main::EXP_CFG->val( 'appris', 'score_mode', 'default' );
 	if ( $appris_score_mode =~ /^phased_/ ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 1);
@@ -798,7 +799,7 @@ sub get_final_annotations($$$$$$)
 	# scan transcripts sorted by appris score
 	if ( defined $s_scores and exists $s_scores->{$method} and exists $s_scores->{$method}->{'scores'} and scalar(keys(%{$s_scores->{$method}->{'scores'}})) > 0 )
 	{
-		# 1.1 acquire the dominant transcripts from first-phase appris score.
+		# 1_1 acquire the dominant transcripts from first-phase appris score.
 		# They have to pass the cutoff to be added into "principal" list
 		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
 #		warning("GENE_2: \n".Dumper($gene)."\n");
@@ -811,7 +812,7 @@ sub get_final_annotations($$$$$$)
 		}
 
 		if ( $appris_score_mode =~ /^phased_/ ) {
-			# 1.2 acquire the dominant transcripts from second-phase appris score.
+			# 1_2 acquire the dominant transcripts from second-phase appris score.
 			my $phase_2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
 			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
 			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
@@ -823,9 +824,20 @@ sub get_final_annotations($$$$$$)
 			}
 		}
 
-		# 2. from preserved transcript, we keep transcripts that they have got CCDS
+		if ( $mane_select ) {
+			# 2_1 from preserved transcripts, we keep the 'MANE_Select' transcript, if available
+			$princ_list = step_mane($princ_list, $isof_report, $nscores);
+#			warning("PRINC_LIST_2_1: \n".Dumper($princ_list)."\n");
+			if ( is_unique($princ_list, $isof_report) ) {
+				$tag = 2;
+				step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+				return $tag;
+			}
+		}
+
+		# 2_2 from preserved transcript, we keep transcripts that they have got CCDS
 		$princ_list = step_ccds($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_LIST_2_2: \n".Dumper($princ_list)."\n");
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 2;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -971,7 +983,13 @@ sub step_appris($$)
 						}
 					}
 				}
-			}			
+			}
+			if ( $transcript->tag ) {
+				my @transc_tags = split(/,/, $transcript->tag);
+				if ( grep { $_ eq 'MANE_Select' } @transc_tags ) {
+					$transc_rep->{'MANE_Select'} = 1;
+				}
+			}
 			# save TSL(1) annot
 			if ( $transcript->tsl and $transcript->tsl eq '1' ) {
 				$transc_rep->{'tsl'} = 1;
@@ -998,6 +1016,36 @@ sub step_appris($$)
 	return ($princ_list, $isof_report);
 	
 } # end step_appris
+
+sub step_mane($$$)
+{
+	my ($i_princ_list, $isof_report, $nscores) = @_;
+	my ($report);
+
+	# initial report
+	# discarding the transcripts are not protein coding (NMD): app_score is -1
+	my ($princ_isof);
+	foreach my $princ ( @{$isof_report} ) {
+		my ($transc_id) = $princ->{'id'};
+		if ( exists $i_princ_list->{$transc_id} ) {
+			if ( exists $nscores->{$transc_id} and defined $nscores->{$transc_id} and $nscores->{$transc_id}->{'appris'} != '-1' ) {
+				if ( exists $princ->{'MANE_Select'} && $princ->{'MANE_Select'} ) { push(@{$princ_isof}, $princ) }
+			}
+		}
+	}
+
+	# print princ isoforms with CCDS ids
+	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
+		foreach my $princ ( @{$princ_isof} ) {
+			my ($transc_id) = $princ->{'id'};
+			$report->{$transc_id} = 1;
+		}
+	}
+	else { $report = $i_princ_list }
+
+	return $report;
+
+} # end step_mane
 
 sub step_ccds($$$)
 {
