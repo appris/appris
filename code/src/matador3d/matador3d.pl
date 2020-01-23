@@ -1053,10 +1053,15 @@ sub _get_peptide_coordinate_with_frames($$$$$$)
 	{
 		$next_frame=0;
 	}
+
+	if ( $cds_order_id == 0 && $frame != 0 ) {  # include partial codon at start, if present
+		$pep_cds_end_div += 1;
+	}
+
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
 			$pep_cds_end=$pep_cds_start;
 	} else {
-		$pep_cds_end+=$pep_cds_end_div;
+		$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
 	}
 	if ( $cds_order_id == ($num_cds - 1) && $next_frame != 0 ) {
 		warnings::warn("CDS has incomplete reading frame\n");
@@ -1129,10 +1134,15 @@ sub _get_mini_peptide_coordinate_with_frames($$$$$$$)
 	{
 		$next_frame=0;
 	}
+
+	if ( $pep_cds_start == 1 && $frame != 0 ) {  # include partial codon at start, if present
+		$pep_cds_end_div += 1;
+	}
+
 	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
 			$pep_cds_end=$pep_cds_start;
 	} else {
-			$pep_cds_end+=$pep_cds_end_div;
+			$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
 	}
 
 	if ($calc_frames) {
