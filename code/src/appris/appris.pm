@@ -711,7 +711,7 @@ sub get_appris_scores($$\$\$\$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
-					my $weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
+					$weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
 				}
 				else {
 					$weight = $METRIC_WEIGHTED->{$metric};
