@@ -85,6 +85,7 @@ $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
+my $recal_align_scores = $EXP_CFG->val( 'matador3d', 'recal_align_scores', 0 );
 
 #####################
 # Method prototypes #
@@ -435,20 +436,35 @@ sub _check_alignment($$$)
 			my $align_identity = 0;			
 			$align_identity = $identities/$align_residues*100 if ( $align_residues != 0);
 			$align_identity = sprintf("%.2f", $align_identity);
-			if ($identity >= 50)
-				{$totalidentity = 1}
-			elsif ($identity >= 40)
-				{$totalidentity = 0.80}
-			elsif ($identity >= 30)
-				{$totalidentity = 0.60}
-			elsif ($identity >= 25)
-				{$totalidentity = 0.50}
-			elsif ($identity >= 20)
-				{$totalidentity = 0.40}
-			elsif ($identity >= 15)
-				{$totalidentity = 0.20}
-			else
-				{$totalidentity = 0}
+			if ( $recal_align_scores ) {
+				if ($identity >= 40)
+					{$totalidentity = 1}
+				elsif ($identity >= 30)
+					{$totalidentity = 0.80}
+				elsif ($identity >= 20)
+					{$totalidentity = 0.60}
+				elsif ($identity >= 15)
+					{$totalidentity = 0.40}
+				elsif ($identity >= 10)
+					{$totalidentity = 0.20}
+				else
+					{$totalidentity = 0}
+			} else {
+				if ($identity >= 50)
+					{$totalidentity = 1}
+				elsif ($identity >= 40)
+					{$totalidentity = 0.80}
+				elsif ($identity >= 30)
+					{$totalidentity = 0.60}
+				elsif ($identity >= 25)
+					{$totalidentity = 0.50}
+				elsif ($identity >= 20)
+					{$totalidentity = 0.40}
+				elsif ($identity >= 15)
+					{$totalidentity = 0.20}
+				else
+					{$totalidentity = 0}
+			}
 			$logger->debug("\tIdentity: $identity = $identities/$mini_cds_residues * 100\n");
 			$logger->debug("\tAlign_identity: $align_identity = $identities/$align_residues * 100\n");           
 			$logger->debug("\tTotal identity: $totalidentity\n");
@@ -736,7 +752,7 @@ sub _get_biggest_mini_cds($$$)
 							$biggest_mini_pdb_cds_score = $trans_mini_cds->{'score'};
 							$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
 							$mini_pdb_cds_report = $trans_mini_cds;
-						}						
+						}					
 					}
 				}					
 			}
