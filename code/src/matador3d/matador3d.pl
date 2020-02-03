@@ -114,9 +114,9 @@ sub main()
 {
 	# Get the CDS coordinates info from gff file ---------------
 	$logger->info("##Get cds coordinates from gff ---------------\n");
-	my ($trans_cds_coords, $sort_total_cds_coords) = _get_cds_coordinates_from_gff($input_file, $gff_file);
+	my ($trans_cds_coords, $mini_cds_interval_pool) = _get_cds_coordinates_from_gff($input_file, $gff_file);
     $logger->debug("##CDS coordenates ---------------\n".Dumper($trans_cds_coords));
-    $logger->debug("##Sorted CDS coordenates ---------------\n".Dumper($sort_total_cds_coords));
+    $logger->debug("##Mini-CDS interval pool ---------------\n".Dumper($mini_cds_interval_pool));
 
 	# For every sequence run the method ---------------
     my ($transcript_report);
@@ -135,8 +135,8 @@ sub main()
             $logger->info("\n##$sequence_id ###############################\n");
 
 
-		    # get the intersection of CDS coordinates creating "mini-cds"
-    		my ($cds_reports) = _get_init_report($sequence_id, $sequence, $trans_cds_coords, $sort_total_cds_coords);
+			# get the intersection of CDS coordinates creating "mini-cds"
+			my ($cds_reports) = _get_init_report($sequence_id, $sequence, $trans_cds_coords, $mini_cds_interval_pool);
 			$logger->debug("##Init CDS report ---------------\n".Dumper($cds_reports));
 
 			if(defined $cds_reports)
@@ -198,7 +198,7 @@ sub main()
 sub _run_blastpgp($$)
 {
 	my ($sequence_id, $sequence) = @_;
-	
+
 	# Create cache obj
 	my ($cache) = APPRIS::Utils::CacheMD5->new(
 		-dat => $sequence,
@@ -668,7 +668,7 @@ sub _get_biggest_cds($$$)
 	while(my ($sequence_id,$trans_report) = each(%{$transcript_report}))
 	{
 		next if ($main_seq_id eq $sequence_id); # Jump for the same sequence
-		
+
 		if(exists $trans_report->{'cds'} and defined $trans_report->{'cds'})
 		{
 			my ($trans_cds_list) = $trans_report->{'cds'};
@@ -752,7 +752,7 @@ sub _get_biggest_mini_cds($$$)
 							$biggest_mini_pdb_cds_score = $trans_mini_cds->{'score'};
 							$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
 							$mini_pdb_cds_report = $trans_mini_cds;
-						}					
+						}
 					}
 				}					
 			}
@@ -942,7 +942,7 @@ sub _get_cds_coordinates_from_gff($$)
     }
 
 	# Save CDS coordinates within structure
-	my ($total_trans_cds_coords);
+	my (%total_trans_cds_coords);
 	my ($trans_cds_coords);
     my ($in2) = Bio::SeqIO->new(
 						-file => $input_file,
@@ -974,8 +974,8 @@ sub _get_cds_coordinates_from_gff($$)
 						my ($edges);
 						if(defined $strand) # Get the whole CDS coordinates by strand
 						{
-							$total_trans_cds_coords->{$strand}->{$start} = undef unless(exists $total_trans_cds_coords->{$strand}->{$start});
-							$total_trans_cds_coords->{$strand}->{$end} = undef unless(exists $total_trans_cds_coords->{$strand}->{$end});						
+							$total_trans_cds_coords{$strand}{'starts'}{$start} = undef unless(exists $total_trans_cds_coords{$strand}{'starts'}{$start});
+							$total_trans_cds_coords{$strand}{'ends'}{$end} = undef unless(exists $total_trans_cds_coords{$strand}{'ends'}{$end});
 						}
 
 						# Get the CDS coord for each transcript (with frame)
@@ -994,18 +994,51 @@ sub _get_cds_coordinates_from_gff($$)
 		}
     }
     
-    my ($sort_total_cds_coords);
-    while(my ($strand,$total_cds_coords) = each(%{$total_trans_cds_coords}))
+	my $mini_cds_interval_pool;
+	while(my ($strand, $trans_cds_coords) = each(%total_trans_cds_coords))
     {
+		my @mini_cds_starts;
+		my @mini_cds_ends;
     	if($strand eq '-')
     	{
-    		$sort_total_cds_coords->{$strand}=join ":", sort {$b <=> $a} (keys %{$total_cds_coords});    		
+			my @trans_cds_starts = sort { $b <=> $a } keys %{$trans_cds_coords->{'ends'}};  # GFF 'end' is reverse-strand CDS start
+			my @trans_cds_ends = sort { $b <=> $a } keys %{$trans_cds_coords->{'starts'}};  # GFF 'start' is reverse-strand CDS end
+			# TODO: verify assumption that max coord is a start, min coord is an end
+			my %mini_cds_start_set = map { $_ => 1 } @trans_cds_starts;
+			foreach my $end (@trans_cds_ends[ 0 .. ($#trans_cds_ends-1) ]) {
+				$mini_cds_start_set{$end - 1} = 1;
+			}
+			@mini_cds_starts = sort { $b <=> $a } keys %mini_cds_start_set;
+			my %mini_cds_end_set = map { $_ => 1 } @trans_cds_ends;
+			foreach my $start (@trans_cds_starts[ 1 .. $#trans_cds_starts ]) {
+				$mini_cds_end_set{$start + 1} = 1;
+			}
+			@mini_cds_ends = sort { $b <=> $a } keys %mini_cds_end_set;
+
     	} else {
-    		$sort_total_cds_coords->{$strand}=join ":", sort {$a <=> $b} (keys %{$total_cds_coords});
+
+			my @trans_cds_starts = sort { $a <=> $b } keys %{$trans_cds_coords->{'starts'}};
+			my @trans_cds_ends = sort { $a <=> $b } keys %{$trans_cds_coords->{'ends'}};
+			# TODO: verify assumption that min coord is a start, max coord is an end
+			my %mini_cds_start_set = map { $_ => 1 } @trans_cds_starts;
+			foreach my $end (@trans_cds_ends[ 0 .. ($#trans_cds_ends-1) ]) {
+				$mini_cds_start_set{$end + 1} = 1;
+			}
+			@mini_cds_starts = sort { $a <=> $b } keys %mini_cds_start_set;
+			my %mini_cds_end_set = map { $_ => 1 } @trans_cds_ends;
+			foreach my $start (@trans_cds_starts[ 1 .. $#trans_cds_starts ]) {
+				$mini_cds_end_set{$start - 1} = 1;
+			}
+			@mini_cds_ends = sort { $a <=> $b } keys %mini_cds_end_set;
     	}
+
+		for my $i ( 0 .. $#mini_cds_starts ) {
+			my @mini_cds_interval = ($mini_cds_starts[$i], $mini_cds_ends[$i]);
+			push(@{$mini_cds_interval_pool->{$strand}}, \@mini_cds_interval);
+		}
     }
 
-    return ($trans_cds_coords, $sort_total_cds_coords);	
+    return ($trans_cds_coords, $mini_cds_interval_pool);
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
@@ -1171,7 +1204,7 @@ sub _get_mini_peptide_coordinate_with_frames($$$$$$$)
 # Get the intersection of CDS coordinates creating "mini-cds"
 sub _get_init_report($$$$)
 {
-	my ($sequence_id, $sequence, $trans_cds_coords, $sort_total_cds_coords) = @_;
+	my ($sequence_id, $sequence, $trans_cds_coords, $mini_cds_interval_pool) = @_;
 
 	# Get CDS coordinates relative to peptide
 	my ($cds_list) = (); # CDS info
@@ -1190,6 +1223,7 @@ sub _get_init_report($$$$)
 		my ($trans_cds_frame) = $boundaries[2];
 
 		if ($calc_frames) {
+
 			if ( $cds_order_id == 0 ) {
 				$pep_cds_end_frame = $trans_cds_frame;
 			}
@@ -1215,20 +1249,28 @@ sub _get_init_report($$$$)
 		
 		$logger->debug("#Trans_CDS:$trans_cds_start-$trans_cds_end:$trans_cds_frame\[$pep_cds_start-$pep_cds_end\]\n");
 				
-		# Sort the list of CDS depending on strand
-		my ($mini_cds_coord_range);
-		if	(($trans_strand eq '-') and 
-			($sort_total_cds_coords->{$trans_strand}=~/($trans_cds_end.*:$trans_cds_start)/)){
-			$mini_cds_coord_range = $1;
-		} elsif (($trans_strand eq '+') and 
-			($sort_total_cds_coords->{$trans_strand}=~/($trans_cds_start.*:$trans_cds_end)/)){
-			$mini_cds_coord_range = $1;
+		# Get the list of mini-CDS intervals depending on strand
+		my (@mini_cds_intervals);
+		if ($trans_strand eq '-') {
+			my @interval_pool = @{$mini_cds_interval_pool->{'-'}};
+			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_end } 0 .. $#interval_pool;  # GFF 'end' is reverse-strand CDS start
+			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_start } 0 .. $#interval_pool;  # GFF 'start' is reverse-strand CDS end
+			if ( @match_start_idxs && @match_end_idxs ) {
+				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
+			}
+		} elsif ($trans_strand eq '+') {
+			my @interval_pool = @{$mini_cds_interval_pool->{'+'}};
+			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_start } 0 .. $#interval_pool;
+			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_end } 0 .. $#interval_pool;
+			if ( @match_start_idxs && @match_end_idxs ) {
+				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
+			}
 		}
-		if(defined $mini_cds_coord_range)
+
+		if(@mini_cds_intervals)
 		{
 			my ($mini_cds_list);
-			my (@mini_cds_coord_list) = split ":", $mini_cds_coord_range;				
-			if (scalar(@mini_cds_coord_list) == 2) {
+			if (scalar(@mini_cds_intervals) == 1) {
 				# Theres is not mini cds => the same CDS coordinates
 				my ($mini_cds_edges) = join ":", $pep_cds_start,$pep_cds_end;
 				my ($mini_cds_seq) = substr($sequence, $pep_cds_start-1, ($pep_cds_end - $pep_cds_start) + 1 );
@@ -1258,21 +1300,20 @@ sub _get_init_report($$$$)
 				my ($mini_pep_cds_end) = $pep_cds_start;
 				my $mini_pep_start_frame;
 				my $mini_pep_end_frame;
-				my ($mini_num_cds) = scalar(@mini_cds_coord_list)-1;
-				for(my $k=1;$k<$mini_num_cds;$k++)
+				my ($num_mini_cds) = scalar(@mini_cds_intervals);
+				for(my $k=0;$k<$num_mini_cds;$k++)
 				{
-					$mini_trans_cds_start = $mini_cds_coord_list[$k-1];
-					$mini_trans_cds_end = $mini_cds_coord_list[$k];
+					my ($mini_trans_cds_start, $mini_trans_cds_end) = @{$mini_cds_intervals[$k]};
 
 					if ($calc_frames) {
-						if ( $k == 1 ) {
+						if ( $k == 0 ) {
 							$mini_pep_end_frame = $pep_cds_start_frame;
 						}
 						$mini_pep_start_frame = $mini_pep_end_frame;
 
-						($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_end_frame) = _get_mini_peptide_coordinate_with_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $mini_num_cds);
+						($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_end_frame) = _get_mini_peptide_coordinate_with_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $num_mini_cds);
 					} else {
-						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate_sans_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, 0, $k, $mini_num_cds);
+						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate_sans_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, 0, $k, $num_mini_cds);
 					}
 
 					my ($mini_cds_edges) = join ":", $mini_pep_cds_start,$mini_pep_cds_end;
