@@ -85,6 +85,8 @@ $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
+my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 0 );
+my $count_terminal_gaps = $EXP_CFG->val( 'matador3d', 'count_terminal_gaps', 0 );
 my $recal_align_scores = $EXP_CFG->val( 'matador3d', 'recal_align_scores', 0 );
 
 #####################
@@ -278,7 +280,6 @@ sub _parse_blast($$)
 					    {
 					    	my ($mini_cds) = $mini_cds_list->[$iminicds];
 					    	my ($mini_cds_index) = $mini_cds->{'index'};
-					    						    	
 							if ( exists $mini_pdb_results->{$mini_cds_index} ) {
 								my ($mini_pdb_result) = $mini_pdb_results->{$mini_cds_index};
 								if ( $mini_pdb_result->{'score'} ne '-') {									
@@ -296,7 +297,7 @@ sub _parse_blast($$)
 						}			    		
 			    	}
 			    }
-			    
+			    last if ($best_hsp_only);
 			}
 		}
 	}
@@ -347,11 +348,7 @@ sub _check_alignment($$$)
 	$logger->debug("\n#PDB: $pdb_id ---------------\n");
 	$logger->debug("#IDENTITY:$pdb_identity|TARGET:$targstart:$targend|CANDIDATE:$candstart:$candend\n");           
 
-    my ($loopstart) = 0;
-	my ($loopstart2) = 0;
-	my ($align_start) = 0;
-	my ($align_end) = 0;
-
+	my ($hsp_idx_min) = 0;  # 0-offset HSP index at start of each mini-CDS alignment
 	foreach my $cds (@{$cds_list})
 	{
     	my ($cds_index) = $cds->{'index'};
@@ -367,64 +364,116 @@ sub _check_alignment($$$)
 	    	my ($mini_cds_index) = $mini_cds->{'index'};
 	    	my ($mini_cds_seq) = $mini_cds->{'seq'};	    	
 	    	my ($mini_cds_coord) = $mini_cds->{'coord'};
+			my ($mini_cds_frame) = $mini_cds->{'frame'};
 			my @boundaries = split ":", $mini_cds_index;
 			my $mini_cds_start = $boundaries[0];
 			my $mini_cds_end = $boundaries[1];
-			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");           
+			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");
 
 			# Finish when target-candidate don't cover exons or
-			# Next until exon is within target-candidate or
-			# Next if the mini range is less than 6 residues
-			if (	($mini_cds_start > $targend) or
-					($targstart > $mini_cds_end) or 
-					($mini_cds_end - $mini_cds_start < $MIN_LENGTH_CDS)
-			) {
+			# Next until exon is within target-candidate
+			if ( ($mini_cds_start > $targend) or ($targstart > $mini_cds_end) )
+			{
 				$mini_cds_score_list->{$mini_cds_index} = {
 							'index'		=> $mini_cds_index,
 							'coord'		=> $mini_cds_coord,
-							'frame'		=> $cds_frame,
+							'frame'		=> $mini_cds_frame,
 							'score'		=> '-',
 							'seq'		=> $mini_cds_seq 
 				};
 				next;
-			}			
-		        
+			}
+
 			my $gapres = 0;			
 			my $identities = 0;
-			my $res = 0;
-			my $j = 0;
-			my $n = 0;
+			my $pep_pos;
+			my $hsp_idx;
+			my $aln_len = 0;
 			my $targ_gapres = 0;
 	        
-			# Get the index start depending the minus coordinate 
+			# Get the minimum 1-offset peptide position common to the HSP and mini-CDS.
+			my ($pep_pos_min);
 			if ($mini_cds_start < $targstart)
-				{$loopstart2 = $targstart}
-			else
-				{$loopstart2 = $mini_cds_start}
-	
-			# Count and classify the residues      		
-			for ($res=$loopstart,$j=$loopstart2;$j<=$mini_cds_end;$j++,$res++)
 			{
-				if(defined $target[$res] and defined $candidate[$res])
+				$pep_pos_min = $targstart;
+
+				if ($count_terminal_gaps)
 				{
-					if ($target[$res] eq $candidate[$res])
-						{$identities++}
-					if ($target[$res] eq "-")
-						{$gapres++;$j--;$targ_gapres++}
-					if ($candidate[$res]eq "-")
-						{$gapres++;}
-					$n++;           	
+					# Count leading gaps in a notional alignment with 100% query coverage.
+					$gapres += ($targstart - $mini_cds_start) + 1;
 				}
 			}
-			
-			$loopstart = $res;
-			$align_start = $loopstart2;
-			$align_end = $loopstart2 + $n - 1; 
+			else
+			{
+				$pep_pos_min = $mini_cds_start;
+			}
 
-			$logger->debug("#loopstart: $loopstart loopstart: $loopstart2 mini_cds_end: $mini_cds_end res: $res j: $j n: $n\n");
+			# Get the maximum 1-offset peptide position common to the HSP and mini-CDS.
+			my ($pep_pos_max);
+			if ($targend < $mini_cds_end)
+			{
+				$pep_pos_max = $targend;
+
+				if ($count_terminal_gaps)
+				{
+					# Count trailing gaps in a notional alignment with 100% query coverage.
+					$gapres += ($mini_cds_end - $targend) + 1;
+				}
+			}
+			else
+			{
+				$pep_pos_max = $mini_cds_end;
+			}
+
+			# Count and classify the residues
+			for ($pep_pos=$pep_pos_min, $hsp_idx=$hsp_idx_min ; $pep_pos<=$pep_pos_max ; $pep_pos++, $hsp_idx++)
+			{
+				if(defined $target[$hsp_idx] and defined $candidate[$hsp_idx])
+				{
+					if ($target[$hsp_idx] eq $candidate[$hsp_idx])
+					{
+						$identities++;
+					}
+					elsif ($target[$hsp_idx] eq "-")
+					{
+						$gapres++;
+						$pep_pos--;
+						$targ_gapres++;
+					}
+					elsif ($candidate[$hsp_idx] eq "-")
+					{
+						$gapres++;
+					}
+					$aln_len++;
+				}
+				else
+				{
+					$logger->error("invalid HSP index: $hsp_idx");
+				}
+			}
+
+			$hsp_idx_min = $hsp_idx;
+			my ($align_start) = $pep_pos_min;
+			my ($align_end) = $pep_pos_min + $aln_len - 1;
+
+			$logger->debug("#hsp_idx_min: $hsp_idx_min pep_pos_min: $pep_pos_min pep_pos_max: $pep_pos_max hsp_idx: $hsp_idx pep_pos: $pep_pos aln_len: $aln_len\n");
 
 			$logger->debug("#mini_aligns_coord\[$align_start:$align_end\]\n");
-	
+
+			# Skip mini-CDS shorter than the minimum length, but only after having
+			# advanced the HSP index to the start of the subsequent mini-CDS.
+			if ( (($mini_cds_end - $mini_cds_start) + 1) < $MIN_LENGTH_CDS)
+			{
+				$mini_cds_score_list->{$mini_cds_index} = {
+					'index'		=> $mini_cds_index,
+					'coord'		=> $mini_cds_coord,
+					'frame'		=> $mini_cds_frame,
+					'score'		=> '-',
+					'seq'		=> $mini_cds_seq
+				};
+				next;
+			}
+
 			my $mini_cds_residues = $mini_cds_end - $mini_cds_start + 1;
 			my $align_residues = $align_end - $align_start + 1;
 	
@@ -520,7 +569,7 @@ sub _check_alignment($$$)
 			my ($mini_cds_report) = {
 						'index'			=> $mini_cds_index,
 						'coord'			=> $mini_cds_coord,
-						'frame'			=> $cds_frame,
+						'frame'			=> $mini_cds_frame,
 						'seq'			=> $mini_cds_seq,
 						'score'			=> $escore,
 						'score_iden'	=> $totalidentity,
@@ -570,7 +619,7 @@ sub _get_best_cds_score($)
 			{
 				# cds must be bigger than 6 residues
 				my (@cds_pep_coord) = split(':', $pdb_cds_report->{'index'});		
-				if ( ($cds_pep_coord[1] - $cds_pep_coord[0]) >= $MIN_LENGTH_CDS )
+				if ( ( ($cds_pep_coord[1] - $cds_pep_coord[0]) + 1 ) >= $MIN_LENGTH_CDS )
 				{
 					$logger->debug("#_get_biggest_score: $sequence_id\n");
 					$pdb_cds_score += _get_biggest_score($sequence_id, $pdb_cds_report, \%aux_transcript_report);
@@ -720,7 +769,7 @@ sub _get_biggest_mini_cds($$$)
 			{
 				# Check if the frame between the compared isoforms are equal
 				my ($trans_cds_frame) = $trans_pdb_cds_report->{'frame'};
-				if ( $biggest_mini_pdb_cds_frame eq $trans_cds_frame ) {
+				if ( $calc_frames || $biggest_mini_pdb_cds_frame eq $trans_cds_frame ) {
 					my ($trans_mini_cds_list) = $trans_pdb_cds_report->{'mini_cds'};	
 					foreach my $trans_mini_cds (@{$trans_mini_cds_list})			
 					{
@@ -728,6 +777,10 @@ sub _get_biggest_mini_cds($$$)
 						my $trans_mini_cds_pdb;
 						if ( $calc_frames ) {
 							if ( ! defined $trans_mini_cds->{'score'} || $trans_mini_cds->{'score'} eq '-' ) {
+								next;
+							}
+							if ( ! exists $trans_mini_cds->{'frame'} || ! defined $trans_mini_cds->{'frame'}
+									|| $trans_mini_cds->{'frame'} != $biggest_mini_pdb_cds_frame ) {
 								next;
 							}
 							$trans_mini_cds_score = $trans_mini_cds->{'score'};
