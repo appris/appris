@@ -9,11 +9,13 @@ use Set::Scalar;
 
 my ($a_file) = undef;
 my ($b_file) = undef;
+my ($ref_pi_label) = 'PRINCIPAL:1';
 my ($out_file) = undef;
 
 &GetOptions(
 	'a-file|a=s' => \$a_file,
 	'b-file|b=s' => \$b_file,
+	'pi-label:s' => \$ref_pi_label,
 	'out-file|o=s' => \$out_file
 );
 
@@ -21,6 +23,21 @@ my %file_map = (
 	'a' => $a_file,
 	'b' => $b_file
 );
+
+my @known_pi_labels = (
+	'PRINCIPAL:1',
+	'PRINCIPAL:2',
+	'PRINCIPAL:3',
+	'PRINCIPAL:4',
+	'PRINCIPAL:5',
+	'ALTERNATIVE:1',
+	'ALTERNATIVE:2',
+	'MINOR'
+);
+
+if ( ! grep { $_ eq $ref_pi_label } @known_pi_labels ) {
+	die("unknown APPRIS label: '$ref_pi_label'");
+}
 
 my %cmp_info;
 my @known_opt_col_names = ('ccds_id', 'mane_select');
@@ -76,7 +93,7 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 	foreach my $transc_id (@transc_ids) {
 		foreach my $trial_key (('a', 'b')) {
 			my $pi_label = $cmp_info{$gene_id}{$trial_key}{$transc_id}{'pi_label'};
-			if ($pi_label eq 'PRINCIPAL:1') {
+			if ($pi_label eq $ref_pi_label) {
 				$p1_set_info{$trial_key}->insert($transc_id);
 			}
 		}
@@ -86,7 +103,7 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 		foreach my $transc_id (@transc_ids) {
 			my $pi_label_a = $cmp_info{$gene_id}{'a'}{$transc_id}{'pi_label'};
 			my $pi_label_b = $cmp_info{$gene_id}{'b'}{$transc_id}{'pi_label'};
-			if ( grep(/^PRINCIPAL:1$/, ($pi_label_a, $pi_label_b)) ) {
+			if ( grep { $_ eq $ref_pi_label } ($pi_label_a, $pi_label_b) ) {
 				my %transc_info = (
 					'gene_id' => $gene_id,
 					'transc_id' => $transc_id,
