@@ -87,7 +87,8 @@ my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
 my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 0 );
 my $count_terminal_gaps = $EXP_CFG->val( 'matador3d', 'count_terminal_gaps', 0 );
-my $recal_align_scores = $EXP_CFG->val( 'matador3d', 'recal_align_scores', 0 );
+my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 0 );
+my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 0 );
 
 #####################
 # Method prototypes #
@@ -485,7 +486,7 @@ sub _check_alignment($$$)
 			my $align_identity = 0;			
 			$align_identity = $identities/$align_residues*100 if ( $align_residues != 0);
 			$align_identity = sprintf("%.2f", $align_identity);
-			if ( $recal_align_scores ) {
+			if ($recal_identity_scores) {
 				if ($identity >= 40)
 					{$totalidentity = 1}
 				elsif ($identity >= 30)
@@ -522,28 +523,51 @@ sub _check_alignment($$$)
 			my $totalgaps = 0;
 			my $gaps = 0;
 			$gaps = ( $gapres / ($mini_cds_residues + $targ_gapres) ) *100;
-			if ($gaps <= 3)
-				{$totalgaps = 1}
-			elsif ($gaps <= 6)
-				{$totalgaps = 0.80}
-			elsif ($gaps <= 10)
-				{$totalgaps = 0.50}
-			elsif ($gaps <= 15)
-				{$totalgaps = 0.33}
-			elsif ($gaps <= 20)
-				{$totalgaps = 0.20}
-			elsif ($gaps <= 25)
-				{$totalgaps = 0}
-			elsif ($gaps > 50)
-				{$totalgaps = -1}
-			elsif ($gaps > 40)
-				{$totalgaps = -0.75}
-			elsif ($gaps > 30)
-				{$totalgaps = -0.5}
-			elsif ($gaps > 25)
-				{$totalgaps = -0.25}
-			else
-				{$totalgaps = 0}			
+			if ($recal_gap_scores) {
+				if ($gaps <= 3)
+					{$totalgaps = 1}
+				elsif ($gaps <= 6)
+					{$totalgaps = 0.8}
+				elsif ($gaps <= 10)
+					{$totalgaps = 0.7}
+				elsif ($gaps <= 15)
+					{$totalgaps = 0.6}
+				elsif ($gaps <= 20)
+					{$totalgaps = 0.5}
+				elsif ($gaps <= 25)
+					{$totalgaps = 0.4}
+				elsif ($gaps <= 30)
+					{$totalgaps = 0.3}
+				elsif ($gaps <= 40)
+					{$totalgaps = 0.1}
+				elsif ($gaps <= 50)
+					{$totalgaps = 0.0}
+				elsif ($gaps > 50)
+					{$totalgaps = -0.5}
+			} else {
+				if ($gaps <= 3)
+					{$totalgaps = 1}
+				elsif ($gaps <= 6)
+					{$totalgaps = 0.80}
+				elsif ($gaps <= 10)
+					{$totalgaps = 0.50}
+				elsif ($gaps <= 15)
+					{$totalgaps = 0.33}
+				elsif ($gaps <= 20)
+					{$totalgaps = 0.20}
+				elsif ($gaps <= 25)
+					{$totalgaps = 0}
+				elsif ($gaps > 50)
+					{$totalgaps = -1}
+				elsif ($gaps > 40)
+					{$totalgaps = -0.75}
+				elsif ($gaps > 30)
+					{$totalgaps = -0.5}
+				elsif ($gaps > 25)
+					{$totalgaps = -0.25}
+				else
+					{$totalgaps = 0}
+			}
 			$logger->debug("\tGaps: $gaps = $gapres/$mini_cds_residues*100\n");
 			$logger->debug("\tTotal gaps: $totalgaps\n");
 	
