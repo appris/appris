@@ -103,7 +103,7 @@ foreach my $run_dir (@run_dirs) {
 
 if (@pi_recs) {
 
-	print("Pulled APPRIS results for ".scalar(@pi_recs)." transcripts, ".$num_genes." genes.\n");
+	print("Pulled APPRIS results for ".$num_genes."/".scalar(@run_dirs)." genes.\n");
 	open(my $fh, '>', $out_file) or die("failed to open file '${out_file}'");
 	print $fh join("\t", ('gene_id', 'transc_id', 'pi_label', 'ccds_id'))."\n";
 	foreach my $pi_rec (@pi_recs) {
