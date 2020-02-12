@@ -16,6 +16,7 @@ my ($steps) = undef;
 my ($release) = undef;
 my ($relnotes_file) = undef;
 my ($conf_file) = undef;
+my ($dev_mode) = undef;
 my ($loglevel) = undef;
 
 &GetOptions(
@@ -23,6 +24,7 @@ my ($loglevel) = undef;
 	'release|r=s'		=> \$release,
 	'notes|n=s'			=> \$relnotes_file,	
 	'conf|c=s'			=> \$conf_file,
+	'dev'				=> \$dev_mode,
 	'loglevel|l=s'		=> \$loglevel,
 );
 
@@ -55,7 +57,7 @@ use vars qw(
 	$FTP_REFSEQ_PUB
 );
 
-$SRV_NAME				= 'appris@appris';
+$SRV_NAME				= $dev_mode ? 'appris-dev@appris' : 'appris@appris' ;
 $SRV_DB_HOST			= 'localhost';
 $SRV_DB_USER			= 'appris';
 $SRV_DB_PWD				= 'appris.appris';
@@ -594,6 +596,8 @@ Executes all APPRIS 'steps
 		
   -c, --conf      {file}   <Config file for all gene datatasets (JSON format)>
   
+  --dev   <Run pipeline against development server>
+
 =head1 EXAMPLE
 
 	appristools_srv \
