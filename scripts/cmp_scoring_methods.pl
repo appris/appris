@@ -111,10 +111,18 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 					'pi_label_b' => $pi_label_b
 				);
 
-				# TODO: check if optional column values are identical for 'a' and 'b'
 				foreach my $col_name (@obs_opt_col_names) {
-				  my $trial_key = $opt_col_map{$col_name}->[0];
-					$transc_info{$col_name} = $cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name};
+					my @trial_keys = $opt_col_map{$col_name}->members;
+					my $col_value;
+					foreach my $trial_key (@trial_keys) {
+						my $trial_col_value = $cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name};
+						if ( ! defined $col_value ) {
+							$col_value = $trial_col_value;
+						} elsif ( $trial_col_value ne $col_value ) {
+							die("inconsistent values in '${col_name}' column (${trial_col_value} vs ${col_value})");
+						}
+					}
+					$transc_info{$col_name} = $col_value;
 				}
 
 				$diff_info{$gene_id}{$transc_id} = \%transc_info;
