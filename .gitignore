@@ -54,3 +54,7 @@ db/*
 
 # modules
 modules
+
+# text editor backup files
+*~
+
