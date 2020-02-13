@@ -166,6 +166,14 @@ Requirements
 
 - [Ensembl API](http://www.ensembl.org/info/docs/api/api_installation.html)
 
+
+Other Dependencies
+------------------
+
+The command `appris_retrieve_method_data` (used in `appristools`) depends on
+[bedToBigBed](https://www.encodeproject.org/software/bedToBigBed/).
+
+
 Installation
 ------------
 
