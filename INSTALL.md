@@ -127,7 +127,7 @@ Requirements
   	- nodejs
   	```
 
-- Perl requirements (recommendation, use [CPAN] (https://www.perl.org/cpan.html)):
+- Perl requirements (recommendation, use [CPAN](https://www.perl.org/cpan.html)):
 	```
 	- FindBin
 	- Getopt::Long
@@ -160,12 +160,11 @@ Requirements
 	```
 	Note: See the lib/appris_perllib/Makefile.PL file
 
-- [MySQL Client] (http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
+- [MySQL Client](http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
 
-- [BioPerl] (http://bioperl.org/) (at least, 1.2.3)
+- [BioPerl](http://bioperl.org/) (at least, 1.2.3)
 
-- [Ensembl API] (http://www.ensembl.org/info/docs/api/api_installation.html)
-
+- [Ensembl API](http://www.ensembl.org/info/docs/api/api_installation.html)
 
 Installation
 ------------
