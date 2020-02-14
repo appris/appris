@@ -214,6 +214,32 @@ sub upload_annotfiles()
 		system($cmd);
 	};
 	throw("updating datafiles to server") if($@);
+
+	my @cached_species;
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		my @cfg_species_datasets = map { @{$_->{'datasets'}} } @{$cfg_species->{'assemblies'}};
+		my $num_current_datasets = grep {
+			! exists $_->{'type'} or $_->{'type'} eq 'current'
+		} @cfg_species_datasets;
+		my $num_cached_datasets = grep {
+			exists $_->{'type'} and $_->{'type'} =~ /^(?:archive|current):(.*)$/
+		} @cfg_species_datasets;
+		if ( $num_cached_datasets > 0 && $num_current_datasets == 0 ) {
+			push(@cached_species, $species_id);
+		}
+	}
+	if (@cached_species) {
+		info("-- make directories on server for species with only cached datasets...");
+		my $species_dirnames = join(' ', @cached_species);
+		my $srv_data_dir = $srv_reldir.'/datafiles';
+		eval {
+			my ($cmd) = "ssh $SRV_NAME 'mkdir -p $srv_data_dir; cd $srv_data_dir; mkdir -p $species_dirnames'";
+			info($cmd);
+			system($cmd);
+		};
+		throw("creating species directories") if($@);
+	}
 	
 	# import databases into server
 	info("-- import databases into server...");
@@ -247,7 +273,7 @@ sub upload_annotfiles()
 
 	# link to archives
 	info("-- link to archives and unchanged current data...");
-	my ($cmd_imp) = "";
+	my ($cmd_link) = "";
 	foreach my $species_id ( @CFG_SPECIES ) {
 		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
 		my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;		
@@ -263,7 +289,7 @@ sub upload_annotfiles()
 					if ( $ds_type =~ /^(?:archive|current):(.*)$/ ) {
 						my ($srv_arhdir) = $SRV_PUB_RELEASE_DIR.'/'.$1;
 						my ($srv_arhspe_dir) = $srv_arhdir.'/datafiles/'.$species_id;
-						$cmd_imp .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
+						$cmd_link .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
 					}
 
 					# get the FIRST dataset id from the current assembly
@@ -275,14 +301,14 @@ sub upload_annotfiles()
 			}
 			# create assembly link to first current dataset
 			if ( $as_ds_id ne '' ) {
-				$cmd_imp .= "cd $srv_relspe_dir && ln -s $as_ds_id $as_name && ";
+				$cmd_link .= "cd $srv_relspe_dir && ln -s $as_ds_id $as_name && ";
 			}
 		}		
 	}
-	if ( $cmd_imp ne '' ) {
+	if ( $cmd_link ne '' ) {
 		eval {
-			$cmd_imp =~ s/\s*\&\&\s*$//g;
-			my ($cmd) = "ssh $SRV_NAME '$cmd_imp'";
+			$cmd_link =~ s/\s*\&\&\s*$//g;
+			my ($cmd) = "ssh $SRV_NAME '$cmd_link'";
 			info($cmd);
 			system($cmd);
 		};
