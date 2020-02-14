@@ -1151,7 +1151,7 @@ sub parse_spade_rst($)
 		#domain  289     333     289     335     PF08736.4       FA      Family  1       45      47      66.0    1.5e-18 1       No_clan [ext:ENST00000373800]
 		#domain  425     473     425     473     PF04382.6       SAB     Domain  1       48      48      93.1    4.6e-27 1       No_clan [discarded]
 		#domain  506     619     505     619     PF05902.6       4_1_CTD Domain  2       114     114     181.9   2.3e-54 1       No_clan
-        if ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
+        if ( $transcript_result=~/^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+/ )
 		{
 			my ($id) = $1;
 			my ($domain_integrity) = $2;
