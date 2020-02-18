@@ -2324,54 +2324,50 @@ sub parse_proteo($$)
 			if ( $transcript->translate and $transcript->translate->sequence ) {				
 				if ( exists $report->{'peptides'} ) {
 					my ($strand) = $transcript->strand;
-					foreach my $residue (@{$report->{'peptides'}}) {
-						my ($region);
-						if ( $transcript->translate->cds ) { # with CDS coords from GTF file
-							my ($protein_sequence) = $transcript->translate->sequence;
-							my ($mapped_pep_sequence) = $residue->{'sequence'};
-							my ($index_peptide_position) = index($protein_sequence, $mapped_pep_sequence);
-							next if($index_peptide_position == -1); # we have not found the sequence
+					foreach my $region_info (@{$report->{'peptides'}}) {
+						my ($protein_sequence) = $transcript->translate->sequence;
+						my ($mapped_pep_sequence) = $region_info->{'sequence'};
+						my ($mapped_pep_pattern) = $mapped_pep_sequence;
+						# treat I (isoleucine) and L (leucine) as equivalent
+						$mapped_pep_pattern =~ s/[IL]/\[IL\]/g;
+						while ( $protein_sequence =~ m/$mapped_pep_pattern)/gi ) {
+							my ($index_peptide_position) = $-[0];
 							my ($start_peptide_position) = $index_peptide_position + 1;
 							my ($stop_peptide_position) = $start_peptide_position + length($mapped_pep_sequence)-1;
-							
-							my ($pro_coord_start) = get_coords_from_residue($transcript, $start_peptide_position);
-							my ($pro_coord_end) = get_coords_from_residue($transcript, $stop_peptide_position);
-							$residue->{'trans_strand'} = $strand;
-							if ( $strand eq '-' ) {
-								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+							my ($region);
+							if ( $transcript->translate->cds ) { # with CDS coords from GTF file
+								my ($pro_coord_start) = get_coords_from_residue($transcript, $start_peptide_position);
+								my ($pro_coord_end) = get_coords_from_residue($transcript, $stop_peptide_position);
+								$region_info->{'trans_strand'} = $strand;
+								if ( $strand eq '-' ) {
+									$region_info->{'trans_end'} = $pro_coord_start->{'start'};
+									$region_info->{'trans_start'} = $pro_coord_end->{'end'};
+								}
+								else {
+									$region_info->{'trans_start'} = $pro_coord_start->{'start'};
+									$region_info->{'trans_end'} = $pro_coord_end->{'end'};
+								}
+								$region = APPRIS::Analysis::PROTEORegion->new (
+										-start				=> $region_info->{'trans_start'},
+										-end				=> $region_info->{'trans_end'},
+										-strand				=> $region_info->{'trans_strand'},
+										-pstart				=> $start_peptide_position,
+										-pend				=> $stop_peptide_position,
+										-sequence			=> $region_info->{'sequence'},
+										-num_experiments	=> $region_info->{'num_experiments'},
+										-experiments		=> $region_info->{'experiments'},
+								);
+							} else {
+								$region = APPRIS::Analysis::PROTEORegion->new (
+										-pstart				=> $start_peptide_position,
+										-pend				=> $stop_peptide_position,
+										-sequence			=> $region_info->{'sequence'},
+										-num_experiments	=> $region_info->{'num_experiments'},
+										-experiments		=> $region_info->{'experiments'},
+								);
 							}
-							else {
-								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
-							}
-							$region = APPRIS::Analysis::PROTEORegion->new (
-											-start								=> $residue->{'trans_start'},
-											-end								=> $residue->{'trans_end'},
-											-strand								=> $residue->{'trans_strand'},						
-											-pstart								=> $start_peptide_position,					
-											-pend								=> $stop_peptide_position,
-											-sequence							=> $residue->{'sequence'},
-											-num_experiments					=> $residue->{'num_experiments'},
-											-experiments						=> $residue->{'experiments'},
-							);							
+							push(@{$regions}, $region);
 						}
-						else {
-							my ($protein_sequence) = $transcript->translate->sequence;
-							my ($mapped_pep_sequence) = $residue->{'sequence'};
-							my ($index_peptide_position) = index($protein_sequence, $mapped_pep_sequence);
-							next if($index_peptide_position == -1); # we have not found the sequence
-							my ($start_peptide_position) = $index_peptide_position + 1;
-							my ($stop_peptide_position) = $start_peptide_position + length($mapped_pep_sequence)-1;							
-							$region = APPRIS::Analysis::PROTEORegion->new (
-											-pstart								=> $start_peptide_position,					
-											-pend								=> $stop_peptide_position,
-											-sequence							=> $residue->{'sequence'},
-											-num_experiments					=> $residue->{'num_experiments'},
-											-experiments						=> $residue->{'experiments'},
-							);							
-						}
-						push(@{$regions}, $region);
 					}
 				}
 			}
