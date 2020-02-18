@@ -1,6 +1,8 @@
-#/usr/bin/env perl -w
+#/usr/bin/env perl
 
+use 5.14.0;
 use strict;
+use warnings::register;
 
 use Cwd;
 use File::Find;
@@ -69,7 +71,10 @@ while (my ($trial_key, $trial_file) = each(%file_map) ) {
 		};
 
 		foreach my $col_name (@file_opt_col_names) {
-			$cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name} = $fields[ $name_to_idx{$col_name} ];
+			my $col_value = $fields[ $name_to_idx{$col_name} ];
+			if ( $col_value && $col_value ne '-' ) {
+				$cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name} = $col_value;
+			}
 		}
 	}
 	close $fh;
@@ -115,10 +120,25 @@ while (my($gene_id, $gene_info) = each %cmp_info) {
 					my @trial_keys = $opt_col_map{$col_name}->members;
 					my $col_value;
 					foreach my $trial_key (@trial_keys) {
+						if ( ! (exists($cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name})
+								&& defined($cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name})) ) {
+							next;
+						}
 						my $trial_col_value = $cmp_info{$gene_id}{$trial_key}{$transc_id}{$col_name};
 						if ( ! defined $col_value ) {
 							$col_value = $trial_col_value;
 						} elsif ( $trial_col_value ne $col_value ) {
+							if ( $col_name eq 'ccds_id' and
+								 ( $col_value =~ /\.\d+$/ xor $trial_col_value =~ /\.\d+$/ ) ) {
+								my $bare_ccds_id = $col_value =~ s/\.\d+$//r;
+								my $bare_trial_ccds_id = $trial_col_value =~ s/\.\d+$//r;
+								if ( $bare_trial_ccds_id eq $bare_ccds_id ) {
+									if ( $trial_col_value =~ /\.\d+$/ ) {
+										$col_value = $trial_col_value;  # keep more specific CCDS ID
+									}
+									next;
+								}
+							}
 							die("inconsistent values in '${col_name}' column (${trial_col_value} vs ${col_value})");
 						}
 					}
