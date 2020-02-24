@@ -30,7 +30,7 @@ The methods in APPRIS are the following:
   * Prediction of signal peptide and sub-cellular location, CRASH
   * Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
 
-![Image of APPRIS pipeline](http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
+![Image of APPRIS pipeline](server/app/img/APPRIS_analysis.png)
 
 
 Installation
