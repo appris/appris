@@ -799,12 +799,18 @@ sub get_final_annotations($$$$$$)
 	# scan transcripts sorted by appris score
 	if ( defined $s_scores and exists $s_scores->{$method} and exists $s_scores->{$method}->{'scores'} and scalar(keys(%{$s_scores->{$method}->{'scores'}})) > 0 )
 	{
+		# 0. create isoform list and report for gene.
+		my ($princ_list, $isof_report) = init_isoform_report($gene);
+#		warning("GENE_0: \n".Dumper($gene)."\n");
+#		warning("PRINC_LIST_0: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_REP_0: \n".Dumper($isof_report)."\n");
+
 		# 1_1 acquire the dominant transcripts from first-phase appris score.
 		# They have to pass the cutoff to be added into "principal" list
-		my ($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
-#		warning("GENE_2: \n".Dumper($gene)."\n");
-#		warning("PRINC_LIST_1: \n".Dumper($princ_list)."\n");
-#		warning("PRINC_REP_1: \n".Dumper($isof_report)."\n");
+		$princ_list = step_appris($princ_list, $isof_report, $s_scores->{$method});
+#		warning("PRINC_LIST_1_1: \n".Dumper($princ_list)."\n");
+#		warning("PRINC_REP_1_1: \n".Dumper($isof_report)."\n");
+
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 1;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -815,7 +821,9 @@ sub get_final_annotations($$$$$$)
 			# 1_2 acquire the dominant transcripts from second-phase appris score.
 			my $phase_2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
 			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
-			($princ_list, $isof_report) = step_appris($gene, $s_scores->{$method});
+			$princ_list = step_appris($princ_list, $isof_report, $s_scores->{$method});
+#			warning("PRINC_LIST_1_2: \n".Dumper($princ_list)."\n");
+#			warning("PRINC_REP_1_2: \n".Dumper($isof_report)."\n");
 
 			if ( is_unique($princ_list, $isof_report) ) {
 				$tag = 1;
@@ -932,22 +940,19 @@ sub is_unique($$)
 	
 } # end is_unique
 
-sub step_appris($$)
-{
-	my ($gene, $s_scores) = @_;
-	my ($gene_id) = $gene->stable_id;
-	my ($princ_list, $isof_report);
-	my ($ccds_ids);
 
-	# scan the transcripts from the sorted APPRIS scores
-	my ($highest_score) = $s_scores->{'max'};
-	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$s_scores->{'scores'}});			
-	for ( my $i = 0; $i < scalar(@sorted_ap_scores); $i++ ) {
-		
-		my ($ap_score) = $sorted_ap_scores[$i];		
-		foreach my $transc_id (@{$s_scores->{'scores'}->{$ap_score}}) {
-			my ($index) = $gene->{'_index_transcripts'}->{$transc_id};
-			my ($transcript) = $gene->transcripts->[$index];
+sub init_isoform_report($)
+{
+	my ($gene) = @_;
+	my ($princ_list, $isof_report);
+
+	# generate initial report for each transcript of gene
+	while( my($transc_id, $transc_idx) = each %{$gene->{'_index_transcripts'}} ) {
+		my ($transcript) = $gene->transcripts->[$transc_idx];
+
+		if ( $transcript->translate and $transcript->translate->sequence ) {
+			$princ_list->{$transc_id} = 1;
+
 			my ($transc_name) = $transcript->external_name;
 			my ($transl_seq) = $transcript->translate->sequence;
 			my ($transc_rep) = {
@@ -964,26 +969,11 @@ sub step_appris($$)
 						if ( defined $ccds_id ) {
 							$ccds_id =~ s/CCDS//; $ccds_id =~ s/\.\d+$//;
 							$transc_rep->{'ccds'} = $ccds_id;
-							# Only print warning message if CCDS is duplicated.
-							unless ( exists $ccds_ids->{$transl_seq} ) {
-								$ccds_ids->{$transl_seq} = $ccds_id;
-							}
-							else {
-								if ( $ccds_ids->{$transl_seq} ne $ccds_id ) {
-									my ($old_ccds_id) = $ccds_ids->{$transl_seq};
-									my ($new_ccds_id) = $ccds_id;
-									if ( $new_ccds_id < $old_ccds_id ) {
-#										warning("$gene_id has duplicate CCDS ids for the same sequence. We change to the eldest id: CCDS$old_ccds_id -> CCDS$new_ccds_id\n");
-									}
-									else {
-#										warning("$gene_id has duplicate CCDS ids for the same sequence. We keep the eldest id: CCDS$new_ccds_id -> CCDS$old_ccds_id \n");
-									}
-								}
-							}						
 						}
 					}
 				}
 			}
+			# save MANE_Select tag
 			if ( $transcript->tag ) {
 				my @transc_tags = split(/,/, $transcript->tag);
 				if ( grep { $_ eq 'MANE_Select' } @transc_tags ) {
@@ -994,26 +984,57 @@ sub step_appris($$)
 			if ( $transcript->tsl and $transcript->tsl eq '1' ) {
 				$transc_rep->{'tsl'} = 1;
 			}
-					
+
+			push(@{$isof_report}, $transc_rep);
+		}
+	}
+	return ($princ_list, $isof_report);
+
+} # end init_isoform_report
+
+sub step_appris($$$)
+{
+	my ($i_princ_list, $isof_report, $s_scores) = @_;
+	my ($princ_list);
+
+	# map transcript IDs to report indices, clear any 'principal'
+	# labels that may have been added in a previous APPRIS step
+	my (%index_transcripts);
+	foreach my $transc_idx ( 0 .. $#{ $isof_report } ) {
+		my $transc_id = $isof_report->[$transc_idx]{'id'};
+		$index_transcripts{$transc_id} = $transc_idx;
+		if ( exists $isof_report->[$transc_idx]{'principal'} ) {
+			delete $isof_report->[$transc_idx]{'principal'};
+		}
+	}
+
+	# scan the transcripts from the sorted APPRIS scores
+	my ($highest_score) = $s_scores->{'max'};
+	my (@sorted_ap_scores) = sort { $b <=> $a } keys (%{$s_scores->{'scores'}});
+	my ($num_distinct_scores) = scalar(@sorted_ap_scores);
+	for ( my $i = 0; $i < scalar(@sorted_ap_scores); $i++ ) {
+		my ($ap_score) = $sorted_ap_scores[$i];
+
+		# filter by input principal transcript list, to take account of previous APPRIS steps
+		my @score_transc_ids = grep { exists $i_princ_list->{$_} } @{$s_scores->{'scores'}->{$ap_score}};
+
+		foreach my $transc_id (@score_transc_ids) {
 			# APPRIS says could be a principal when:
 			# 1.	the Core of pipeline has not rejected the transcript (IT DOES NOT APPLY YET)
 			# APPRIS rejected a transcript when:
 			# 2.	it is a NMD: app_score is -1. Exception: we accept the last terms when the transcript is unique
 			#
 			my ($core_flag) = 1;
-			my ($unique_transc) = ( scalar(keys(%{$s_scores->{'scores'}})) == 1 and scalar(@{$s_scores->{'scores'}->{$sorted_ap_scores[0]}}) >= 1 ) ? 1 : 0;
+			my ($unique_transc) = ( $num_distinct_scores == 1 and scalar(@score_transc_ids) >= 1 ) ? 1 : 0 ;
 			if ( $core_flag == 1 ) {
 				if ( ( ($highest_score - $ap_score) <=  $main::APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
-					$transc_rep->{'principal'} = 1;
+					$isof_report->[$index_transcripts{$transc_id}]{'principal'} = 1;
 					$princ_list->{$transc_id} = 1;
-				}				
+				}
 			}
-			
-			push(@{$isof_report}, $transc_rep);
-
-		}			
+		}
 	}
-	return ($princ_list, $isof_report);
+	return ($princ_list);
 	
 } # end step_appris
 
