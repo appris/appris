@@ -2330,7 +2330,7 @@ sub parse_proteo($$)
 						my ($mapped_pep_pattern) = $mapped_pep_sequence;
 						# treat I (isoleucine) and L (leucine) as equivalent
 						$mapped_pep_pattern =~ s/[IL]/\[IL\]/g;
-						while ( $protein_sequence =~ m/$mapped_pep_pattern)/gi ) {
+						while ( $protein_sequence =~ m/$mapped_pep_pattern/gi ) {
 							my ($index_peptide_position) = $-[0];
 							my ($start_peptide_position) = $index_peptide_position + 1;
 							my ($stop_peptide_position) = $start_peptide_position + length($mapped_pep_sequence)-1;
