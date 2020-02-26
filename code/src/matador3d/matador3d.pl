@@ -84,11 +84,11 @@ my ($logger) = new APPRIS::Utils::Logger(
 $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
-my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 0 );
-my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 0 );
+my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 1 );
+my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 1 );
 my $count_terminal_gaps = $EXP_CFG->val( 'matador3d', 'count_terminal_gaps', 0 );
-my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 0 );
-my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 0 );
+my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 1 );
+my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 1 );
 
 #####################
 # Method prototypes #

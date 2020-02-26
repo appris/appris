@@ -31,9 +31,10 @@ use vars qw(
 	$NO_LABEL
 
 	$METHOD_METRICS
-	$METRIC_DEFAULTS
+	$UNPHASED_METRICS
 	$METRIC_LABELS
 	$METRIC_PHASES
+	$METRIC_EFF_RANGES
 	$METRIC_WEIGHTED
 );
 
@@ -56,7 +57,7 @@ $METHOD_METRICS = {
 	'proteo' => ['proteo'],
 	'appris' => ['appris']
 };
-$METRIC_DEFAULTS = [
+$UNPHASED_METRICS = [
 	'firestar',
 	'matador3d',
 	'matador3d2',
@@ -110,6 +111,12 @@ $METRIC_PHASES = {
 		'appris' => [1, 2]
 	}
 };
+$METRIC_EFF_RANGES = {
+	'firestar'	=> 2,
+	'matador3d'	=> 3,
+	'spade_integrity' => 2.5,
+	'spade' => 100  # Spade bitscore
+};
 $METRIC_WEIGHTED = {
 	'firestar'	=> [{
 					  'max'    => 2,
@@ -133,7 +140,7 @@ $METRIC_WEIGHTED = {
 					}],
 	'matador3d'	=> 6,
 	'matador3d2'=> 6,
-	'spade_integrity' => 6,
+	'spade_integrity' => 2,
 	'spade' => 6,  # Spade bitscore
 	'corsair'	=> [{
 					  'max'    => 3,
@@ -161,16 +168,16 @@ sub get_method_metric_names($) {
 	return join(',', @metrics);
 }
 
-sub default_metric_filter($) {
+sub unphased_metric_filter($) {
 	my ($metrics_str) = @_;
 	my @metrics = split(',', $metrics_str);
-	my @default_metrics;
+	my @unphased_metrics;
 	foreach my $metric (@metrics) {
-		if ( grep {$_ eq $metric} @{$METRIC_DEFAULTS} ) {
-			push(@default_metrics, $metric);
+		if ( grep {$_ eq $metric} @{$UNPHASED_METRICS} ) {
+			push(@unphased_metrics, $metric);
 		}
 	}
-	return join(',', @default_metrics);
+	return join(',', @unphased_metrics);
 }
 
 sub phase_metric_filter($$$) {
@@ -615,8 +622,6 @@ sub get_normalized_method_scores($$$\$\$)
 	my ($gene, $annots, $involved_metrics, $ref_scores, $ref_s_scores) = @_;
 	my ($nscores);
 
-	my @exp_metrics = ('firestar', 'matador3d', 'spade', 'spade_integrity');
-
 	# obtain normalized scores for each method
 	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
@@ -634,10 +639,10 @@ sub get_normalized_method_scores($$$\$\$)
 				if ( exists $$ref_scores->{$transcript_id}->{$label} ) {
 					$sc = $$ref_scores->{$transcript_id}->{$label};
 
-					if ( grep { $_ eq $metric } @exp_metrics ) {
+					if ( grep { $_ eq $metric } keys %{$METRIC_EFF_RANGES} ) {
 
 						if ( $max > 0.0 ) {
-							my $eff_range = $main::EXP_CFG->val( $metric, 'effective_range', $max );
+							my $eff_range = $main::EXP_CFG->val( $metric, 'effective_range', $METRIC_EFF_RANGES->{$metric} );
 							if ( looks_like_number($eff_range) && $eff_range > 0.0 ) {
 								$eff_range = $eff_range <= $max ? $eff_range : $max ;
 							} else {
@@ -648,8 +653,7 @@ sub get_normalized_method_scores($$$\$\$)
 						} else {
 							$n_sc = 0;
 						}
-
-          } else {
+					} else {
 						if ( defined $appris_label && $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
 						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
 						else { $n_sc = 0 }
@@ -782,16 +786,16 @@ sub get_final_annotations($$$$$$)
 	my ($tag) = 0;
 
 	my $mane_select = $main::EXP_CFG->val( 'appris', 'mane_select', 0 );
-	my $appris_score_mode = $main::EXP_CFG->val( 'appris', 'score_mode', 'default' );
+	my $appris_score_mode = $main::EXP_CFG->val( 'appris', 'score_mode', 'phased_bi' );
 	if ( $appris_score_mode =~ /^phased_/ ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 1);
 		get_appris_scores($gene, $phase_1_metrics, $scores, $s_scores, $nscores);
 	} elsif ( $appris_score_mode eq 'all' ) {
 		# include all metrics independently, even those from the same method
 		get_appris_scores($gene, $involved_metrics, $scores, $s_scores, $nscores);
-	} elsif ( $appris_score_mode eq 'default' ) {
-		my $default_metrics = default_metric_filter($involved_metrics);
-		get_appris_scores($gene, $default_metrics, $scores, $s_scores, $nscores);
+	} elsif ( $appris_score_mode eq 'unphased' ) {
+		my $unphased_metrics = unphased_metric_filter($involved_metrics);
+		get_appris_scores($gene, $unphased_metrics, $scores, $s_scores, $nscores);
 	} else {
 		die("unknown APPRIS score mode: ${appris_score_mode}");
 	}

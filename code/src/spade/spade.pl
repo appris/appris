@@ -78,7 +78,7 @@ my ($logger) = new APPRIS::Utils::Logger(
 $logger->init_log($str_params);
 
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
-my $si_score_mode = $EXP_CFG->val( 'spade_integrity', 'score_mode', 'default' );
+my $recal_integrity_score = $EXP_CFG->val( 'spade_integrity', 'recal_integrity_score', 1 );
 
 #####################
 # Method prototypes #
@@ -173,20 +173,15 @@ sub _calc_domain_integrity_score($$$$) {
 	my ($num_domains, $num_possibly_damaged_domains, $num_damaged_domains, $num_wrong_domains) = @_;
 
 	my $domain_integrity_score;
-	if ( $si_score_mode eq 'dropoff' ) {
+	if ($recal_integrity_score) {
 		$domain_integrity_score = ($num_domains*1)
-		                        + ($num_possibly_damaged_domains*0.75);
-	} elsif ( $si_score_mode eq 'thirds' ) {
-		$domain_integrity_score = ($num_domains*1)
-		                        + ($num_possibly_damaged_domains*0.667)
-													  + ($num_damaged_domains*0.333);
-	} elsif ( $si_score_mode eq 'default' ) {
-		$domain_integrity_score = ($num_domains*1)
-		                        + ($num_possibly_damaged_domains*0.75)
-										        + ($num_damaged_domains*0.5)
-											      + ($num_wrong_domains*0.25);
+			+ ($num_possibly_damaged_domains*0.667)
+			+ ($num_damaged_domains*0.333);
 	} else {
-		die("unknown Spade integrity score mode: ${si_score_mode}");
+		$domain_integrity_score = ($num_domains*1)
+			+ ($num_possibly_damaged_domains*0.75)
+			+ ($num_damaged_domains*0.5)
+			+ ($num_wrong_domains*0.25);
 	}
 
 	return $domain_integrity_score
