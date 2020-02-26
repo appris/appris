@@ -16,6 +16,7 @@ my ($steps) = undef;
 my ($release) = undef;
 my ($relnotes_file) = undef;
 my ($conf_file) = undef;
+my ($dev_mode) = undef;
 my ($loglevel) = undef;
 
 &GetOptions(
@@ -23,6 +24,7 @@ my ($loglevel) = undef;
 	'release|r=s'		=> \$release,
 	'notes|n=s'			=> \$relnotes_file,	
 	'conf|c=s'			=> \$conf_file,
+	'dev'				=> \$dev_mode,
 	'loglevel|l=s'		=> \$loglevel,
 );
 
@@ -55,7 +57,7 @@ use vars qw(
 	$FTP_REFSEQ_PUB
 );
 
-$SRV_NAME				= 'appris@appris';
+$SRV_NAME				= $dev_mode ? 'appris-dev@appris' : 'appris@appris' ;
 $SRV_DB_HOST			= 'localhost';
 $SRV_DB_USER			= 'appris';
 $SRV_DB_PWD				= 'appris.appris';
@@ -163,6 +165,7 @@ sub upload_annotfiles()
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			for ( my $i = 0; $i < scalar(@{$cfg_assembly->{'datasets'}}); $i++ ) {
 				my ($cfg_dataset) = $cfg_assembly->{'datasets'}->[$i];
+				next if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} ne 'current' );
 				if ( exists $cfg_dataset->{'database'} ) {
 					my ($as_name) = $cfg_assembly->{'name'};
 					my ($ds_id) = $cfg_dataset->{'id'};
@@ -211,6 +214,32 @@ sub upload_annotfiles()
 		system($cmd);
 	};
 	throw("updating datafiles to server") if($@);
+
+	my @cached_species;
+	foreach my $species_id ( @CFG_SPECIES ) {
+		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
+		my @cfg_species_datasets = map { @{$_->{'datasets'}} } @{$cfg_species->{'assemblies'}};
+		my $num_current_datasets = grep {
+			! exists $_->{'type'} or $_->{'type'} eq 'current'
+		} @cfg_species_datasets;
+		my $num_cached_datasets = grep {
+			exists $_->{'type'} and $_->{'type'} =~ /^(?:archive|current):(.*)$/
+		} @cfg_species_datasets;
+		if ( $num_cached_datasets > 0 && $num_current_datasets == 0 ) {
+			push(@cached_species, $species_id);
+		}
+	}
+	if (@cached_species) {
+		info("-- make directories on server for species with only cached datasets...");
+		my $species_dirnames = join(' ', @cached_species);
+		my $srv_data_dir = $srv_reldir.'/datafiles';
+		eval {
+			my ($cmd) = "ssh $SRV_NAME 'mkdir -p $srv_data_dir; cd $srv_data_dir; mkdir -p $species_dirnames'";
+			info($cmd);
+			system($cmd);
+		};
+		throw("creating species directories") if($@);
+	}
 	
 	# import databases into server
 	info("-- import databases into server...");
@@ -220,6 +249,7 @@ sub upload_annotfiles()
 		
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
+				next if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} ne 'current' );
 				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
 					my ($ds_id) = $cfg_dataset->{'id'};
 					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
@@ -242,8 +272,8 @@ sub upload_annotfiles()
 	}
 
 	# link to archives
-	info("-- link to archives...");
-	my ($cmd_imp) = "";
+	info("-- link to archives and unchanged current data...");
+	my ($cmd_link) = "";
 	foreach my $species_id ( @CFG_SPECIES ) {
 		my ($cfg_species) = $CONFIG->{'species'}->{$species_id};
 		my ($srv_relspe_dir) = $srv_reldir.'/datafiles/'.$species_id;		
@@ -252,25 +282,33 @@ sub upload_annotfiles()
 			my ($as_ds_id) = '';
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {
 				my ($ds_id) = $cfg_dataset->{'id'};
-				# link to the archives for each dataset
-				if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} =~ /^archive:(.*)$/ ) {
-					my ($srv_arhdir) = $SRV_PUB_RELEASE_DIR.'/'.$1;
-					my ($srv_arhspe_dir) = $srv_arhdir.'/datafiles/'.$species_id;
-					$cmd_imp .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
+				if ( exists $cfg_dataset->{'type'} ) {
+					my ($ds_type) = $cfg_dataset->{'type'};
+
+					# link to archived and unchanged current datasets
+					if ( $ds_type =~ /^(?:archive|current):(.*)$/ ) {
+						my ($srv_arhdir) = $SRV_PUB_RELEASE_DIR.'/'.$1;
+						my ($srv_arhspe_dir) = $srv_arhdir.'/datafiles/'.$species_id;
+						$cmd_link .= "cd $srv_relspe_dir && ln -s $srv_arhspe_dir/$ds_id $srv_relspe_dir/$ds_id && ";
+					}
+
+					# get the FIRST dataset id from the current assembly
+					if ( $as_ds_id eq '' and ( $ds_type eq 'current'
+							or $ds_type =~ /^(?:archive|current):(.*)$/ ) ) {
+						$as_ds_id = $ds_id;
+					}
 				}
-				# get the FIRST dataset id from the current assembly
-				$as_ds_id = $ds_id if ( exists $cfg_dataset->{'type'} and ($cfg_dataset->{'type'} eq 'current' or $cfg_dataset->{'type'} =~ /^archive:(.*)$/) and $as_ds_id eq '' );
 			}
 			# create assembly link to first current dataset
 			if ( $as_ds_id ne '' ) {
-				$cmd_imp .= "cd $srv_relspe_dir && ln -s $as_ds_id $as_name && ";
+				$cmd_link .= "cd $srv_relspe_dir && ln -s $as_ds_id $as_name && ";
 			}
 		}		
 	}
-	if ( $cmd_imp ne '' ) {
+	if ( $cmd_link ne '' ) {
 		eval {
-			$cmd_imp =~ s/\s*\&\&\s*$//g;
-			my ($cmd) = "ssh $SRV_NAME '$cmd_imp'";
+			$cmd_link =~ s/\s*\&\&\s*$//g;
+			my ($cmd) = "ssh $SRV_NAME '$cmd_link'";
 			info($cmd);
 			system($cmd);
 		};
@@ -584,6 +622,8 @@ Executes all APPRIS 'steps
 		
   -c, --conf      {file}   <Config file for all gene datatasets (JSON format)>
   
+  --dev   <Run pipeline against development server>
+
 =head1 EXAMPLE
 
 	appristools_srv \

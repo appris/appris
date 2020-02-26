@@ -75,10 +75,13 @@ our $FIRESTAR_MINRES		= $cfg->val( 'APPRIS_VARS', 'firestar_minres');
 our $FIRESTAR_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'firestar_cutoff');
 our $MATADOR3D_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d_cutoff');
 our $MATADOR3D2_CUTOFF		= $cfg->val( 'APPRIS_VARS', 'matador3d2_cutoff');
+our $SPADE_INTEGRITY_CUTOFF = $cfg->val( 'APPRIS_VARS', 'spade_integrity_cutoff');
 our $SPADE_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'spade_cutoff');
 our $CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 our $CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
 our $THUMP_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
+
+our ($EXP_CFG) = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 
 # Required arguments
 unless ( defined $config_file and 
@@ -250,21 +253,24 @@ sub main()
 	$logger->debug("PRE_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE_S_SCORES:\n".Dumper($s_scores)."\n");
 	
+	# get list of metrics from list of involved methods
+	my $involved_metrics = appris::get_method_metric_names($involved_methods);
+
 	# get annots of methods for each transcript
 	$logger->info("-- get annots of methods for each variant\n");
-	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_methods);
+	my ($annots) = appris::get_method_annots($gene, $s_scores, $involved_metrics);
 	$logger->debug("PRE_ANNOTS:\n".Dumper($annots)."\n");
 
-	# get scores/annots of appris for each transcript
-	$logger->info("--  get scores/annots of appris for each transcript\n");
-	my ($nscores) = appris::get_final_scores($gene, $annots, $involved_methods, $scores, $s_scores);
+	# get normalized scores of methods for each transcript
+	$logger->info("-- get normalized scores of methods for each variant\n");
+	my ($nscores) = appris::get_normalized_method_scores($gene, $annots, $involved_metrics, $scores, $s_scores);
 	$logger->debug("PRE2_SCORES:\n".Dumper($scores)."\n");
 	$logger->debug("PRE2_S_SCORES:\n".Dumper($s_scores)."\n");
 	$logger->debug("PRE2_NSCORES:\n".Dumper($nscores)."\n");
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots);
+	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs

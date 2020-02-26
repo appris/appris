@@ -1,12 +1,14 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
+use warnings::register;
 use FindBin;
 use Getopt::Long;
 use Bio::SeqIO;
 use Bio::SearchIO;
 use Config::IniFiles;
 use Data::Dumper;
+use POSIX qw(ceil);
 
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
@@ -45,7 +47,7 @@ my ($loglevel) = undef;
 	'gff=s'				=> \$gff_file,
 	'input=s'			=> \$input_file,
 	'output=s'			=> \$output_file,
-	'appris'			=> \$appris,	
+	'appris'			=> \$appris,
 	'loglevel=s'		=> \$loglevel,
 	'logfile=s'			=> \$logfile,
 	'logpath=s'			=> \$logpath,
@@ -81,6 +83,12 @@ my ($logger) = new APPRIS::Utils::Logger(
 );
 $logger->init_log($str_params);
 
+my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
+my $calc_frames = $EXP_CFG->val( 'matador3d', 'calc_frames', 1 );
+my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 1 );
+my $count_terminal_gaps = $EXP_CFG->val( 'matador3d', 'count_terminal_gaps', 0 );
+my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 1 );
+my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 1 );
 
 #####################
 # Method prototypes #
@@ -94,8 +102,10 @@ sub _get_biggest_mini_cds($$$);
 sub _get_record_annotations($);
 sub _get_appris_annotations($);
 sub _get_cds_coordinates_from_gff($$);
-sub _get_peptide_coordinate($$$$$$);
-sub _get_mini_peptide_coordinate($$$$$$$);
+sub _get_peptide_coordinate_with_frames($$$$$$);
+sub _get_peptide_coordinate_sans_frames($$$$$$);
+sub _get_mini_peptide_coordinate_with_frames($$$$$$$);
+sub _get_mini_peptide_coordinate_sans_frames($$$$$$$);
 sub _get_init_report($$$$);
 
 
@@ -107,10 +117,9 @@ sub main()
 {
 	# Get the CDS coordinates info from gff file ---------------
 	$logger->info("##Get cds coordinates from gff ---------------\n");
-	my ($trans_cds_coords, $sort_total_cds_coords) = _get_cds_coordinates_from_gff($input_file, $gff_file);
+	my ($trans_cds_coords, $mini_cds_interval_pool) = _get_cds_coordinates_from_gff($input_file, $gff_file);
     $logger->debug("##CDS coordenates ---------------\n".Dumper($trans_cds_coords));
-    $logger->debug("##Sorted CDS coordenates ---------------\n".Dumper($sort_total_cds_coords));
-
+    $logger->debug("##Mini-CDS interval pool ---------------\n".Dumper($mini_cds_interval_pool));
 
 	# For every sequence run the method ---------------
     my ($transcript_report);
@@ -127,10 +136,10 @@ sub main()
             my ($sequence) = $seq->seq;
             
             $logger->info("\n##$sequence_id ###############################\n");
-            
 
-		    # get the intersection of CDS coordinates creating "mini-cds"
-    		my ($cds_reports) = _get_init_report($sequence_id, $sequence, $trans_cds_coords, $sort_total_cds_coords);
+
+			# get the intersection of CDS coordinates creating "mini-cds"
+			my ($cds_reports) = _get_init_report($sequence_id, $sequence, $trans_cds_coords, $mini_cds_interval_pool);
 			$logger->debug("##Init CDS report ---------------\n".Dumper($cds_reports));
 
 			if(defined $cds_reports)
@@ -143,10 +152,10 @@ sub main()
 				# Run blast
 				$logger->info("\n##Running Blast ---------------\n");
 				my ($blast_sequence_file) = _run_blastpgp($sequence_id, $sequence);
-				                    			                
-                
+
+
                 # Parse blast
-				$logger->info("\n##Parsing Blast ---------------\n");                
+				$logger->info("\n##Parsing Blast ---------------\n");
                 my ($score,$pdb_cds_reports) = _parse_blast($blast_sequence_file, $cds_reports);
 				$transcript_report->{$sequence_id}->{'score'} = $score;
 				$transcript_report->{$sequence_id}->{'cds'} = $pdb_cds_reports if (defined $pdb_cds_reports);
@@ -192,7 +201,7 @@ sub main()
 sub _run_blastpgp($$)
 {
 	my ($sequence_id, $sequence) = @_;
-	
+
 	# Create cache obj
 	my ($cache) = APPRIS::Utils::CacheMD5->new(
 		-dat => $sequence,
@@ -272,7 +281,6 @@ sub _parse_blast($$)
 					    {
 					    	my ($mini_cds) = $mini_cds_list->[$iminicds];
 					    	my ($mini_cds_index) = $mini_cds->{'index'};
-					    						    	
 							if ( exists $mini_pdb_results->{$mini_cds_index} ) {
 								my ($mini_pdb_result) = $mini_pdb_results->{$mini_cds_index};
 								if ( $mini_pdb_result->{'score'} ne '-') {									
@@ -290,7 +298,7 @@ sub _parse_blast($$)
 						}			    		
 			    	}
 			    }
-			    
+			    last if ($best_hsp_only);
 			}
 		}
 	}
@@ -341,11 +349,7 @@ sub _check_alignment($$$)
 	$logger->debug("\n#PDB: $pdb_id ---------------\n");
 	$logger->debug("#IDENTITY:$pdb_identity|TARGET:$targstart:$targend|CANDIDATE:$candstart:$candend\n");           
 
-    my ($loopstart) = 0;
-	my ($loopstart2) = 0;
-	my ($align_start) = 0;
-	my ($align_end) = 0;
-
+	my ($hsp_idx_min) = 0;  # 0-offset HSP index at start of each mini-CDS alignment
 	foreach my $cds (@{$cds_list})
 	{
     	my ($cds_index) = $cds->{'index'};
@@ -361,64 +365,116 @@ sub _check_alignment($$$)
 	    	my ($mini_cds_index) = $mini_cds->{'index'};
 	    	my ($mini_cds_seq) = $mini_cds->{'seq'};	    	
 	    	my ($mini_cds_coord) = $mini_cds->{'coord'};
+			my ($mini_cds_frame) = $mini_cds->{'frame'};
 			my @boundaries = split ":", $mini_cds_index;
 			my $mini_cds_start = $boundaries[0];
 			my $mini_cds_end = $boundaries[1];
-			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");           
+			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");
 
 			# Finish when target-candidate don't cover exons or
-			# Next until exon is within target-candidate or
-			# Next if the mini range is less than 6 residues
-			if (	($mini_cds_start > $targend) or
-					($targstart > $mini_cds_end) or 
-					($mini_cds_end - $mini_cds_start < $MIN_LENGTH_CDS)
-			) {
+			# Next until exon is within target-candidate
+			if ( ($mini_cds_start > $targend) or ($targstart > $mini_cds_end) )
+			{
 				$mini_cds_score_list->{$mini_cds_index} = {
 							'index'		=> $mini_cds_index,
 							'coord'		=> $mini_cds_coord,
-							'frame'		=> $cds_frame,
+							'frame'		=> $mini_cds_frame,
 							'score'		=> '-',
 							'seq'		=> $mini_cds_seq 
 				};
 				next;
-			}			
-		        
+			}
+
 			my $gapres = 0;			
 			my $identities = 0;
-			my $res = 0;
-			my $j = 0;
-			my $n = 0;
+			my $pep_pos;
+			my $hsp_idx;
+			my $aln_len = 0;
 			my $targ_gapres = 0;
 	        
-			# Get the index start depending the minus coordinate 
+			# Get the minimum 1-offset peptide position common to the HSP and mini-CDS.
+			my ($pep_pos_min);
 			if ($mini_cds_start < $targstart)
-				{$loopstart2 = $targstart}
-			else
-				{$loopstart2 = $mini_cds_start}
-	
-			# Count and classify the residues      		
-			for ($res=$loopstart,$j=$loopstart2;$j<=$mini_cds_end;$j++,$res++)
 			{
-				if(defined $target[$res] and defined $candidate[$res])
+				$pep_pos_min = $targstart;
+
+				if ($count_terminal_gaps)
 				{
-					if ($target[$res] eq $candidate[$res])
-						{$identities++}
-					if ($target[$res] eq "-")
-						{$gapres++;$j--;$targ_gapres++}
-					if ($candidate[$res]eq "-")
-						{$gapres++;}
-					$n++;           	
+					# Count leading gaps in a notional alignment with 100% query coverage.
+					$gapres += ($targstart - $mini_cds_start) + 1;
 				}
 			}
-			
-			$loopstart = $res;
-			$align_start = $loopstart2;
-			$align_end = $loopstart2 + $n - 1; 
+			else
+			{
+				$pep_pos_min = $mini_cds_start;
+			}
 
-			$logger->debug("#loopstart: $loopstart loopstart: $loopstart2 mini_cds_end: $mini_cds_end res: $res j: $j n: $n\n");
+			# Get the maximum 1-offset peptide position common to the HSP and mini-CDS.
+			my ($pep_pos_max);
+			if ($targend < $mini_cds_end)
+			{
+				$pep_pos_max = $targend;
+
+				if ($count_terminal_gaps)
+				{
+					# Count trailing gaps in a notional alignment with 100% query coverage.
+					$gapres += ($mini_cds_end - $targend) + 1;
+				}
+			}
+			else
+			{
+				$pep_pos_max = $mini_cds_end;
+			}
+
+			# Count and classify the residues
+			for ($pep_pos=$pep_pos_min, $hsp_idx=$hsp_idx_min ; $pep_pos<=$pep_pos_max ; $pep_pos++, $hsp_idx++)
+			{
+				if(defined $target[$hsp_idx] and defined $candidate[$hsp_idx])
+				{
+					if ($target[$hsp_idx] eq $candidate[$hsp_idx])
+					{
+						$identities++;
+					}
+					elsif ($target[$hsp_idx] eq "-")
+					{
+						$gapres++;
+						$pep_pos--;
+						$targ_gapres++;
+					}
+					elsif ($candidate[$hsp_idx] eq "-")
+					{
+						$gapres++;
+					}
+					$aln_len++;
+				}
+				else
+				{
+					$logger->error("invalid HSP index: $hsp_idx");
+				}
+			}
+
+			$hsp_idx_min = $hsp_idx;
+			my ($align_start) = $pep_pos_min;
+			my ($align_end) = $pep_pos_min + $aln_len - 1;
+
+			$logger->debug("#hsp_idx_min: $hsp_idx_min pep_pos_min: $pep_pos_min pep_pos_max: $pep_pos_max hsp_idx: $hsp_idx pep_pos: $pep_pos aln_len: $aln_len\n");
 
 			$logger->debug("#mini_aligns_coord\[$align_start:$align_end\]\n");
-	
+
+			# Skip mini-CDS shorter than the minimum length, but only after having
+			# advanced the HSP index to the start of the subsequent mini-CDS.
+			if ( (($mini_cds_end - $mini_cds_start) + 1) < $MIN_LENGTH_CDS)
+			{
+				$mini_cds_score_list->{$mini_cds_index} = {
+					'index'		=> $mini_cds_index,
+					'coord'		=> $mini_cds_coord,
+					'frame'		=> $mini_cds_frame,
+					'score'		=> '-',
+					'seq'		=> $mini_cds_seq
+				};
+				next;
+			}
+
 			my $mini_cds_residues = $mini_cds_end - $mini_cds_start + 1;
 			my $align_residues = $align_end - $align_start + 1;
 	
@@ -430,20 +486,35 @@ sub _check_alignment($$$)
 			my $align_identity = 0;			
 			$align_identity = $identities/$align_residues*100 if ( $align_residues != 0);
 			$align_identity = sprintf("%.2f", $align_identity);
-			if ($identity >= 50)
-				{$totalidentity = 1}
-			elsif ($identity >= 40)
-				{$totalidentity = 0.80}
-			elsif ($identity >= 30)
-				{$totalidentity = 0.60}
-			elsif ($identity >= 25)
-				{$totalidentity = 0.50}
-			elsif ($identity >= 20)
-				{$totalidentity = 0.40}
-			elsif ($identity >= 15)
-				{$totalidentity = 0.20}
-			else
-				{$totalidentity = 0}
+			if ($recal_identity_scores) {
+				if ($identity >= 40)
+					{$totalidentity = 1}
+				elsif ($identity >= 30)
+					{$totalidentity = 0.80}
+				elsif ($identity >= 20)
+					{$totalidentity = 0.60}
+				elsif ($identity >= 15)
+					{$totalidentity = 0.40}
+				elsif ($identity >= 10)
+					{$totalidentity = 0.20}
+				else
+					{$totalidentity = 0}
+			} else {
+				if ($identity >= 50)
+					{$totalidentity = 1}
+				elsif ($identity >= 40)
+					{$totalidentity = 0.80}
+				elsif ($identity >= 30)
+					{$totalidentity = 0.60}
+				elsif ($identity >= 25)
+					{$totalidentity = 0.50}
+				elsif ($identity >= 20)
+					{$totalidentity = 0.40}
+				elsif ($identity >= 15)
+					{$totalidentity = 0.20}
+				else
+					{$totalidentity = 0}
+			}
 			$logger->debug("\tIdentity: $identity = $identities/$mini_cds_residues * 100\n");
 			$logger->debug("\tAlign_identity: $align_identity = $identities/$align_residues * 100\n");           
 			$logger->debug("\tTotal identity: $totalidentity\n");
@@ -452,28 +523,51 @@ sub _check_alignment($$$)
 			my $totalgaps = 0;
 			my $gaps = 0;
 			$gaps = ( $gapres / ($mini_cds_residues + $targ_gapres) ) *100;
-			if ($gaps <= 3)
-				{$totalgaps = 1}
-			elsif ($gaps <= 6)
-				{$totalgaps = 0.80}
-			elsif ($gaps <= 10)
-				{$totalgaps = 0.50}
-			elsif ($gaps <= 15)
-				{$totalgaps = 0.33}
-			elsif ($gaps <= 20)
-				{$totalgaps = 0.20}
-			elsif ($gaps <= 25)
-				{$totalgaps = 0}
-			elsif ($gaps > 50)
-				{$totalgaps = -1}
-			elsif ($gaps > 40)
-				{$totalgaps = -0.75}
-			elsif ($gaps > 30)
-				{$totalgaps = -0.5}
-			elsif ($gaps > 25)
-				{$totalgaps = -0.25}
-			else
-				{$totalgaps = 0}			
+			if ($recal_gap_scores) {
+				if ($gaps <= 3)
+					{$totalgaps = 1}
+				elsif ($gaps <= 6)
+					{$totalgaps = 0.8}
+				elsif ($gaps <= 10)
+					{$totalgaps = 0.7}
+				elsif ($gaps <= 15)
+					{$totalgaps = 0.6}
+				elsif ($gaps <= 20)
+					{$totalgaps = 0.5}
+				elsif ($gaps <= 25)
+					{$totalgaps = 0.4}
+				elsif ($gaps <= 30)
+					{$totalgaps = 0.3}
+				elsif ($gaps <= 40)
+					{$totalgaps = 0.1}
+				elsif ($gaps <= 50)
+					{$totalgaps = 0.0}
+				elsif ($gaps > 50)
+					{$totalgaps = -0.5}
+			} else {
+				if ($gaps <= 3)
+					{$totalgaps = 1}
+				elsif ($gaps <= 6)
+					{$totalgaps = 0.80}
+				elsif ($gaps <= 10)
+					{$totalgaps = 0.50}
+				elsif ($gaps <= 15)
+					{$totalgaps = 0.33}
+				elsif ($gaps <= 20)
+					{$totalgaps = 0.20}
+				elsif ($gaps <= 25)
+					{$totalgaps = 0}
+				elsif ($gaps > 50)
+					{$totalgaps = -1}
+				elsif ($gaps > 40)
+					{$totalgaps = -0.75}
+				elsif ($gaps > 30)
+					{$totalgaps = -0.5}
+				elsif ($gaps > 25)
+					{$totalgaps = -0.25}
+				else
+					{$totalgaps = 0}
+			}
 			$logger->debug("\tGaps: $gaps = $gapres/$mini_cds_residues*100\n");
 			$logger->debug("\tTotal gaps: $totalgaps\n");
 	
@@ -495,11 +589,11 @@ sub _check_alignment($$$)
 			my ($escore) = $totalidentity*$totalgaps*$totalres;
 			if ( $totalgaps < 0 ) { $escore = $totalgaps*$totalres }
 			$logger->debug("\tScore: $escore\n");
-									
+
 			my ($mini_cds_report) = {
 						'index'			=> $mini_cds_index,
 						'coord'			=> $mini_cds_coord,
-						'frame'			=> $cds_frame,
+						'frame'			=> $mini_cds_frame,
 						'seq'			=> $mini_cds_seq,
 						'score'			=> $escore,
 						'score_iden'	=> $totalidentity,
@@ -508,12 +602,12 @@ sub _check_alignment($$$)
 						'score_desc'	=> "$totalidentity*$totalgaps*$totalres",
 						'pdb'			=> $pdb_id,
 						'pdb_identity'	=> $identity,
-						'alignment_start' => $align_start, 
+						'alignment_start' => $align_start,
 						'alignment_end'   => $align_end,
-						'alignment_iden'   => $align_identity						
-			};		
+						'alignment_iden'   => $align_identity
+			};
 			$mini_cds_score_list->{$mini_cds_index} = $mini_cds_report;
-			$mini_score += $escore;			
+			$mini_score += $escore;
 		}
 		
 		my ($cds_report) = {
@@ -535,7 +629,7 @@ sub _check_alignment($$$)
 sub _get_best_cds_score($)
 {
 	my ($transcript_report) = @_;
-	
+
 	my (%aux_transcript_report) = %{$transcript_report};
 	while(my ($sequence_id,$trans_report) = each(%{$transcript_report}))
 	{
@@ -549,7 +643,7 @@ sub _get_best_cds_score($)
 			{
 				# cds must be bigger than 6 residues
 				my (@cds_pep_coord) = split(':', $pdb_cds_report->{'index'});		
-				if ( ($cds_pep_coord[1] - $cds_pep_coord[0]) >= $MIN_LENGTH_CDS )
+				if ( ( ($cds_pep_coord[1] - $cds_pep_coord[0]) + 1 ) >= $MIN_LENGTH_CDS )
 				{
 					$logger->debug("#_get_biggest_score: $sequence_id\n");
 					$pdb_cds_score += _get_biggest_score($sequence_id, $pdb_cds_report, \%aux_transcript_report);
@@ -647,7 +741,7 @@ sub _get_biggest_cds($$$)
 	while(my ($sequence_id,$trans_report) = each(%{$transcript_report}))
 	{
 		next if ($main_seq_id eq $sequence_id); # Jump for the same sequence
-		
+
 		if(exists $trans_report->{'cds'} and defined $trans_report->{'cds'})
 		{
 			my ($trans_cds_list) = $trans_report->{'cds'};
@@ -678,10 +772,14 @@ sub _get_biggest_mini_cds($$$)
 	my ($external_id);
 	my ($biggest_mini_pdb_cds_score) = $main_mini_pdb_cds_report->{'score'};
 	my ($biggest_mini_pdb_cds_coord) = $main_mini_pdb_cds_report->{'coord'};
-	my ($biggest_mini_pdb_cds_pdb) = $main_mini_pdb_cds_report->{'pdb'};
+	my ($biggest_mini_pdb_cds_pdb);
+	if ( $calc_frames ) {
+		$biggest_mini_pdb_cds_pdb = ( exists $main_mini_pdb_cds_report->{'pdb'} and defined $main_mini_pdb_cds_report->{'pdb'} ) ? $main_mini_pdb_cds_report->{'pdb'} : '' ;
+	} else {
+		$biggest_mini_pdb_cds_pdb = defined $main_mini_pdb_cds_report->{'pdb'} ? $main_mini_pdb_cds_report->{'pdb'} : '' ;
+	}
 	my ($biggest_mini_pdb_cds_frame) = ( exists $main_mini_pdb_cds_report->{'frame'} ) ? $main_mini_pdb_cds_report->{'frame'} : "-";
 	$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
-	$biggest_mini_pdb_cds_pdb = '' unless (defined $biggest_mini_pdb_cds_pdb );
 
 	# If we found one CDS coming from the same exon and it had bigger score than 
 	# the given cds, we get it
@@ -695,16 +793,32 @@ sub _get_biggest_mini_cds($$$)
 			{
 				# Check if the frame between the compared isoforms are equal
 				my ($trans_cds_frame) = $trans_pdb_cds_report->{'frame'};
-				if ( $biggest_mini_pdb_cds_frame eq $trans_cds_frame ) {
+				if ( $calc_frames || $biggest_mini_pdb_cds_frame eq $trans_cds_frame ) {
 					my ($trans_mini_cds_list) = $trans_pdb_cds_report->{'mini_cds'};	
 					foreach my $trans_mini_cds (@{$trans_mini_cds_list})			
 					{
+						my $trans_mini_cds_score;
+						my $trans_mini_cds_pdb;
+						if ( $calc_frames ) {
+							if ( ! defined $trans_mini_cds->{'score'} || $trans_mini_cds->{'score'} eq '-' ) {
+								next;
+							}
+							if ( ! exists $trans_mini_cds->{'frame'} || ! defined $trans_mini_cds->{'frame'}
+									|| $trans_mini_cds->{'frame'} != $biggest_mini_pdb_cds_frame ) {
+								next;
+							}
+							$trans_mini_cds_score = $trans_mini_cds->{'score'};
+							$trans_mini_cds_pdb = ( exists $trans_mini_cds->{'pdb'} and defined $trans_mini_cds->{'pdb'}
+																      and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
+						} else {
+						  $trans_mini_cds_score = ( $trans_mini_cds->{'score'} ne '-' ) ? $trans_mini_cds->{'score'} : 0;
+							$trans_mini_cds_pdb = ( exists $trans_mini_cds->{'pdb'} and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
+						}
+
 						my ($trans_mini_cds_index) = $trans_mini_cds->{'index'};
 						my ($trans_mini_cds_seq) = $trans_mini_cds->{'seq'};
 						my (@trans_mini_cds) = split(':',$trans_mini_cds->{'coord'}); # Sticking paster for reverse strand
 						my ($trans_mini_cds_coord_aux) = $trans_mini_cds[1].':'.$trans_mini_cds[0];
-						my ($trans_mini_cds_score) = ( $trans_mini_cds->{'score'} ne '-' ) ? $trans_mini_cds->{'score'} : 0;
-						my ($trans_mini_cds_pdb) = ( exists $trans_mini_cds->{'pdb'} and $trans_mini_cds->{'pdb'} ne '' ) ? $trans_mini_cds->{'pdb'} : '';
 						if(
 							(($trans_mini_cds->{'coord'} eq $biggest_mini_pdb_cds_coord) or ($trans_mini_cds_coord_aux eq $biggest_mini_pdb_cds_coord))
 							and 
@@ -713,13 +827,14 @@ sub _get_biggest_mini_cds($$$)
 							$logger->debug("Into:_get_biggest_mini_cds: $sequence_id [".$trans_mini_cds->{'coord'}."] - ".$trans_mini_cds->{'index'}." > ".$trans_mini_cds->{'score'}."\n");
 							$external_id = $sequence_id;
 							$biggest_mini_pdb_cds_score = $trans_mini_cds->{'score'};
+							$biggest_mini_pdb_cds_score = 0 if ( !defined $biggest_mini_pdb_cds_score or ($biggest_mini_pdb_cds_score eq '-') );
 							$mini_pdb_cds_report = $trans_mini_cds;
-						}						
+						}
 					}
 				}					
 			}
 		}
-	}	
+	}
 	return ($external_id,$mini_pdb_cds_report);
 } # end _get_biggest_mini_cds
 
@@ -904,7 +1019,7 @@ sub _get_cds_coordinates_from_gff($$)
     }
 
 	# Save CDS coordinates within structure
-	my ($total_trans_cds_coords);
+	my (%total_trans_cds_coords);
 	my ($trans_cds_coords);
     my ($in2) = Bio::SeqIO->new(
 						-file => $input_file,
@@ -936,8 +1051,8 @@ sub _get_cds_coordinates_from_gff($$)
 						my ($edges);
 						if(defined $strand) # Get the whole CDS coordinates by strand
 						{
-							$total_trans_cds_coords->{$strand}->{$start} = undef unless(exists $total_trans_cds_coords->{$strand}->{$start});
-							$total_trans_cds_coords->{$strand}->{$end} = undef unless(exists $total_trans_cds_coords->{$strand}->{$end});						
+							$total_trans_cds_coords{$strand}{'starts'}{$start} = undef unless(exists $total_trans_cds_coords{$strand}{'starts'}{$start});
+							$total_trans_cds_coords{$strand}{'ends'}{$end} = undef unless(exists $total_trans_cds_coords{$strand}{'ends'}{$end});
 						}
 
 						# Get the CDS coord for each transcript (with frame)
@@ -956,25 +1071,58 @@ sub _get_cds_coordinates_from_gff($$)
 		}
     }
     
-    my ($sort_total_cds_coords);
-    while(my ($strand,$total_cds_coords) = each(%{$total_trans_cds_coords}))
+	my $mini_cds_interval_pool;
+	while(my ($strand, $trans_cds_coords) = each(%total_trans_cds_coords))
     {
+		my @mini_cds_starts;
+		my @mini_cds_ends;
     	if($strand eq '-')
     	{
-    		$sort_total_cds_coords->{$strand}=join ":", sort {$b <=> $a} (keys %{$total_cds_coords});    		
+			my @trans_cds_starts = sort { $b <=> $a } keys %{$trans_cds_coords->{'ends'}};  # GFF 'end' is reverse-strand CDS start
+			my @trans_cds_ends = sort { $b <=> $a } keys %{$trans_cds_coords->{'starts'}};  # GFF 'start' is reverse-strand CDS end
+			# TODO: verify assumption that max coord is a start, min coord is an end
+			my %mini_cds_start_set = map { $_ => 1 } @trans_cds_starts;
+			foreach my $end (@trans_cds_ends[ 0 .. ($#trans_cds_ends-1) ]) {
+				$mini_cds_start_set{$end - 1} = 1;
+			}
+			@mini_cds_starts = sort { $b <=> $a } keys %mini_cds_start_set;
+			my %mini_cds_end_set = map { $_ => 1 } @trans_cds_ends;
+			foreach my $start (@trans_cds_starts[ 1 .. $#trans_cds_starts ]) {
+				$mini_cds_end_set{$start + 1} = 1;
+			}
+			@mini_cds_ends = sort { $b <=> $a } keys %mini_cds_end_set;
+
     	} else {
-    		$sort_total_cds_coords->{$strand}=join ":", sort {$a <=> $b} (keys %{$total_cds_coords});
+
+			my @trans_cds_starts = sort { $a <=> $b } keys %{$trans_cds_coords->{'starts'}};
+			my @trans_cds_ends = sort { $a <=> $b } keys %{$trans_cds_coords->{'ends'}};
+			# TODO: verify assumption that min coord is a start, max coord is an end
+			my %mini_cds_start_set = map { $_ => 1 } @trans_cds_starts;
+			foreach my $end (@trans_cds_ends[ 0 .. ($#trans_cds_ends-1) ]) {
+				$mini_cds_start_set{$end + 1} = 1;
+			}
+			@mini_cds_starts = sort { $a <=> $b } keys %mini_cds_start_set;
+			my %mini_cds_end_set = map { $_ => 1 } @trans_cds_ends;
+			foreach my $start (@trans_cds_starts[ 1 .. $#trans_cds_starts ]) {
+				$mini_cds_end_set{$start - 1} = 1;
+			}
+			@mini_cds_ends = sort { $a <=> $b } keys %mini_cds_end_set;
     	}
+
+		for my $i ( 0 .. $#mini_cds_starts ) {
+			my @mini_cds_interval = ($mini_cds_starts[$i], $mini_cds_ends[$i]);
+			push(@{$mini_cds_interval_pool->{$strand}}, \@mini_cds_interval);
+		}
     }
 
-    return ($trans_cds_coords, $sort_total_cds_coords);	
+    return ($trans_cds_coords, $mini_cds_interval_pool);
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_peptide_coordinate($$$$$$)
+sub _get_peptide_coordinate_sans_frames($$$$$$)
 {
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
-	
+
 	my ($pep_cds_start) = $pep_cds_end+1;
 	my ($pep_cds_end_div) = int(abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) / 3);
 	my ($pep_cds_end_mod) = abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) % 3;
@@ -997,21 +1145,66 @@ sub _get_peptide_coordinate($$$$$$)
 		$frame=0;
 	}
 	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
-		$pep_cds_end+=$pep_cds_end_div+$accumulate;		
+		$pep_cds_end+=$pep_cds_end_div+$accumulate;
 	}
 	else {
 		$pep_cds_end+=$pep_cds_end_div;
 	}
-		
+
 	#return ($pep_cds_start,$pep_cds_end,$frame);
 	return ($pep_cds_start,$pep_cds_end);
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_mini_peptide_coordinate($$$$$$$)
+sub _get_peptide_coordinate_with_frames($$$$$$)
+{
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
+
+	my ($pep_cds_start) = $pep_cds_end+1;
+	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
+	my ($offset_pep_cds_len) = $pep_cds_len - $frame;
+	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # include partial codon at end, if present
+	my ($pep_cds_end_mod) = $offset_pep_cds_len % 3;
+
+	my $next_frame;
+	if($pep_cds_end_mod == 1)
+	{
+		$next_frame=2;
+	}
+	elsif($pep_cds_end_mod == 2)
+	{
+		$next_frame=1;
+	}
+	else
+	{
+		$next_frame=0;
+	}
+
+	if ( $cds_order_id == 0 && $frame != 0 ) {  # include partial codon at start, if present
+		$pep_cds_end_div += 1;
+	}
+
+	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+			$pep_cds_end=$pep_cds_start;
+	} else {
+		$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
+	}
+	if ( $cds_order_id == ($num_cds - 1) && $next_frame != 0 ) {
+		warnings::warn("CDS has incomplete reading frame\n");
+	}
+
+	if ($calc_frames) {
+		return ($pep_cds_start,$pep_cds_end,$next_frame);
+	} else {
+		return ($pep_cds_start,$pep_cds_end);
+	}
+}
+
+# Get relative coordinates of peptide coming from transcriptome coordinates
+sub _get_mini_peptide_coordinate_sans_frames($$$$$$$)
 {
 	my ($trans_cds_start, $trans_cds_end, $pep_cds_start, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
-	
+
 	#my ($pep_cds_start) = $pep_cds_end+1;
 	my ($pep_cds_end_div) = int(abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) / 3);
 	my ($pep_cds_end_mod) = abs(($trans_cds_end + 1 + $frame) - $trans_cds_start) % 3;
@@ -1034,27 +1227,69 @@ sub _get_mini_peptide_coordinate($$$$$$$)
 		$frame=0;
 	}
 	if ( $num_cds == ($cds_order_id+1) ) { # we add the accumulate residues in the last CDS
-		$pep_cds_end+=$pep_cds_end_div+$accumulate;		
+		$pep_cds_end+=$pep_cds_end_div+$accumulate;
 	}
 	else {
 		$pep_cds_end+=$pep_cds_end_div;
 	}
-		
+
 	#return ($pep_cds_start,$pep_cds_end,$frame);
 	return ($pep_cds_start,$pep_cds_end);
+}
+
+# Get relative coordinates of peptide coming from transcriptome coordinates
+sub _get_mini_peptide_coordinate_with_frames($$$$$$$)
+{
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_start, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
+
+	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
+	my ($offset_pep_cds_len) = $pep_cds_len - $frame;
+	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # include partial codon at end, if present
+	my ($pep_cds_end_mod) = $offset_pep_cds_len % 3;
+
+	my $next_frame;
+	if($pep_cds_end_mod == 1)
+	{
+		$next_frame=2;
+	}
+	elsif($pep_cds_end_mod == 2)
+	{
+		$next_frame=1;
+	}
+	else
+	{
+		$next_frame=0;
+	}
+
+	if ( $pep_cds_start == 1 && $frame != 0 ) {  # include partial codon at start, if present
+		$pep_cds_end_div += 1;
+	}
+
+	if ( $pep_cds_end_div == 0 ) { # cases when the CDS is smaller than 3 bp (1st cds of ENST00000372776 -rel7-)
+			$pep_cds_end=$pep_cds_start;
+	} else {
+			$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
+	}
+
+	if ($calc_frames) {
+		return ($pep_cds_start,$pep_cds_end,$next_frame);
+	} else {
+		return ($pep_cds_start,$pep_cds_end);
+	}
 }
 
 # Get the intersection of CDS coordinates creating "mini-cds"
 sub _get_init_report($$$$)
 {
-	my ($sequence_id, $sequence, $trans_cds_coords, $sort_total_cds_coords) = @_;
+	my ($sequence_id, $sequence, $trans_cds_coords, $mini_cds_interval_pool) = @_;
 
 	# Get CDS coordinates relative to peptide
 	my ($cds_list) = (); # CDS info
 	my ($num_cds) = scalar(@{$trans_cds_coords->{$sequence_id}->{'coord'}});
 	my ($pep_cds_start) = 0;
 	my ($pep_cds_end) = 0;
-	my ($frame) = 0;
+	my $pep_cds_start_frame;
+	my $pep_cds_end_frame;
 	for ( my $cds_order_id = 0; $cds_order_id < $num_cds; $cds_order_id++ )
 	{
 		my ($trans_strand) = $trans_cds_coords->{$sequence_id}->{'strand'};
@@ -1063,39 +1298,76 @@ sub _get_init_report($$$$)
 		my ($trans_cds_start) = $boundaries[0];
 		my ($trans_cds_end) = $boundaries[1];
 		my ($trans_cds_frame) = $boundaries[2];
-		#($pep_cds_start,$pep_cds_end,$frame) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds);
-		($pep_cds_start,$pep_cds_end) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds);
+
+		if ($calc_frames) {
+
+			if ( $cds_order_id == 0 ) {
+				$pep_cds_end_frame = $trans_cds_frame;
+			}
+			$pep_cds_start_frame = $pep_cds_end_frame;
+
+			($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate_with_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
+			if ( $cds_order_id + 1 < $num_cds ) {
+				my ($pred_next_frame) = $pep_cds_end_frame;
+				my ($next_coords) = $trans_cds_coords->{$sequence_id}->{'coord'}->[$cds_order_id + 1];
+				my (@next_boundaries) = split(':', $next_coords);
+				my ($actual_next_frame) = $next_boundaries[2];
+				if ( $pred_next_frame ne $actual_next_frame ) {
+					$logger->debug("sequence $sequence_id has incorrect frame prediction: $pred_next_frame vs $actual_next_frame\n");
+				}
+			}
+		} else {
+			($pep_cds_start,$pep_cds_end) = _get_peptide_coordinate_sans_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, 0, $cds_order_id, $num_cds);
+		}
+
 		my ($cds_index) = "$pep_cds_start:$pep_cds_end";
 		my ($cds_frame) = $trans_cds_frame;
 		my ($exon_index) = "$trans_cds_start:$trans_cds_end";
 		
 		$logger->debug("#Trans_CDS:$trans_cds_start-$trans_cds_end:$trans_cds_frame\[$pep_cds_start-$pep_cds_end\]\n");
 				
-		# Sort the list of CDS depending on strand
-		my ($mini_cds_coord_range);
-		if	(($trans_strand eq '-') and 
-			($sort_total_cds_coords->{$trans_strand}=~/($trans_cds_end.*:$trans_cds_start)/)){
-			$mini_cds_coord_range = $1;				
-		} elsif (($trans_strand eq '+') and 
-			($sort_total_cds_coords->{$trans_strand}=~/($trans_cds_start.*:$trans_cds_end)/)){
-			$mini_cds_coord_range = $1;
+		# Get the list of mini-CDS intervals depending on strand
+		my (@mini_cds_intervals);
+		if ($trans_strand eq '-') {
+			my @interval_pool = @{$mini_cds_interval_pool->{'-'}};
+			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_end } 0 .. $#interval_pool;  # GFF 'end' is reverse-strand CDS start
+			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_start } 0 .. $#interval_pool;  # GFF 'start' is reverse-strand CDS end
+			if ( @match_start_idxs && @match_end_idxs ) {
+				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
+			}
+		} elsif ($trans_strand eq '+') {
+			my @interval_pool = @{$mini_cds_interval_pool->{'+'}};
+			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_start } 0 .. $#interval_pool;
+			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_end } 0 .. $#interval_pool;
+			if ( @match_start_idxs && @match_end_idxs ) {
+				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
+			}
 		}
-		if(defined $mini_cds_coord_range)
+
+		if(@mini_cds_intervals)
 		{
 			my ($mini_cds_list);
-			my (@mini_cds_coord_list) = split ":", $mini_cds_coord_range;				
-			if (scalar(@mini_cds_coord_list) == 2) {
+			if (scalar(@mini_cds_intervals) == 1) {
 				# Theres is not mini cds => the same CDS coordinates
 				my ($mini_cds_edges) = join ":", $pep_cds_start,$pep_cds_end;
 				my ($mini_cds_seq) = substr($sequence, $pep_cds_start-1, ($pep_cds_end - $pep_cds_start) + 1 );
 				my ($mini_exon_edges) = join ":", $trans_cds_start,$trans_cds_end;
-				push(@{$mini_cds_list}, {
-							'index'	=> $mini_cds_edges,
-							'coord'	=> $mini_exon_edges,
-							# 'frame'	=> $frame,
-							'score'	=> '-',
-							'seq'	=> $mini_cds_seq,
-				});						
+				if ($calc_frames) {
+					push(@{$mini_cds_list}, {
+								'index'	=> $mini_cds_edges,
+								'coord'	=> $mini_exon_edges,
+								'frame'	=> $pep_cds_start_frame,
+								'score'	=> '-',
+								'seq'	=> $mini_cds_seq,
+					});
+				} else {
+					push(@{$mini_cds_list}, {
+								'index'	=> $mini_cds_edges,
+								'coord'	=> $mini_exon_edges,
+								'score'	=> '-',
+								'seq'	=> $mini_cds_seq,
+					});
+				}
 			}
 			else
 			{
@@ -1103,16 +1375,24 @@ sub _get_init_report($$$$)
 				my ($mini_trans_cds_end) =  0;
 				my ($mini_pep_cds_start) = $pep_cds_start;
 				my ($mini_pep_cds_end) = $pep_cds_start;
-				my ($mini_pep_frame) = 0;
-				my ($mini_num_cds) = scalar(@mini_cds_coord_list)-1;
-				for(my $k=1;$k<$mini_num_cds;$k++)
+				my $mini_pep_start_frame;
+				my $mini_pep_end_frame;
+				my ($num_mini_cds) = scalar(@mini_cds_intervals);
+				for(my $k=0;$k<$num_mini_cds;$k++)
 				{
-					$mini_trans_cds_start = $mini_cds_coord_list[$k-1];
-					$mini_trans_cds_end = $mini_cds_coord_list[$k];
-					
-					# ($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_frame) = _get_mini_peptide_coordinate($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_frame, $k, $mini_num_cds);
-					($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_frame, $k, $mini_num_cds);
-					
+					my ($mini_trans_cds_start, $mini_trans_cds_end) = @{$mini_cds_intervals[$k]};
+
+					if ($calc_frames) {
+						if ( $k == 0 ) {
+							$mini_pep_end_frame = $pep_cds_start_frame;
+						}
+						$mini_pep_start_frame = $mini_pep_end_frame;
+
+						($mini_pep_cds_start,$mini_pep_cds_end,$mini_pep_end_frame) = _get_mini_peptide_coordinate_with_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, $mini_pep_start_frame, $k, $num_mini_cds);
+					} else {
+						($mini_pep_cds_start,$mini_pep_cds_end) = _get_mini_peptide_coordinate_sans_frames($mini_trans_cds_start, $mini_trans_cds_end, $mini_pep_cds_start, $mini_pep_cds_end, 0, $k, $num_mini_cds);
+					}
+
 					my ($mini_cds_edges) = join ":", $mini_pep_cds_start,$mini_pep_cds_end;
 					my ($mini_cds_seq) = substr($sequence, $mini_pep_cds_start-1, ($mini_pep_cds_end - $mini_pep_cds_start) + 1 );
 					my ($mini_exon_edges);
@@ -1123,13 +1403,23 @@ sub _get_init_report($$$$)
 						$mini_exon_edges = join ":", $mini_trans_cds_start,$mini_trans_cds_end;
 					}
 					if (defined $mini_exon_edges) {
-						push(@{$mini_cds_list}, {
-									'index' => $mini_cds_edges,
-									'coord' => $mini_exon_edges,
-									# 'frame' => $mini_pep_frame,
-									'score'	=> '-',
-									'seq'	=> $mini_cds_seq,
-						});
+						if ($calc_frames) {
+							push(@{$mini_cds_list}, {
+										'index' => $mini_cds_edges,
+										'coord' => $mini_exon_edges,
+										'frame' => $mini_pep_start_frame,
+										'score'	=> '-',
+										'seq'	=> $mini_cds_seq,
+							});
+						} else {
+							push(@{$mini_cds_list}, {
+										'index' => $mini_cds_edges,
+										'coord' => $mini_exon_edges,
+										'score'	=> '-',
+										'seq'	=> $mini_cds_seq,
+							});
+						}
+
 						$logger->debug("\tMini_trans_CDS:$mini_exon_edges\[$mini_cds_edges\]\n");					
 					}
 					else {
@@ -1151,13 +1441,22 @@ sub _get_init_report($$$$)
 						$mini_exon_edges = join ":", $mini_trans_cds_end,$trans_cds_end;
 					}
 					if (defined $mini_exon_edges) {
-						push(@{$mini_cds_list}, {
-									'index' => $mini_cds_edges,
-									'coord' => $mini_exon_edges,
-									# 'frame' => $mini_pep_frame,
-									'score'	=> '-',
-									'seq'	=> $mini_cds_seq,
-						});
+						if ($calc_frames) {
+							push(@{$mini_cds_list}, {
+										'index' => $mini_cds_edges,
+										'coord' => $mini_exon_edges,
+										'frame' => $mini_pep_start_frame,
+										'score'	=> '-',
+										'seq'	=> $mini_cds_seq,
+							});
+						} else {
+							push(@{$mini_cds_list}, {
+										'index' => $mini_cds_edges,
+										'coord' => $mini_exon_edges,
+										'score'	=> '-',
+										'seq'	=> $mini_cds_seq,
+							});
+						}
 						$logger->debug("\tMini_trans_CDS_2:$mini_exon_edges\[$mini_cds_edges\]\n");
 					}
 					else {

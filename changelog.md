@@ -1,4 +1,47 @@
 ___
+## 2020_02.v30
+```
+SERVER-RELEASE:   2020_02.v30
+CODE-RELEASE:     4.7.2.21
+```
+
+### Highlights
++ New release of Ensembl (e99 version), for the species:
+	- Homo sapiens
+	- Mus musculus
+
+### Server (4.7)
++ No changes
+
+### Code (2.21)
+
++ APPRIS:
+	- Calculation of APPRIS score in 2 phases: first using Spade bitscore,
+	  then using Spade domain integrity score if necessary to break ties.
+
++ FIRESTAR:
+	- Effective range used to penalise low-scoring transcripts.
+
++ MATADOR3D:
+	- Effective range used to penalise low-scoring transcripts.
+	- Recalibrated alignment identity and gap scores to improve principal transcript identification.
+	- Retention of only the first HSP for each PDB BLAST hit to avoid spurious secondary matches
+	  near repeat regions.
+	- Revised calculation of transcript sequence region position and reading frame to improve
+	  transfer of Matador3D annotations between transcripts.
+
++ PROTEO:
+	- Proteomics data incorporates results from an analysis of the data originally produced by:
+	  Kim, M., Pinto, S., Getnet, D. et al. (2014) A draft map of the human proteome.
+	  *Nature.* 509:575-581. [doi:10.1038/nature13302](https://doi.org/10.1038/nature13302)
+	- Leucine and isoleucine are treated as interchangeable during
+	  mapping of peptide fragments onto the transcript sequence.
+
++ SPADE:
+	- Effective range of Spade bitscore used to penalise low-scoring transcripts.
+	- Spade domain integrity score (effective range 2.5) reintroduced to break ties.
+
+___
 ## 2019_11.v29
 ```
 SERVER-RELEASE:   2019_11.v29

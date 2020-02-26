@@ -1,10 +1,10 @@
 Welcome to APPRIS - A system for annotating alternative splice isoforms
 =======================================================================
-[APPRIS] (http://appris.bioinfo.cnio.es) [1,2] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
+[APPRIS](http://appris.bioinfo.cnio.es) [1,2] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
 
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
-The server has been used in the context of the scale up of the [GENCODE] (http://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
+The server has been used in the context of the scale up of the [GENCODE](http://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
   * Vertebrate genomes:
 	  * Human
 	  * Mouse
@@ -30,7 +30,7 @@ The methods in APPRIS are the following:
   * Prediction of signal peptide and sub-cellular location, CRASH
   * Selective pressure evolution of exons, INERTIA [Note: Currently, this method is not affecting in the selection of the principal isoform]
 
-![Image of APPRIS pipeline](http://appris.bioinfo.cnio.es/img/APPRIS_analysis.png)
+![Image of APPRIS pipeline](server/app/img/APPRIS_analysis.png)
 
 
 Installation
@@ -66,9 +66,9 @@ PUBMED:23161672 DOI:10.1093/nar/gks1058
 Contact
 =======
 This APPRIS website is powered by the Structural Computational Biology Group at
-	Centro Nacional de Investigaciones Oncologicas, ([CNIO] (http://www.cnio.es))
+	Centro Nacional de Investigaciones Oncologicas, ([CNIO](http://www.cnio.es))
 		and
-	Instituto Nacional de Bioinformatica, ([INB] (http://www.inab.org))
+	Instituto Nacional de Bioinformatica, ([INB](http://www.inab.org))
 
 If you have questions or comments, please write to:
     APPRIS mail, appris.cnio@gmail.com
