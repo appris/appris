@@ -8,7 +8,9 @@
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
-export APPRIS_PROGRAMS_CACHE_DIR="/home/jmrodriguez/projects/APPRIS/appriscache/md5"
+if [[ -z $APPRIS_PROGRAMS_CACHE_DIR ]]
+then export APPRIS_PROGRAMS_CACHE_DIR="${APPRIS_HOME}/cache/md5";
+fi
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"
 

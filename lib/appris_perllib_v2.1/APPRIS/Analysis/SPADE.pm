@@ -75,13 +75,13 @@ sub new {
 		$result,						
 		$num_domains,					$num_damaged_domains,
 		$num_possibly_damaged_domains,	$num_wrong_domains,
-		$bitscore,						$regions
+		$domain_integrity,	$bitscore,	$regions
 	)
 	= rearrange( [
 		'result',						
 		'num_domains',					'num_damaged_domains',
 		'num_possibly_damaged_domains',	'num_wrong_domains',
-		'bitscore',						'regions'
+		'domain_integrity',	'bitscore',	'regions'
 	],
 	@_
 	);
@@ -91,6 +91,7 @@ sub new {
 	$self->num_possibly_damaged_domains($num_possibly_damaged_domains) if(defined $num_possibly_damaged_domains);
 	$self->num_damaged_domains($num_damaged_domains) if(defined $num_damaged_domains);
 	$self->num_wrong_domains($num_wrong_domains) if(defined $num_wrong_domains);
+	$self->domain_integrity($domain_integrity) if(defined $domain_integrity);
 	$self->bitscore($bitscore) if(defined $bitscore);
 	$self->regions($regions) if(defined $regions);
 		
@@ -193,6 +194,24 @@ sub num_wrong_domains {
 	my ($self) = shift;
 	$self->{'num_wrong_domains'} = shift if(@_);
 	return $self->{'num_wrong_domains'};
+}
+
+=head2 domain_integrity
+
+  Arg [1]    : (optional) Float - the domain integrity score of this analysis
+  Example    : $analysis->domain_integrity(4.5);
+  Description: Getter/setter for the domain integrity score of this analysis
+  Returntype : Float
+  Exceptions : none
+  Caller     : general
+  Status     : At Risk
+
+=cut
+
+sub domain_integrity {
+	my ($self) = shift;
+	$self->{'domain_integrity'} = shift if(@_);
+	return $self->{'domain_integrity'};
 }
 
 =head2 bitscore

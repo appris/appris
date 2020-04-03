@@ -142,6 +142,7 @@ Output of *__SPADE__* method.
 
 ### In detail (for each isoform)
 - '>' sequence id with
+    - Domain integrity score
     - Sum of bit-score,
     - No. functional domains,
     - No. possibly damaged domains,
@@ -283,6 +284,7 @@ Output of *__APPRIS__* with the scores for all methods and the final annotation.
 - Start/stop codons found
 - CCDS id
 - TSL type
+- Length (aa)
 - No. functional residues
 - 3D structure score
 - Conservation score
@@ -314,6 +316,7 @@ Output of *__APPRIS__* with the labels for all methods and the final annotation.
 - Start/stop codons found
 - CCDS id
 - TSL type
+- Length (aa)
 - firestar label
 - Matador3D (or Matador3D2) label
 - CORSAIR label
@@ -334,6 +337,26 @@ ENSG00000160255	ITGB2	ENST00000522688	ENSP00000428125	TRANSLATION	protein_coding
 appris.nscore
 -------------
 Output of *__APPRIS__* with the normalized scores for all methods and the final annotation.
+
+### In detail (for each output isoform)
+- Gene id
+- Gene name
+- Transcript id
+- Protein id
+- Biotype of transcript
+- Start/stop codons found
+- CCDS id
+- TSL type
+- Length (aa)
+- Firestar score
+- Matador3D (or Matador3D2) score
+- Corsair score
+- Spade score
+- Thump score
+- Crash score
+- '-' (Inertia score - DEPRECATED)
+- Proteo score
+- Principal isoform score
 
 log
 ---

@@ -32,6 +32,7 @@ use vars qw(
 );
 
 $LOCAL_PWD				= $FindBin::Bin;
+
 $SRC_DIR				= $LOCAL_PWD.'/src/';
 $DEFAULT_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/pipeline.ini';
 $DEFAULT_CFG			= new Config::IniFiles( -file => $DEFAULT_CONFIG_FILE );

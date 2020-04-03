@@ -67,6 +67,7 @@ $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('SPADE_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('SPADE_VARS', 'cutoff');
 
+
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
 	-LOGFILE      => $logfile,
@@ -75,6 +76,9 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGLEVEL     => $loglevel,
 );
 $logger->init_log($str_params);
+
+my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
+my $recal_integrity_score = $EXP_CFG->val( 'spade_integrity', 'recal_integrity_score', 1 );
 
 #####################
 # Method prototypes #
@@ -163,6 +167,26 @@ sub _get_best_score($$)
 	}		
 }
 
+# calculate the domain integrity score
+sub _calc_domain_integrity_score($$$$) {
+
+	my ($num_domains, $num_possibly_damaged_domains, $num_damaged_domains, $num_wrong_domains) = @_;
+
+	my $domain_integrity_score;
+	if ($recal_integrity_score) {
+		$domain_integrity_score = ($num_domains*1)
+			+ ($num_possibly_damaged_domains*0.667)
+			+ ($num_damaged_domains*0.333);
+	} else {
+		$domain_integrity_score = ($num_domains*1)
+			+ ($num_possibly_damaged_domains*0.75)
+			+ ($num_damaged_domains*0.5)
+			+ ($num_wrong_domains*0.25);
+	}
+
+	return $domain_integrity_score
+}
+
 # Get the first domain that we have found
 sub _get_best_domain($$$)
 {
@@ -170,7 +194,6 @@ sub _get_best_domain($$$)
 	
 	my ($pfam_report);
 	my ($exist_domains);
-	my ($exist_index_domains) = '';
 	my ($best_domains);
 	
 	my ($alignment_list);
@@ -197,7 +220,6 @@ sub _get_best_domain($$$)
 				my ($aln_length) = $alignment_report->{'alignment_length'};
 				my ($bit_score) = $alignment_report->{'bit_score'};
 				my ($aln_index) = $aln_start.":".$aln_end;
-				$exist_index_domains .= $aln_index.',';
 				$exist_domains->{$aln_index} = {					
 					'hmm_name'		=> $hmm_name,
 					'hmm_type'		=> $hmm_type,
@@ -215,7 +237,7 @@ sub _get_best_domain($$$)
 	# Discard original overlapping
 	$best_domains = $exist_domains;
 	if ( defined $exist_domains ) {
-		my (@sorted_hmm_index) = sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1}; if($b=~/^([0-9]*)/){$b1=$1}; $a1<=>$b1} keys($exist_domains);
+		my (@sorted_hmm_index) = sort { my ($a1,$b1); if($a=~/^([0-9]*)/){$a1=$1}; if($b=~/^([0-9]*)/){$b1=$1}; $a1<=>$b1} keys(%{$exist_domains});
 		for (my $i=0; $i< scalar(@sorted_hmm_index); $i++) {
 			my ($hmm_index_i) = $sorted_hmm_index[$i];
 			if ( defined $exist_domains->{$hmm_index_i} ) {
@@ -369,6 +391,10 @@ sub _get_best_domain($$$)
 	$pfam_report->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 	$pfam_report->{'num_damaged_domains'} = $num_damaged_domains;
 	$pfam_report->{'num_wrong_domains'} = $num_wrong_domains;
+	$pfam_report->{'domain_integrity'} = _calc_domain_integrity_score($num_domains,
+																																	  $num_possibly_damaged_domains,
+																																		$num_damaged_domains,
+																																		$num_wrong_domains);
 	
 	return $pfam_report;	
 }
@@ -403,7 +429,6 @@ sub _run_pfamscan($$)
 			$logger->error("Can not create temporal file: $!\n");
 		}
 	}
-	
 
 	# Run pfamscan
 	#my ($pfamscan_sequence_file) = $ws_cache.'/seq.pfam';
@@ -582,6 +607,10 @@ sub _parse_pfamscan($$)
 	$cutoffs->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 	$cutoffs->{'num_damaged_domains'} = $num_damaged_domains;
 	$cutoffs->{'num_wrong_domains'} = $num_wrong_domains;
+  $cutoffs->{'domain_integrity'} = _calc_domain_integrity_score($num_domains,
+																															  $num_possibly_damaged_domains,
+																																$num_damaged_domains,
+																																$num_wrong_domains);
 
 	# Save result for each transcript
 	$cutoffs->{'result'} = $transcript_result;		
@@ -619,6 +648,7 @@ sub _get_record_annotations($)
 		)
 		{
 			$output_content .= ">".$sequence_id."\t".
+									$trans_report->{'domain_integrity'}."\t".
 									$trans_report->{'bitscore'}."\t".
 									$trans_report->{'num_domains'}."\t".
 									$trans_report->{'num_possibly_damaged_domains'}."\t".
