@@ -3,6 +3,7 @@ package appris;
 use strict;
 use Data::Dumper;
 use Scalar::Util qw(looks_like_number);
+use Storable qw(dclone);
 
 use APPRIS::Utils::Exception qw( info throw warning deprecate );
 
@@ -822,12 +823,27 @@ sub get_final_annotations($$$$$$)
 		}
 
 		if ( $appris_score_mode =~ /^phased_/ ) {
-			# 1_2 acquire the dominant transcripts from second-phase appris score.
-			my $phase_2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
-			get_appris_scores($gene, $phase_2_metrics, $scores, $s_scores, $nscores);
-			$princ_list = step_appris($princ_list, $isof_report, $s_scores->{$method});
-#			warning("PRINC_LIST_1_2: \n".Dumper($princ_list)."\n");
-#			warning("PRINC_REP_1_2: \n".Dumper($isof_report)."\n");
+			# 1_2 acquire the dominant transcripts from second-phase appris score,
+			# if there is overlap with the dominant transcripts from the first phase;
+			# otherwise revert to using the dominant transcripts from the first phase.
+			my $phase2_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 2);
+
+			my $phase2_scores = dclone($scores);
+			my $phase2_s_scores = dclone($s_scores);
+			my $phase2_nscores = dclone($nscores);
+			get_appris_scores($gene, $phase2_metrics, $phase2_scores, $phase2_s_scores, $phase2_nscores);
+
+			my $phase2_isof_report = dclone($isof_report);
+			my $phase2_princ_list = step_appris($princ_list, $phase2_isof_report, $phase2_s_scores->{$method});
+
+			if ( scalar keys %{$phase2_princ_list} > 0 ) {
+				$princ_list = $phase2_princ_list;
+				$isof_report = $phase2_isof_report;
+				$scores = $phase2_scores;
+				$nscores = $phase2_nscores;
+				# warning("PRINC_LIST_1_2: \n".Dumper($princ_list)."\n");
+				# warning("PRINC_REP_1_2: \n".Dumper($isof_report)."\n");
+			}
 
 			if ( is_unique($princ_list, $isof_report) ) {
 				$tag = 1;
@@ -999,7 +1015,7 @@ sub init_isoform_report($)
 sub step_appris($$$)
 {
 	my ($i_princ_list, $isof_report, $s_scores) = @_;
-	my ($princ_list);
+	my ($princ_list) = {};
 
 	# map transcript IDs to report indices, clear any 'principal'
 	# labels that may have been added in a previous APPRIS step
