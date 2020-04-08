@@ -87,18 +87,28 @@ sub main()
 			my ($gene_name) = '-';
 			my ($ccds_id) = '-';
 			
-			if ( $s_id =~ /^(gi)\|[^|]*\|[^|]*\|([^|]*)/ ) { # RefSeq sequences
+			if ( $s_id =~ /^[ANWXY]P_\d+\.\d+$/ ) { # RefSeq sequences (after ca. 2019)
+				$db = 'rs';
+				$isof_id = $&;
+			} elsif ( $s_id =~ /^ref\|([^|]+)/ ) { # RefSeq sequences (ca. 2016-2019)
+				$db = 'rs';
+				$isof_id = $1;
+				$s_id = $isof_id;
+			} elsif ( $s_id =~ /^(gi)\|[^|]*\|[^|]*\|([^|]+)/ ) { # RefSeq sequences (until ca. 2016)
 				$db = $1;
 				$isof_id = $2;
-				$transc_id = $xref->{'var'}->{$isof_id} if ( exists $xref->{'var'}->{$isof_id} );
-				$gene_id = $xref->{'gene_id'}->{$isof_id} if ( exists $xref->{'gene_id'}->{$isof_id} );
-				$gene_name = $xref->{'gene'}->{$isof_id} if ( exists $xref->{'gene'}->{$isof_id} );
-				$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
 				$s_id =~ s/^gi\|//g;
 				$s_id =~ s/\|$//g;
-				$output .= ">".$db.'_a'.'|'.$s_id.'|'.$transc_id.'|'.$gene_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
-							$s_seq."\n";
+			} else {
+				$logger->error("failed to parse RefSeq FASTA header in file: $fasta_file");
 			}
+
+			$transc_id = $xref->{'var'}->{$isof_id} if ( exists $xref->{'var'}->{$isof_id} );
+			$gene_id = $xref->{'gene_id'}->{$isof_id} if ( exists $xref->{'gene_id'}->{$isof_id} );
+			$gene_name = $xref->{'gene'}->{$isof_id} if ( exists $xref->{'gene'}->{$isof_id} );
+			$ccds_id = $xref->{'ccds'}->{$isof_id} if ( exists $xref->{'ccds'}->{$isof_id} );
+			$output .= ">".$db.'_a'.'|'.$s_id.'|'.$transc_id.'|'.$gene_id.'|'.$gene_name.'|'.$ccds_id.'|'.$s_len.' '.$s_desc."\n".
+						$s_seq."\n";
 		}
 	}
 	
@@ -134,7 +144,7 @@ sub create_xreference($$) {
 				else { $report->{'var'}->{$isof_id} = $transc_id }
 			}
 		}
-		    
+
 		for my $feat_object ($seq->get_SeqFeatures('CDS')) {
 			for my $tag ($feat_object->get_all_tags) {
 				if ( $tag eq 'coded_by' ) {

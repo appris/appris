@@ -834,7 +834,15 @@ sub create_seqdata($)
 					$ccds_id = $4;
 				}
 			}
-			elsif ( $s_id =~ /^gi_a\|[^|]*\|[^|]*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values
+			elsif ( $s_id =~ /^gi_a\|[^|]*\|[^|]*\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values (until ca. 2016)
+				$transl_id  = $1;
+				$transc_id = $2;
+				$gene_id = $3;
+				$gene_name = $4;
+				$ccds_id = $5;
+				$seq_length = $6;
+			}
+			elsif ( $s_id =~ /^rs_a\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)\|([^\s]*)\s*([^\$]*)$/ ) { # RefSeq sequences with extra values (after ca. 2016)
 				$transl_id  = $1;
 				$transc_id = $2;
 				$gene_id = $3;
