@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
 
+use 5.14.0;
 use strict;
 use warnings;
 
@@ -387,8 +388,8 @@ sub download_genefiles()
 					my ($ds_v)  = $cfg_dataset->{'source'}->{'version'};
 					my ($relspe_dir) = $LOC_WSDIR.'/features/'.$species_id;
 					
-					# don't download archive datasets
-					if ( $ds_type ne 'archive' ) {
+					# only download current datasets
+					if ( $ds_type eq 'current' ) {
 						#�create data workspace
 						eval {
 							my ($cmd) = "mkdir -p $relspe_dir";
@@ -402,7 +403,8 @@ sub download_genefiles()
 							_download_genefiles_ensembl($ds_v, $species_id, $as_name, $relspe_dir);
 						}
 						elsif ( $cfg_dataset->{'source'}->{'name'} eq 'refseq' ) {
-							_download_genefiles_refseq($ds_v, $species_id, $as_name, $relspe_dir);
+							my ($taxid) = $cfg_species->{'taxid'};
+							_download_genefiles_refseq($ds_v, $species_id, $taxid, $as_name, $relspe_dir);
 						}						
 					}
 				}
@@ -475,12 +477,14 @@ sub _download_genefiles_ensembl($$$$)
 	}	
 
 }
-sub _download_genefiles_refseq($$$$)
+sub _download_genefiles_refseq($$$$$)
 {
 	# declare local variables
-	my ($r_version, $species_id, $as_name, $outdir) = @_;
+	my ($r_version, $species_id, $taxid, $as_name, $outdir) = @_;
+	my ($release_url) = "$FTP_REFSEQ_PUB/genomes/all/annotation_releases/$taxid/$r_version";
 	my ($species_name) = ucfirst($species_id);
 	my ($datadir) = $outdir.'/'."rs$r_version";
+	my ($readme_file) = "README_${species_name}_annotation_release_${r_version}";
 	my ($outfile_data)   = $species_id.'.annot.gtf';
 	my ($outfile_transc) = $species_id.'.transc.fa';
 	my ($outfile_transl) = $species_id.'.transl.fa';
@@ -494,22 +498,19 @@ sub _download_genefiles_refseq($$$$)
 	throw("creating genedata workspace") if($@);
 	
 	#�download files	
+	my ($readme_file_url) = "$release_url/$readme_file";
 	eval {
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/README_CURRENT_RELEASE                  -P $datadir";
+		my ($cmd) = "wget $readme_file_url -P $datadir";
 		info($cmd);
 		system($cmd);
 	};
 	throw("downloading genefile: refseq readme file") if($@);			
-	eval {
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/Assembled_chromosomes/chr_accessions_$as_name\* -P $datadir";
-		info($cmd);
-		system($cmd);
-	};
-	throw("downloading genefile: refseq data") if($@);	
 
+	my ($as_label) = _get_refseq_assembly_label("$datadir/$readme_file", $as_name);
+	my ($as_url) = "$release_url/$as_label";
 	eval {
-		my ($i) = "ref_$as_name\*\_top_level.gff3";
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/GFF/$i.gz        -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
+		my ($i) = "${as_label}_genomic.gff";
+		my ($cmd) = "wget $as_url/$i.gz -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_data";
 		info($cmd);
 		system($cmd);
 	};
@@ -524,8 +525,8 @@ sub _download_genefiles_refseq($$$$)
 	}	
 
 	eval {
-		my ($i) = "rna.fa";
- 		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/RNA/$i.gz       -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
+		my ($i) = "${as_label}_rna.fna";
+		my ($cmd) = "wget $as_url/$i.gz -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transc";
 		info($cmd);
 		system($cmd);
 	};
@@ -539,8 +540,8 @@ sub _download_genefiles_refseq($$$$)
 	}	
 
 	eval {
-		my ($i) = "protein.fa";
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/$i.gz   -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
+		my ($i) = "${as_label}_protein.faa";
+		my ($cmd) = "wget $as_url/$i.gz -P $datadir && cd $datadir && gzip -d $i.gz && ln -s $i $outfile_transl";
 		info($cmd);
 		system($cmd);
 	};
@@ -553,13 +554,14 @@ sub _download_genefiles_refseq($$$$)
 		return undef;
 	}	
 
+	my ($genpept_file_name) = "${as_label}_protein.gpff";
 	eval {
-		my ($cmd) = "wget $FTP_REFSEQ_PUB/genomes/$species_name/protein/protein.gbk.gz                  -P $datadir";
+		my ($cmd) = "wget $as_url/$genpept_file_name.gz -P $datadir";
 		info($cmd);
 		system($cmd);
 	};
 	throw("downloading genefile: refseq protein report") if($@);
-	unless ( -e "$datadir/protein.gbk.gz" ) {
+	unless ( -e "$datadir/$genpept_file_name.gz" ) {
 		my ($cmd) = "rm -rf $datadir";
 		info($cmd);
 		system($cmd);
@@ -589,6 +591,68 @@ sub _download_genefiles_refseq($$$$)
 	};
 	throw("uncompressing genefiles") if($@);
 		
+}
+
+sub _get_refseq_assembly_label($$)
+{
+	my ($readme_file, $cfg_as_name) = @_;
+
+	open(my $fh, $readme_file)
+		or die("failed to open README");
+	chomp(my @lines = <$fh>);
+	close $fh
+		or die("failed to close README");
+
+	my (@as_list_idxs) = grep {
+		$lines[$_] eq 'ANNOTATED ASSEMBLIES:' } 0 .. $#lines;
+	if ( scalar(@as_list_idxs) != 1 ) {
+		my $qualifier = scalar(@as_list_idxs) > 1 ? "unique" : "any" ;
+		die("failed to find $qualifier assembly listing in README");
+	}
+
+	my (@as_start_idxs);
+	my (@as_decl_idxs) = grep {
+		$lines[$_] =~ /^\*\s*(?:REFERENCE|ALTERNATE\s+\d+):/ } 0 .. $#lines;
+	if (@as_decl_idxs) {
+		@as_start_idxs = map { $_ + 1 } @as_decl_idxs;
+	} else {
+		@as_start_idxs = $as_list_idxs[0] + 1;
+	}
+
+	my (@as_labels);
+	foreach my $i (@as_start_idxs) {
+		continue unless $i < $#lines;
+
+		my ($matching_as_name);
+		if ( $lines[$i] =~ /^ASSEMBLY NAME:\s+(\S+)\s*$/ ) {
+			my ($as_name) = $1;
+			if ( $cfg_as_name eq $as_name =~ s/\.p\d+$//r ) {  # allow for patched assembly name
+				$matching_as_name = $as_name;
+			} else {
+				next;
+			}
+		} else {
+			die("failed to read assembly name in README");
+		}
+
+		my ($as_acc_ver);
+		if ( $lines[$i+1] =~ /^ASSEMBLY ACCESSION:\s+(\S+)\s*$/ ) {
+			$as_acc_ver = $1;
+		} else {
+			die("failed to read assembly accession in README");
+		}
+
+		if ($matching_as_name) {
+			push(@as_labels, "${as_acc_ver}_${matching_as_name}");
+		}
+	}
+
+	if ( scalar(@as_labels) != 1 ) {
+		my $qualifier = scalar(@as_labels) > 1 ? "unique" : "any" ;
+		die("failed to obtain $qualifier assembly label from README");
+	}
+
+	return $as_labels[0]
 }
 
 main();

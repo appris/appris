@@ -4,6 +4,7 @@
         "homo_sapiens": {
             "order":        1,
             "scientific":   "Homo sapiens",
+            "taxid":        9606,
             "common":       "Human",
             "group":        "popular",
             "category":     "houses",
@@ -143,6 +144,7 @@
         "mus_musculus": {
             "order":        2,
             "scientific":   "Mus musculus",
+            "taxid":        10090,
             "common":       "Mouse",
             "group":        "popular",
             "category":     "houses",
@@ -228,6 +230,7 @@
         "danio_rerio": {
             "order":        3,
             "scientific":   "Danio rerio",
+            "taxid":        7955,
             "common":       "Zebrafish",
             "group":        "popular",
             "category":     "houses",
@@ -341,6 +344,7 @@
         "rattus_norvegicus": {
             "order":        4,
             "scientific":   "Rattus norvegicus",
+            "taxid":        10116,
             "common":       "Rat",
             "group":        "rodents",
             "category":     "houses",
@@ -454,6 +458,7 @@
         "sus_scrofa": {
             "order":        5,
             "scientific":   "Sus scrofa",
+            "taxid":        9823,
             "common":       "Pig",
             "group":        "laurasiatheria",
             "category":     "houses",
@@ -515,6 +520,7 @@
         "pan_troglodytes": {
             "order":        6,
             "scientific":   "Pan troglodytes",
+            "taxid":        9598,
             "common":       "Chimpanzee",
             "group":        "primates",
             "category":     "houses",
@@ -580,6 +586,7 @@
         "drosophila_melanogaster": {
             "order":        7,
             "scientific":   "Drosophila melanogaster",
+            "taxid":        7227,
             "common":       "Fruitfly",
             "group":        "invertebrates",
             "category":     "houses",
@@ -617,6 +624,7 @@
         "caenorhabditis_elegans": {
             "order":        8,
             "scientific":   "Caenorhabditis elegans",
+            "taxid":        6239,
             "common":       "C.elegans",
             "group":        "invertebrates",
             "category":     "houses",
@@ -654,6 +662,7 @@
         "bos_taurus": {
             "order":        9,
             "scientific":   "Bos taurus",
+            "taxid":        9913,
             "common":       "Cow",
             "group":       "laurasiatheria",
             "official":     "bosTau8",
@@ -674,6 +683,7 @@
         "canis_familiaris": {
             "order":        10,
             "scientific":   "Canis familiaris",
+            "taxid":        9615,
             "common":       "Dog",
             "group":        "laurasiatheria",
             "official":     "canFam3",
@@ -694,6 +704,7 @@
         "felis_catus": {
             "order":        11,
             "scientific":   "Felis catus",
+            "taxid":        9685,
             "common":       "Cat",
             "group":        "laurasiatheria",
             "official":     "felCat5",
@@ -714,6 +725,7 @@
         "monodelphis_domestica": {
             "order":        12,
             "scientific":   "Monodelphis domestica",
+            "taxid":        13616,
             "common":       "Opossum",
             "group":        "mammals",
             "official":     "monDom5",
@@ -734,6 +746,7 @@
         "gallus_gallus": {
             "order":        13,
             "scientific":   "Gallus gallus",
+            "taxid":        9031,
             "common":       "Chicken",
             "group":        "birds",
             "official":     "galGal4",
@@ -754,6 +767,7 @@
         "taeniopygia_guttata": {
             "order":        14,
             "scientific":   "Taeniopygia guttata",
+            "taxid":        59729,
             "common":       "Zebra Finch",
             "group":        "birds",
             "official":     "taeGut1",
@@ -774,6 +788,7 @@
         "anolis_carolinensis": {
             "order":        15,
             "scientific":   "Anolis carolinensis",
+            "taxid":        28377,
             "common":       "Anole lizard",
             "group":        "reptiles",
             "official":     "anoCar2",
@@ -794,6 +809,7 @@
         "xenopus_tropicalis": {
             "order":        16,
             "scientific":   "Xenopus tropicalis",
+            "taxid":        8364,
             "common":       "Xenopus",
             "group":        "amphibians",
             "official":     "xenTro3",
@@ -814,6 +830,7 @@
         "takifugu_rubripes": {
             "order":        17,
             "scientific":   "Takifugu rubripes",
+            "taxid":        31033,
             "common":       "Fugu",
             "group":        "fish",
             "official":     "fr3",
