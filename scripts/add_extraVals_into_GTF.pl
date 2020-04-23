@@ -125,39 +125,50 @@ sub main()
 							if ( exists $xref_data->{$accesion_id} ) {
 								my ($ens_gene_id) = $xref_data->{$accesion_id}->{'gene_id'};
 								my ($ens_transc_id) = $xref_data->{$accesion_id}->{'transc_id'};
-								
-								if ( defined $extra_genedata ) {
-									# add CCDS
-									unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
-										if ( exists $extra_genedata->{$ens_gene_id} and
-											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-											 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} and 
-											 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} ne ""
+
+								my ($ens_transc_ver);
+								if ( $ens_transc_id =~ /^(ENS[^\.]*)\.(\d*)$/ ) {
+									($ens_transc_id, $ens_transc_ver) = ($1, $2);
+								}
+
+								if ( defined $extra_genedata and
+									 exists $extra_genedata->{$ens_gene_id} and
+									 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}
+								) {
+									my ($extra_transc_ver);
+									if ( exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}{'version'} ) {
+										$extra_transc_ver = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}{'version'};
+									}
+
+									if ( ( defined $ens_transc_ver && defined $extra_transc_ver && $ens_transc_ver == $extra_transc_ver ) ||
+									     ( ! defined $ens_transc_ver && ! defined $extra_transc_ver )
+									) {
+										# add CCDS
+										unless ( $line =~ /ccds_id/ or $line =~ /ccdsid/ ) {
+											if ( exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} and
+												 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'} ne ""
+											) {
+												my ($ccds_id) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
+												$new_values .= "; ccds_id \"$ccds_id\"";
+											}
+										}
+										# add RT
+										if ( exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} and
+											 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ne ""
 										) {
-											my ($ccds_id) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'ccdsid'};
-											$new_values .= "; ccds_id \"$ccds_id\"";
+											my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
+											if ( $extra_tags =~ /readthrough_transcript/ ) {
+												$new_values .= ";tag=readthrough_transcript";
+											}
 										}
-									}
-									# add RT
-									if ( exists $extra_genedata->{$ens_gene_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} and 
-										 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'} ne ""
-									) {
-										my ($extra_tags) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tag'};
-										if ( $extra_tags =~ /readthrough_transcript/ ) {
-											$new_values .= ";tag=readthrough_transcript";
-										}
-									}
-									# add TSL
-									if ( exists $extra_genedata->{$ens_gene_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id} and
-										 exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} and 
-										 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ne ""
-									) {
-										my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
-										if ( $extra_val ne '' ) {
-											$new_values .= ";tsl=$extra_val";
+										# add TSL
+										if ( exists $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} and
+											 $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'} ne ""
+										) {
+											my ($extra_val) = $extra_genedata->{$ens_gene_id}->{'transcripts'}->{$ens_transc_id}->{'tsl'};
+											if ( $extra_val ne '' ) {
+												$new_values .= ";tsl=$extra_val";
+											}
 										}
 									}
 								}
