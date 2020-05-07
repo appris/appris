@@ -371,9 +371,10 @@ sub _check_alignment($$$)
 			my $mini_cds_end = $boundaries[1];
 			$logger->debug("#mini_cds_trans:$mini_cds_coord\[$mini_cds_index\]\n");
 
-			# Finish when target-candidate don't cover exons or
-			# Next until exon is within target-candidate
-			if ( ($mini_cds_start > $targend) or ($targstart > $mini_cds_end) )
+			# Skip until exon is within target-candidate...
+			if ( ($mini_cds_end < $targstart) or
+			     # ...or finish when is not within target-candidate or HSP.
+			     ($mini_cds_start > $targend) or $hsp_idx_min > $#target )
 			{
 				$mini_cds_score_list->{$mini_cds_index} = {
 							'index'		=> $mini_cds_index,
@@ -449,7 +450,7 @@ sub _check_alignment($$$)
 				}
 				else
 				{
-					$logger->error("invalid HSP index: $hsp_idx");
+					last;
 				}
 			}
 
