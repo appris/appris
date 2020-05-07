@@ -80,7 +80,7 @@ sub main()
 	eval
 	{
 		$logger->info("-- obtain gene_id\n");
-		my ($cmd) = "awk '{if (\$3 == \"gene\") {print \$10}}' $data_file | sed 's/[\"|;]//g' | sed 's/\\.[0-9]*\$//'";
+		my ($cmd) = "awk -F\"\\t\" '{if (\$3 == \"gene\") {print \$9}}' $data_file | grep -o -m1 'gene_id \"[^\"]*\";' | sed 's/^gene_id \"\\|\";\$//g' | sed 's/\\.[0-9]*\$//'";
 		$logger->debug("$cmd\n");						
 		my (@gene_id_out) = `$cmd`;
 		if ( scalar(@gene_id_out) == 0 ) {
