@@ -409,7 +409,7 @@ sub transcripts {
 sub transcript {
 	my ($self) = shift;
 	my ($id) = shift;
-	my ($index) = $self->_index_transcripts->{$id};
+	my ($index) = $self->{'_index_transcripts'}->{$id};
 	return $self->{'transcripts'}->[$index];
 }
 
