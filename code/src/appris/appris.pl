@@ -36,6 +36,7 @@ my ($thump_file) = undef;
 my ($crash_file) = undef;
 my ($inertia_file) = undef;
 my ($proteo_file) = undef;
+my ($trifid_file) = undef;
 my ($output_main_file) = undef;
 my ($output_nscore_file) = undef;
 my ($output_label_file) = undef;
@@ -58,6 +59,7 @@ my ($loglevel) = undef;
 	'crash=s'			=> \$crash_file,
 	'inertia=s'			=> \$inertia_file,
 	'proteo=s'			=> \$proteo_file,
+	'trifid=s'			=> \$trifid_file,
 	'output=s'			=> \$output_main_file,
 	'output_nscore=s'	=> \$output_nscore_file,	
 	'output_label=s'	=> \$output_label_file,
@@ -80,6 +82,8 @@ our $SPADE_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'spade_cutoff');
 our $CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 our $CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
 our $THUMP_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
+our $PROTEO_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'proteo_cutoff');
+our $TRIFID_MIN_LEAD		= $cfg->val( 'APPRIS_VARS', 'trifid_min_lead');
 
 our ($EXP_CFG) = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 
@@ -123,6 +127,7 @@ sub main()
 	my ($crash_result);
 	my ($inertia_result);
 	my ($proteo_result);
+	my ($trifid_report);
 
 	# determine the methods involved in the final decision
 	# By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
@@ -241,6 +246,17 @@ sub main()
 	else {
 		$logger->info("file does not exit\n");
 	}	
+	$logger->info("get trifid result\n");
+	if ( -e $trifid_file and (-s $trifid_file > 0) ) {
+		my ($trifid_result) = getStringFromFile($trifid_file);
+		unless ( defined($trifid_result) ) {
+			$logger->error("can not open trifid result: $!\n");
+		}
+		$trifid_report = appris::parse_trifid_rst($trifid_result);
+	}
+	else {
+		$logger->info("trifid file not found\n");
+	}
 
 	# get object of reports
 	$logger->info("-- create reports\n");
@@ -270,7 +286,8 @@ sub main()
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics);
+	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots,
+	                              $involved_metrics, $trifid_report);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs

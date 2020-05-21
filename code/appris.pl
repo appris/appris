@@ -706,6 +706,18 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);	
 	}
+	# trifid is executed every time
+	my ($trifid_file) = "${outpath}/trifid";
+	eval {
+		my ($cmd) = "perl $SRC_DIR/trifid/trifid.pl ".
+							"--conf='".$config_file."' ".
+							"--data='".$files->{'annot'}."' ".
+							"--output='".$trifid_file."' ".
+							"$LOGGER_CONF ";
+		$logger->info("\n** script: $cmd\n");
+		system ($cmd);
+	};
+	$logger->error("executing trifid: ".$!) if($@);
 	# appris is allways executed
 	my ($m) = 'appris';
 	eval {
@@ -724,6 +736,7 @@ sub run_pipeline($$$)
 						"--crash='".$files->{$m}->{'crash'}."' ".
 						"--inertia='".$files->{$m}->{'inertia'}."' ".
 						"--proteo='".$files->{$m}->{'proteo'}."' ".
+						"--trifid='".$trifid_file."' ".
 
 						"--output='".$files->{$m}->{'appris'}."' ".
 						"--output_nscore='".$files->{$m}->{'appris'}.".nscore' ".

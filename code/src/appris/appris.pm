@@ -21,6 +21,7 @@ use vars qw(@ISA @EXPORT);
 	get_score_output
 	get_nscore_output
 	get_label_output
+	parse_trifid_rst
 );
 
 ###################
@@ -161,6 +162,128 @@ $METRIC_WEIGHTED = {
 	'proteo'	=> 0,
 };
 
+
+sub appris_decider_default($$$$$$$$)
+{
+	my ($gene, $tag, $princ_list, $isof_report, $scores, $s_scores, $nscores, $annots) = @_;
+
+	# 2. from preserved transcripts, we keep those with a single unique CCDS
+	$princ_list = step_ccds($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 2;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 3-1. from preserved transcripts, we keep those with eldest CCDS
+	$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 3;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 3-2. from preserved transcripts, we keep those with TSL1
+	$princ_list = step_tsl($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 3;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 4. from preserved transcript, we keep those with longest seq with CCDS
+	$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+#	warning("DEFAULT_ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
+#	warning("DEFAULT_NSCORES_4: \n".Dumper($nscores)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 4;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 5-1. from preserved transcripts, we keep those that have been validated manually
+	$princ_list = step_validated($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 5;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 5-2. from preserved transcripts, we keep those with longest sequence
+	$princ_list = step_longest($princ_list, $isof_report, $nscores);
+#	warning("DEFAULT_PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 5;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+	else {  # 5-3. we take the transcript with the first-sorting ID
+		$princ_list = step_smaller_id($princ_list, $isof_report, $nscores);
+#		warning("DEFAULT_PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
+		step_tags(5, $scores, $princ_list, $isof_report, \$annots);
+	}
+
+	return $tag;
+
+} # End appris_decider_default
+
+sub appris_decider_trifid($$$$$$$$$)
+{
+	my ($gene, $tag, $princ_list, $isof_report, $scores, $s_scores, $nscores, $annots,
+	    $trifid_report) = @_;
+
+	# 2. from preserved transcripts, we keep the dominant TRIFID transcript, if available
+	my $min_lead = $main::EXP_CFG->val('appris', 'trifid_min_lead', $main::TRIFID_MIN_LEAD);
+	$princ_list = step_trifid($princ_list, $scores, $gene, $trifid_report, $min_lead);
+#	warning("TRIFID_PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 2;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 3. from preserved transcripts, we keep those with proteomics support
+	if ( exists $s_scores->{'proteo'} ) {
+		$princ_list = step_proteo($princ_list, $s_scores->{'proteo'});
+#		warning("TRIFID_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+		if ( is_unique($princ_list, $isof_report) ) {
+			$tag = 3;
+			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+			return $tag;
+		}
+	}
+
+	# 4. from preserved transcripts, we keep the best-scoring TRIFID transcript, if available
+	$princ_list = step_trifid($princ_list, $scores, $gene, $trifid_report, 0);
+#	warning("TRIFID_PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 4;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+
+	# 5. from preserved transcripts, we keep those with longest sequence
+	$princ_list = step_longest($princ_list, $isof_report, $nscores);
+#	warning("TRIFID_PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
+	if ( is_unique($princ_list, $isof_report) ) {
+		$tag = 5;
+		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
+		return $tag;
+	}
+	else {  # 5. we take the transcript with the first-sorting ID
+		$princ_list = step_smaller_id($princ_list, $isof_report, $nscores);
+#		warning("TRIFID_PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
+		step_tags(5, $scores, $princ_list, $isof_report, \$annots);
+	}
+
+	return $tag;
+
+} # End appris_decider_trifid
 
 sub get_method_metric_names($) {
 	my ($methods_str) = @_;
@@ -779,14 +902,12 @@ sub get_appris_scores($$\$\$\$)
 } # End get_appris_scores
 
 # get the final annotation
-sub get_final_annotations($$$$$$)
+sub get_final_annotations($$$$$$$)
 {
-	my ($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics) = @_;
+	my ($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics, $trifid_report) = @_;
 	my ($method) = 'appris';
-	my ($annotations);
 	my ($tag) = 0;
 
-	my $mane_select = $main::EXP_CFG->val( 'appris', 'mane_select', 0 );
 	my $appris_score_mode = $main::EXP_CFG->val( 'appris', 'score_mode', 'phased_bi' );
 	if ( $appris_score_mode =~ /^phased_/ ) {
 		my $phase_1_metrics = phase_metric_filter($involved_metrics, $appris_score_mode, 1);
@@ -841,6 +962,7 @@ sub get_final_annotations($$$$$$)
 				$isof_report = $phase2_isof_report;
 				$scores = $phase2_scores;
 				$nscores = $phase2_nscores;
+				$s_scores = $phase2_s_scores;
 				# warning("PRINC_LIST_1_2: \n".Dumper($princ_list)."\n");
 				# warning("PRINC_REP_1_2: \n".Dumper($isof_report)."\n");
 			}
@@ -852,76 +974,12 @@ sub get_final_annotations($$$$$$)
 			}
 		}
 
-		if ( $mane_select ) {
-			# 2_1 from preserved transcripts, we keep the 'MANE_Select' transcript, if available
-			$princ_list = step_mane($princ_list, $isof_report, $nscores);
-#			warning("PRINC_LIST_2_1: \n".Dumper($princ_list)."\n");
-			if ( is_unique($princ_list, $isof_report) ) {
-				$tag = 2;
-				step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-				return $tag;
-			}
-		}
-
-		# 2_2 from preserved transcript, we keep transcripts that they have got CCDS
-		$princ_list = step_ccds($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_2_2: \n".Dumper($princ_list)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 2;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-
-		# 3_1. from preserved transcript, we keep transcripts that they have got eldest CCDS
-		$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 3;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-
-		# 3_2. from preserved transcript, we keep transcripts that they have got TSL1
-		$princ_list = step_tsl($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_3: \n".Dumper($princ_list)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 3;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-
-		# 4. from preserved transcript, we keep transcripts that they have got longest seq with CCDS
-		$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_4: \n".Dumper($princ_list)."\n");
-#		warning("ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
-#		warning("NSCORES_4: \n".Dumper($nscores)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 4;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-
-		# 5. from preserved transcript, we keep transcripts that they have been validated manually
-		$princ_list = step_validated($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 5;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-
-		# 5. from preserved transcript, we keep transcripts that they have got longest seq
-		$princ_list = step_longest($princ_list, $isof_report, $nscores);
-#		warning("PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
-		if ( is_unique($princ_list, $isof_report) ) {
-			$tag = 5;
-			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
-		}
-		else {
-			$princ_list = step_smaller_id($princ_list, $isof_report, $nscores);
-#			warning("PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
-			$annotations = step_tags(5, $scores, $princ_list, $isof_report, \$annots);
+		if ( defined($trifid_report) ) {
+			$tag = appris_decider_trifid($gene, $tag, $princ_list, $isof_report,
+				$scores, $s_scores, $nscores, $annots, $trifid_report);
+		} else {
+			$tag = appris_decider_default($gene, $tag, $princ_list, $isof_report,
+				$scores, $s_scores, $nscores, $annots);
 		}
 	}
 
@@ -993,13 +1051,6 @@ sub init_isoform_report($)
 					}
 				}
 			}
-			# save MANE_Select tag
-			if ( $transcript->tag ) {
-				my @transc_tags = split(/,/, $transcript->tag);
-				if ( grep { $_ eq 'MANE_Select' } @transc_tags ) {
-					$transc_rep->{'MANE_Select'} = 1;
-				}
-			}
 			# save TSL(1) annot
 			if ( $transcript->tsl and $transcript->tsl eq '1' ) {
 				$transc_rep->{'tsl'} = 1;
@@ -1011,6 +1062,29 @@ sub init_isoform_report($)
 	return ($princ_list, $isof_report);
 
 } # end init_isoform_report
+
+sub parse_trifid_rst($)
+{
+	my ($trifid_result) = @_;
+	my ($trifid_report);
+
+	my ($header, @lines) = split(/\R/, $trifid_result);
+
+	$header =~ s/^#//;
+	my @col_names = split(/\t/, $header);
+	my ($transc_col) = grep { $col_names[$_] eq 'transcript_id' } (0 .. $#col_names);
+	my ($score_col) = grep { $col_names[$_] eq 'trifid_score' } (0 .. $#col_names);
+
+	if ( defined($transc_col) && defined($score_col) ) {
+		foreach my $line (@lines) {
+			my ($transc_id, $score) = (split(/\t/, $line))[$transc_col, $score_col];
+			$trifid_report->{$transc_id} = $score;
+		}
+	}
+
+	return ($trifid_report);
+
+} # end parse_trifid_rst
 
 sub step_appris($$$)
 {
@@ -1058,35 +1132,101 @@ sub step_appris($$$)
 	
 } # end step_appris
 
-sub step_mane($$$)
+sub step_trifid($$$$$)
 {
-	my ($i_princ_list, $isof_report, $nscores) = @_;
+	my ($i_princ_list, $scores, $gene, $trifid_report, $min_lead) = @_;
 	my ($report);
 
-	# initial report
-	# discarding the transcripts are not protein coding (NMD): app_score is -1
-	my ($princ_isof);
-	foreach my $princ ( @{$isof_report} ) {
-		my ($transc_id) = $princ->{'id'};
-		if ( exists $i_princ_list->{$transc_id} ) {
-			if ( exists $nscores->{$transc_id} and defined $nscores->{$transc_id} and $nscores->{$transc_id}->{'appris'} != '-1' ) {
-				if ( exists $princ->{'MANE_Select'} && $princ->{'MANE_Select'} ) { push(@{$princ_isof}, $princ) }
+	my (@scoring_principals) = grep {
+		$scores->{$_}{'score_principal_isoform'} >= 0  # i.e. not -1
+	} keys(%{$i_princ_list});
+
+	if (@scoring_principals) {
+
+		if ( defined($trifid_report) && scalar(keys %{$trifid_report}) > 0 ) {
+
+			my (%transc_to_seq);
+			my ($num_missing_seqs) = 0;
+			foreach my $transc_id (@scoring_principals) {
+				my ($transcript) = $gene->transcript($transc_id);
+				if ( $transcript->translate and $transcript->translate->sequence ) {
+					$transc_to_seq{$transc_id} = $transcript->translate->sequence;
+				} else {
+					$num_missing_seqs++;
+				}
+			}
+
+			if ( $num_missing_seqs == 0 ) {
+
+				my (%seq_to_score);
+				while ( my ($transc_id, $score) = each(%{$trifid_report}) ) {
+					if ( grep { $transc_id eq $_ } @scoring_principals ) {
+						my ($seq) = $transc_to_seq{$transc_id};
+						if ( ! exists($seq_to_score{$seq}) ||
+								$score > $seq_to_score{$seq} ) {
+							$seq_to_score{$seq} = $score;
+						}
+					}
+				}
+
+				my (%score_to_seqs);
+				while ( my ($seq, $score) = each(%seq_to_score) ) {
+					push(@{$score_to_seqs{$score}}, $seq);
+				}
+				my @dec_scores = sort { $b <=> $a } keys(%score_to_seqs);
+
+				my $num_dec_scores = scalar(@dec_scores);
+				if ( $num_dec_scores == 1 || ($num_dec_scores >= 2 &&
+						($dec_scores[0] - $dec_scores[1]) >= $min_lead) ) {
+					my (@best_seqs) = @{$score_to_seqs{$dec_scores[0]}};
+					if ( scalar(@best_seqs) == 1 ) {
+						foreach my $transc_id (@scoring_principals) {
+							if ( $transc_to_seq{$transc_id} eq $best_seqs[0] ) {
+								$report->{$transc_id} = 1;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 
-	# print princ isoforms with CCDS ids
-	if ( defined $princ_isof and ( scalar(@{$princ_isof}) >= 1 ) ) {
-		foreach my $princ ( @{$princ_isof} ) {
-			my ($transc_id) = $princ->{'id'};
-			$report->{$transc_id} = 1;
-		}
+	if ( ! defined($report) ) {
+		$report = $i_princ_list;
 	}
-	else { $report = $i_princ_list }
 
 	return $report;
 
-} # end step_mane
+} # end step_trifid
+
+sub step_proteo($$)
+{
+	my ($i_princ_list, $s_scores) = @_;
+	my ($report);
+
+	my ($min_score) = $s_scores->{'max'} - $main::PROTEO_CUTOFF;
+	$min_score = $min_score >= 2 ? $min_score : 2 ;
+
+	my (@dec_scores) = sort { $b <=> $a } grep { $_ > $min_score } keys(%{$s_scores->{'scores'}});
+
+	foreach my $score (@dec_scores) {
+		my (@best_transc_ids) = grep {
+			exists $i_princ_list->{$_}
+		} @{$s_scores->{'scores'}->{$score}};
+
+		if ( scalar(@best_transc_ids) > 0 ) {
+			$report->{$_} = 1 foreach @best_transc_ids;
+			last;
+		}
+	}
+
+	if ( ! defined($report) ) {
+		$report = $i_princ_list;
+	}
+
+	return $report;
+
+} # end step_proteo
 
 sub step_ccds($$$)
 {

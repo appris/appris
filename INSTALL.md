@@ -125,6 +125,7 @@ Requirements
   	- git
   	- npm
   	- nodejs
+	- tabix
   	```
 
 - Perl requirements (recommendation, use [CPAN](https://www.perl.org/cpan.html)):
