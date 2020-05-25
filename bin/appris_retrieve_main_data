@@ -236,4 +236,15 @@ perl ${SCRIPT_1} \
 	--out-gdisa=${OUTPUT_STATS_CCDS_G_RESULTFILE} \
 	${LOG_PARAMETERS}
 echo "================="
-	
+
+echo "================="
+
+# compress transl FASTA file
+echo "gzip -9 ${ANNOT_RST_TRANSL_FILE}"
+gzip -9 ${ANNOT_RST_TRANSL_FILE}
+
+# compress annot GTF file
+echo "gzip -9 ${ANNOT_RST_ANNOT_FILE}"
+gzip -9 ${ANNOT_RST_ANNOT_FILE}
+
+echo "================="
