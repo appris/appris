@@ -147,7 +147,11 @@ sub check_parameters()
 		# Obtain ensembl (gene dataset) version
 		foreach my $assembly_rep (@{$SPECIES_ASSEMBLIES->{$species}}) {
 			if ( $assembly_rep->{'id'} eq $assembly ) {
-				$ensembl = $assembly_rep->{'datasets'}->[0]->{'source'}->{'version'};
+				my ($datasets_rep) = [
+					grep { ! exists($_->{'queryable'}) || $_->{'queryable'} }
+					@{$assembly_rep->{'datasets'}}
+				];
+				$ensembl = $datasets_rep->[0]->{'source'}->{'version'};
 			}
 		}
 		unless ( defined $ensembl ) {

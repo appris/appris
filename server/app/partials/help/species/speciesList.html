@@ -9,10 +9,10 @@
         <ul class="list-unstyled">
             <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}
                 <!--<ul class="list-unstyled">Datasets:-->
-                    <!--<li data-ng-repeat="dataset in assembly.datasets">{{dataset.id | delete_version }} {{$last ? '' : ', '}}</li>-->
+                    <!--<li data-ng-repeat="dataset in assembly.datasets | showQueryableDatasets">{{dataset.id | delete_version }} {{$last ? '' : ', '}}</li>-->
                 <!--</ul>-->
                 <ul class="list-unstyled">Datasets:
-                    <scan data-ng-repeat="dataset in assembly.datasets">{{dataset.source.name | capitalize}}
+                    <scan data-ng-repeat="dataset in assembly.datasets | showQueryableDatasets">{{dataset.source.name | capitalize}}
                         ({{dataset.id | delete_version}}){{$last? '' : ',
                         '}}</scan>
                 </ul>

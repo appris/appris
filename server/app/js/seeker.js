@@ -92,7 +92,9 @@ module.controller('SeekerAdvancedController', ['consPathSeeker', '$scope', '$loc
                     if ( assembly.id == as ) {
                         var keepGoing = true; // get the first datasource version
                         angular.forEach(assembly.datasets, function(dataset) {
-                            if ( dataset.source.name == sc && keepGoing ) {
+                            if ( ( ! angular.isDefined(dataset.queryable) ||
+                                   dataset.queryable === true ) &&
+                                   dataset.source.name == sc && keepGoing ) {
                                 $scope.seekerAdvancedForm.dataset = dataset;
                                 keepGoing = false;
                             }

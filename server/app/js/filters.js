@@ -177,6 +177,21 @@ apprisFilters.filter('showHousesGenomes', function() {
     };
 });
 
+// For SPECIES LIST: keeps queryable datasets
+apprisFilters.filter('showQueryableDatasets', function() {
+    return function(items) {
+        if (!angular.isObject(items)) return items;
+        var filtered = [];
+        angular.forEach(items, function(item) {
+            if ( angular.isObject(item) && ( ! angular.isDefined(item.queryable) ||
+                                             item.queryable === true ) ) {
+                filtered.push(item);
+            }
+        });
+        return filtered;
+    };
+});
+
 // From species Object (coming from server.json): Create species id
 apprisFilters.filter('getSpeciesId', function() {
     return function(input) {
@@ -188,14 +203,15 @@ apprisFilters.filter('getSpeciesId', function() {
     };
 });
 
-// From species Object (coming from server.json): Create list of dataset object
+// From species Object (coming from config.json): Create list of queryable dataset objects
 apprisFilters.filter('getDatasets', function() {
     return function(input) {
         if (!angular.isObject(input)) return input;
         var filtered = [];
         angular.forEach(input, function(items) {
             angular.forEach(items.datasets, function(item) {
-                if ( angular.isObject(item) ) {
+                if ( angular.isObject(item) && ( ! angular.isDefined(item.queryable) ||
+                                                 item.queryable === true ) ) {
                     filtered.push(item);
                 }
             });

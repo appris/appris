@@ -251,6 +251,7 @@ sub upload_annotfiles()
 		foreach my $cfg_assembly (@{$cfg_species->{'assemblies'}}) {
 			foreach my $cfg_dataset (@{$cfg_assembly->{'datasets'}}) {				
 				next if ( exists $cfg_dataset->{'type'} and $cfg_dataset->{'type'} ne 'current' );
+				next if ( exists $cfg_dataset->{'queryable'} && ! $cfg_dataset->{'queryable'} );
 				if ( exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
 					my ($ds_id) = $cfg_dataset->{'id'};
 					my ($ds_db) = $cfg_dataset->{'database'}->{'name'}.'_'.$ds_id;					
