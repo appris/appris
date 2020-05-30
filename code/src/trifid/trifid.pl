@@ -70,7 +70,8 @@ sub main()
 		open(my $fh, $data_file) or $logger->error("failed to open file: '$data_file'\n");
 		LINE: while (<$fh>) {
 			chomp;
-			my ($feature, $attr_field) = (split(/\s*\t\s*/))[2, 8];
+			my (@fields) = map { $_=~s/^\s+|\s+$//g; $_ } split(/\t/);
+			my ($feature, $attr_field) = @fields[2, 8];
 			if ( $feature eq "gene" ) {
 				my @attrs = split(/\s*;\s*/, $attr_field);
 				foreach my $attr (@attrs) {
