@@ -117,49 +117,64 @@ Installation from Scratch
 Requirements
 ------------
 
-- Ubuntu Linux x86_64 machine
+APPRIS should be installed on an Ubuntu Linux x86_64 machine.
 
-- Softwares:
-  	```
-  	- gawk
-  	- git
-  	- npm
-  	- nodejs
-	- tabix
-  	```
+### Software dependencies
 
-- Perl requirements (recommendation, use [CPAN](https://www.perl.org/cpan.html)):
-	```
-	- FindBin
-	- Getopt::Long
-	- Config::IniFiles
-	- Bio::SeqIO
-	- Bio::SearchIO
-	- File::Temp
-	- File::Basename
-	- Data::Dumper
-	- JSON
-	- DBI
-	- DBD::mysql
-	- POSIX
-	- IO::String
-	- Statistics::Descriptive
-	- Moose
-	- Class::Load
-	- Data::OptList
-	- Module::Implementation
-	- Class::Load::XS
-	- MRO::Compat
-	- Data::Printer
-	- IPC::Run
-	- CGI
-	- HTTP::Status
-	- Email::Valid
-	- MIME::Lite
-	- Parse::RecDescent
-	- XML::DOM
-	```
-	Note: See the lib/appris_perllib/Makefile.PL file
+- gawk
+- git
+- npm
+- nodejs
+- tabix
+
+### Perl dependencies
+
+It is recommended to install Perl dependencies with [CPAN](https://www.perl.org/cpan.html).
+
+The following Perl packages are required:
+- Bio::SearchIO
+- Bio::SeqIO
+- CGI
+- Class::Load
+- Class::Load::XS
+- Config::IniFiles
+- Cwd
+- DBD::mysql
+- DBI
+- Data::Dumper
+- Data::OptList
+- Data::Printer
+- Email::Valid
+- File::Basename
+- File::Temp
+- FindBin
+- Getopt::Long
+- HTTP::Status
+- IO::String
+- IPC::Run
+- JSON
+- MIME::Lite
+- MRO::Compat
+- Module::Implementation
+- Moose
+- POSIX
+- Parse::RecDescent
+- Scalar::Util
+- Statistics::Descriptive
+- Storable
+- XML::DOM
+
+Note: See the lib/appris_perllib/Makefile.PL file for more information.
+
+The following packages are not required to run APPRIS,
+but are needed by some auxiliary scripts:
+
+- Capture::Tiny (version>=0.25)
+- DateTime::Format::ISO8601 (version>=0.08)
+- File::Find (version>=1.23)
+- File::Spec::Functions (version>=3.40)
+
+### Other dependencies
 
 - [MySQL Client](http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
 

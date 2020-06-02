@@ -48,6 +48,9 @@ requires 'Email::Valid'					=> '1.202';
 requires 'MIME::Lite'					=> '3.030';
 requires 'Digest::MD5'					=> '2.52';
 requires 'List::MoreUtils'				=> '0.33';
+requires 'Cwd'							=> '3.40';
+requires 'Scalar::Util'					=> '1.27';
+requires 'Storable'						=> '2.41';
 
 my (%arg_install);
 foreach my $arg (@ARGV) {
