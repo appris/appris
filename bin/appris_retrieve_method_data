@@ -304,12 +304,26 @@ for M in ${METHODS_ARR};do
 		sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2
 		sed -i -- 's/chrMT/chrM/g;s/chrdmel_mitochondrion_genome/chrM/g;s/chrMtDNA/chrM/g' ${OUTPUT_METHOD}.2 
 		mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}
-		
-		# Convert to BigBed
+
 		M2=$( echo $M | sed 's/\-[^\-]*//g')
+		AS_FILE="${UCSC_BED_AS_FILE}.${M2}"
+		BED_TYPE="bed12"
+
+		# If APPRIS, adjust settings for bedToBigBed depending on file contents.
+		if [[ "$M2" == "appris" ]]
+		then
+			long_strings=$(awk 'BEGIN {lstrings=0}; length($4) > 255 || length($12) > 255 {lstrings=1; exit;}; END {print lstrings}' "${OUTPUT_METHOD}")
+			if [[ $long_strings == 1 ]]
+			then
+				AS_FILE="${UCSC_BED_AS_FILE}.${M2}.bed3plus9"
+				BED_TYPE="bed3+9"
+			fi
+		fi
+
+		# Convert to BigBed
 		OUTPUT_BB=$( echo $OUTPUT_METHOD | sed 's/\.bed12//g' | sed 's/\.bed//g' )
-		echo "bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_BB}.bb"
-		bedToBigBed -as=${UCSC_BED_AS_FILE}.${M2}  -type=bed12   ${OUTPUT_METHOD}   ${UCSC_CHROM_SIZE_FILE}   ${OUTPUT_BB}.bb	
+		echo "bedToBigBed -as=${AS_FILE} -type=${BED_TYPE} ${OUTPUT_METHOD} ${UCSC_CHROM_SIZE_FILE} ${OUTPUT_BB}.bb"
+		bedToBigBed -as=${AS_FILE} -type=${BED_TYPE} ${OUTPUT_METHOD} ${UCSC_CHROM_SIZE_FILE} ${OUTPUT_BB}.bb
 	fi	
 	# compress outputs for both formats
 	echo "gzip -9 ${OUTPUT_METHOD}"

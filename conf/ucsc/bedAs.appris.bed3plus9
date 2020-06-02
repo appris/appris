@@ -4,7 +4,7 @@ table hg19APPRISappris
   string 			chrom;			"Reference sequence chromosome"
   uint    			chromStart;		"Start position of feature on chromosome"
   uint    			chromEnd;		"End position of feature on chromosome"
-  string  			name;			"Transcript ID(s)"
+  lstring  			name;			"Transcript ID(s)"
   uint    			score;			"Score from 0-1000"
   char[1]			strand;			"+ or - for strand"
   uint   			thickStart;		"Coding region start"
@@ -13,5 +13,5 @@ table hg19APPRISappris
   int				blockCount;     "Number of blocks"
   int[blockCount]	blockSizes;     "Comma separated list of block sizes"
   int[blockCount]	chromStarts;    "Start positions relative to chromStart"
-  string			prediction;		"APPRIS prediction(s): PRINCIPAL,ALTERNATIVE"
+  lstring			prediction;		"APPRIS prediction(s): PRINCIPAL,ALTERNATIVE"
 )
