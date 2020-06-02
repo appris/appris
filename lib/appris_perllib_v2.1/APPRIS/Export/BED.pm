@@ -1768,6 +1768,12 @@ sub get_proteo_annotations {
 														'value' => 'sequence'
 													}]);
 					if (defined $data ) {
+						# BED format does not support scores > 1000.
+						if ( exists($data->{'score'}) &&
+								defined($data->{'score'}) &&
+								$data->{'score'} > 1000 ) {
+							$data->{'score'} = 1000;
+						}
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
 					}													
 				}
