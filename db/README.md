@@ -60,7 +60,7 @@ Database files of Code's APPRIS
   + sprot_clean_trembl_clean_90.pal
 
 ### For PROTEO: [FMI](#proteo)
-  + APD8_a2_sortu.2.csv
+  + proteo_20200604.csv
 
 
 

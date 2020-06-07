@@ -44,6 +44,8 @@ This directory contains the following subdirectories:
 	|
 	|___ thump
 	|
+	|___ trifid
+	|
 	|___ ucsc /* obsoleted */
 	|
 	|___ uniprot
