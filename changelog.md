@@ -1,4 +1,50 @@
 ___
+## 2020_06.v31
+```
+SERVER-RELEASE:   2020_06.v31
+CODE-RELEASE:     4.8.2.22
+```
+
+### Highlights
+
++ New release of Ensembl (e100 version), for the species:
+	- Homo sapiens
+	- Mus musculus
+
++ New APPRIS annotations using the gene dataset of RefSeq for the species:
+	- Homo sapiens (version 109.20200228)
+
+### Server (4.8)
+
++ Updated to display only queryable datasets in the principal APPRIS web interface.
+
+### Code (2.22)
+
++ TRIFID:
+	- TRIFID predictions are used in the APPRIS decider steps as follows: a transcript
+	  is classified as PRINCIPAL:2 if it is assigned the best TRIFID score of the given
+	  gene among those transcripts that passed stage 1 and its TRIFID score is at least
+	  0.25 greater than any other transcript that passed stage 1. TRIFID predictions are
+	  further used to select PRINCIPAL:4 transcripts, such that the transcript with the
+	  best TRIFID score among those transcripts that passed stage 3 is selected as the
+	  PRINCIPAL:4 transcript.
+
++ APPRIS:
+	- Added queryable dataset option to denote datasets that are accessible in the
+	  principal APPRIS web interface.
+	- Updated RefSeq data download code to reflect changes to RefSeq FTP site layout.
+	- Added optional bed3+9 format for APPRIS bigBed file to accommodate longer merged
+	  transcript IDs.
+	- Updated proteomics data for GENCODE v33, added upper limit to PROTEO score in BED
+	  output.
+	- Added filter to exclude PAR_Y genes from GENCODE input.
+	- Added compression of APPRIS main GTF and FASTA files.
+	- Fixed bugs in Matador3D mini-CDS alignment, tab-delimited file parsing
+	  and APPRIS::Gene module.
+	- Enabled independent configuration of SignalP-3.0 temp directory.
+	- Updated dependency information and documentation.
+
+___
 ## 2020_02.v30
 ```
 SERVER-RELEASE:   2020_02.v30
