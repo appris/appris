@@ -79,7 +79,7 @@ sub main()
 							-file => $fasta_file,
 							-format => 'Fasta'
 		);
-		while ( my $seq = $in->next_seq() ) {
+		SEQ: while ( my $seq = $in->next_seq() ) {
 			my ($s_id) = $seq->id; 
 			my ($s_desc) = $seq->desc;
 			my ($s_seq) = $seq->seq;
@@ -97,6 +97,12 @@ sub main()
 				$transc_id = $2;
 				$gene_id = $3;
 				$gene_name = $4;
+
+				if ( $gene_id =~ /^ENSG\d+\.\d+_PAR_Y$/ ) {
+					$logger->warning("dropping PAR_Y gene '$gene_id'");
+					next SEQ;
+				}
+
 				( my $tid = $transc_id) =~ s/\.[0-9]*$//g;
 				( my $gid = $gene_id) =~ s/\.[0-9]*$//g;
 				

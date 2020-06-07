@@ -681,21 +681,72 @@ sub reduce_input($;$;$)
 		
 	# customize data for a position
 	if ( defined $position ) {
+
+		my ($input_is_gencode) = 0;
+		open(my $fh, $data_file) or throw("opening file '$data_file'");
+		while (<$fh>) {
+			if (/^##provider:\s+GENCODE\b/) {
+				$input_is_gencode = 1;
+				last;
+			} elsif (/^[^#]/) {
+				last;
+			}
+		}
+		close($fh) or throw("closing file '$data_file'");
+
 		foreach my $pos ( split(',', $position) ) {
 			if ( defined $pos ) {
-				eval {
-					my ($cmd) =	"awk '{if(\$1==\"$pos\" || \$1==\"chr$pos\") {print \$0}}' $data_file >> $data_tmpfilename";
-					info("** script: $cmd\n");
-					my (@cmd_out) = `$cmd`;
-				};
-				throw("creating input for $pos") if($@);
-			}		
-		}		
+				if ($input_is_gencode && $pos eq 'Y') {
+					open(my $in_fh, $data_file)
+						or throw("opening file '$data_file'");
+					open(my $out_fh, '>', $data_tmpfilename)
+						or throw("opening file '$data_tmpfilename'");
+					while (<$in_fh>) {
+						next if ( $_ !~ /^chrY\b/ );
+						my ($line) = $_;
+
+						chomp;
+						my ($attr_field) = (split(/\t/))[8];
+						my @attrs = split(/\s*;\s*/, $attr_field);
+
+						my ($gene_id);
+						foreach my $attr (@attrs) {
+							if ( $attr =~ /^(?<tag>\S+)\s+"(?<value>.+?)"$/ ) {
+								if ( $+{'tag'} eq 'gene_id' ) {
+									$gene_id = $+{'value'};
+									last;
+								}
+							}
+						}
+
+						if ( defined($gene_id) ) {
+							if ( $gene_id =~ /^ENSG\d+\.\d+_PAR_Y$/ ) {
+								warning("dropping PAR_Y gene '$gene_id'");
+							} else {
+								print $out_fh $line;
+							}
+						}
+					}
+					close($out_fh) or throw("closing file '$data_tmpfilename'");
+					close($in_fh) or throw("closing file '$data_file'");
+				} else {
+					eval {
+						my ($cmd) = "awk '{if(\$1==\"$pos\" || \$1==\"chr$pos\") {print \$0}}' $data_file >> $data_tmpfilename";
+						info("** script: $cmd\n");
+						my (@cmd_out) = `$cmd`;
+					};
+					throw("creating input for $pos") if($@);
+				}
+			}
+		}
 	}
 	# get customized data for a gene list
 	elsif ( defined $gene_list ) {
 		my ($g_cond) = '';	
 		foreach my $g ( keys(%{$gene_list}) ) {
+			if ( $g =~ /^ENSG\d+\.\d+_PAR_Y$/ ) {
+				warning("gene '$g' is a PAR_Y gene - its PAR_X equivalent may yield better results");
+			}
 			$g_cond .= ' $10 ~ /'.$g.'/ ||'; # for rel7 version		
 		}
 		if ( $g_cond ne '' ) {
