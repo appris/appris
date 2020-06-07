@@ -7,7 +7,7 @@
         <h4 class="media-heading">{{specie.common}}</h4>
         <h6 class="media-heading">{{specie.scientific}}</h6>
         <ul class="list-unstyled">
-            <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}
+            <li data-ng-repeat="assembly in specie.assemblies | showQueryableAssemblies"><strong>Assemblies:</strong> {{assembly.name}}
                 <!--<ul class="list-unstyled">Datasets:-->
                     <!--<li data-ng-repeat="dataset in assembly.datasets | showQueryableDatasets">{{dataset.id | delete_version }} {{$last ? '' : ', '}}</li>-->
                 <!--</ul>-->

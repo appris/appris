@@ -26,7 +26,7 @@
             <div class="media-body">
                 <h4 class="media-heading">{{specie.common}}</h4>
                 <ul class="list-unstyled">
-                    <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}</em></li>
+                    <li data-ng-repeat="assembly in specie.assemblies | showQueryableAssemblies"><strong>Assemblies:</strong> {{assembly.name}}</em></li>
                 </ul>
             </div>
         </div>
@@ -44,7 +44,7 @@
             <div class="media-body">
                 <h4 class="media-heading">{{specie.common}}</h4>
                 <ul class="list-unstyled">
-                    <li data-ng-repeat="assembly in specie.assemblies"><strong>Assemblies:</strong> {{assembly.name}}</em></li>
+                    <li data-ng-repeat="assembly in specie.assemblies | showQueryableAssemblies"><strong>Assemblies:</strong> {{assembly.name}}</em></li>
                 </ul>
             </div>
         </div>

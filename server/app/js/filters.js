@@ -177,6 +177,27 @@ apprisFilters.filter('showHousesGenomes', function() {
     };
 });
 
+// For SPECIES LIST: keeps assemblies with at least 1 queryable dataset
+apprisFilters.filter('showQueryableAssemblies', function() {
+    return function(assemblies) {
+        if (!angular.isObject(assemblies)) return assemblies;
+        var filtered = [];
+        angular.forEach(assemblies, function(assembly) {
+            var numDatasets = 0;
+            angular.forEach(assembly.datasets, function(dataset) {
+                if ( angular.isObject(dataset) && ( ! angular.isDefined(dataset.queryable) ||
+                                                    dataset.queryable === true ) ) {
+                    numDatasets++;
+                }
+            });
+            if ( numDatasets > 0 ) {
+                filtered.push(assembly);
+            }
+        });
+        return filtered;
+    };
+});
+
 // For SPECIES LIST: keeps queryable datasets
 apprisFilters.filter('showQueryableDatasets', function() {
     return function(items) {
