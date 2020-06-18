@@ -28,7 +28,7 @@ export APPRIS_SPECIES="Rattus norvegicus"
 
 export APPRIS_ASSEMBLY="Rnor_6.0"
 
-export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,MT"
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,Y,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
