@@ -300,17 +300,24 @@ sub get_appris_annotations {
 		$length_aa = length($feature->translate->sequence);
 	}
 		
-	my ($no_codons);
-	if ($feature->translate and $feature->translate->codons) {
-		my ($aux_codons) = '';
-		foreach my $codon (@{$feature->translate->codons}) {
-			if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-				$aux_codons .= $codon->type.',';							
+	my ($no_codons) = 'start/stop';
+	if ( $feature->translate and $transcript->translate->codons ) {
+		my ($start_found) = 0;
+		my ($stop_found) = 0;
+		foreach my $codon (@{$transcript->translate->codons}) {
+			if ( $codon->type eq 'start' ) {
+				$start_found = 1;
+			} elsif ( $codon->type eq 'stop' ) {
+				$stop_found = 1;
 			}
 		}
-		$no_codons = 'start/' unless ( $aux_codons =~ /start/ );
-		$no_codons = 'stop/' unless ( $aux_codons =~ /stop/ );
-		$no_codons =~ s/\/$// if (defined $no_codons);		
+		if ( $start_found && $stop_found ) {
+			undef $no_codons;
+		} elsif ( ! $start_found ) {
+			$no_codons = 'start';
+		} elsif ( ! $stop_found ) {
+			$no_codons = 'stop';
+		}
 	}
 
 	# Get annotations

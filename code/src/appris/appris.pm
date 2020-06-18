@@ -862,6 +862,8 @@ sub get_appris_scores($$\$\$\$)
 					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) { $codons .= $codon->type.',' }
 				}
 				unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $appris_score = -1 }
+			} else {
+				$appris_score = -1;
 			}
 			# save appris score and normalize score
 			my ($m) = 'appris';
@@ -1531,7 +1533,6 @@ sub get_score_output($$$)
 		my ($flag_transl) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
-		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
 		my ($matador3d_annot) = '-';
@@ -1571,17 +1572,24 @@ sub get_score_output($$$)
 					}
 				}
 			}		
+			my ($no_codons) = 'start/stop';
 			if ( $transcript->translate->codons ) {
-				my ($aux_codons) = '';
+				my ($start_found) = 0;
+				my ($stop_found) = 0;
 				foreach my $codon (@{$transcript->translate->codons}) {
-					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-						$aux_codons .= $codon->type.',';							
+					if ( $codon->type eq 'start' ) {
+						$start_found = 1;
+					} elsif ( $codon->type eq 'stop' ) {
+						$stop_found = 1;
 					}
 				}
-				$no_codons = 'start/' unless ( $aux_codons =~ /start/ );
-				$no_codons .= 'stop' unless ( $aux_codons =~ /stop/ );
-				$no_codons =~ s/^\-// if ($no_codons ne '-');
-				$no_codons =~ s/\/$// if ($no_codons ne '-');
+				if ( $start_found && $stop_found ) {
+					$no_codons = '-';
+				} elsif ( ! $start_found ) {
+					$no_codons = 'start';
+				} elsif ( ! $stop_found ) {
+					$no_codons = 'stop';
+				}
 			}
 			$tsl = $transcript->tsl if ( defined $transcript->tsl);
 			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }		
@@ -1636,7 +1644,6 @@ sub get_nscore_output($$)
 		my ($flags) = '-';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
-		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
 		my ($matador3d_annot) = '-';
@@ -1670,17 +1677,24 @@ sub get_nscore_output($$)
 					}
 				}
 			}		
+			my ($no_codons) = 'start/stop';
 			if ( $transcript->translate->codons ) {
-				my ($aux_codons) = '';
+				my ($start_found) = 0;
+				my ($stop_found) = 0;
 				foreach my $codon (@{$transcript->translate->codons}) {
-					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-						$aux_codons .= $codon->type.',';							
+					if ( $codon->type eq 'start' ) {
+						$start_found = 1;
+					} elsif ( $codon->type eq 'stop' ) {
+						$stop_found = 1;
 					}
 				}
-				$no_codons = 'start/' unless ( $aux_codons =~ /start/ );
-				$no_codons .= 'stop' unless ( $aux_codons =~ /stop/ );
-				$no_codons =~ s/^\-// if ($no_codons ne '-');
-				$no_codons =~ s/\/$// if ($no_codons ne '-');
+				if ( $start_found && $stop_found ) {
+					$no_codons = '-';
+				} elsif ( ! $start_found ) {
+					$no_codons = 'start';
+				} elsif ( ! $stop_found ) {
+					$no_codons = 'stop';
+				}
 			}
 			$tsl = $transcript->tsl if ( defined $transcript->tsl);
 			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }
@@ -1725,7 +1739,6 @@ sub get_label_output($$)
 		my ($flag_transl) = 'TRANSLATION';
 		my ($ccds_id) = '-';
 		my ($tsl) = '-';
-		my ($no_codons) = '-';
 		my ($transl_len) = 0;		
 		my ($firestar_annot) = '-';
 		my ($matador3d_annot) = '-';
@@ -1764,17 +1777,24 @@ sub get_label_output($$)
 					}
 				}
 			}		
+			my ($no_codons) = 'start/stop';
 			if ( $transcript->translate->codons ) {
-				my ($aux_codons) = '';
+				my ($start_found) = 0;
+				my ($stop_found) = 0;
 				foreach my $codon (@{$transcript->translate->codons}) {
-					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) {
-						$aux_codons .= $codon->type.',';							
+					if ( $codon->type eq 'start' ) {
+						$start_found = 1;
+					} elsif ( $codon->type eq 'stop' ) {
+						$stop_found = 1;
 					}
 				}
-				$no_codons = 'start/' unless ( $aux_codons =~ /start/ );
-				$no_codons .= 'stop' unless ( $aux_codons =~ /stop/ );
-				$no_codons =~ s/^\-// if ($no_codons ne '-');
-				$no_codons =~ s/\/$// if ($no_codons ne '-');
+				if ( $start_found && $stop_found ) {
+					$no_codons = '-';
+				} elsif ( ! $start_found ) {
+					$no_codons = 'start';
+				} elsif ( ! $stop_found ) {
+					$no_codons = 'stop';
+				}
 			}
 			$tsl = $transcript->tsl if ( defined $transcript->tsl);
 			if ( defined $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) { $flags .= ',RT' }

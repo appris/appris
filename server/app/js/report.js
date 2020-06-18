@@ -383,7 +383,10 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                         filtered[iTrans]['flags'] += ', '+'TSL'+item.tsl;
                     }
                     if ( angular.isDefined(item.no_codons) ) {
-                        filtered[iTrans]['flags'] += ', '+item.no_codons+'_codon_NF';
+                        var missing_codons = item.no_codons.split('/');
+                        angular.forEach(missing_codons, function (missing_codon) {
+                            filtered[iTrans]['flags'] += ', '+missing_codon+'_codon_NF';
+                        });
                     }
                     if ( angular.isDefined(item.tag) ) {
                         if ( item.tag.indexOf('readthrough_transcript') > -1 ) {
