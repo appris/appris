@@ -301,10 +301,10 @@ sub get_appris_annotations {
 	}
 		
 	my ($no_codons) = 'start/stop';
-	if ( $feature->translate and $transcript->translate->codons ) {
+	if ( $feature->translate and $feature->translate->codons ) {
 		my ($start_found) = 0;
 		my ($stop_found) = 0;
-		foreach my $codon (@{$transcript->translate->codons}) {
+		foreach my $codon (@{$feature->translate->codons}) {
 			if ( $codon->type eq 'start' ) {
 				$start_found = 1;
 			} elsif ( $codon->type eq 'stop' ) {
