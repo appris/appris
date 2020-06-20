@@ -1,4 +1,27 @@
 ___
+## 2020_06.v32
+```
+SERVER-RELEASE:   2020_06.v32
+CODE-RELEASE:     4.9.2.23
+```
+
+### Highlights
+
++ New release of Ensembl (e100 version), for the species:
+	- Drosophila melanogaster
+
+### Server (4.9)
+
++ Fixed display of start/stop codon flags.
+
+### Code (2.23)
+
++ APPRIS:
+	- Updated chromosome lists in rat and fruitfly.
+	- Fixed bug in handling of start/stop codon flags where transcripts
+	  with both start and stop missing were not being flagged.
+
+___
 ## 2020_06.v31
 ```
 SERVER-RELEASE:   2020_06.v31
