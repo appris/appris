@@ -992,86 +992,88 @@ sub _get_cds_coordinates_from_gff($$)
 	my (@global_trans_cds_info);
 	
 	# Get the CDS info from gff file
+	my (@rel_transc_ids);
     my ($in) = Bio::SeqIO->new(
 						-file => $input_file,
 						-format => 'Fasta'
 	);	
-	my ($transcript_codition) = '';
-    while ( my $seq = $in->next_seq() )
-    {
-        if($seq->id=~/^([^|]*)\|([^|]*)/)
-        {
-            my ($sequence_id) = $2;
-            if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
-			$transcript_codition .= ' $9 ~ /transcript_id \"'.$sequence_id.'\"/ ||';
-        }
-    }    
-    if ($transcript_codition ne '') {
-    	$transcript_codition =~ s/\|\|$//;
-    	$transcript_codition = '('.$transcript_codition.')';
-		@global_trans_cds_info=`awk -F "\t" '{if( \$3=="CDS" && $transcript_codition ){print \$0}}' $gff_file`;
-		$logger->debug('awk -F "\t" \'{if( $3=="CDS" && '.$transcript_codition.' ){print $0}}\' '.$gff_file."\n");
-		if ( scalar(@global_trans_cds_info) == 0 ) {
-    		$logger->error("gff has not transcript information");			
+	while ( my $seq = $in->next_seq() )
+	{
+		if($seq->id=~/^([^|]*)\|([^|]*)/)
+		{
+			my ($transc_id) = $2;
+			if ( $transc_id =~ /^ENS/ ) { $transc_id =~ s/\.\d*$// }
+			push(@rel_transc_ids, $transc_id);
 		}
-    }
-    else {
-    	$logger->error("gff has not transcript information");
-    }
+	}
 
 	# Save CDS coordinates within structure
 	my (%total_trans_cds_coords);
 	my ($trans_cds_coords);
-    my ($in2) = Bio::SeqIO->new(
-						-file => $input_file,
-						-format => 'Fasta'
-	);
-    while ( my $seq = $in2->next_seq() )
-    {
+	if (@rel_transc_ids)
+	{
+		$logger->debug("getting CDS coordinates from GFF file: '$gff_file'");
+		open(my $fh, $gff_file) or $logger->error("failed to open GFF file: '$gff_file'");
+		LINE: while (<$fh>)
+		{
+			chomp;
+			my ($chrom, $source, $feature, $start, $end, $score, $strand, $frame,
+				$attr_field) = map { $_=~s/^\s+|\s+$//g; $_ } split(/\t/);
+			next LINE if ($feature ne 'CDS');
 
-        if($seq->id=~/^([^|]*)\|([^|]*)/)
-        {
-            my ($sequence_id) = $2;
-            if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// }
-
-			foreach my $trans_cds_info (@global_trans_cds_info)
+			my ($transc_id);
+			my @attrs = split(/\s*;\s*/, $attr_field);
+			foreach my $attr (@attrs)
 			{
-				if (defined $trans_cds_info and ($trans_cds_info =~ /$sequence_id/))
+				if ( $attr =~ /^(?<tag>\S+)\s+"(?<value>.+?)"$/ )
 				{
-					my (@cds_info) = split /\t/, $trans_cds_info;
-					my ($strand);
-					if(defined $cds_info[6])
+					if ( $+{'tag'} eq 'transcript_id' )
 					{
-						$strand=$cds_info[6];
-						$trans_cds_coords->{$sequence_id}->{'strand'} = $strand
+						$transc_id = $+{'value'};
+						if ( ! grep { $transc_id eq $_ } @rel_transc_ids )
+						{
+							next LINE;
+						}
 					}
-					if(defined $cds_info[3] and defined $cds_info[4])
-					{					
-						my ($start) = $cds_info[3];
-						my ($end) = $cds_info[4];
-						my ($edges);
-						if(defined $strand) # Get the whole CDS coordinates by strand
-						{
-							$total_trans_cds_coords{$strand}{'starts'}{$start} = undef unless(exists $total_trans_cds_coords{$strand}{'starts'}{$start});
-							$total_trans_cds_coords{$strand}{'ends'}{$end} = undef unless(exists $total_trans_cds_coords{$strand}{'ends'}{$end});
-						}
-
-						# Get the CDS coord for each transcript (with frame)
-						if(defined $cds_info[7]) # save the frame
-						{
-							my ($frame) = $cds_info[7];
-							$edges = join ":", $start, $end, $frame;
-						}
-						else {
-							$edges = join ":", $start, $end;
-						}
-						push(@{$trans_cds_coords->{$sequence_id}->{'coord'}}, $edges);
-					}					
 				}
 			}
+
+			if( defined($strand) )
+			{
+				$trans_cds_coords->{$transc_id}->{'strand'} = $strand;
+			}
+
+			if( defined($start) and defined($end) )
+			{
+				my ($edges);
+				if(defined $strand) # Get the whole CDS coordinates by strand
+				{
+					$total_trans_cds_coords{$strand}{'starts'}{$start} = undef unless(exists $total_trans_cds_coords{$strand}{'starts'}{$start});
+					$total_trans_cds_coords{$strand}{'ends'}{$end} = undef unless(exists $total_trans_cds_coords{$strand}{'ends'}{$end});
+				}
+
+				# Get the CDS coord for each transcript (with frame)
+				if( defined($frame) ) # save the frame
+				{
+					$edges = join ":", $start, $end, $frame;
+				}
+				else {
+					$edges = join ":", $start, $end;
+				}
+				push(@{$trans_cds_coords->{$transc_id}->{'coord'}}, $edges);
+			}
 		}
-    }
-    
+		close($fh) or $logger->error("failed to close GFF file: '$gff_file'");
+
+		foreach my $transc_id (@rel_transc_ids)
+		{
+			if ( ! exists($trans_cds_coords->{$transc_id}) )
+			{
+				$logger->error("annotation not found for transcript '$transc_id' in GFF file: '$gff_file'");
+			}
+		}
+	}
+
 	my $mini_cds_interval_pool;
 	while(my ($strand, $trans_cds_coords) = each(%total_trans_cds_coords))
     {
