@@ -20,6 +20,8 @@ CODE-RELEASE:     4.9.2.23
 	- Updated chromosome lists in rat and fruitfly.
 	- Fixed bug in handling of start/stop codon flags where transcripts
 	  with both start and stop missing were not being flagged.
+	- Fixed extraction of transcript annotation from GTF file.
+	- Fixed transcript ID filter in gene report.
 
 ___
 ## 2020_06.v31
