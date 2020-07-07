@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Important Alternative Isoforms!</title>
+    <!-- Imports CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/handsontable-7.4.0.full.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Imports JS -->
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/handsontable-7.4.0.full.min.js"></script>
+    <script src="js/xlsx.full.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script type="text/javascript">
+
+      // when document is ready
+      $(document).ready(function() {
+        // get the text data in tabular format
+        let textData = $.ajax({
+            url: "data/FunctionalTableLong.tsv",
+            // async: false,
+            success: function(textData){
+              // convert text to object (array of arraya)
+              let data = convert_txt_to_json(textData);
+              // create table
+              create_table('table1', data);
+            },
+            error: function(xhr,status,error){
+              alert(`${xhr}: ${error}`);
+            }
+        });
+        
+    });
+  </script>
+
+</head>
+<body>
+  <header>
+    <h1>Important Alternative Isoforms</h1>
+  </header>
+  <section>
+    <div class="main-desc">
+        <p>For more information about the Quality control plots (Vseq), read the following reference:<p>
+        <address>
+            <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
+            Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>
+            DOI:<a href="" target="_blank">XXXXX</a>
+        </address>
+    </div>
+    <hr/>
+    <div>
+      <div id="table1" class="hot handsontable htRowHeaders htColumnHeaders"></div>
+    </div>
+  </section>
+	</div>
+  <hr/>
+	<footer></footer>
+
+</body>
+</html>
