@@ -49,4 +49,4 @@ TPM2	ENSG00000198467	ENST00000647435	Various tissues	Mut. Excl. Exon	Homologous 
 TPM3	ENSG00000143549	ENST00000368533	Digestive	Alt Poly A	Homologous C-terminal	ENST00000328159	Muscle	Yes	Yes	
 TPM3	ENSG00000143549	ENST00000368533	Various tissues	Alt Prom	Homologous N-terminal	ENST00000271850	Muscle	Yes	Yes	
 TPM3	ENSG00000143549	ENST00000368533	Various tissues	Mut. Excl. Exon	Homologous internal swap	ENST00000330188	Nervous	Yes	Yes	
-TPM4	ENSG00000167460	ENST00000300933	Various tissues	Alt Prom	Homologous N-terminal	ENST00000344824	"Urinary, digestive"	Yes	Yes	
+TPM4	ENSG00000167460	ENST00000300933	Various tissues	Alt Prom	Homologous N-terminal	ENST00000344824	"Urinary, digestive"	Yes	Yes
