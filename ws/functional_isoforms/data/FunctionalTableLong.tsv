@@ -1,12 +1,12 @@
 HGNC	Gene Id	Principal Transcript	Protein expression principal	Mechanism of AS 	Effect of AS	Alternative Transcript	Protein expression alternative	Cytoskeleton	Vertebrate Conservation	Comments
-ABI2	ENSG00000138443	ENST00000424558	Various tissues	Skipped exon	Indel	ENST00000430418	Frontal cortex	Yes	Yes	"Not group specific because of low coverage, but tissue specific"
+ABI2	ENSG00000138443	ENST00000424558	Various tissues	Skipped exon	Indel	ENST00000430418	Frontal cortex	Yes	Yes	Not group specific because of low coverage, but tissue specific
 ACOX1	ENSG00000161533	ENST00000301608	Liver	Mut. Excl. Exon	Homologous internal swap	ENST00000293217	Various tissues		Yes	
 ACTN1	ENSG00000072110	ENST00000438964	Digestive; urinary and others	Mut. Excl. Exon	Homologous internal swap	ENST00000193403	Various tissues	Yes	Yes	
 ACTN1	ENSG00000072110	ENST00000438964	Digestive; urinary and others	Skipped exon	Indel	ENST00000394419	Nervous	Yes	Yes	Principal expressed most in smooth muscle at RNA level
 ADD1	ENSG00000087274	ENST00000651918	Various tissues	Alt 5' SS	Indel	ENST00000355842	Nervous	Yes	Yes	
 AP1B1	ENSG00000100280	ENST00000432560;ENST00000415447;ENST00000402502	Various tissues	Skipped exon	Microindel	ENST00000405198	Various tissues		Yes	Principal is highly enriched in digestive tissues at RNA level
 AP1S2	ENSG00000182287	ENST00000329235	Blood; digestive and others	Skipped exon	Microindel	ENST00000545766	Nervous		Yes	
-ATP2B1	ENSG00000070961	ENST00000261173;ENST00000428670	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000359142	Frontal cortex		Yes	"Dual coding frame. Not group specific, but tissue specific"
+ATP2B1	ENSG00000070961	ENST00000261173;ENST00000428670	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000359142	Frontal cortex		Yes	Dual coding frame. Not group specific, but tissue specific
 ATP2B4	ENSG00000058668	ENST00000367218;ENST00000341360	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000357681	Blood; reproductive	Yes	Yes	Dual coding frame. Principal is highly enriched in smooth muscle and digestive tissues at RNA level
 C2CD5	ENSG00000111731	ENST00000542676;ENST00000446597	Blood	Mut. Excl. Exon	Internal swap	ENST00000396028	Nervous		Yes	
 CALD1	ENSG00000122786	ENST00000361675	Digestive; urinary	Alt 5' SS	Indel	ENST00000361901	Various tissues	Yes	Yes	Principal is highly enriched in smooth muscle in RNA analysis
@@ -15,16 +15,16 @@ CAMK2G	ENSG00000148660	ENST00000394762	Various tissues	Mut. Excl. Exon	Internal 
 CAMSAP3	ENSG00000076826	ENST00000446248	Nervous	Skipped exon	Indel	ENST00000160298	Various tissues	Yes	Yes	
 CDC42	ENSG00000070831	ENST00000400259;ENST00000344548	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000315554	Nervous	Yes	Yes	
 DNM1L	ENSG00000087470	ENST00000547312	Various tissues	Skipped exon	Indel	ENST00000381000	Nervous	Yes	Yes	
-EPB41L2	ENSG00000079819	ENST00000337057;ENST00000368128	"Reproductive, digestive and others"	Skipped exon	Indel	ENST00000445890;ENST00000528282	Nervous	Yes	Yes	
-FBLN1	ENSG00000077942	ENST00000327858	-	Alt Poly A	Homologous C-terminal	ENST00000262722	-		Yes	"Not tissue specific at protein level, but much evidence for both isofoms"
+EPB41L2	ENSG00000079819	ENST00000337057;ENST00000368128	Reproductive, digestive and others	Skipped exon	Indel	ENST00000445890;ENST00000528282	Nervous	Yes	Yes	
+FBLN1	ENSG00000077942	ENST00000327858	-	Alt Poly A	Homologous C-terminal	ENST00000262722	-		Yes	Not tissue specific at protein level, but much evidence for both isofoms
 FYN	ENSG00000010810	ENST00000368678;ENST00000538466;ENST00000368682	Blood	Mut. Excl. Exon	Homologous internal swap	ENST00000354650;ENST00000368667	Nervous	Yes	Yes	
 GLS	ENSG00000115419	ENST00000320717	Nervous	Alt Poly A	C-terminal swap	ENST00000338435	Various tissues		Yes	
 H2AFY	ENSG00000113648	ENST00000304332;ENST00000511689;ENST00000510038	Various tissues	Mut. Excl. Exon	Homologous internal swap	ENST00000312469	Reproductive		Yes	Both transcripts most expressed in digestive tissues at RNA level 
 ITGA7	ENSG00000135424	ENST00000553804	Digestive; urinary and others	Mut. Excl. Exon	Homologous internal swap	ENST00000257879	Muscle		Yes	Principal transcript most expressed in fat at RMA level
 MPRIP	ENSG00000133030	ENST00000341712	Various tissues	Skipped exon	Indel	ENST00000414263	Nervous	Yes	Yes	
-MYH10	ENSG00000133026	ENST00000360416	Nervous	Skipped exon	Indel and indel	ENST00000269243	Various tissues	Yes	Yes	"These two transcripts differ by two events, the principal isoform is enriched in nervous tissues in both events suggesting they are co-expressed"
-MYH11	ENSG00000133392	ENST00000300036	-	Skipped exon	Indel (7)	ENST00000396324	-	Yes	Yes	"This event is not clearly tissue specific, but has a lot of evidence"
-MYH11	ENSG00000133392	ENST00000300036	-	Alt Poly A	C-terminal swap	ENST00000576790	-	Yes	Yes	"This event is not clearly tissue specific, but has a lot of evidence"
+MYH10	ENSG00000133026	ENST00000360416	Nervous	Skipped exon	Indel and indel	ENST00000269243	Various tissues	Yes	Yes	These two transcripts differ by two events, the principal isoform is enriched in nervous tissues in both events suggesting they are co-expressed
+MYH11	ENSG00000133392	ENST00000300036	-	Skipped exon	Indel (7)	ENST00000396324	-	Yes	Yes	This event is not clearly tissue specific, but has a lot of evidence
+MYH11	ENSG00000133392	ENST00000300036	-	Alt Poly A	C-terminal swap	ENST00000576790	-	Yes	Yes	This event is not clearly tissue specific, but has a lot of evidence
 MYL6	ENSG00000092841	ENST00000547649	Blood	Alt Poly A	Homologous C-terminal	ENST00000550697;ENST00000548293	Various tissues	Yes	Yes	Both transcripts most expressed in smooth muscle and digestive tissues at RNA level 
 NECTIN2	ENSG00000130202	ENST00000252483	Reproductive	Alt Poly A	Homologous C-terminal	ENST00000252485	Various tissues	Yes	Yes	
 OGDH	ENSG00000105953	ENST00000222673	Various tissues	Skipped exon	Indel	ENST00000444676	Muscle		Yes	
@@ -39,14 +39,14 @@ SLC25A3	ENSG00000075415	ENST00000549338;ENST00000188376;ENST00000552981;ENST0000
 SLC44A2	ENSG00000129353	ENST00000335757	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000586078	Nervous		Yes	
 SORBS2	ENSG00000154556	ENST00000437304	Muscle	Alt Prom	N-terminal swap	ENST00000319471	Various tissues	Yes	Yes	
 SPTAN1	ENSG00000197694	ENST00000372739	Nervous	Skipped exon	indel (5)	ENST00000372731	Various tissues	Yes	Yes	
-TMPO	ENSG00000120802	ENST00000556029;ENST00000266732	-	Alt Poly A	C-terminal swap	ENST00000266732	-	Yes		"One transcript of recent (transposon) origen, but both highly expressed at protein level"
-TPM1	ENSG00000140416	ENST00000267996	"Digestive, urinary and others"	Alt Poly A	Homologous C-terminal	ENST00000561266	"Muscle, nervous and others"	Yes	Yes	
+TMPO	ENSG00000120802	ENST00000556029;ENST00000266732	-	Alt Poly A	C-terminal swap	ENST00000266732	-	Yes		One transcript of recent (transposon) origen, but both highly expressed at protein level
+TPM1	ENSG00000140416	ENST00000267996	Digestive, urinary and others	Alt Poly A	Homologous C-terminal	ENST00000561266	Muscle, nervous and others	Yes	Yes	
 TPM1	ENSG00000140416	ENST00000404484	Urinary and others	Alt Poly A	Homologous C-terminal	ENST00000317516	Nervous	Yes	Yes	
-TPM1	ENSG00000140416	ENST00000403994	Various tissues	Alt Prom	Homologous N-terminal	ENST00000559281	"Nervous, blood"	Yes	Yes	
+TPM1	ENSG00000140416	ENST00000403994	Various tissues	Alt Prom	Homologous N-terminal	ENST00000559281	Nervous, blood	Yes	Yes	
 TPM1	ENSG00000140416	ENST00000559556	Muscle and others	Mut. Excl. Exon	Homologous internal swap	ENST00000358278	Blood and others	Yes	Yes	Most expression of both transcripts in digestive tissues
 TPM2	ENSG00000198467	ENST00000647435	Various tissues	Alt Poly A	Homologous C-terminal	ENST00000378292	Muscle	Yes	Yes	
 TPM2	ENSG00000198467	ENST00000647435	Various tissues	Mut. Excl. Exon	Homologous internal swap	ENST00000645482	Muscle	Yes	Yes	
 TPM3	ENSG00000143549	ENST00000368533	Digestive	Alt Poly A	Homologous C-terminal	ENST00000328159	Muscle	Yes	Yes	
 TPM3	ENSG00000143549	ENST00000368533	Various tissues	Alt Prom	Homologous N-terminal	ENST00000271850	Muscle	Yes	Yes	
 TPM3	ENSG00000143549	ENST00000368533	Various tissues	Mut. Excl. Exon	Homologous internal swap	ENST00000330188	Nervous	Yes	Yes	
-TPM4	ENSG00000167460	ENST00000300933	Various tissues	Alt Prom	Homologous N-terminal	ENST00000344824	"Urinary, digestive"	Yes	Yes
+TPM4	ENSG00000167460	ENST00000300933	Various tissues	Alt Prom	Homologous N-terminal	ENST00000344824	Urinary, digestive	Yes	Yes
