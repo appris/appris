@@ -2,10 +2,10 @@
 
 * {
     font-family: 'Roboto';
-    font-size: .87rem;
+     /*font-size: .87rem; */
 }
 body {
     background: #fafafa;
-    font-size: .97rem;
-    margin: 1.5em;
+    /*font-size: .97rem;*/
+    margin: 1.5em !important;
 }
