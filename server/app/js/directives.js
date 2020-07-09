@@ -356,6 +356,22 @@ apprisDirectives.directive('license', function() {
     };
 });
 
+apprisDirectives.directive('menuImptTpl', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'templates/menuImpt.tpl.html'
+    };
+});
+
+apprisDirectives.directive('tissueSpecific', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/impt/tissues.html'
+    };
+});
+
 
 /* CLEVER DIRECTIVES */
 

@@ -287,7 +287,7 @@ apprisControllers.controller('HelpController', ['$rootScope', '$scope', '$locati
 
 apprisControllers.controller('ImptController', ['$rootScope', '$scope', '$location', '$routeParams',
     function($rootScope, $scope, $location, $routeParams) {
-        $scope.help = $routeParams.help;
+        $scope.impt = $routeParams.impt;
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
