@@ -6,19 +6,25 @@
 
         <div data-ng-if="impt == 'intro'">
             <div class="panel panel-default">
-                <div class="panel-heading"><h2>Subset of Important Alternative Isoforms</h2></div>
+                <div class="panel-heading"><h2>Subsets of Important Alternative Isoforms</h2></div>
                 <div class="panel-body">
-                    <p>
-                        Here we show multiple subsets of isoforms that are important is different areas.
+                    <p>Here we show multiple subsets of isoforms that are important is different areas investigated by our group:
+                        <ul>
+                        <li>
+                            <p>In Tissue Specific: Our <strong><a href="" target="_blank">analysis of tissue-specific alternative splicing at the protein level</a></strong>, 
+                            suggests that tissue-specific alternative splicing may have played a role in the development of the vertebrate brain and heart.</p>
+                            
+                            <p>In the following <strong><a data-ng-href="{{serverConf.hostWS}}/functional_isoforms" target="_blank">link</a></strong> you can see the list of important isoforms</p>
+                        </li>
+                        </ul>
                     </p>
-
                 </div>
             </div>
         </div>
 
         <div data-ng-if="impt == 'ts'">
             <div class="panel panel-default">
-                <div class="panel-heading"><h2>Tissue Specific</h2></div>
+                <div class="panel-heading"><h2>Isoforms in Tissue Specific</h2></div>
                 <div class="panel-body">
                     <tissue-specific></tissue-specific>
                 </div>
