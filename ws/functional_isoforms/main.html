@@ -22,6 +22,7 @@
 
       // when document is ready
       $(document).ready(function() {
+
         // get the text data in tabular format
         let textData = $.ajax({
             url: "data/FunctionalTableLong.tsv",
@@ -55,7 +56,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="http://appris-tools.org/#/seeker">Database</a></li>
                         <li><a href="http://appris-tools.org/#/server">WebServer</a></li>
-                        <li><a href="http://appris-tools.org/apidoc/">WebServices</a></li>
+                        <li><a href="http://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a></li>
                     </ul>
                 </li>
                 <li>
@@ -78,24 +79,32 @@
     </nav>
 </div>
   <header>
-    <h1>Important Alternative Isoforms</h1>
+    <h1>Important Alternative Isoforms in Human</h1>
   </header>
   <section>
     <div class="main-desc">
-        <p>For more information about these Functional Isoforms, read the following publication:<p>
-        <address>
-            <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
-            Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>
-            DOI:<a href="" target="_blank">XXXXX</a>
-        </address>
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_27.html" target="_blank">GENCODE v27</a> (maybe they are not valid for any other annotation).</p>
+      <br/>
+      <p>For more information about these Functional Isoforms, read the following publication:<p>
+      <address>
+        <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
+        Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>
+        DOI:<a href="" target="_blank">XXXXX</a>
+      </address>
     </div>
     <hr/>
     <div>
       <div id="table1" class="hot handsontable htRowHeaders htColumnHeaders"></div>
-    </div>
+    </div>    
   </section>
 	</div>
   <hr/>
+  <section>
+    <!-- Info Alert -->
+    <div class="alert alert-info">
+        <strong>Note</strong> that for MYH11 ENST00000452625 may also be functional, while the same may be true for TPM2 transcript ENST00000329305 and TPM1 transcripts ENST00000288398, ENST00000317516, ENST00000334895, ENST00000404484, ENST00000558910, ENST00000559397 and ENST00000560970                      
+    </div>    
+  </section>
 	<footer></footer>
 
 </body>

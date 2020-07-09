@@ -6,7 +6,6 @@
 /*
  * Global variables
  */
-// let wk_file = "../data/FunctionalTableLong.xlsx"
 
 // convert text variable separating by delimiter to array of array
 function convert_txt_to_json(txt, sep="\t") {
