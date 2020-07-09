@@ -144,7 +144,7 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 controller: 'HelpController',
                 templateUrl: 'partials/help.html'
             }).
-            when('/important/:impt*', {
+            when('/impt', {
                 controller: 'ImptController',
                 templateUrl: 'partials/impt.html'
             }).
