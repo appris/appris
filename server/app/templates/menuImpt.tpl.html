@@ -1,7 +1,9 @@
 <ul class="nav nav-pills nav-stacked">
-    <li role="presentation"
-        data-ng-class="{ active: isActive('/impt/intro')}"><a href="#impt/intro">Important Isoforms</a></li>
 
-    <li role="presentation" data-ng-class="{ active: isActive('/impt/ts')}"><a href="#impt/ts">in Tissue Specific</a>
+    <li role="presentation" data-ng-class="{ active: isActive('/impt/intro')}"><a href="#impt/intro">Important Isoforms</a>
+        <ul class="subnav subnav-pills" style="font-size: small">
+            <li role="presentation" data-ng-class="{ active: isActive('/impt/ts')}"><a href="#impt/ts">in Tissue Specific</a></li>
+        </ul>
     </li>
+
 </ul>
