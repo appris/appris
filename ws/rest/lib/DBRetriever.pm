@@ -1107,7 +1107,7 @@ sub _fetch_trifid_report($$) {
 	my (@lines) = `$cmd`;
 	if ( scalar(@lines) > 1 ) {  # first line is header
 		my $result = join('', @lines);
-		$report = parse_trifid($gene, $lines);
+		$report = parse_trifid($gene, $result);
 	}
 
 	return $report;
