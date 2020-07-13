@@ -20,6 +20,7 @@ use vars qw(
 	$METHODS
 	$TYPE_BED
 	$ENCODING
+	$TRIFID_URL
 	
 );
 
@@ -29,6 +30,7 @@ $METHODS			= $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE};
 $FORMAT				= $ENV{APPRIS_WSERVER_OUTPUT_FORMAT};
 $TYPE_BED			= $ENV{APPRIS_WSERVER_TYPEBED}; # NOT EXISTS
 $ENCODING			= $ENV{APPRIS_WSERVER_OUTPUT_ENCODING};
+$TRIFID_URL			= $ENV{APPRIS_WSERVER_TRIFID_URL};
 
 #####################
 # Method prototypes #
@@ -75,7 +77,8 @@ sub main()
 			($methods =~ /inertia/) or
 			($methods =~ /crash/) or
 			($methods =~ /thump/) or
-			($methods =~ /proteo/) )
+			($methods =~ /proteo/) or
+			($methods =~ /trifid/) )
 		) {
 			$METHODS = $methods;	
 		}
@@ -143,7 +146,8 @@ sub main()
 								-source		=> $sc,
 								-dataset	=> $ds,
 								-type   	=> $type,
-								-input		=> $inputs
+								-input		=> $inputs,
+								-trifid_url => $TRIFID_URL
 	);
 		
 	# Export features (db) from format	

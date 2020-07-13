@@ -114,6 +114,9 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
                 id: "transcript_id_lbl",
                 label: "Seq. id"
             },{
+                id: "transcript_name",
+                label: "Seq. name"
+            },{
                 id: "length_aa",
                 label: "Length (aa)"
             });
@@ -122,7 +125,8 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
                 if ( item.id !== 'principal_isoform' ) {
                     resultDetailAnnotHeads.push({
                         id: item.id,
-                        label: item.label
+                        label: item.shortLabel,
+                        title: item.label
                     });
                 }
                 // discard methods for browser panel !!!

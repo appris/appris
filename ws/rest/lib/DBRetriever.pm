@@ -55,6 +55,9 @@ use APPRIS::Utils::Argument qw(rearrange);
 use APPRIS::Utils::Exception qw(info throw warning deprecate);
 use APPRIS::Utils::File qw(getStringFromFile);
 
+use APPRIS::Analysis;
+use APPRIS::Parser qw(parse_trifid);
+use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_url);
 #use WSRetriever;
 
 {
@@ -70,6 +73,7 @@ use APPRIS::Utils::File qw(getStringFromFile);
 
 			type			=>  undef,
 			input			=>  undef,
+			trifid_url		=>  undef,
 		);
 
 	#_____________________________________________________________
@@ -133,6 +137,12 @@ use APPRIS::Utils::File qw(getStringFromFile);
 		$self->{'input'} = $arg if defined $arg;
 		return $self->{'input'};
 	}
+
+	sub trifid_url {
+		my ($self, $arg) = @_;
+		$self->{'trifid_url'} = $arg if defined $arg;
+		return $self->{'trifid_url'};
+	}
 }
 
 =head2 new
@@ -174,7 +184,30 @@ sub new {
 		$self->{$attrname} = $self->_default_for($attrname);
 	}
 
-	my ( $dbconf, $srvconf, $species, $assembly, $source, $dataset, $type, $input ) = rearrange( [ 'dbconf', 'srvconf', 'species', 'assembly', 'source', 'dataset', 'type', 'input' ], @_ );	
+	my (
+		$dbconf,
+		$srvconf,
+		$species,
+		$assembly,
+		$source,
+		$dataset,
+		$type,
+		$input,
+		$trifid_url
+	)
+	= rearrange( [
+		'dbconf',
+		'srvconf',
+		'species',
+		'assembly',
+		'source',
+		'dataset',
+		'type',
+		'input',
+		'trifid_url'
+	],
+	@_
+	);
 
 	# require paramater
 	if ( defined $dbconf and -e $dbconf ) { $self->dbconf($dbconf); }
@@ -189,6 +222,7 @@ sub new {
 	if ( defined $dataset ) { $self->dataset($dataset); }
 	if ( defined $type ) { $self->type($type); }
 	if ( defined $input ) { $self->input($input); }
+	if ( defined $trifid_url ) { $self->trifid_url($trifid_url); }
 	
 	return $self;
 }
@@ -261,6 +295,10 @@ sub load_registry {
 					if ( $found_sc == 1 and $found_ds == 1 and exists $cfg_dataset->{'database'} and exists $cfg_dataset->{'database'}->{'name'} ) {
 						my ($db_host, $db_user, $db_pass, $db_port) = (undef, undef, undef, undef);
 						my ($db_name) = $cfg_dataset->{'database'}->{'name'}.'_'.$cfg_dataset->{'id'};
+						my ($trifid_release);
+						if ( exists($cfg_dataset->{'trifid'}) && exists($cfg_dataset->{'trifid'}{'release'}) ) {
+							$trifid_release = $cfg_dataset->{'trifid'}{'release'};
+						}
 						my ($registry) = APPRIS::Registry->new();
 						if ( exists $cfg_dataset->{'type'} and lc($cfg_dataset->{'type'}) eq 'archive' ) {
 							$db_host  = $db_cfg->val('APPRIS_ARCHIVES', 'host');
@@ -286,6 +324,7 @@ sub load_registry {
 								'assembly'	=> $cfg_assembly->{'id'},
 								'source'	=> $cfg_dataset->{'source'},
 								'dataset'	=> $cfg_dataset->{'id'},
+								'trifid_release' => $trifid_release,
 								'type'		=> lc($cfg_dataset->{'type'}),
 								'registry'	=> $registry								
 						});
@@ -342,15 +381,16 @@ sub get_features
 	my ($registries) = $self->load_registry();
 
 	# For each registry, extract the input query
-	foreach my $registry (@{$registries}) {		
+	REGISTRY: foreach my $registry (@{$registries}) {
 		if ( defined $type ) {
+			my (@registry_features);
 			if ( ($type eq 'id') and $inputs ) {
 				my ($query_type) = 'gene';
 				if ( defined $t_inputs ) { $query_type = 'transcript'; $inputs = $t_inputs; }
 				foreach my $input (split(/[;|]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_stable_id($registry, $query_type, $input, $methods_str);
 					if ( defined $feat ) {
-						push(@{$features}, $feat) ;
+						push(@registry_features, $feat);
 					}
 				}
 			}
@@ -358,7 +398,7 @@ sub get_features
 				foreach my $input (split(/[;|]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_xref_entry($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
-						foreach my $f (@{$feat}) { push(@{$features}, $f); }
+						foreach my $f (@{$feat}) { push(@registry_features, $f); }
 					}
 				}
 			}
@@ -366,13 +406,33 @@ sub get_features
 				foreach my $input (split(/[;|]/, $inputs)) {
 					my ($feat) = $self->get_feat_by_region($registry, $input, $methods_str);
 					if ( defined $feat and scalar(@{$feat}) > 0 ) {
-						foreach my $f (@{$feat}) { push(@{$features}, $f); }
+						foreach my $f (@{$feat}) { push(@registry_features, $f); }
 					}
 				}
-			}			
+			}
+			else {
+				next REGISTRY;
+			}
+
+			# At the last possible moment, fetch TRIFID analyses for each gene, if available.
+			if ( $methods =~ /trifid/ ) {
+				foreach my $feature (@registry_features) {
+					my ($trifid_release) = $registry->{'trifid_release'};
+					if ( defined($trifid_release) ) {
+						my ($pred_file_url) = get_trifid_pred_file_url($self->trifid_url,
+						                                               $trifid_release);
+						my ($trifid_report) = _fetch_trifid_report($feature, $pred_file_url);
+						if ( defined($trifid_report) ) {
+							_add_trifid_analyses($feature, $trifid_report);
+						}
+					}
+				}
+			}
+
+			push(@{$features}, @registry_features)
 		}
 	}
-	
+
 	return $features;
 	
 } # end get_features
@@ -556,7 +616,7 @@ sub export_features
 	my ($res) = shift if (@_);
 	my ($result) = '';
 	my ($features) = $self->get_features($methods, $ids); # if methods is not defined => retrieve all features
-	
+
 	if ( defined $features ) {
 		my ($exporter) = APPRIS::Exporter->new();
 		if ($format eq 'tsv') {
@@ -1020,5 +1080,37 @@ sub seek_features
 #	
 #	return $result;	
 #}
+
+sub _add_trifid_analyses($$) {
+	my ($gene, $trifid_report) = @_;
+
+	foreach my $transcript (@{$gene->transcripts})
+	{
+		my ($transc_id) = $transcript->stable_id;
+		next unless( exists($trifid_report->{'_index_transcripts'}{$transc_id}) );
+		my ($transc_report) = $trifid_report->transcript($transc_id);
+		next unless( defined($transc_report->analysis) );
+
+		my ($trifid_analysis) = $transc_report->analysis->trifid;
+		$transcript->analysis(APPRIS::Analysis->new) if ( ! defined($transcript->analysis) );
+		$transcript->analysis->trifid($trifid_analysis);
+		$transcript->analysis->number($transcript->analysis->number+1);
+	}
+}
+
+sub _fetch_trifid_report($$) {
+	my ($gene, $pred_file_url) = @_;
+	my ($report);
+
+	my ($gene_id) = $gene->stable_id;
+	my ($cmd) = "tabix -Dh $pred_file_url $gene_id";
+	my (@lines) = `$cmd`;
+	if ( scalar(@lines) > 1 ) {  # first line is header
+		my $result = join('', @lines);
+		$report = parse_trifid($gene, $lines);
+	}
+
+	return $report;
+}
 
 1;
