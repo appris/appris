@@ -1,24 +1,17 @@
 #!/usr/bin/perl -w
 
 use strict;
+use Bio::SeqIO;
 use Getopt::Long;
-use Config::IniFiles;
 
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::File qw( printStringIntoFile );
 
 
-###################
-# Global variable #
-###################
-use vars qw(
-	$PROG_DB
-);
-
 # Input parameters
 my ($str_params) = join "\n", @ARGV;
-my ($config_file) = undef;
-my ($data_file) = undef;
+my ($input_file) = undef;
+my ($trifid_pred_file) = undef;
 my ($output_file) = undef;
 my ($loglevel) = undef;
 my ($logfile) = undef;
@@ -27,8 +20,8 @@ my ($logappend) = undef;
 
 
 &GetOptions(
-	'conf=s'		=> \$config_file,
-	'data=s'		=> \$data_file,
+	'input=s'		=> \$input_file,
+	'trifid=s'		=> \$trifid_pred_file,
 	'output=s'		=> \$output_file,
 	'loglevel=s'	=> \$loglevel,
 	'logfile=s'		=> \$logfile,
@@ -37,15 +30,11 @@ my ($logappend) = undef;
 );
 
 # Required arguments
-unless ( defined $config_file and defined $data_file and defined $output_file )
+unless ( defined $input_file and defined $trifid_pred_file and defined $output_file )
 {
 	print `perldoc $0`;
 	exit 1;
 }
-
-# Get conf vars
-my ($cfg) = new Config::IniFiles( -file =>  $config_file );
-$PROG_DB = $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('TRIFID_VARS', 'db');
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -62,48 +51,70 @@ sub main()
 	# Declare vars
 	my ($output_content) = "";
 
-	# obtain the gene id
+	my $fasta_object = Bio::SeqIO->new(
+		-file => $input_file,
+		-format => 'Fasta'
+	);
+
+	# obtain the gene id and a hash mapping transcript IDs to their translated sequence
 	my ($gene_id);
-	eval
+	my (%transc_to_seq);
+	while ( my $seq = $fasta_object->next_seq() )
 	{
-		$logger->info("-- obtain gene_id\n");
-		open(my $fh, $data_file) or $logger->error("failed to open file: '$data_file'\n");
-		LINE: while (<$fh>) {
-			chomp;
-			my (@fields) = map { $_=~s/^\s+|\s+$//g; $_ } split(/\t/);
-			my ($feature, $attr_field) = @fields[2, 8];
-			if ( $feature eq "gene" ) {
-				my @attrs = split(/\s*;\s*/, $attr_field);
-				foreach my $attr (@attrs) {
-					if ( $attr =~ /^(?<tag>\S+)\s+"(?<value>.+?)"$/ ) {
-						if ( $+{"tag"} eq "gene_id" ) {
-							$gene_id = $+{"value"};
-							last LINE;
-						}
+		if( $seq->id=~/^([^|]+)\|([^|]+)\|([^|]+)/ )
+		{
+			my ($transc_id) = $2;
+			my ($seq_gene_id) = $3;
+			if ( $transc_id =~ /^ENS/ ) { $transc_id =~ s/\.\d*$// }
+			if ( $seq_gene_id =~ /^ENS/ ) { $seq_gene_id =~ s/\.\d*$// }
+			$transc_to_seq{$transc_id} = $seq->seq;
+
+			if ( ! defined($gene_id) ) {
+				$gene_id = $seq_gene_id;
+			} elsif ( $seq_gene_id ne $gene_id ) {
+				$logger->error("gene ID mismatch: $seq_gene_id vs $gene_id\n");
+			}
+		}
+	}
+
+	# retrieve relevant Trifid predictions from tabix-indexed tab file
+	if ( defined($gene_id) ) {
+		$logger->info("-- retrieve Trifid predictions for gene $gene_id\n");
+		my ($cmd) = "tabix -h $trifid_pred_file $gene_id";
+		$logger->debug("$cmd\n");
+
+		my ($header, @input_lines) = `$cmd`;
+		if (@input_lines) {
+
+			$header =~ s/^#//;
+			my @col_names = split(/\t/, $header);
+			my ($transc_col) = grep { $col_names[$_] eq "transcript_id" } (0 .. $#col_names);
+			my ($seq_col) = grep { $col_names[$_] eq "sequence" } (0 .. $#col_names);
+
+			if ( defined($transc_col) && defined($seq_col) ) {
+				# match transcripts by identifier and sequence
+				my (@output_lines);
+				foreach my $line (@input_lines) {
+					my ($transc_id, $trifid_seq) = (split(/\t/, $line))[$transc_col, $seq_col];
+					if ( exists($transc_to_seq{$transc_id}) &&
+							$trifid_seq eq $transc_to_seq{$transc_id} ) {
+						push(@output_lines, $line);
 					}
+				}
+
+				if (@output_lines) {
+					$header =~ s/^/#/;
+					unshift(@output_lines, $header);
+					$output_content = join("", @output_lines);
 				}
 			}
 		}
-		close($fh) or $logger->error("failed to close file: '$data_file'\n");
+	} else {
+		$logger->error("failed to retrieve gene_id\n");
+	}
 
-		if ( ! defined($gene_id) ) {
-			$logger->error("can not retrieve gene_id\n");
-		}
-	};
-	$logger->error("obtaining gene_id: $!\n") if($@);
-
-	# retrieve Trifid predictions from tabix-indexed tab file
-	if ( defined($gene_id) ) {
-		$logger->info("-- retrieve Trifid predictions for gene $gene_id\n");
-		my ($cmd) = "tabix -h $PROG_DB $gene_id";
-		$logger->debug("$cmd\n");
-
-		my (@trifid_lines) = `$cmd`;
-		if ( scalar(@trifid_lines) > 1 ) {  # first line is header
-			$output_content = join("", @trifid_lines);
-		} else {
-			$logger->warning("no Trifid predictions found\n");
-		}
+	if ( ! $output_content ) {
+		$logger->warning("no relevant Trifid predictions found\n");
 	}
 
 	# print output
@@ -132,9 +143,9 @@ Obtain Trifid results for the given gene
 
 =head2 Required arguments:
 
-	--conf=FILE <Config file>
+	--input <Fasta sequence file>
 
-	--data=FILE <Gencode data file>
+	--trifid <Trifid predictions file>
 
 	--output=FILE <Annotation output file>
 
@@ -152,9 +163,9 @@ Obtain Trifid results for the given gene
 
 perl trifid.pl
 
-	--conf=../conf/pipeline.ini
+	--input=examples/ENSG00000254647/transl.fa
 
-	--data=examples/ENSG00000254647/annot.gtf
+	--trifid=examples/trifid_homo_sapiens_e99.tsv.gz
 
 	--output=examples/ENSG00000254647/trifid
 

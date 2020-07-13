@@ -50,6 +50,8 @@ export APPRIS_PROGRAMS_OPT_DIR="${APPRIS_CODE_DIR}/opt"
 
 export APPRIS_METHODS="firestar,matador3d,matador3d2,spade,corsair,thump,crash,proteo,appris"
 
+export APPRIS_TRIFID_BASE_DIR="${APPRIS_PROGRAMS_DB_DIR}/trifid"
+
 # ---------------------------------#
 # Setting up the vars for database #
 # ---------------------------------#

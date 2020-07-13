@@ -10,6 +10,7 @@ use APPRIS::Parser qw(
 	parse_infiles
 	parse_transl_data
 	parse_appris_methods
+	parse_trifid
 );
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::File;
@@ -252,7 +253,7 @@ sub main()
 		unless ( defined($trifid_result) ) {
 			$logger->error("can not open trifid result: $!\n");
 		}
-		$trifid_report = appris::parse_trifid_rst($trifid_result);
+		$trifid_report = parse_trifid($gene, $trifid_result);
 	}
 	else {
 		$logger->info("trifid file not found\n");

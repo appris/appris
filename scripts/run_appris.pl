@@ -51,6 +51,7 @@ my ($position) = undef;
 my ($data_file) = undef;
 my ($transcripts_file) = undef;
 my ($translations_file) = undef;
+my ($trifid_pred_file) = undef;
 my ($gene_list_file) = undef;
 my ($species) = undef;
 my ($e_version) = undef;
@@ -77,6 +78,7 @@ my ($loglevel) = undef;
 	'data=s'			=> \$data_file,
 	'transc=s'			=> \$transcripts_file,
 	'transl=s'			=> \$translations_file,
+	'trifid=s'			=> \$trifid_pred_file,
 	'e-version=s'		=> \$e_version,		
 	't-align=s'			=> \$type_of_align,
 	'methods=s'			=> \$methods,
@@ -357,6 +359,9 @@ sub run_pipeline($$;$;$)
 	# ensembl mode
 	elsif ( $type_of_input =~ /ensembl/ ) {
 		$logger->info("from $type_of_input\n");
+		if ( defined $trifid_pred_file ) {
+			$logger->error("TRIFID not supported for input of type '${type_of_input}'\n");
+		}
 
 		$logger->info("\t-- prepare workspace\n");
 		my ($g_workspace) = $workspace;
@@ -417,6 +422,10 @@ sub run_pipeline($$;$;$)
 	# run pipe (only if methods are defined)
 	if ( defined $methods ) {
 		if ( defined $c_conf_file ) {
+			if ( defined $trifid_pred_file ) {
+				$logger->error("TRIFID not supported for cluster pipeline\n");
+			}
+
 			$logger->info("\t-- run cluster pipe\n");
 			my ($runtime) = run_cluster_appris($gene_id, $workspace, $params);
 		}
@@ -440,6 +449,8 @@ sub prepare_appris_seq_params($$)
 		'species'		=> $species,
 		'outpath'		=> $workspace,
 	};
+
+	$params->{'trifid'} = $trifid_pred_file if ( defined $trifid_pred_file );
 	
 	# input files
 	$logger->info("\t-- create datafile input\n");
@@ -467,6 +478,8 @@ sub prepare_appris_params($$)
 		'species'		=> $species,
 		'outpath'		=> $workspace,
 	};
+
+	$params->{'trifid'} = $trifid_pred_file if ( defined $trifid_pred_file );
 	
 	# input files
 	my ($in_files) = {
@@ -1068,6 +1081,8 @@ run_appris
   --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris')>
   Note: If it is not defined, we only create input data files.
   
+  --trifid= <Trifid predictions file>
+
 =head2 Required arguments (outputs):
 	
   --outpath= <Output directory>

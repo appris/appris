@@ -21,7 +21,6 @@ use vars qw(@ISA @EXPORT);
 	get_score_output
 	get_nscore_output
 	get_label_output
-	parse_trifid_rst
 );
 
 ###################
@@ -904,7 +903,7 @@ sub get_appris_scores($$\$\$\$)
 } # End get_appris_scores
 
 # get the final annotation
-sub get_final_annotations($$$$$$$)
+sub get_final_annotations($$$$$$;$)
 {
 	my ($gene, $scores, $s_scores, $nscores, $annots, $involved_metrics, $trifid_report) = @_;
 	my ($method) = 'appris';
@@ -1065,29 +1064,6 @@ sub init_isoform_report($)
 
 } # end init_isoform_report
 
-sub parse_trifid_rst($)
-{
-	my ($trifid_result) = @_;
-	my ($trifid_report);
-
-	my ($header, @lines) = split(/\R/, $trifid_result);
-
-	$header =~ s/^#//;
-	my @col_names = split(/\t/, $header);
-	my ($transc_col) = grep { $col_names[$_] eq 'transcript_id' } (0 .. $#col_names);
-	my ($score_col) = grep { $col_names[$_] eq 'trifid_score' } (0 .. $#col_names);
-
-	if ( defined($transc_col) && defined($score_col) ) {
-		foreach my $line (@lines) {
-			my ($transc_id, $score) = (split(/\t/, $line))[$transc_col, $score_col];
-			$trifid_report->{$transc_id} = $score;
-		}
-	}
-
-	return ($trifid_report);
-
-} # end parse_trifid_rst
-
 sub step_appris($$$)
 {
 	my ($i_princ_list, $isof_report, $s_scores) = @_;
@@ -1145,7 +1121,7 @@ sub step_trifid($$$$$)
 
 	if (@scoring_principals) {
 
-		if ( defined($trifid_report) && scalar(keys %{$trifid_report}) > 0 ) {
+		if ( defined($trifid_report) ) {
 
 			my (%transc_to_seq);
 			my ($num_missing_seqs) = 0;
@@ -1161,13 +1137,18 @@ sub step_trifid($$$$$)
 			if ( $num_missing_seqs == 0 ) {
 
 				my (%seq_to_score);
-				while ( my ($transc_id, $score) = each(%{$trifid_report}) ) {
-					if ( grep { $transc_id eq $_ } @scoring_principals ) {
-						my ($seq) = $transc_to_seq{$transc_id};
-						if ( ! exists($seq_to_score{$seq}) ||
-								$score > $seq_to_score{$seq} ) {
-							$seq_to_score{$seq} = $score;
-						}
+				foreach my $transc_report (@{$trifid_report->transcripts}) {
+
+					my ($transc_id) = $transc_report->stable_id;
+					next unless( grep { $transc_id eq $_ } @scoring_principals );
+					next unless( defined($transc_report->analysis) &&
+								 defined($transc_report->analysis->trifid) );
+
+					my ($score) = $transc_report->analysis->trifid->trifid_score;
+					my ($seq) = $transc_to_seq{$transc_id};
+					if ( ! exists($seq_to_score{$seq}) ||
+							$score > $seq_to_score{$seq} ) {
+						$seq_to_score{$seq} = $score;
 					}
 				}
 

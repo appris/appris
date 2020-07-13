@@ -38,6 +38,9 @@ Optional arguments:\n
 \t\t p -> proteo\n
 \t\t a -> appris\n
 \n
+\t -d [-trifid]\n
+\t\t TRIFID predictions file\n
+\n
 \t -l \n
 \t\t info\n
 \t\t debug\n
@@ -71,6 +74,10 @@ do
 			;;
 		-m )
 			METHODS=$2
+			shift
+			;;
+		-d | -trifid )
+			TRIFID_PRED_FILE=$2
 			shift
 			;;
 		-l )
@@ -140,6 +147,11 @@ else
 	METHODS_PARAM="${APPRIS_METHODS}"
 fi
 
+TRIFID_PARAMETERS=""
+if [ "${TRIFID_PRED_FILE}" != "" ]; then
+	TRIFID_PARAMETERS=" --trifid=${TRIFID_PRED_FILE}"
+fi
+
 
 # -----------------------------------------------------------------------------
 # Inputs data declarations
@@ -170,6 +182,7 @@ echo "perl ${SCRIPT} \\ "
 echo " --species=\"${SPECIES}\" \\ "
 echo "${INDATA_PARAMETERS}"
 echo " --methods=${METHODS_PARAM} \\ "
+echo " ${TRIFID_PARAMETERS} \\ "
 echo " --outpath=${PWD} \\ "
 echo " --loglevel=${LOG_LEVEL}\ "
 
@@ -178,6 +191,7 @@ perl ${SCRIPT} \
 --species="${SPECIES}" \
 ${INDATA_PARAMETERS} \
 --methods=${METHODS_PARAM} \
+${TRIFID_PARAMETERS} \
 --outpath=${PWD} \
 --loglevel=${LOG_LEVEL}
 echo "================="
