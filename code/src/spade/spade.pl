@@ -101,7 +101,7 @@ sub main()
                         -file => $input_file,
                         -format => 'Fasta'
     );
-	while ( my $seq = $fasta_object->next_seq() )
+	SEQ: while ( my $seq = $fasta_object->next_seq() )
 	{
 		if ( $seq->id=~/^([^|]*)\|([^|]*)/ )
 		{			
@@ -111,6 +111,13 @@ sub main()
             $sequence_report->{$sequence_id} = $sequence;
             
             $logger->info("\n##$sequence_id ###############################\n");
+
+			my ($stop_index) = index($sequence, '*');
+			if ( $stop_index >= 0 && $stop_index < length($sequence) - 1 )
+			{
+				$logger->warning("skipping sequence $sequence_id due to internal translation stop site\n");
+				next SEQ;
+			}
 
 			# Run blast
 			$logger->info("\n##Running Pfamscan ---------------\n");
@@ -122,26 +129,29 @@ sub main()
 			$transcript_report->{$sequence_id} = $pfam_report if (defined $pfam_report);
 		}
     }
-	$logger->debug("##CDS coordenates ---------------\n".Dumper($transcript_report));
-	
-	# If a transcript has not domains, we check if other transcript has the same sequence with domain (external domains)
-	# But rememeber, we only accept the external domains that do not align with any region domain from the current transcript.
-	_get_best_score($transcript_report, $sequence_report);
-	$logger->debug("##The Best CDS scores ---------------\n".Dumper($transcript_report)."\n");
-	
-	# Get records by transcript ---------------
-	my ($output_content) = _get_record_annotations($transcript_report);
 
-	# Get the annotations for the main isoform /* APPRIS */ ----------------
-	if ( defined $appris )
-	{		
-		$output_content .= _get_appris_annotations_bitscore($transcript_report);
-	}
-			
-	# Print records by transcript ---------------
-	my ($print_out) = printStringIntoFile($output_content, $output_file);
-	unless( defined $print_out ) {
-		$logger->error("Can not create output file: $!\n");
+	if ( defined $transcript_report ) {
+		$logger->debug("##CDS coordenates ---------------\n".Dumper($transcript_report));
+
+		# If a transcript has not domains, we check if other transcript has the same sequence with domain (external domains)
+		# But rememeber, we only accept the external domains that do not align with any region domain from the current transcript.
+		_get_best_score($transcript_report, $sequence_report);
+		$logger->debug("##The Best CDS scores ---------------\n".Dumper($transcript_report)."\n");
+
+		# Get records by transcript ---------------
+		my ($output_content) = _get_record_annotations($transcript_report);
+
+		# Get the annotations for the main isoform /* APPRIS */ ----------------
+		if ( defined $appris )
+		{
+			$output_content .= _get_appris_annotations_bitscore($transcript_report);
+		}
+
+		# Print records by transcript ---------------
+		my ($print_out) = printStringIntoFile($output_content, $output_file);
+		unless( defined $print_out ) {
+			$logger->error("Can not create output file: $!\n");
+		}
 	}
 
 	$logger->finish_log();
