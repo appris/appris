@@ -130,12 +130,14 @@ apprisServices.factory('ResultTypes', ['$http', '$q', '$filter', 'serverHostWS',
                     });
                 }
                 // discard methods for browser panel !!!
-                currentMethods.push({
-                    id: item.id,
-                    name: item.name,
-                    label: item.label,
-                    desc: item.desc
-                });
+                if ( item.id !== 'functional_importance' ) {
+                    currentMethods.push({
+                        id: item.id,
+                        name: item.name,
+                        label: item.label,
+                        desc: item.desc
+                    });
+                }
             });
             return {
                 isSeqRunner: isSeqRunner,
