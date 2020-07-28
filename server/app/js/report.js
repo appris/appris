@@ -424,8 +424,7 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                     filtered[iTrans][sLabel] = sAnnot;
                 }
                 else if ( sLabel == "functional_importance" ) {
-                    var pct_trifid_score = parseFloat(sScore) * 100;
-                    filtered[iTrans][sLabel] = pct_trifid_score.toFixed(1) + "%";
+                    filtered[iTrans][sLabel] = parseFloat(sScore).toFixed(3).replace(/0+$/,'').replace(/\.$/,'.0');
                 }
                 else {
                     filtered[iTrans][sLabel] = sScore;
