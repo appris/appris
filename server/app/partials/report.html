@@ -59,7 +59,7 @@
             <th data-ng-repeat="head in resultMainAnnotHeads">{{head.label}}</th>
         </tr>
         <tr data-ng-repeat="result in resultAnnots | orderBy:'transcript_id'"
-            class="{{result['principal_isoform'] | activeAnnotClass}}">
+            class="{{result['principal_isoform'] | activeAnnotClass}} {{result['functional_importance'] | activeTrifidClass}}">
             <td data-ng-repeat="head in resultMainAnnotHeads"
                 class="{{result[head.id] | activeAnnotClass:label}}">{{result[head.id] || "-"}}</td>
         </tr>
@@ -90,7 +90,7 @@
             <th data-ng-repeat="head in resultDetailAnnotHeads" title="{{head.title}}">{{head.label}}</th>
         </tr>
         <tr data-ng-repeat="result in resultAnnots | orderBy:'transcript_id'"
-            class="{{result['principal_isoform'] | activeAnnotClass}}">
+            class="{{result['principal_isoform'] | activeAnnotClass}} {{result['functional_importance'] | activeTrifidClass}}">
             <td><input type="checkbox" class="pointer" data-ng-model="result.selected"></td>
             <td data-ng-repeat="head in resultDetailAnnotHeads">{{result[head.id] || "-" }}</td>
         </tr>

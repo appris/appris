@@ -515,3 +515,16 @@ apprisFilters.filter('activeAnnotClass', function(principal1, principal2, princi
         return filtered;
     };
 });
+
+// Replaces high trifid scores with a css class
+apprisFilters.filter('activeTrifidClass', function() {
+    return function(input){
+        var filtered = '';
+        if ( angular.isDefined(input) ) {
+            if ( input > 0.5 ) {
+                filtered = "trifid-high-score";
+            }
+        }
+        return filtered;
+    };
+});
