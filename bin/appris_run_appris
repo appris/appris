@@ -53,7 +53,7 @@ Required arguments:\n
 Optional arguments:\n
 \t -m [-method]\n
 \t\t Methods which will execute:\n
-\t\t firestar,matador3d,spade,corsair,thump,crash,proteo,appris\n
+\t\t firestar,matador3d,spade,corsair,corsair_alt,thump,crash,proteo,appris\n
 \t\t none\n
 \t\t indata  -> create input data files\n
 \t\t compara -> create Ensembl-Compara alignments\n

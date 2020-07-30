@@ -1765,6 +1765,31 @@ sub query_corsair {
 	return $final;
 }
 
+sub query_corsair_alt {
+	my ($self, %args) = @_;
+	my $dbh = $self->dbh;
+
+	my @args;
+	while (my ($k, $v) = each %args){
+		push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
+	}
+	if (keys(%args)){ pop @args;}  # remove final "and"
+
+        my $statement = "select
+        corsair_alt_id,
+        entity_id,
+		result,
+		score
+  
+		from corsair_alt ";
+
+	my @bindvalues;
+	($statement, @bindvalues) = _add_condition($statement, @args);
+
+	my $final = _do_query($dbh, $statement, @bindvalues);
+	return $final;
+}
+
 sub query_matador3d {
 	my ($self, %args) = @_;
 	my $dbh = $self->dbh;
@@ -2769,6 +2794,44 @@ sub insert_corsair_alignments {
 	$dbh->do(q{insert into corsair_alignments (corsair_id, cds_id, start, end, score, maxscore, sp_report, type, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?,?,?)},
 			undef,(
 				$args{'corsair_id'},
+				$args{'cds_id'},
+				$args{'start'},
+				$args{'end'},
+				$args{'score'},
+				$args{'maxscore'},
+				$args{'sp_report'},
+				$args{'type'},
+				$args{'trans_start'},
+				$args{'trans_end'},
+				$args{'trans_strand'} ));
+	};
+	die("\nERROR: $!\n") if $@;
+	return $dbh->{'mysql_insertid'};
+}
+
+sub insert_corsair_alt {
+	my ($self, %args) = @_;
+	my $dbh = $self->dbh;
+
+	eval {
+	$dbh->do(q{insert into corsair_alt (entity_id, result, score) values (?,?,?)},
+			undef,(
+				$args{'entity_id'},
+				$args{'result'},
+				$args{'score'} ));
+	};
+	die("\nERROR: $!\n") if $@;
+	return $dbh->{'mysql_insertid'};	
+}
+
+sub insert_corsair_alt_alignments {
+	my ($self, %args) = @_;
+	my $dbh = $self->dbh;
+
+	eval {
+	$dbh->do(q{insert into corsair_alt_alignments (corsair_alt_id, cds_id, start, end, score, maxscore, sp_report, type, trans_start, trans_end, trans_strand) values (?,?,?,?,?,?,?,?,?,?,?)},
+			undef,(
+				$args{'corsair_alt_id'},
 				$args{'cds_id'},
 				$args{'start'},
 				$args{'end'},

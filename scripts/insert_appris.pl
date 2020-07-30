@@ -389,7 +389,7 @@ insert_appris
 			
 =head2 Optional arguments (methods):
 		
-  --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
+  --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,corsair_alt,thump,crash,appris'. Default: ALL)>
 		
 =head2 Optional arguments (config files):
 

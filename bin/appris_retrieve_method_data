@@ -43,8 +43,8 @@ USAGE="
 \n
 \t -m [-method]\n
 \t\t Methods which will execute:\n
-\t\t firestar,matador3d,spade,corsair,thump,crash,proteo,appris\n
-\t\t firestar,matador3d,spade-domain,spade-damaged_domain,corsair,thump,crash,proteo,appris\n
+\t\t firestar,matador3d,spade,corsair,corsair_alt,thump,crash,proteo,appris\n
+\t\t firestar,matador3d,spade-domain,spade-damaged_domain,corsair,corsair_alt,thump,crash,proteo,appris\n
 \n
 \t -f [-format]\n
 \t\t gtf\n

@@ -99,6 +99,12 @@ $METHOD_HEADS = {
 		'raw'=>
 			"== vertebrate_conservation: text_result\n",
 	},
+	'corsair_alt'=>{ 
+		'tsv'=>
+			"== vertebrate_conservation: nearest_homologue\t%ID\n",
+		'raw'=>
+			"== vertebrate_conservation: text_result\n",
+	},
 	'crash'=>{
 		'tsv'=>
 			"== signal_peptide_mitochondrial: type_signal\tstart\tend\n",
@@ -165,6 +171,9 @@ sub get_trans_annotations {
 				}
 				if ( (exists $sc{corsair}) or ($source eq 'all') ) {
 					$output .= get_trans_corsair_tsv_annot($feature, $res);
+				}
+				if ( (exists $sc{corsair_alt}) or ($source eq 'all') ) {
+					$output .= get_trans_corsair_alt_tsv_annot($feature, $res);
 				}
 				if ( (exists $sc{spade}) or ($source eq 'all') ) {
 					$output .= get_trans_spade_tsv_annot($feature, $res);
@@ -282,6 +291,9 @@ sub get_raw_annotations {
 			if ( ($method eq 'corsair') or ($method eq 'all') ) {
 				$output .= get_corsair_annot($method, $type, $feature);
 			}
+			if ( ($method eq 'corsair_alt') or ($method eq 'all') ) {
+				$output .= get_corsair_alt_annot($method, $type, $feature);
+			}
 			if ( ($method eq 'spade') or ($method eq 'all') ) {
 				$output .= get_spade_annot($method, $type, $feature);
 			}
@@ -334,6 +346,9 @@ sub get_tsv_results {
 				}
 				if ( ($method eq 'corsair') or ($method eq 'all') ) {
 					$output .= get_corsair_tsv_result($method, $m_report);
+				}
+				if ( ($method eq 'corsair_alt') or ($method eq 'all') ) {
+					$output .= get_corsair_alt_tsv_result($method, $m_report);
 				}
 				if ( ($method eq 'spade') or ($method eq 'all') ) {
 					$output .= get_spade_tsv_result($method, $m_report);
@@ -1258,6 +1273,151 @@ sub get_trans_corsair_raw_annot {
 }
 # corsair: result input. tabular output
 sub get_corsair_tsv_result
+{
+	my ($method, $report) = @_;
+	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};
+	
+	while (my ($seq_id, $seq_report) = each(%{$report}) ) {
+		if ( ($seq_id ne 'result') and (exists $seq_report->{'result'}) ) {
+			my ($s_report) = $seq_report->{'result'};
+			$s_report =~ s/^\>[^\n]*\n//;
+			while ( $s_report =~ /([^\n]*)\n/g ) {
+				my ($line) = $1;
+				my (@cols) = split(/\t/,$line);
+				if ( ($cols[2] ne '0') and ($cols[1] ne '') ) {
+					my ($sp) = $cols[0];
+					unless ( $cols[1] =~ /^\s*\-/ ) {
+						my ($id) = sprintf ("%.2f",$cols[1]);
+						$output .=	$sp."\t".
+									$id."\n";
+					}
+				}
+			}
+			
+		}
+	}
+	return $output;
+}
+
+
+
+
+# corsair_alt METHODS -------
+sub get_corsair_alt_annot {
+	my ($imethod, $itype, $feature) = @_;
+	my ($output) = '';
+	if ( $itype eq 'tsv' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'tsv'};	
+	}
+	elsif ( $itype eq 'raw' ) {
+		$output .= $METHOD_HEADS->{$imethod}->{'raw'};
+	}
+	if ($feature and (ref($feature) ne 'ARRAY')) { # one object
+	   	if ($feature->isa("APPRIS::Gene")) {
+			foreach my $transcript (@{$feature->transcripts}) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_corsair_alt_tsv_annot($transcript);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_corsair_alt_raw_annot($transcript);
+				}
+			}
+ 		}
+    	elsif ($feature->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_corsair_alt_tsv_annot($feature);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_corsair_alt_raw_annot($feature);
+				}
+    	}
+    	else {
+			throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+    	}
+	}
+	elsif ($feature and (ref($feature) eq 'ARRAY') ) { # listref of objects
+	   	foreach my $feat (@{$feature}) {
+	    	if ($feat->isa("APPRIS::Gene")) {
+				foreach my $transcript (@{$feat->transcripts}) {
+					if ( $itype eq 'tsv' ) {
+						$output .= get_trans_corsair_alt_tsv_annot($transcript);
+					}
+					elsif ( $itype eq 'raw' ) {
+						$output .= get_trans_corsair_alt_raw_annot($transcript);
+					}
+				}
+	    	}
+	   		elsif ($feat->isa("APPRIS::Transcript")) {
+				if ( $itype eq 'tsv' ) {
+					$output .= get_trans_corsair_alt_tsv_annot($feat);
+				}
+				elsif ( $itype eq 'raw' ) {
+					$output .= get_trans_corsair_alt_raw_annot($feat);
+				}
+			}
+			else {
+				throw('Argument must be an APPRIS::Gene or APPRIS::Transcript');
+			}    		
+		}
+	}
+	return $output;
+}
+# corsair_alt: annotation input. tabular output
+sub get_trans_corsair_alt_tsv_annot {
+	my ($transcript,$res) = @_;
+	my ($imet) = 'corsair_alt';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->corsair_alt and $analysis->corsair_alt->result ) {
+					my ($s_report) = $analysis->corsair_alt->result;
+					$s_report =~ s/^\>[^\n]*\n//;
+					while ( $s_report =~ /([^\n]*)\n/g ) {
+						my ($line) = $1;
+						my (@cols) = split(/\t/,$line);
+						if ( ($cols[2] ne '0') and ($cols[1] ne '') ) {
+							my ($sp) = $cols[0];
+							unless ( $cols[1] =~ /^\s*\-/ ) {
+								my ($id) = sprintf ("%.2f",$cols[1]);
+								$output .=	$sp."\t".
+											$id."\n";
+
+							}							
+						}
+					}
+			
+										
+				}
+		 	}
+		}
+    }
+    if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'tsv'} . $output }
+	return $output;	
+}
+# corsair_alt: annotation input. raw output
+sub get_trans_corsair_alt_raw_annot {
+	my ($transcript) = @_;
+	my ($imet) = 'corsair_alt';
+	my ($output) = '';
+	if (ref($transcript) and $transcript->isa("APPRIS::Transcript")) {   	    
+		if ($transcript->stable_id) {
+			my ($transcript_id) = $transcript->stable_id;
+			if ( $transcript->analysis ) {
+				my ($analysis) = $transcript->analysis;				
+				if ( $analysis->corsair_alt and $analysis->corsair_alt->result ) {
+					$output .= $analysis->corsair_alt->result."\n";
+				}
+		 	}
+		}
+    }
+    if ( $output ne '' ) { $output = $METHOD_HEADS->{$imet}->{'raw'} . $output }
+	return $output;	
+}
+# corsair_alt: result input. tabular output
+sub get_corsair_alt_tsv_result
 {
 	my ($method, $report) = @_;
 	my ($output) = $METHOD_HEADS->{$method}->{'tsv'};

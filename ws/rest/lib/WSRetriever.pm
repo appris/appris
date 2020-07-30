@@ -63,6 +63,7 @@ use APPRIS::Parser qw(
 	parse_matador3d2_rst
 	parse_spade_rst
 	parse_corsair_rst
+	parse_corsair_alt_rst
 	parse_thump_rst
 	parse_crash_rst
 	parse_appris_rst
@@ -123,6 +124,7 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 			matador3d2		=>  undef,
 			spade			=>  undef,
 			corsair			=>  undef,
+			corsair_alt		=>  undef,
 			thump			=>  undef,
 			crash			=>  undef,
 			inertia			=>  undef,
@@ -239,6 +241,11 @@ while ( my ($met_id,$met_report) = each(%{$METHODS}) ) {
 		my ($self, $arg) = @_;
 		$self->{'corsair'} = $arg if defined $arg;
 		return $self->{'corsair'};
+	}	
+	sub corsair_alt {
+		my ($self, $arg) = @_;
+		$self->{'corsair_alt'} = $arg if defined $arg;
+		return $self->{'corsair_alt'};
 	}	
 	sub thump {
 		my ($self, $arg) = @_;
@@ -466,6 +473,12 @@ sub load_control {
 				$self->corsair(getStringFromFile($metfile));
 			}			
 		}
+		if ( $method eq 'corsair_alt' ) {
+			my ($metfile) = grep(/$method$/, keys %outfiles);
+			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
+				$self->corsair_alt(getStringFromFile($metfile));
+			}			
+		}
 		if ( $method eq 'spade' ) {
 			my ($metfile) = grep(/$method$/, keys %outfiles);
 			if ( defined $metfile and -e $metfile and (-s $metfile > 0) ) {
@@ -614,6 +627,7 @@ sub get_reports
 										$self->matador3d2,
 										$self->spade,
 										$self->corsair,
+										$self->corsair_alt,
 										$self->crash,
 										$self->thump,
 										$self->inertia,
@@ -697,6 +711,13 @@ sub get_results
 		my ($cutoff_ids) = $grep_ids->($cutoff, $ids);
 		if ( defined $cutoff_ids ) {
 			$analyses->{'corsair'} = $cutoff_ids;			
+		}
+	}
+	if ( $self->corsair_alt ) {
+		my ($cutoff) = APPRIS::Parser::parse_corsair_alt_rst($self->corsair_alt);
+		my ($cutoff_ids) = $grep_ids->($cutoff, $ids);
+		if ( defined $cutoff_ids ) {
+			$analyses->{'corsair_alt'} = $cutoff_ids;			
 		}
 	}
 	if ( $self->spade ) {
@@ -1398,6 +1419,15 @@ sub get_seq_features {
 				    				$seq_panel->{$seq_id}->[$idx]->{'span'} = "<span class='seq-browser-label $m'><span class='glyphicon glyphicon-check'></span></span>";
 				    			}				    			
 				    		}				    		
+				    		elsif ( $met eq $METHOD_DESC->{'corsair_alt'} ) {
+				    			my ($idx) = 3;
+				    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
+				    			#$r_clas .= " $m ";
+				    			#$pep_met .= $met.',';
+				    			unless ( defined $seq_panel->{$seq_id}->[$idx]->{'span'} ) {
+				    				$seq_panel->{$seq_id}->[$idx]->{'span'} = "<span class='seq-browser-label $m'><span class='glyphicon glyphicon-check'></span></span>";
+				    			}				    			
+				    		}				    		
 				    		elsif ( $met eq $METHOD_DESC->{'thump'} ) {
 				    			my ($idx) = 4;
 				    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
@@ -1573,6 +1603,15 @@ sub get_aln_features {
 					    			}
 					    		}
 					    		elsif ( $met eq $METHOD_DESC->{'corsair'} ) {
+					    			my ($idx) = 3;
+					    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
+					    			#$r_clas .= " $m ";
+					    			#$pep_met .= $met.',';
+					    			unless ( defined $seq_panel->{$seq_id}->[$idx]->{'span'} ) {
+					    				$seq_panel->{$seq_id}->[$idx]->{'span'} = "<span class='seq-browser-label $m'><span class='glyphicon glyphicon-check'></span></span>";
+					    			}				    			
+					    		}
+					    		elsif ( $met eq $METHOD_DESC->{'corsair_alt'} ) {
 					    			my ($idx) = 3;
 					    			my ($m) = $SEQ_PANEL->[$idx]->{'class'};
 					    			#$r_clas .= " $m ";
@@ -1971,6 +2010,10 @@ $SEQ_PANEL = [{
 	'span'		=> undef,
 },{
 	'corsair'	=> undef,
+	'class'		=> "c",
+	'span'		=> undef,
+},{
+	'corsair_alt'	=> undef,
 	'class'		=> "c",
 	'span'		=> undef,
 },{

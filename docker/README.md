@@ -24,7 +24,7 @@ $ docker exec --user appris -it {CONTAINER_ID} \
     bash -c "source /opt/appris/conf/apprisrc.docker && \
             appris_run_appris \
                 -c /home/appris/ws/test.ws.env \
-                -m firestar,matador3d,matador3d2,spade,corsair,thump,crash,proteo,appris \
+                -m firestar,matador3d,matador3d2,spade,corsair,corsair_alt,thump,crash,proteo,appris \
                 -l info"
 ```
 
@@ -46,7 +46,7 @@ $ docker exec --user appris -it {CONTAINER_ID} \
     bash -c "source /opt/appris/conf/apprisrc.docker && \
             appris_run_appris \
                 -c /home/appris/ws/test.ws.env \
-                -m firestar,matador3d,matador3d2,spade,corsair,thump,crash,proteo,appris \
+                -m firestar,matador3d,matador3d2,spade,corsair,corsair_alt,thump,crash,proteo,appris \
                 -l info"
 ```
 

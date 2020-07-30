@@ -85,7 +85,8 @@ sub new {
 		$matador3d, $matador3d2,
 		$spade,		$inertia,
 		$crash,		$thump,
-		$cexonic,	$corsair,
+		$cexonic,
+    $corsair, $corsair_alt,
 		$proteo,
 		$appris
 		
@@ -96,7 +97,8 @@ sub new {
 		'matador3d', 'matador3d2',
 		'spade',	'inertia',
 		'crash',	'thump',
-		'cexonic',	'corsair',
+		'cexonic',
+    'corsair', 'corsair_alt',
 		'proteo',
 		'appris'
 	],
@@ -114,6 +116,7 @@ sub new {
 	$self->thump($thump) if(defined $thump);
 	$self->cexonic($cexonic) if(defined $cexonic);
 	$self->corsair($corsair) if(defined $corsair);
+  $self->corsair_alt($corsair_alt) if(defined $corsair_alt);
 	$self->proteo($proteo) if(defined $proteo);
 	$self->appris($appris) if(defined $appris);
 	
@@ -307,6 +310,25 @@ sub corsair {
 	my ($self) = shift;
 	$self->{'corsair'} = shift if(@_);
 	return $self->{'corsair'};
+}
+
+=head2 corsair_alt
+
+  Arg [1]    : (optional) APPRIS::Analysis::corsair_alt - the corsair_alt 
+               object to set
+  Example    : $analysis->corsair_alt($method);
+  Description: Getter/setter for the corsair_alt object
+  Returntype : APPRIS::Analysis::corsair_alt or undef
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub corsair_alt {
+	my ($self) = shift;
+	$self->{'corsair_alt'} = shift if(@_);
+	return $self->{'corsair_alt'};
 }
 
 =head2 proteo

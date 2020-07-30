@@ -17,6 +17,7 @@ use APPRIS::Parser qw(
 	parse_matador3d2
 	parse_spade
 	parse_corsair
+	parse_corsair_alt
 	parse_thump
 	parse_crash
 	parse_proteo
@@ -295,6 +296,13 @@ sub parse_reports($$)
 		my ($analysis) = parse_corsair($entity, $report);
 		$analyses->{$method} = $analysis;
 	}
+	$method = 'corsair_alt';
+	if ( exists $reports->{$method} ) {
+		$logger->info("-- parse $method report\n");
+		my ($report) = $reports->{$method};		
+		my ($analysis) = parse_corsair_alt($entity, $report);
+		$analyses->{$method} = $analysis;
+	}
 	$method = 'thump';
 	if ( exists $reports->{$method} ) {
 		$logger->info("-- parse $method report\n");
@@ -413,7 +421,7 @@ run_appris
 	
 =head2 Optional arguments:
 
-		--methods= <List of APPRIS's methods ('ensembl,firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
+		--methods= <List of APPRIS's methods ('ensembl,firestar,matador3d,spade,corsair,corsair_alt,thump,crash,appris'. Default: ALL)>
 		
 		--ensembldb-conf <Config file of Ensembl database (default: 'conf/ensembldb.ini' file)>		
 				

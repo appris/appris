@@ -1565,6 +1565,7 @@ sub fetch_analysis_by_stable_id {
 	my ($crash);
 	my ($thump);
 	my ($corsair);
+	my ($corsair_alt);
 	my ($proteo);
 	my ($appris);
 		
@@ -2174,6 +2175,30 @@ sub fetch_analysis_by_stable_id {
 			}
 		}	
 
+		# Get CORSAIR_ALT analysis -----------------
+		if (defined $source and ($source eq 'corsair_alt' or $source eq 'all')) {
+			my ($method);
+			my ($regions);		
+			eval {	
+				my ($list) = $self->dbadaptor->query_corsair_alt(entity_id => $entity->{'entity_id'});
+				if (defined $list and scalar(@{$list}) > 0) {
+					$method = $list->[0];
+				}				
+			};
+			throw('No corsair_alt analysis') if ($@);
+			if (defined $method) { # Create object
+				eval {
+					$corsair_alt = APPRIS::Analysis::CORSAIR->new
+					(
+						-vertebrate_signal		=> $method->{'vertebrate_signal'},
+						-score					=> $method->{'score'},
+						-result					=> $method->{'result'}
+					);
+				};
+				throw('No corsair_alt object') if ($@);
+			}
+		}	
+
 		# Get PROTEO analysis -----------------
 		if (defined $source and ($source eq 'proteo' or $source eq 'all')) {
 			my ($method);
@@ -2304,6 +2329,10 @@ sub fetch_analysis_by_stable_id {
 			}
 			if (defined $corsair) {
 				$analysis->corsair($corsair);
+				$analysis->number($analysis->number+1);
+			}
+			if (defined $corsair_alt) {
+				$analysis->corsair_alt($corsair_alt);
 				$analysis->number($analysis->number+1);
 			}
 			if (defined $proteo) {

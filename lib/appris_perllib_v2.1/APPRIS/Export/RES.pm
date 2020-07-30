@@ -71,6 +71,7 @@ $METHOD_HEADS = {
 	'matador3d2'=> "best PDB template (bitscore)",
 	'spade'		=> "best Pfam domain name (e-value)",
 	'corsair'	=> "nearest homologue (%ID)",
+	'corsair_alt'	=> "nearest homologue (%ID)",
 	'crash'		=> "type signal",
 	'thump'		=> "type signal",
 	'inertia'	=> "slr_omega_score",
@@ -175,6 +176,21 @@ sub get_trans_annotations {
 								'id'		=> $METHOD_DESC->{'corsair'},
 								'label'		=> $METHOD_LABEL_DESC->{'corsair'},
 								'title'		=> $METHOD_HEADS->{'corsair'},
+								'residues'	=> $residues
+							});
+						}
+			 		}
+		 		}
+		 		if ( (exists $sc{corsair_alt}) or ($source eq 'all') ) {
+			 		if ( $analysis->corsair_alt and $analysis->corsair_alt->result ) {		 			
+						my ($method) = $analysis->corsair_alt;
+				 		my ($residues) = parser_corsair_residues($method, $len);
+						if ( defined $residues and scalar($residues) > 0 ) {
+							push(@{$methods}, {
+								'name'		=> 'corsair_alt',
+								'id'		=> $METHOD_DESC->{'corsair_alt'},
+								'label'		=> $METHOD_LABEL_DESC->{'corsair_alt'},
+								'title'		=> $METHOD_HEADS->{'corsair_alt'},
 								'residues'	=> $residues
 							});
 						}

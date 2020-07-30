@@ -407,6 +407,42 @@ CREATE TABLE corsair_alignments (
 ) ENGINE=InnoDB CHARSET=utf8;
 
 --
+-- Table structure for table corsair_alt
+--
+CREATE TABLE corsair_alt (
+  corsair_alt_id INT(11) unsigned NOT NULL auto_increment,
+  entity_id INT(11) unsigned NOT NULL,
+  result LONGTEXT DEFAULT NULL,  
+  score  FLOAT DEFAULT NULL,  
+  CONSTRAINT fk_corsair_alt_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (corsair_alt_id),
+  UNIQUE KEY unique_key_corsair_alt_corsair_alt_id (corsair_alt_id),
+  KEY key_corsair_alt_entity_id (entity_id)
+) ENGINE=InnoDB CHARSET=utf8;
+
+--
+-- Table structure for table corsair_alt_alignments
+--
+CREATE TABLE corsair_alt_alignments (
+  corsair_alt_alignments_id INT(11) unsigned NOT NULL auto_increment,
+  corsair_alt_id INT(11) unsigned NOT NULL,
+  cds_id INT(2) unsigned NOT NULL,  
+  start INT(11) unsigned NOT NULL,
+  end INT(11) unsigned NOT NULL,
+  score FLOAT NOT NULL,
+  maxscore FLOAT DEFAULT NULL,
+  sp_report LONGTEXT DEFAULT NULL,
+  type TEXT DEFAULT NULL,  
+  trans_start INT(20) unsigned DEFAULT NULL,
+  trans_end INT(20) unsigned DEFAULT NULL,
+  trans_strand ENUM('.','+','-') DEFAULT NULL,
+  CONSTRAINT fk_corsair_alt_alignments_corsair_alt FOREIGN KEY (corsair_alt_id) REFERENCES corsair_alt (corsair_alt_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (corsair_alt_alignments_id),
+  UNIQUE KEY unique_key_corsair_alt_alignments_corsair_alt_alignments_id (corsair_alt_alignments_id),
+  INDEX index_corsair_alt_alignments_corsair_alt_alignments_id_corsair_alt_id (corsair_alt_alignments_id,corsair_alt_id)
+) ENGINE=InnoDB CHARSET=utf8;
+
+--
 -- Table structure for table inertia
 --
 CREATE TABLE inertia (

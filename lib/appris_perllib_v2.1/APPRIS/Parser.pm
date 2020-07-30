@@ -96,6 +96,8 @@ use vars qw(@ISA @EXPORT);
 	parse_inertia
 	parse_corsair_rst
 	parse_corsair
+	parse_corsair_alt_rst
+	parse_corsair_alt
 	parse_crash_rst
 	parse_crash
 	parse_thump_rst
@@ -131,6 +133,8 @@ sub _parse_inertia_file($$\$);
 sub _parse_omega_file($$\$);
 sub parse_corsair_rst($);
 sub parse_corsair($$);
+sub parse_corsair_alt_rst($);
+sub parse_corsair_alt($$);
 sub parse_crash_rst($);
 sub parse_crash($$);
 sub parse_thump_rst($);

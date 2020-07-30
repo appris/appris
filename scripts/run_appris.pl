@@ -1065,7 +1065,7 @@ run_appris
 						
 =head2 Optional arguments (methods):
 		
-  --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris')>
+  --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,corsair_alt,thump,crash,appris')>
   Note: If it is not defined, we only create input data files.
   
 =head2 Required arguments (outputs):

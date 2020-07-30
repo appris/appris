@@ -46,7 +46,7 @@ USAGE="
 \n
 \t -m [-method]\n
 \t\t Methods which will execute (by default, all):\n
-\t\t firestar,matador3d,spade,corsair,thump,crash,appris\n
+\t\t firestar,matador3d,spade,corsair,corsair_alt,thump,crash,appris\n
 \n
 \t -l, -loglevel\n
 \t\t info\n

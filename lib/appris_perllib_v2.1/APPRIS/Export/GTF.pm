@@ -85,6 +85,11 @@ $GTF_CONSTANTS = {
 		'type'=>'vertebrate_conservation',
 		'annot'=>['conservation', 'doubtful_conservation', 'no_conservation']
 	},	
+	'corsair_alt'=>{
+		'source'=>'CORSAIR_ALT',
+		'type'=>'vertebrate_conservation',
+		'annot'=>['conservation', 'doubtful_conservation', 'no_conservation']
+	},	
 	'inertia'=>{
 		'source'=>'INERTIA',
 		'type'=>'neutral_evolution',
@@ -165,6 +170,12 @@ sub get_trans_annotations {
 				}
 				if ( ($source =~ /corsair/) or ($source eq 'all') ) {
 					$output .= get_corsair_annotations(	$transcript_id,
+	   		        										$gene_id,
+	   		        										$external_id,
+	           												$feature);
+				}
+				if ( ($source =~ /corsair_alt/) or ($source eq 'all') ) {
+					$output .= get_corsair_alt_annotations(	$transcript_id,
 	   		        										$gene_id,
 	   		        										$external_id,
 	           												$feature);
@@ -931,6 +942,74 @@ sub get_corsair_annotations {
 	return $output;
 	
 } # End get_corsair_annotations
+
+=head2 get_corsair_alt_annotations
+
+  Arg [1]    : String - the stable identifier of transcript
+  Arg [2]    : String - the stable identifier of gene
+  Arg [3]    : String - the external database name associated with transcript
+  Arg [4]    : APPRIS::Transcript
+  Arg [5]    : String - $version
+  Example    : $annot = get_corsair_alt_annotations($trans_id, $gen_id, $ext_id, $feat, $v);
+  Description: Retrieves specific annotation.
+  Returntype : String or undef
+
+=cut
+
+sub get_corsair_alt_annotations {
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
+
+    my ($output) = '';
+    my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
+	my ($method_score) = 0;
+	my ($method_phase) = '.';
+	my ($method_source) = $GTF_CONSTANTS->{'corsair_alt'}->{'source'};
+
+	# Get annotations
+	if ( $feature->analysis ) {
+ 		my ($analysis) = $feature->analysis;
+ 		if ( $analysis->corsair_alt ) {
+	 		my ($method) = $analysis->corsair_alt;	 		
+			if ( defined $method->score and $method->score != 0 ) {
+				# get coords
+				my ($method_start,$method_end,$method_strand);			
+				if ( $feature->start and $feature->end and $feature->strand ) {
+					$method_start = $feature->start;$method_end = $feature->end;$method_strand = $feature->strand;			
+				}
+				else {
+					my ($length_aa);
+					if ($feature->translate and $feature->translate->sequence) {
+						$length_aa = length($feature->translate->sequence);
+					}
+					$method_start = 1;$method_end = ( defined $length_aa ) ? $length_aa : 1; $method_strand = '.';
+				}			
+				# get type
+				my ($method_type) = $GTF_CONSTANTS->{'corsair_alt'}->{'type'};				
+				# common attributes
+				my ($common) = {
+						'seqname'	=> $method_seqname,
+						'source'	=> $method_source,
+						'type'		=> $method_type,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
+						'score'		=> $method->score,
+						'strand'	=> $method_strand,
+						'phase'		=> $method_phase
+				};
+				# optinal attributes
+				my($optional);
+				$optional->{'gene_id'}			= $gene_id;
+				$optional->{'transcript_id'}	= $transcript_id;
+				if (defined $common and defined $optional) {
+					$output .= print_annotations($common,$optional);			
+				}													 	
+			}		
+ 		}
+ 	}
+
+	return $output;
+	
+} # End get_corsair_alt_annotations
 
 =head2 get_spade_annotations
 

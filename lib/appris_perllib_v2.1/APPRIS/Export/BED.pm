@@ -412,6 +412,13 @@ sub get_trans_annotations {
 	           									\$track->[4]
 					);
 				}
+				if ( (exists $sc{corsair_alt}) or ($methods eq 'all') ) {				
+					get_corsair_alt_annotations(	$typebed,
+												$transcript_id,
+	           									$feature,
+	           									\$track->[4]
+					);
+				}
 				if ( (exists $sc{inertia}) or ($methods eq 'all') ) {				
 					get_inertia_annotations(	$typebed,
 												$transcript_id,
@@ -1566,6 +1573,41 @@ sub get_corsair_annotations {
  		my ($analysis) = $feature->analysis;
  		if ( $analysis->corsair ) {
 	 		my ($method) = $analysis->corsair;
+	 		if ( defined $method->score and $method->score != 0 ) {  	 		
+				if ( $feature->exons ) {
+					my ($res_list) = $feature->exons;					
+					my ($data) = extract_track_cds($transcript_id,
+													$feature,
+													$res_list);
+					if (defined $data ) {
+						$data->{'note'} = 'Species Conserv';
+						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data);
+					}
+				}
+	 		}
+ 		}
+ 	}
+}
+
+=head2 get_corsair_alt_annotations
+
+  Arg [1]    : String - the stable identifier of transcript
+  Arg [4]    : APPRIS::Transcript
+  Arg [5]    : Object - internal BED variable 
+  Example    : $annot = get_corsair_alt_annotations($trans_id, $feat, $ref_out);  
+  Description: Retrieves specific annotation.
+  Returntype : String or undef
+
+=cut
+
+sub get_corsair_alt_annotations {
+	my ($typebed, $transcript_id, $feature, $ref_output) = @_;
+
+	# Get annotations
+ 	if ( $feature->analysis ) {
+ 		my ($analysis) = $feature->analysis;
+ 		if ( $analysis->corsair_alt ) {
+	 		my ($method) = $analysis->corsair_alt;
 	 		if ( defined $method->score and $method->score != 0 ) {  	 		
 				if ( $feature->exons ) {
 					my ($res_list) = $feature->exons;					

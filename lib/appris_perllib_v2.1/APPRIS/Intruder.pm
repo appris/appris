@@ -1128,6 +1128,29 @@ sub feed_gene_by_analysis {
 			throw('No corsair analysis') if ($@);
 		}
 
+		# Insert CORSAIR_ALT analysis -----------------
+		if (defined $type and ($type eq 'corsair_alt' or $type eq 'all') and $analysis->corsair_alt) {
+			my ($method) = $analysis->corsair_alt;
+				
+			# Insert method annotation
+			my ($result);
+			if ($method->result) {
+				$result = $method->result;
+			}
+			else {
+				throw('No corsair_alt analysis');			
+			}
+
+			my($global_id);
+			eval {
+				$global_id = $self->dbadaptor->insert_corsair_alt(
+								entity_id		=> $internal_entity_id,
+								result			=> $result
+				);
+			};
+			throw('No corsair_alt analysis') if ($@);
+		}
+
 		# Insert PROTEO analysis -----------------
 		if (defined $type and ($type eq 'proteo' or $type eq 'all') and $analysis->proteo) {
 			my ($method) = $analysis->proteo;

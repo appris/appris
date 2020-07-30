@@ -653,6 +653,19 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);
 	}
+	if ( exists $files->{'corsair_alt'} ) {
+		my ($m) = 'corsair_alt';
+		eval {
+			my ($cmd) = "perl $SRC_DIR/corsair/corsair_alt.pl ".
+							"--conf='".$config_file."' ".
+							"--input='".$files->{'transl'}."' ".
+							"--output='".$files->{$m}."' ".							
+							"$LOGGER_CONF ";
+			$logger->info("\n** script: $cmd\n");
+			system ($cmd);
+		};
+		$logger->error("runing $m: ".$!) if($@);
+	}
 	if ( exists $files->{'thump'} ) {
 		my ($m) = 'thump';
 		eval {

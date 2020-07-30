@@ -22,6 +22,7 @@ Optional arguments:\n
 \t\t m2 -> matador3d2\n
 \t\t s -> spade\n
 \t\t c -> corsair\n
+\t\t ca -> corsair_alt\n
 \t\t t -> thump\n
 \t\t r -> crash\n
 \t\t p -> proteo\n
@@ -101,6 +102,9 @@ if [ "${METHODS}" != "" ]; then
 	fi
 	if [[ "${METHODS}" == *"c"* ]]; then
 		MET="${MET},corsair"
+	fi
+	if [[ "${METHODS}" == *"ca"* ]]; then
+		MET="${MET},corsair_alt"
 	fi
 	if [[ "${METHODS}" == *"t"* ]]; then
 		MET="${MET},thump"
