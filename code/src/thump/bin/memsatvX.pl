@@ -48,7 +48,9 @@ my ($logger) = new APPRIS::Utils::Logger(
 	-LOGLEVEL     => $loglevel,
 );
 $logger->init_log();
-my ($logfilename) = $logger->logpath().'/'.$logger->logfile();
+my ($logfilename) = '/dev/null';
+# ($logfilename) = $logger->logfile() if ( defined $logfile );
+
 
 ###################
 # Internal Values #
@@ -62,7 +64,6 @@ my ($dir_program) = $local_pwd."/../Predictors/Memsat3/trunk";
 
 if ( -e $input && (-s $input > 0) ) {
 	eval {
-		#my ($cmd) = "perl $dir_program/runmemsat.pl ".
 		my ($cmd) = "runmemsat.pl ".
 									" --db=$db_file ".
 									" --name=$name ".

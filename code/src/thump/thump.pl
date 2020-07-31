@@ -101,7 +101,7 @@ $LOGGER_CONF .= " --loglevel=$loglevel " if ( defined $loglevel );
 $LOGGER_CONF .= " --logpath=$logpath " if ( defined $logpath );
 $LOGGER_CONF .= " --logfile=$logfile " if ( defined $logfile );
 $LOGGER_CONF .= " --logappend " if ( defined $logappend );
-my ($logfilename) = $logger->logpath().'/'.$logger->logfile();
+
 
 #####################
 # Method prototypes #
