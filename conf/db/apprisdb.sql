@@ -439,7 +439,7 @@ CREATE TABLE corsair_alt_alignments (
   CONSTRAINT fk_corsair_alt_alignments_corsair_alt FOREIGN KEY (corsair_alt_id) REFERENCES corsair_alt (corsair_alt_id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (corsair_alt_alignments_id),
   UNIQUE KEY unique_key_corsair_alt_alignments_corsair_alt_alignments_id (corsair_alt_alignments_id),
-  INDEX index_corsair_alt_alignments_corsair_alt_alignments_id_corsair_alt_id (corsair_alt_alignments_id,corsair_alt_id)
+  INDEX index_corsair_alt_alignments_ca_alignments_id_ca_id (corsair_alt_alignments_id,corsair_alt_id)
 ) ENGINE=InnoDB CHARSET=utf8;
 
 --
