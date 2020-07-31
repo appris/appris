@@ -1774,6 +1774,56 @@ sub feed_transc_by_analysis {
 			}
 		}
 		
+		# Insert CORSAIR_ALT analysis -----------------
+		if (defined $type and ($type eq 'corsair_alt' or $type eq 'all') and $analysis->corsair_alt) {
+			my ($method) = $analysis->corsair_alt;
+
+			# insert annotation
+			my($global_id);
+			if ( defined $method->result and defined $method->score ) {
+				eval {
+					$global_id = $self->dbadaptor->insert_corsair_alt(
+									entity_id						=> $internal_entity_id,
+									result							=> $method->result,
+									score							=> $method->score,
+					);
+				};
+				throw('No corsair_alt analysis') if ($@);
+			}
+			else {
+				throw('No corsair_alt analysis');			
+			}
+			
+			# insert regions
+			if ( defined $method->alignments ) {
+				foreach my $region (@{$method->alignments}) {
+					if ( defined $region->cds_id and defined $region->pstart and defined $region->pend and defined $region->score ) {
+						eval {
+							my (%parameters) = (
+											corsair_alt_id			=> $global_id,
+											cds_id				=> $region->cds_id,
+											start				=> $region->pstart,
+											end					=> $region->pend,
+											score				=> $region->score
+							);
+							$parameters{trans_start} = $region->start if ( defined $region->start );
+							$parameters{trans_end} = $region->end if ( defined $region->end );
+							$parameters{trans_strand} = $region->strand if ( defined $region->strand );
+							
+							$parameters{type} = $region->type if ( $region->type );
+							$parameters{maxscore} = $region->maxscore if ( $region->maxscore );
+							$parameters{sp_report} = $region->sp_report if ( $region->sp_report );
+							my ($method_residues_id) = $self->dbadaptor->insert_corsair_alt_alignments(%parameters);
+						};
+						throw('No corsair_alt residue analysis') if ($@);					
+					}
+					else {
+						throw('No corsair_alt residue analysis');						
+					}
+				}
+			}
+		}
+
 		# Insert PROTEO analysis -----------------
 		if (defined $type and ($type eq 'proteo' or $type eq 'all') and $analysis->proteo) {
 			my ($method) = $analysis->proteo;
