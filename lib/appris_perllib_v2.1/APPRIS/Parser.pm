@@ -1826,6 +1826,211 @@ sub parse_corsair($$)
 	return $entity;
 }
 
+=head2 parse_corsair_alt_rst
+
+  Arg [1]    : string $result
+               Parse corsair_alt result
+  Example    : use APPRIS::Parser qw(parse_corsair_alt);
+               parse_firestar($result);
+  Description: Parse output of firestar.
+  Returntype : APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : generally on error
+
+=cut
+
+sub parse_corsair_alt_rst($)
+{
+	my ($result) = @_;
+	my ($cutoffs);
+	
+	my (@results) = split('>',$result);	
+	foreach my $transcript_result (@results)
+	{
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\n]+)\n+/ )
+		{
+			my ($id) = $1;
+			my ($score) = $2;
+			$cutoffs->{$id}->{'score'} = $score;
+									
+			my ($alignment_list_report);			
+			my (@trans_alignments) = split('- ', $transcript_result);
+			
+			my ($cds_order) = 1;
+			for (my $i = 1; $i < scalar(@trans_alignments); $i++) { # jump the first line #ENST00000518498.1      0.5 #Homo sapiens    100.00  0.5
+                if ( $trans_alignments[$i] =~ /^(\d+)\:(\d+)\[(\d+)\:(\d+)\]\t+([^\n]*)\n*([^\$]*)$/ )
+				{
+					my ($trans_start) = $1;
+					my ($trans_end) = $2;
+					my ($trans_strand) = '.';
+					my ($cds_start) = $3;
+					my ($cds_end) = $4;
+					my ($score_list) = $5;
+					my ($sp_report) = $6;
+					$sp_report =~ s/^\s*//g; $sp_report =~ s/\s*$//g; $sp_report =~ s/\n*#[^\$]*$//g;
+					my ($cds_score);
+					my ($cds_maxscore);
+					if ( $score_list =~ /^([\d|\.]+)$/ ) {
+						$cds_score = $1;
+					}
+					elsif ( $score_list =~ /^([^\s]+)\s+\{([^\-]*)\-/ ) {
+						$cds_score = $1;
+						$cds_maxscore = $2;
+					}
+					if(defined $trans_start and defined $trans_end and defined $trans_strand and defined $cds_start and defined $cds_end and defined $cds_order and defined $cds_score )
+					{
+						my ($alignment_report) = {
+							'cds_id'		=> $cds_order,
+							'trans_start'	=> $trans_start,
+							'trans_end'		=> $trans_end,
+							'trans_strand'	=> $trans_strand,
+							'start'			=> $cds_start,
+							'end'			=> $cds_end,
+							'score'			=> $cds_score,
+							'maxscore'		=> $cds_maxscore,
+							'sp_report'		=> $sp_report,
+							'type'			=> 'exon',
+						};
+						push(@{$alignment_list_report}, $alignment_report);
+						$cds_order ++;							
+					}
+				}
+			}
+			if ( defined $alignment_list_report and (scalar(@{$alignment_list_report}) > 0) )
+			{
+				$cutoffs->{$id}->{'alignments'} = $alignment_list_report;
+			}
+			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
+			$cutoffs->{$id}->{'result'}='>'.$transcript_result;	
+
+		}
+	}
+	$cutoffs->{'result'} = $result;
+	
+	return $cutoffs;
+}
+
+=head2 parse_corsair_alt
+
+  Arg [1]    : APPRIS::Gene $gene 
+               APPRIS::Gene object
+  Arg [2]    : string $result
+               Parse corsair_alt result
+  Example    : use APPRIS::Parser qw(parse_corsair_alt);
+               parse_corsair_alt($result);
+  Description: Parse output of corsair_alt.
+  Returntype : APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : generally on error
+
+=cut
+
+sub parse_corsair_alt($$)
+{
+	my ($gene, $result) = @_;
+
+	my ($stable_id) = $gene->stable_id;
+	my ($transcripts);
+	my ($index_transcripts);
+	my ($index) = 0;
+
+	# Create hash object from result
+	my ($cutoffs) = parse_corsair_alt_rst($result);
+
+	# Create APPRIS object
+	foreach my $transcript (@{$gene->transcripts}) {			
+		my ($transcript_id) = $transcript->stable_id;
+		my ($transcript_ver);
+		my ($transc_eid) = $transcript_id;
+		if ( $transcript->version ) {
+			$transcript_ver = $transcript->version;			
+			$transc_eid = $transcript_id.'.'.$transcript_ver;
+		}
+		my ($analysis);
+		
+		# create method object
+		if ( exists $cutoffs->{$transcript_id} ) {
+			my ($report) = $cutoffs->{$transcript_id};			
+			my ($regions);			
+			if ( $transcript->translate ) {
+				my ($translate) = $transcript->translate;				
+				if ( exists $report->{'alignments'} ) {
+					my ($strand) = $transcript->strand;
+					foreach my $residue (@{$report->{'alignments'}}) {
+						my ($region);
+						if ( $transcript->translate->cds ) { # with CDS coords from GTF files
+							$region = APPRIS::Analysis::CORSAIRRegion->new (
+											-cds_id		=> $residue->{'cds_id'},
+											-pstart		=> $residue->{'start'},
+											-pend		=> $residue->{'end'},
+											-score		=> $residue->{'score'},
+											-start		=> $residue->{'trans_start'},
+											-end		=> $residue->{'trans_end'},
+											-strand		=> $residue->{'trans_strand'},										
+							);
+							$region->type($residue->{'type'}) if (exists $residue->{'type'} and defined $residue->{'type'});
+							$region->maxscore($residue->{'maxscore'}) if (exists $residue->{'maxscore'} and defined $residue->{'maxscore'});
+							$region->sp_report($residue->{'sp_report'}) if (exists $residue->{'sp_report'} and defined $residue->{'sp_report'});
+						}
+						else {
+							$region = APPRIS::Analysis::CORSAIRRegion->new (
+											-cds_id		=> $residue->{'cds_id'},
+											-pstart		=> $residue->{'start'},
+											-pend		=> $residue->{'end'},
+											-score		=> $residue->{'score'},
+							);
+							$region->type($residue->{'type'}) if (exists $residue->{'type'} and defined $residue->{'type'});
+							$region->maxscore($residue->{'maxscore'}) if (exists $residue->{'maxscore'} and defined $residue->{'maxscore'});
+							$region->sp_report($residue->{'sp_report'}) if (exists $residue->{'sp_report'} and defined $residue->{'sp_report'});							
+						}
+						push(@{$regions}, $region);						
+					}
+				}
+			}
+
+			# create Analysis object (for trans)			
+			my ($method) = APPRIS::Analysis::CORSAIR->new (
+							-result							=> $report->{'result'},
+							-score							=> $report->{'score'}							
+			);
+			if (defined $regions and (scalar(@{$regions}) > 0) ) {
+				$method->alignments($regions);
+				$method->num_alignments(scalar(@{$regions}));
+			}			
+			$analysis = APPRIS::Analysis->new();
+			if (defined $method) {
+				$analysis->corsair_alt($method);
+				$analysis->number($analysis->number+1);
+			}			
+		}
+				
+		# create Transcript object
+		my ($transcript) = APPRIS::Transcript->new
+		(
+			-stable_id	=> $transcript_id,
+			-version	=> $transcript_ver,
+		);
+		$transcript->analysis($analysis) if (defined $analysis);
+		push(@{$transcripts}, $transcript);
+		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
+	}
+
+	# create Analysis object (for gene)
+	my ($method2) = APPRIS::Analysis::CORSAIR->new( -result => $cutoffs->{'result'} );	
+	my ($analysis2) = APPRIS::Analysis->new();
+	if (defined $method2) {
+		$analysis2->corsair_alt($method2);
+		$analysis2->number($analysis2->number+1);
+	}
+	
+	# create Gene object
+	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
+	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
+	$entity->analysis($analysis2) if (defined $analysis2);	
+
+	return $entity;
+}
+
 =head2 parse_crash_rst
 
   Arg [1]    : string $result
