@@ -10,6 +10,7 @@ use JSON;
 use Data::Dumper;
 use APPRIS::Utils::File qw( getStringFromFile printStringIntoTmpFile );
 use APPRIS::Utils::Exception qw( info throw );
+use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_path);
 
 ###################
 # Global variable #
@@ -96,7 +97,7 @@ my ($PROC_CHILDS) = undef;
 #################
 sub create_tmp_db_ini($);
 sub run_pipeline($;$);
-sub params_run_pipe($);
+sub params_run_pipe($;$);
 sub param_check_files($);
 sub param_retrieve_data($);
 sub param_db_insert($;$);
@@ -136,6 +137,14 @@ sub main()
 							'env_file' => $conf_env_file,
 							'db_file'  => $conf_db_file,
 						};
+
+						if ( exists($cfg_dataset->{'trifid'}) &&
+								exists($cfg_dataset->{'trifid'}{'release'}) ) {
+							$config_dataset->{'trifid_pred_file'} = get_trifid_pred_file_path(
+								$ENV{APPRIS_TRIFID_BASE_DIR},
+								$cfg_dataset->{'trifid'}{'release'}
+							);
+						}
 												
 						# submit job
 						my ($pid) = fork();						
@@ -214,7 +223,7 @@ sub run_pipeline($;$)
 	{		
 		info("executing pipeline...");
 		eval {
-			my ($params) = params_run_pipe($conf_data);
+			my ($params) = params_run_pipe($conf_data, $conf_ds);
 			my ($cmd) = "$exp_env appris_run_appris $params";
 			info($cmd);
 			system ($cmd);
@@ -340,9 +349,9 @@ sub run_pipeline($;$)
 ####################
 # SubMethod bodies #
 ####################
-sub params_run_pipe($)
+sub params_run_pipe($;$)
 {
-	my ($conf_data) = @_;
+	my ($conf_data, $conf_ds) = @_;
 	my ($params) = '';
 	
 	if ( defined $conf_data ) { $params .= " -c $conf_data " }
@@ -351,6 +360,10 @@ sub params_run_pipe($)
 	if ( defined $methods ) { $params .= " -m $methods " }
 	else { throw("configuration is not provided") }
 	
+	if ( defined $conf_ds && exists $conf_ds->{'trifid_pred_file'} ) {
+		$params .= " -d '".$conf_ds->{'trifid_pred_file'}."' ";
+	}
+
 	if ( defined $email ) 	{ $params .= " -e $email " }
 	
 	if ( defined $loglevel ) { $params .= " -l $loglevel " }

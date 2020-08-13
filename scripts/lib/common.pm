@@ -510,7 +510,6 @@ sub src_appris_decision($$$$$;$)
 	$main::CORSAIR_AA_LEN_CUTOFF	= $cfg->val( 'APPRIS_VARS', 'corsair_aa_cutoff');
 	$main::CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
 	$main::THUMP_CUTOFF				= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
-	$main::TRIFID_DB				= $cfg->val( 'TRIFID_VARS', 'db');
 	
 	# determine the methods involved in the final decision
 	# By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
@@ -602,18 +601,9 @@ sub src_appris_decision($$$$$;$)
 	# get scores/annots of appris for each transcript
 	my ($nscores) = appris::get_normalized_method_scores($gene, $annots, $involved_metrics, $scores, $s_scores);
 
-	# get trifid report, if available
-	my ($trifid_report);
-	my ($gene_id) = $gene->stable_id;
-	my ($cmd) = "tabix -h $main::TRIFID_DB $gene_id";
-	my (@trifid_lines) = `$cmd`;
-	if ( scalar(@trifid_lines) > 1 ) {
-		$trifid_report = appris::parse_trifid_rst(join("\n", @trifid_lines));
-	}
-
 	# get annotations indexing each transcript
 	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots,
-	                              $involved_metrics, $trifid_report);
+	                              $involved_metrics);
 	
 	# print outputs
 	my ($score_content) = appris::get_score_output($gene, $scores, $annots);

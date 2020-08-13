@@ -68,7 +68,7 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
                     as: $routeParams.as,
                     sc: $routeParams.sc,
                     ds: $routeParams.ds,
-                    methods: 'appris'
+                    methods: 'appris,trifid'
                 };
             }
             else if ( $scope.runnerid ) {
@@ -423,6 +423,9 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                 else if ( sLabel == "peptide_signal" || sLabel == "mitochondrial_signal" ) {
                     filtered[iTrans][sLabel] = sAnnot;
                 }
+                else if ( sLabel == "functional_importance" ) {
+                    filtered[iTrans][sLabel] = parseFloat(sScore).toFixed(3).replace(/0+$/,'').replace(/\.$/,'.0');
+                }
                 else {
                     filtered[iTrans][sLabel] = sScore;
                 }
@@ -507,6 +510,19 @@ apprisFilters.filter('activeAnnotClass', function(principal1, principal2, princi
             else if ( (input == alternative1) || (input == alternative2) ) {
                 if ( angular.isDefined(type) && type == 'label' ) { filtered = "warning" }
                 else { filtered = "candidate" }
+            }
+        }
+        return filtered;
+    };
+});
+
+// Replaces high trifid scores with a css class
+apprisFilters.filter('activeTrifidClass', function() {
+    return function(input){
+        var filtered = '';
+        if ( angular.isDefined(input) ) {
+            if ( input > 0.5 ) {
+                filtered = "trifid-high-score";
             }
         }
         return filtered;

@@ -59,6 +59,9 @@ Optional arguments:\n
 \t\t compara -> create Ensembl-Compara alignments\n
 \t\t ucsc    -> create UCSC alignments\n
 \n
+\t -d [-trifid]\n
+\t\t TRIFID predictions file\n
+\n
 \t -o [-out]\n
 \t\t Output path\n
 \n
@@ -89,6 +92,10 @@ do
 			;;
 		-m | -methods )
 			METHODS=$2
+			shift
+			;;
+		-d | -trifid )
+			TRIFID_PRED_FILE=$2
 			shift
 			;;
 		-o | -out )
@@ -187,6 +194,10 @@ METHOD_PARAMETERS=""
 if [ "${METHODS}" != "" ]; then
 	METHOD_PARAMETERS=" --methods=${METHODS}"
 fi
+TRIFID_PARAMETERS=""
+if [ "${TRIFID_PRED_FILE}" != "" ]; then
+	TRIFID_PARAMETERS=" --trifid=${TRIFID_PRED_FILE}"
+fi
 T_ALIGN_PARAMETERS=""
 if [[ "${APPRIS_TYPE_ALIGN}" != "" && "${APPRIS_E_VERSION}" != "" ]]; then
 	T_ALIGN_PARAMETERS=" --t-align=${APPRIS_TYPE_ALIGN}"
@@ -262,6 +273,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 		echo " ${ENSEMBL_PARAMETERS}"
 		echo " ${GENE_LIST_PARAMETERS}"
 		echo " ${METHOD_PARAMETERS}"
+		echo " ${TRIFID_PARAMETERS}"
 		echo " ${T_ALIGN_PARAMETERS}"
 		echo " ${CACHED_PARAMETERS}"
 		echo " ${NUM_PROC_PARAMETERS}"
@@ -278,6 +290,7 @@ if [[ ("${GENCODE_ANNOTATION_FILE}" != "" && "${GENCODE_TRANSCRIPT_FILE}" != "" 
 			${ENSEMBL_PARAMETERS} \
 			${GENE_LIST_PARAMETERS} \
 			${METHOD_PARAMETERS} \
+			${TRIFID_PARAMETERS} \
 			${T_ALIGN_PARAMETERS} \
 			${CACHED_PARAMETERS} \
 			${NUM_PROC_PARAMETERS} \
@@ -309,6 +322,7 @@ else
 		echo " ${ENSEMBL_PARAMETERS}"
 		echo " ${GENE_LIST_PARAMETERS}"
 		echo " ${METHOD_PARAMETERS}"
+		echo " ${TRIFID_PARAMETERS}"
 		echo " ${T_ALIGN_PARAMETERS}"
 		echo " ${CACHED_PARAMETERS}"
 		echo " ${NUM_PROC_PARAMETERS}"
@@ -324,6 +338,7 @@ else
 			${ENSEMBL_PARAMETERS} \
 			${GENE_LIST_PARAMETERS} \
 			${METHOD_PARAMETERS} \
+			${TRIFID_PARAMETERS} \
 			${T_ALIGN_PARAMETERS} \
 			${CACHED_PARAMETERS} \
 			${NUM_PROC_PARAMETERS} \

@@ -3,7 +3,7 @@
   Please email comments or questions to the public INB
   developers list at <inb-tecnico@lists.cnio.es>.
 
-  Questions may also be sent to the developer, 
+  Questions may also be sent to the developer,
   Jose Manuel Rodriguez <jmrodriguez@cnio.es>.
 
 =cut
@@ -63,6 +63,7 @@ use APPRIS::Analysis::CRASH;
 use APPRIS::Analysis::THUMP;
 use APPRIS::Analysis::CORSAIR;
 use APPRIS::Analysis::PROTEO;
+use APPRIS::Analysis::TRIFID;
 use APPRIS::Analysis::APPRIS;
 use APPRIS::Utils::File qw(parse_file);
 use APPRIS::Utils::ProCDS qw(sort_cds get_coords_from_residue);
@@ -104,6 +105,8 @@ use vars qw(@ISA @EXPORT);
 	parse_thump
 	parse_proteo_rst
 	parse_proteo
+	parse_trifid_rst
+	parse_trifid
 	parse_appris_rst
 	parse_appris
 	parse_appris_methods
@@ -141,6 +144,8 @@ sub parse_thump_rst($);
 sub parse_thump($$);
 sub parse_proteo_rst($);
 sub parse_proteo($$);
+sub parse_trifid_rst($);
+sub parse_trifid($$);
 sub parse_appris_rst($$);
 sub parse_appris($$$);
 sub parse_appris_methods($$$$$$$$$;$;$;$);
@@ -174,8 +179,8 @@ sub parse_infiles($;$;$)
 	my ($transc_cont);
 	my ($transl_cont);
 	my ($index_genes);
-	my ($index) = 0;	
-		
+	my ($index) = 0;
+
 	# Parse data/sequences
 	if ( _is_refseq($data_file) ) {
 		$data_cont = _parse_indata_refseq($data_file);
@@ -187,13 +192,13 @@ sub parse_infiles($;$;$)
 		$transc_cont = _parse_inseq_transc($transc_file) if (defined $transc_file);
 		$transl_cont = _parse_inseq_transl($transl_file) if (defined $transl_file);
 	}
-	
+
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
 		my ($xref_identities);
 		my ($transcripts, $index_transcripts) = _fetch_transc_objects($gene_id, $gene_features->{'transcripts'}, $transc_cont, $transl_cont);
-		
+
 		# Create gene object
 		my ($gene) = APPRIS::Gene->new
 		(
@@ -223,16 +228,16 @@ sub parse_infiles($;$;$)
 		$gene->xref_identify($xref_identities) if (defined $xref_identities);
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
 		push(@{$entity_list},$gene) if (defined $gene);
-		
+
 		# Get raw data
 		if ( exists $gene_features->{'raw'} and ($gene_features->{'raw'} ne '') ) {
-			$raw_data_list->{$gene_id} =  $gene_features->{'raw'};					
+			$raw_data_list->{$gene_id} =  $gene_features->{'raw'};
 		}
-		
+
 		# Get index genes
 		$index_genes->{$gene_id} = $index; $index++; # Index the list of transcripts
 	}
-		
+
 	return ($entity_list, $index_genes, $raw_data_list);
 }
 
@@ -253,31 +258,31 @@ sub parse_transl_data($)
 {
 	my ($transl_file) = @_;
 	my ($entity_list);
-		
+
 	# Parse data/sequences
 	my ($data_cont) = _parse_seq_data($transl_file) if (defined $transl_file);
-		
+
 	# Scan genes
 	while ( my ($gene_id, $gene_features) = each(%{$data_cont}) )
 	{
 		my ($transcripts);
 		my ($index_transcripts);
-		my ($t_index) = 0;	
-		
+		my ($t_index) = 0;
+
 		# Scan transcripts
 		if ( exists $gene_features->{'transcripts'} ) {
 			while (my ($sequence_id, $transcript_features) = each(%{$gene_features->{'transcripts'}}) )
 			{
-				my ($xref_identities);				
+				my ($xref_identities);
 				my ($transcript_id) = ( exists $transcript_features->{'transc_id'} ) ? $transcript_features->{'transc_id'} : $sequence_id;
-				
+
 				# Create transcript object
 				my ($transcript) = APPRIS::Transcript->new
 				(
 					-stable_id		=> $transcript_id,
 					-source			=> $gene_features->{'source'}
 				);
-				
+
 				# add gene id
 				if ( defined $gene_id ) {
 					push(@{$xref_identities},
@@ -288,7 +293,7 @@ sub parse_transl_data($)
 							)
 					);
 				}
-				
+
 				# add Xref
 				if ( exists $transcript_features->{'transc_id'} and defined $transcript_features->{'transc_id'} ) {
 					foreach my $tids ( split(/\+/, $transcript_features->{'transc_id'}) ) {
@@ -309,7 +314,7 @@ sub parse_transl_data($)
 						}
 					}
 				}
-				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
 
 				# add Xref
 				if ( exists $transcript_features->{'name'} and defined $transcript_features->{'name'} ) {
@@ -321,8 +326,8 @@ sub parse_transl_data($)
 							)
 					);
 				}
-				$transcript->xref_identify($xref_identities) if (defined $xref_identities);				
-				
+				$transcript->xref_identify($xref_identities) if (defined $xref_identities);
+
 				# add Xref
 				if ( exists $transcript_features->{'ccdsid'} and defined $transcript_features->{'ccdsid'} ) {
 					push(@{$xref_identities},
@@ -340,28 +345,28 @@ sub parse_transl_data($)
 				if ( exists $transcript_features->{'seq'} and defined $transcript_features->{'seq'} ) {
 					my ($translation_seq) = $transcript_features->{'seq'};
 					my ($translation_id) = ( exists $transcript_features->{'transl_id'} ) ? $transcript_features->{'transl_id'} : $transcript_id;
-										
+
 					# Create translation object
 					$translate = APPRIS::Translation->new
 					(
 						-stable_id	=> $translation_id,
-					);			
+					);
 					$translate->sequence($translation_seq);
 				}
-				
+
 				$transcript->translate($translate) if (defined $translate);
-					
+
 				push(@{$transcripts}, $transcript) if (defined $transcript);
-				$index_transcripts->{$transcript_id} = $t_index; $t_index++; # Index the list of transcripts		
+				$index_transcripts->{$transcript_id} = $t_index; $t_index++; # Index the list of transcripts
 			}
-		}	
-		
+		}
+
 		# Create gene object
 		my ($gene) = APPRIS::Gene->new
 		(
 			-stable_id	=> $gene_id,
 			-source		=> $gene_features->{'source'}
-		);		
+		);
 		$gene->external_name($gene_features->{'name'}) if ( exists $gene_features->{'name'});
 
 		# add Xref
@@ -399,11 +404,11 @@ sub parse_transl_data($)
 		}
 		$gene->xref_identify($xref_identities) if (defined $xref_identities);
 
-		
+
 		$gene->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-		push(@{$entity_list},$gene) if (defined $gene);		
+		push(@{$entity_list},$gene) if (defined $gene);
 	}
-	
+
 	return $entity_list;
 }
 
@@ -425,8 +430,8 @@ sub parse_firestar_rst($)
 	my ($result) = @_;
 	my ($transcript_result) = '';
 	my ($init_trans_result) = 0;
-	my ($cutoffs);	
-		
+	my ($cutoffs);
+
 	my (@results) = split( '\n', $result);
 	foreach my $line (@results)
 	{
@@ -436,7 +441,7 @@ sub parse_firestar_rst($)
 			$init_trans_result = 1;
 		}
 		if ( $init_trans_result ) {
-			$transcript_result .= $line."\n";		
+			$transcript_result .= $line."\n";
 		}
 
 		#>>>OTTHUMT00000171822      29      46,47,48,49,67,68,69,70,98,99,100,101,166,170,171,394,411,412,413,448,452,480,481,492,495,497,498,499,504
@@ -462,19 +467,19 @@ sub parse_firestar_rst($)
 								'ligands'	=> $ligands,
 						});
 					}
-				}			
+				}
 			}
 
 			if(defined $residue_list_report and scalar(@{$residue_list_report})>0)
 			{
 				$cutoffs->{$id}->{'residues'} = $residue_list_report;
 			}
-			
+
 			# Save result for each transcript
 			$cutoffs->{$id}->{'result'} = $transcript_result;
-			
+
 			# Init trans result
-			$transcript_result = ''; 
+			$transcript_result = '';
 		}
 		#C>>     OTTHUMT00000171822      3      46,47,48
 		if ( $line=~/^C>>\t+([^\t]+)\t+([^\t]+)\t+([^\$]+)$/ )
@@ -487,7 +492,7 @@ sub parse_firestar_rst($)
 			{
 				if ( defined $residue_position and $residue_position ne '' )
 				{
-					#349     GLLCGGSAGSTVA   PLP[0.71,6,99.5]|Cat_Site_Atl[1.00,4,XXX]					
+					#349     GLLCGGSAGSTVA   PLP[0.71,6,99.5]|Cat_Site_Atl[1.00,4,XXX]
 					if ( $transcript_result =~ /$residue_position\t+([^\t]*)\t+([^\n]*)[^\>]*>>\t+\Q$id\E/ )
 					{
 						my ($domain) = $1;
@@ -495,30 +500,30 @@ sub parse_firestar_rst($)
 						push(@{$cutoffs->{$id}->{'residues'}},{
 								'residue'	=> $residue_position,
 								'domain'	=> $domain,
-								'ligands'	=> $ligands,				
-						});		
+								'ligands'	=> $ligands,
+						});
 					}
 				}
 			}
-			
+
 			# Sort residues
 			if ( exists $cutoffs->{$id}->{'residues'} and defined $cutoffs->{$id}->{'residues'} and
 				 (scalar(@{$cutoffs->{$id}->{'residues'}}) > 0) )
 			{
 				my (@res_list) = @{$cutoffs->{$id}->{'residues'}};
 				my (@sort_res_list) = sort { $a->{'residue'} <=> $b->{'residue'} } @res_list;
-				$cutoffs->{$id}->{'residues'} = \@sort_res_list;				
+				$cutoffs->{$id}->{'residues'} = \@sort_res_list;
 			}
 
 			# Save result for each transcript
 			my ($trans_result) = '';
 			$trans_result = $cutoffs->{$id}->{'result'} if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} );
 			$cutoffs->{$id}->{'result'} = $trans_result . $transcript_result;
-			
+
 			# Init result variable for the next
 			$transcript_result = '';
 		}
-		
+
 		#ACCEPT: ID\tTOTAL_SCORE\tTOTAL_MOTIFS\n
 		# BEGIN: DEPRECATED
 		#if ( $line =~ /^ACCEPT:\s*([^\t]+)\t([^\t]+)\t([^\n]+)\n*/ )
@@ -532,15 +537,15 @@ sub parse_firestar_rst($)
 			if ( defined $id and ($id ne '') )
 			{
 				unless ( defined $total_residues and $total_residues ne '' )
-					{ $total_residues = 0; }					
+					{ $total_residues = 0; }
 				$cutoffs->{$id}->{'num_residues'} = $total_residues;
 
 				# Save result for each transcript
 				my ($trans_result) = '';
 				if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
 					$trans_result .= $cutoffs->{$id}->{'result'};
-					$trans_result .= "----------------------------------------------------------------------\n";					
-				}				
+					$trans_result .= "----------------------------------------------------------------------\n";
+				}
 				$cutoffs->{$id}->{'result'} = $trans_result . $line;
 			}
 		}
@@ -555,28 +560,28 @@ sub parse_firestar_rst($)
 		#	{
 		#		unless ( defined $total_residues and $total_residues ne '' )
 		#			{ $total_residues = 0; }
-		#			
+		#
 		#		$cutoffs->{$id}->{'num_residues'} = $total_residues;
 		#		$cutoffs->{$id}->{'functional_residue'} = $APPRIS::Utils::Constant::FIRESTAR_REJECT_LABEL;
-		#		
+		#
 		#		# Save result for each transcript
 		#		my ($trans_result) = '';
 		#		if ( exists $cutoffs->{$id}->{'result'} and defined $cutoffs->{$id}->{'result'} ) {
 		#			$trans_result .= $cutoffs->{$id}->{'result'};
-		#			$trans_result .= "----------------------------------------------------------------------\n";					
-		#		}				
-		#		$cutoffs->{$id}->{'result'} = $trans_result . $line;				
+		#			$trans_result .= "----------------------------------------------------------------------\n";
+		#		}
+		#		$cutoffs->{$id}->{'result'} = $trans_result . $line;
 		#	}
 		#}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_firestar
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse firestar result
@@ -596,27 +601,27 @@ sub parse_firestar($$)
 	my ($stable_id) = $gene->stable_id;
 	my ($transcripts);
 	my ($index_transcripts);
-	my ($index) = 0;	
-	
+	my ($index) = 0;
+
 	# Create hash object from result
 	my ($cutoffs) = parse_firestar_rst($result);
 
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-				
+
 		# create method object
 		#if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'functional_residue'} ) {
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
-			my ($regions);			
+			my ($regions);
 			if ( $transcript->translate ) {
 				if ( exists $report->{'residues'} ) {
 					foreach my $re (@{$report->{'residues'}}) {
@@ -637,26 +642,26 @@ sub parse_firestar($$)
 											-residue	=> $re->{'residue'},
 											-domain		=> $re->{'domain'},
 											-ligands	=> $re->{'ligands'},
-							);							
+							);
 						}
 						push(@{$regions}, $region) if ( defined $region );
 					}
 				}
 			}
-						
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::Firestar->new (
 							-result					=> $report->{'result'},
 							-num_residues			=> $report->{'num_residues'},
 			);
-			$method->residues($regions) if (defined $regions); 
+			$method->residues($regions) if (defined $regions);
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->firestar($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
 		$transcript->version($transcript_ver) if (defined $transcript_ver);
@@ -666,17 +671,17 @@ sub parse_firestar($$)
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::Firestar->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::Firestar->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->firestar($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -698,8 +703,8 @@ sub parse_matador3d_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-		
-	my (@results) = split('>',$result);	
+
+	my (@results) = split('>',$result);
 	foreach my $transcript_result (@results)
 	{
 		#>ENST00000308249        3.65
@@ -711,12 +716,12 @@ sub parse_matador3d_rst($)
 			my ($structure_score) = $2;
 			$cutoffs->{$id}->{'score'} = $structure_score;
 
-			my ($alignment_list_report);			
+			my ($alignment_list_report);
 			my (@trans_alignments) = split('- ', $transcript_result);
 
 			for (my $i = 1; $i < scalar(@trans_alignments); $i++) { # jump the first line (ENST00000308249        3.65)
 				if ( $trans_alignments[$i] =~ /^(\d+)\:(\d+)\[(\d+)\]\t+([^\n]*)\n*([^\$]*)$/ )
-				{				
+				{
 					my ($cds_start) = $1;
 					my ($cds_end) = $2;
 					my ($cds_order) = $3;
@@ -733,7 +738,7 @@ sub parse_matador3d_rst($)
 							'type'		=> 'exon',
 						};
 						push(@{$alignment_list_report}, $alignment_report);
-						
+
 						# get mini-alignments
 						while ( $trans_mini_alignments =~ /^\s+([^\n]*)\n*/mg ) # per line
 						{
@@ -741,19 +746,19 @@ sub parse_matador3d_rst($)
 								my ($mini_cds_start) = $1;
 								my ($mini_cds_end) = $2;
 								my ($align_start) = $3;
-								my ($align_end) = $4;								
+								my ($align_end) = $4;
 								my ($mini_cds_score) = $5;
 								my ($mini_cds_info) = $6;
 								my ($mini_pdb_list) = $7;
 								my ($mini_alignment_report) = {
 									'alignment_start'		=> $align_start,
-									'alignment_end'		=> $align_end,									
+									'alignment_end'		=> $align_end,
 									'cds_id'	=> $cds_order,
 									'start'		=> $mini_cds_start,
 									'end'		=> $mini_cds_end,
 									'score'		=> $mini_cds_score,
 									'info'		=> $mini_cds_info,
-									'type'		=> 'mini-exon',								
+									'type'		=> 'mini-exon',
 								};
 								my ($mini_pdb_ident);
 								my ($mini_pdb);
@@ -769,14 +774,14 @@ sub parse_matador3d_rst($)
 								}
 								if ( defined $mini_pdb_ident and ($mini_pdb_ident =~ /^([^\[]+)\[([^\]]+)\]$/) ) {
 									$mini_pdb = $1;
-									$mini_ident = $2;	
-								}									
+									$mini_ident = $2;
+								}
 								$mini_alignment_report->{'pdb_id'} = $mini_pdb if (defined $mini_pdb);
 								$mini_alignment_report->{'identity'} = $mini_ident if (defined $mini_ident);
-								$mini_alignment_report->{'external_id'} = $mini_ext_id if (defined $mini_ext_id);								
-								push(@{$alignment_list_report}, $mini_alignment_report);							
+								$mini_alignment_report->{'external_id'} = $mini_ext_id if (defined $mini_ext_id);
+								push(@{$alignment_list_report}, $mini_alignment_report);
 							}
-						}						
+						}
 					}
 				}
 			}
@@ -785,17 +790,17 @@ sub parse_matador3d_rst($)
 				$cutoffs->{$id}->{'alignments'} = $alignment_list_report;
 			}
 			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
-			$cutoffs->{$id}->{'result'}='>'.$transcript_result;			
+			$cutoffs->{$id}->{'result'}='>'.$transcript_result;
 		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_matador3d
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse matador3d result
@@ -816,28 +821,28 @@ sub parse_matador3d($$)
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	# Create hash object from result
 	my ($cutoffs) = parse_matador3d_rst($result);
-	
+
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
-			my ($regions);			
+			my ($regions);
 			if ( $transcript->translate ) {
 				my ($translate) = $transcript->translate;
-				
+
 				if ( exists $report->{'alignments'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $residue (@{$report->{'alignments'}}) {
@@ -847,12 +852,12 @@ sub parse_matador3d($$)
 							my ($pro_coord_end) = get_coords_from_residue($transcript, $residue->{'end'});
 							$residue->{'trans_strand'} = $strand;
 							if ( $strand eq '-' ) {
-								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_end'} = $pro_coord_start->{'start'};
+								$residue->{'trans_start'} = $pro_coord_end->{'end'};
 							}
 							else {
-								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_start'} = $pro_coord_start->{'start'};
+								$residue->{'trans_end'} = $pro_coord_end->{'end'};
 							}
 							$region = APPRIS::Analysis::Matador3DRegion->new (
 											-cds_id		=> $residue->{'cds_id'},
@@ -861,7 +866,7 @@ sub parse_matador3d($$)
 											-score		=> $residue->{'score'},
 											-start		=> $residue->{'trans_start'},
 											-end		=> $residue->{'trans_end'},
-											-strand		=> $residue->{'trans_strand'},										
+											-strand		=> $residue->{'trans_strand'},
 							);
 							$region->type($residue->{'type'}) if (exists $residue->{'type'} and defined $residue->{'type'});
 							$region->alignment_start($residue->{'alignment_start'}) if (exists $residue->{'alignment_start'} and defined $residue->{'alignment_start'});
@@ -888,8 +893,8 @@ sub parse_matador3d($$)
 					}
 				}
 			}
-			
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::Matador3D->new (
 							-result					=> $report->{'result'},
 							-score					=> $report->{'score'}
@@ -897,14 +902,14 @@ sub parse_matador3d($$)
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);
 				$method->num_alignments(scalar(@{$regions}));
-			}			
+			}
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->matador3d($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
 		$transcript->version($transcript_ver) if (defined $transcript_ver);
@@ -914,17 +919,17 @@ sub parse_matador3d($$)
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::Matador3D->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::Matador3D->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->matador3d($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -947,8 +952,8 @@ sub parse_matador3d2_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-		
-	my (@results) = split("\n",$result);	
+
+	my (@results) = split("\n",$result);
 	foreach my $transcript_result (@results)
 	{
 		#ENSG00000007216	ENST00000459818	0
@@ -973,7 +978,7 @@ sub parse_matador3d2_rst($)
 					my ($trans_align_end) = $5;
 					my ($trans_align_abs_pos) = $6;
 
-					if( defined $trans_align_pdb_id and defined $trans_align_score and defined $trans_align_bias and 
+					if( defined $trans_align_pdb_id and defined $trans_align_score and defined $trans_align_bias and
 						defined $trans_align_start and defined $trans_align_end and defined $trans_align_abs_pos
 					){
 						my ($alignment_report) = {
@@ -983,10 +988,10 @@ sub parse_matador3d2_rst($)
 							'bias'		=> $trans_align_bias,
 							'pdb_id'	=> $trans_align_pdb_id,
 						};
-						push(@{$alignment_list_report}, $alignment_report);					
+						push(@{$alignment_list_report}, $alignment_report);
 					}
 				}
-			}			
+			}
 			if ( defined $alignment_list_report and (scalar(@{$alignment_list_report}) > 0) )
 			{
 				$cutoffs->{$id}->{'alignments'} = $alignment_list_report;
@@ -996,13 +1001,13 @@ sub parse_matador3d2_rst($)
 		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_matador3d2
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse matador3d result
@@ -1023,28 +1028,28 @@ sub parse_matador3d2($$)
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	# Create hash object from result
 	my ($cutoffs) = parse_matador3d2_rst($result);
-	
+
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
-			my ($regions);			
+			my ($regions);
 			if ( $transcript->translate ) {
 				my ($translate) = $transcript->translate;
-				
+
 				if ( exists $report->{'alignments'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $residue (@{$report->{'alignments'}}) {
@@ -1054,12 +1059,12 @@ sub parse_matador3d2($$)
 							my ($pro_coord_end) = get_coords_from_residue($transcript, $residue->{'end'});
 							$residue->{'trans_strand'} = $strand;
 							if ( $strand eq '-' ) {
-								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_end'} = $pro_coord_start->{'start'};
+								$residue->{'trans_start'} = $pro_coord_end->{'end'};
 							}
 							else {
-								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_start'} = $pro_coord_start->{'start'};
+								$residue->{'trans_end'} = $pro_coord_end->{'end'};
 							}
 							$region = APPRIS::Analysis::Matador3D2Region->new (
 											-pstart		=> $residue->{'start'},
@@ -1069,7 +1074,7 @@ sub parse_matador3d2($$)
 											-pdb_id		=> $residue->{'pdb_id'},
 											-start		=> $residue->{'trans_start'},
 											-end		=> $residue->{'trans_end'},
-											-strand		=> $residue->{'trans_strand'}								
+											-strand		=> $residue->{'trans_strand'}
 							);
 						}
 						else {
@@ -1078,15 +1083,15 @@ sub parse_matador3d2($$)
 											-pend		=> $residue->{'end'},
 											-score		=> $residue->{'score'},
 											-bias		=> $residue->{'bias'},
-											-pdb_id		=> $residue->{'pdb_id'}											
+											-pdb_id		=> $residue->{'pdb_id'}
 							);
 						}
 						push(@{$regions}, $region) if ( defined $region );
 					}
 				}
 			}
-			
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::Matador3D2->new (
 							-result					=> $report->{'result'},
 							-score					=> $report->{'score'}
@@ -1094,14 +1099,14 @@ sub parse_matador3d2($$)
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);
 				$method->num_alignments(scalar(@{$regions}));
-			}			
+			}
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->matador3d2($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
 		$transcript->version($transcript_ver) if (defined $transcript_ver);
@@ -1111,17 +1116,17 @@ sub parse_matador3d2($$)
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::Matador3D2->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::Matador3D2->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->matador3d2($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -1144,8 +1149,8 @@ sub parse_spade_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-	
-	my (@results) = split('>',$result);	
+
+	my (@results) = split('>',$result);
 	foreach my $transcript_result (@results)
 	{
 		#>ENST00000356093        571.9   4       2       0       0
@@ -1170,7 +1175,7 @@ sub parse_spade_rst($)
 			$cutoffs->{$id}->{'num_possibly_damaged_domains'} = $num_possibly_damaged_domains;
 			$cutoffs->{$id}->{'num_damaged_domains'} = $num_damaged_domains;
 			$cutoffs->{$id}->{'num_wrong_domains'} = $num_wrong_domains;
-	
+
 			# <type_domain> <domain score>
 			# <alignment start> <alignment end> <envelope start> <envelope end>
 			# <hmm acc> <hmm name> <type> <hmm start> <hmm end> <hmm length> <bit score> <E-value>
@@ -1184,7 +1189,7 @@ sub parse_spade_rst($)
 				if ( scalar(@value_list) > 12 )
 				{
 					my ($alignment_report);
-					
+
 					my ($type_domain) = $value_list[0];
 					my ($alignment_start) = $value_list[1];
 					my ($alignment_end) = $value_list[2];
@@ -1198,7 +1203,7 @@ sub parse_spade_rst($)
 					my ($hmm_length) = $value_list[10];
 					my ($bit_score) = $value_list[11];
 					my ($e_value) = $value_list[12];
-					
+
 					# required values
 					$alignment_report->{'type_domain'} = $type_domain;
 					$alignment_report->{'alignment_start'} = $alignment_start;
@@ -1213,7 +1218,7 @@ sub parse_spade_rst($)
 					$alignment_report->{'hmm_length'} = $hmm_length;
 					$alignment_report->{'bit_score'} = $bit_score;
 					$alignment_report->{'e_value'} = $e_value;
-					
+
 					# optional values taking into account the value of external_id
 					if(defined $value_list[14] and !($value_list[14] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'significance'} = $value_list[14];
@@ -1223,7 +1228,7 @@ sub parse_spade_rst($)
 						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
 						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
-					
+
 					if(defined $value_list[15] and !($value_list[15] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'clan'} = $value_list[15];
 					}
@@ -1232,7 +1237,7 @@ sub parse_spade_rst($)
 						if ( $val =~ /discarded/ ) { $alignment_report->{'discarded'} = 1 }
 						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
-									
+
 					if(defined $value_list[16] and !($value_list[16] =~ /\[[^\]]*\]/)) {
 						$alignment_report->{'predicted_active_site_residues'} = $value_list[16];
 					}
@@ -1248,7 +1253,7 @@ sub parse_spade_rst($)
 						elsif ( $val =~ /ext\:([^\$]*)$/ ) { $alignment_report->{'external_id'} = $1 }
 					}
 
-					push(@{$alignment_list}, $alignment_report);					
+					push(@{$alignment_list}, $alignment_report);
 				}
 			}
 			if ( defined $alignment_list and (scalar(@{$alignment_list}) > 0) )
@@ -1256,29 +1261,29 @@ sub parse_spade_rst($)
 				$cutoffs->{$id}->{'domains'} = $alignment_list;
 			}
 			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
-			$cutoffs->{$id}->{'result'} = '>'.$transcript_result;			
+			$cutoffs->{$id}->{'result'} = '>'.$transcript_result;
 		}
         elsif ( $transcript_result =~ /^([^\s]+)(\s+[^\n]*\n+#HMM[^\n]*\n+#MATCH[^\n]*\n+#PP[^\n]*\n+#SEQ[^\n]*\n+)/ )
 		{
-			#>ENST00000270190     10    144     10    145 PF04118.7   Dopey_N           Family     1   136   309    199.8   3.3e-59   1 No_clan  
+			#>ENST00000270190     10    144     10    145 PF04118.7   Dopey_N           Family     1   136   309    199.8   3.3e-59   1 No_clan
 			##HMM       kdskqkkyasevekaLksFetlqEWADyisfLskLlkalqkkqeklsyvpskllvskrLaqcLnpsLPsGVHqkaLevYelIfekigketLskdlalylsGlfpllsyasisvkplllellekyllpLekalrpll
 			##MATCH     +d++++ y+s +ekaL++Fe+++EWAD+is+L+kL+kalq ++ ++s +p++ll+skrLaqcL+p+LPsGVH kaLe+Ye+If+++g+++L+kdl+ly+ Glfpll++a++sv+p+ll+l+eky+lpL+k l+p l
 			##PP        5899************************************.*****************************************************************************************999977
 			##SEQ       NDYRYRSYSSVIEKALRNFESSSEWADLISSLGKLNKALQ-SNLRYSLLPRRLLISKRLAQCLHPALPSGVHLKALETYEIIFKIVGTKWLAKDLFLYSCGLFPLLAHAAVSVRPVLLTLYEKYFLPLQKLLLPSL
 
 			my ($id) = $1;
-			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;						
+			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
 			$cutoffs->{$id}->{'result'} .= '>'.$transcript_result;
-		}	
+		}
 	}
 	$cutoffs->{'result'} = $result;
-	
-	return $cutoffs; 
+
+	return $cutoffs;
 }
 
 =head2 parse_spade
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse spade result
@@ -1304,21 +1309,21 @@ sub parse_spade($$)
 	my ($cutoffs) = parse_spade_rst($result);
 
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
-			if ( $transcript->translate ) {				
+			if ( $transcript->translate ) {
 				if ( exists $report->{'domains'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $residue (@{$report->{'domains'}}) {
@@ -1328,27 +1333,27 @@ sub parse_spade($$)
 							my ($pro_coord_end) = get_coords_from_residue($transcript, $residue->{'alignment_end'});
 							$residue->{'trans_strand'} = $strand;
 							if ( $strand eq '-' ) {
-								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_end'} = $pro_coord_start->{'start'};
+								$residue->{'trans_start'} = $pro_coord_end->{'end'};
 							}
 							else {
-								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_start'} = $pro_coord_start->{'start'};
+								$residue->{'trans_end'} = $pro_coord_end->{'end'};
 							}
 							$region = APPRIS::Analysis::SPADERegion->new (
 											-start								=> $residue->{'trans_start'},
 											-end								=> $residue->{'trans_end'},
-											-strand								=> $residue->{'trans_strand'},						
-											-type_domain						=> $residue->{'type_domain'},						
-											-alignment_start					=> $residue->{'alignment_start'},					
+											-strand								=> $residue->{'trans_strand'},
+											-type_domain						=> $residue->{'type_domain'},
+											-alignment_start					=> $residue->{'alignment_start'},
 											-alignment_end						=> $residue->{'alignment_end'},
-											-envelope_start						=> $residue->{'envelope_start'},					
+											-envelope_start						=> $residue->{'envelope_start'},
 											-envelope_end						=> $residue->{'envelope_end'},
-											-hmm_start							=> $residue->{'hmm_start'},					
+											-hmm_start							=> $residue->{'hmm_start'},
 											-hmm_end							=> $residue->{'hmm_end'},
-											-hmm_length							=> $residue->{'hmm_length'},					
+											-hmm_length							=> $residue->{'hmm_length'},
 											-hmm_acc							=> $residue->{'hmm_acc'},
-											-hmm_name							=> $residue->{'hmm_name'},					
+											-hmm_name							=> $residue->{'hmm_name'},
 											-hmm_type							=> $residue->{'hmm_type'},
 											-bit_score							=> $residue->{'bit_score'},
 											-evalue								=> $residue->{'e_value'}
@@ -1361,16 +1366,16 @@ sub parse_spade($$)
 						}
 						else {
 							$region = APPRIS::Analysis::SPADERegion->new (
-											-type_domain						=> $residue->{'type_domain'},						
-											-alignment_start					=> $residue->{'alignment_start'},					
+											-type_domain						=> $residue->{'type_domain'},
+											-alignment_start					=> $residue->{'alignment_start'},
 											-alignment_end						=> $residue->{'alignment_end'},
-											-envelope_start						=> $residue->{'envelope_start'},					
+											-envelope_start						=> $residue->{'envelope_start'},
 											-envelope_end						=> $residue->{'envelope_end'},
-											-hmm_start							=> $residue->{'hmm_start'},					
+											-hmm_start							=> $residue->{'hmm_start'},
 											-hmm_end							=> $residue->{'hmm_end'},
-											-hmm_length							=> $residue->{'hmm_length'},					
+											-hmm_length							=> $residue->{'hmm_length'},
 											-hmm_acc							=> $residue->{'hmm_acc'},
-											-hmm_name							=> $residue->{'hmm_name'},					
+											-hmm_name							=> $residue->{'hmm_name'},
 											-hmm_type							=> $residue->{'hmm_type'},
 											-bit_score							=> $residue->{'bit_score'},
 											-evalue								=> $residue->{'e_value'}
@@ -1385,8 +1390,8 @@ sub parse_spade($$)
 					}
 				}
 			}
-			
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::SPADE->new (
 							-result							=> $report->{'result'},
 							-num_domains					=> $report->{'num_domains'},
@@ -1397,41 +1402,41 @@ sub parse_spade($$)
 							-bitscore						=> $report->{'bitscore'}
 			);
 			$method->regions($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
-			
+
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->spade($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::SPADE->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::SPADE->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->spade($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
 
 =head2 parse_inertia
 
-  Arg [1]    : String $id 
+  Arg [1]    : String $id
                The stable ID of the gene to retrieve
   Arg [2]    : string $inertia
                INERTIA result
@@ -1456,13 +1461,13 @@ sub parse_spade($$)
 sub parse_inertia($$)
 {
 	my ($gene, $inertia_i) = @_;
-	
-	my ($stable_id) = $gene->stable_id;	
+
+	my ($stable_id) = $gene->stable_id;
 	my ($transcripts);
 	my ($cutoffs);
 	my ($index_transcripts);
-	my ($index) = 0;	
-	
+	my ($index) = 0;
+
 	_parse_inertia_file('inertia', $inertia_i, $cutoffs) if (defined $inertia_i);
 #	_parse_omega_file('mafft', $mafft_i, $cutoffs) if (defined $mafft_i);
 #	_parse_omega_file('prank', $prank_i, $cutoffs) if (defined $prank_i);
@@ -1475,7 +1480,7 @@ sub parse_inertia($$)
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
@@ -1485,9 +1490,9 @@ sub parse_inertia($$)
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($report2) = $report->{'inertia'};
 			my ($method);
-			
+
 			# create inertia object
-			my ($regions);			
+			my ($regions);
 			foreach my $residue (@{$report2->{'residues'}})
 			{
 				push(@{$regions},
@@ -1506,16 +1511,16 @@ sub parse_inertia($$)
 					-result					=> $report2->{'result'},
 					-unusual_evolution		=> $report2->{'unusual_evolution'}
 				);
-				$method->regions($regions) if (defined $regions);				
+				$method->regions($regions) if (defined $regions);
 			}
 			# create omega objects
 			while ( my ($type, $report2) = each(%{$report}) )
 			{
 				if ( ($type eq 'mafft') or ($type eq 'prank') or ($type eq 'kalign') or ($type eq 'compara') )
-				{					
+				{
 					my ($omega);
 					my ($regions);
-					
+
 					foreach my $residue (@{$report2->{'residues'}})
 					{
 						push(@{$regions},
@@ -1529,7 +1534,7 @@ sub parse_inertia($$)
 								-difference_value	=> $residue->{'difference_value'},
 								-unusual_evolution	=> $residue->{'unusual_evolution'}
 							)
-						);			
+						);
 					}
 					$omega = APPRIS::Analysis::Omega->new
 					(
@@ -1539,57 +1544,57 @@ sub parse_inertia($$)
 						-unusual_evolution	=> $report2->{'unusual_evolution'}
 					);
 					$omega->regions($regions) if (defined $regions);
-					
+
 					$method->mafft_alignment($omega) if ($method and $omega and ($type eq 'mafft') );
 					$method->prank_alignment($omega) if ($method and $omega and ($type eq 'prank') );
 					$method->kalign_alignment($omega) if ($method and $omega and ($type eq 'kalign') );
 					$method->compara_alignment($omega) if ($method and $omega and ($type eq 'compara') );
-				}			
+				}
 			}
-			
+
 			# create Analysis object (for trans)
-			$analysis = APPRIS::Analysis->new();			
-			if (defined $method) {				
+			$analysis = APPRIS::Analysis->new();
+			if (defined $method) {
 				$analysis->inertia($method);
 				$analysis->number($analysis->number+1);
 			}
 		}
-					
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		if ( defined $transcript ) {
 			push(@{$transcripts}, $transcript);
 			$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 		}
 	}
-	
+
 	# create Analysis object (for gene)
 	my ($analysis2) = APPRIS::Analysis->new();
 	if ( defined $inertia_i and ($inertia_i ne '') ) {
-		my ($method2) = APPRIS::Analysis::INERTIA->new( -result => $inertia_i );	
+		my ($method2) = APPRIS::Analysis::INERTIA->new( -result => $inertia_i );
 		if (defined $method2) {
-#			if ( defined $mafft_i and ($mafft_i ne '') ) {	
-#				my ($method3) = APPRIS::Analysis::Omega->new( -result => $mafft_i );	
+#			if ( defined $mafft_i and ($mafft_i ne '') ) {
+#				my ($method3) = APPRIS::Analysis::Omega->new( -result => $mafft_i );
 #				if (defined $method3) {
 #					$method2->mafft_alignment($method3);
 #				}
-#			}		
-#			if ( defined $prank_i and ($prank_i ne '') ) {	
-#				my ($method4) = APPRIS::Analysis::Omega->new( -result => $prank_i );	
+#			}
+#			if ( defined $prank_i and ($prank_i ne '') ) {
+#				my ($method4) = APPRIS::Analysis::Omega->new( -result => $prank_i );
 #				if (defined $method4) {
 #					$method2->prank_alignment($method4);
 #				}
-#			}		
-#			if ( defined $kalign_i and ($kalign_i ne '') ) {	
-#				my ($method5) = APPRIS::Analysis::Omega->new( -result => $kalign_i );	
+#			}
+#			if ( defined $kalign_i and ($kalign_i ne '') ) {
+#				my ($method5) = APPRIS::Analysis::Omega->new( -result => $kalign_i );
 #				if (defined $method5) {
 #					$method2->kalign_alignment($method5);
 #				}
 #			}
-#			if ( defined $compara_i and ($compara_i ne '') ) {	
-#				my ($method6) = APPRIS::Analysis::Omega->new( -result => $compara_i );	
+#			if ( defined $compara_i and ($compara_i ne '') ) {
+#				my ($method6) = APPRIS::Analysis::Omega->new( -result => $compara_i );
 #				if (defined $method6) {
 #					$method2->compara_alignment($method6);
 #				}
@@ -1598,11 +1603,11 @@ sub parse_inertia($$)
 			$analysis2->number($analysis2->number+1);
 		}
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -1624,8 +1629,8 @@ sub parse_corsair_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-	
-	my (@results) = split('>',$result);	
+
+	my (@results) = split('>',$result);
 	foreach my $transcript_result (@results)
 	{
 		#>ENST00000518498.1      0.5
@@ -1641,10 +1646,10 @@ sub parse_corsair_rst($)
 			my ($id) = $1;
 			my ($score) = $2;
 			$cutoffs->{$id}->{'score'} = $score;
-									
-			my ($alignment_list_report);			
+
+			my ($alignment_list_report);
 			my (@trans_alignments) = split('- ', $transcript_result);
-			
+
 			my ($cds_order) = 1;
 			for (my $i = 1; $i < scalar(@trans_alignments); $i++) { # jump the first line #ENST00000518498.1      0.5 #Homo sapiens    100.00  0.5
 		        #- 47588222:47588303[1:28]       1.5
@@ -1687,7 +1692,7 @@ sub parse_corsair_rst($)
 							'type'			=> 'exon',
 						};
 						push(@{$alignment_list_report}, $alignment_report);
-						$cds_order ++;							
+						$cds_order ++;
 					}
 				}
 			}
@@ -1696,18 +1701,18 @@ sub parse_corsair_rst($)
 				$cutoffs->{$id}->{'alignments'} = $alignment_list_report;
 			}
 			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
-			$cutoffs->{$id}->{'result'}='>'.$transcript_result;	
+			$cutoffs->{$id}->{'result'}='>'.$transcript_result;
 
 		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_corsair
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse corsair result
@@ -1733,22 +1738,22 @@ sub parse_corsair($$)
 	my ($cutoffs) = parse_corsair_rst($result);
 
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
-			my ($report) = $cutoffs->{$transcript_id};			
-			my ($regions);			
+			my ($report) = $cutoffs->{$transcript_id};
+			my ($regions);
 			if ( $transcript->translate ) {
-				my ($translate) = $transcript->translate;				
+				my ($translate) = $transcript->translate;
 				if ( exists $report->{'alignments'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $residue (@{$report->{'alignments'}}) {
@@ -1761,7 +1766,7 @@ sub parse_corsair($$)
 											-score		=> $residue->{'score'},
 											-start		=> $residue->{'trans_start'},
 											-end		=> $residue->{'trans_end'},
-											-strand		=> $residue->{'trans_strand'},										
+											-strand		=> $residue->{'trans_strand'},
 							);
 							$region->type($residue->{'type'}) if (exists $residue->{'type'} and defined $residue->{'type'});
 							$region->maxscore($residue->{'maxscore'}) if (exists $residue->{'maxscore'} and defined $residue->{'maxscore'});
@@ -1776,29 +1781,29 @@ sub parse_corsair($$)
 							);
 							$region->type($residue->{'type'}) if (exists $residue->{'type'} and defined $residue->{'type'});
 							$region->maxscore($residue->{'maxscore'}) if (exists $residue->{'maxscore'} and defined $residue->{'maxscore'});
-							$region->sp_report($residue->{'sp_report'}) if (exists $residue->{'sp_report'} and defined $residue->{'sp_report'});							
+							$region->sp_report($residue->{'sp_report'}) if (exists $residue->{'sp_report'} and defined $residue->{'sp_report'});
 						}
-						push(@{$regions}, $region);						
+						push(@{$regions}, $region);
 					}
 				}
 			}
 
-			# create Analysis object (for trans)			
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::CORSAIR->new (
 							-result							=> $report->{'result'},
-							-score							=> $report->{'score'}							
+							-score							=> $report->{'score'}
 			);
 			if (defined $regions and (scalar(@{$regions}) > 0) ) {
 				$method->alignments($regions);
 				$method->num_alignments(scalar(@{$regions}));
-			}			
+			}
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->corsair($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new
 		(
@@ -1811,17 +1816,17 @@ sub parse_corsair($$)
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::CORSAIR->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::CORSAIR->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->corsair($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -2048,13 +2053,13 @@ sub parse_crash_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-	
-	my (@results) = split('>',$result);	
+
+	my (@results) = split('>',$result);
 	foreach my $transcript_result (@results)
 	{
         #id      start   end     s_mean  d_score c_max   s_prob  sp_score        peptide_signal  localization    reliability     tp_score        mitochondrial_signal
 		#>ENST00000479548        1       20      0.902   0.832   0.963   0.709   2       YES     S       2       -3      NO
-        if ( $transcript_result =~ /^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )        
+        if ( $transcript_result =~ /^([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+($APPRIS::Utils::Constant::OK_LABEL|$APPRIS::Utils::Constant::NO_LABEL|$APPRIS::Utils::Constant::UNKNOWN_LABEL)\n+/ )
 		{
 			my ($id) = $1;
 			my ($pstart) = $2;
@@ -2086,13 +2091,13 @@ sub parse_crash_rst($)
 		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_crash
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse crash result
@@ -2118,21 +2123,21 @@ sub parse_crash($$)
 	my ($cutoffs) = parse_crash_rst($result);
 
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'peptide_signal'} and exists $cutoffs->{$transcript_id}->{'mitochondrial_signal'} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
-			if ( $transcript->translate ) {						
+			if ( $transcript->translate ) {
 				if ( exists $report->{'pstart'} and exists $report->{'pend'} and ($report->{'pstart'} ne '-') and ($report->{'pend'} ne '-') ) {
 					my ($region);
 					if ( $transcript->translate->cds ) { # with CDS coords from GTF file
@@ -2141,44 +2146,44 @@ sub parse_crash($$)
 						my ($pro_coord_end) = get_coords_from_residue($transcript, $report->{'pend'});
 						$report->{'trans_strand'} = $strand;
 						if ( $strand eq '-' ) {
-							$report->{'trans_end'} = $pro_coord_start->{'start'};                                                
-							$report->{'trans_start'} = $pro_coord_end->{'end'};                                              
+							$report->{'trans_end'} = $pro_coord_start->{'start'};
+							$report->{'trans_start'} = $pro_coord_end->{'end'};
 						}
 						else {
-							$report->{'trans_start'} = $pro_coord_start->{'start'};                                                
-							$report->{'trans_end'} = $pro_coord_end->{'end'};                                              
-						}						
+							$report->{'trans_start'} = $pro_coord_start->{'start'};
+							$report->{'trans_end'} = $pro_coord_end->{'end'};
+						}
 						$region = APPRIS::Analysis::CRASHRegion->new (
 										-start						=> $report->{'trans_start'},
 										-end						=> $report->{'trans_end'},
 										-strand						=> $report->{'trans_strand'},
-										-pstart						=> $report->{'pstart'},						
-										-pend						=> $report->{'pend'},						
-										-s_mean						=> $report->{'s_mean'},					
+										-pstart						=> $report->{'pstart'},
+										-pend						=> $report->{'pend'},
+										-s_mean						=> $report->{'s_mean'},
 										-s_prob						=> $report->{'s_prob'},
-										-d_score					=> $report->{'d_score'},					
+										-d_score					=> $report->{'d_score'},
 										-c_max						=> $report->{'c_max'},
-										-reliability				=> $report->{'reliability'},					
+										-reliability				=> $report->{'reliability'},
 										-localization				=> $report->{'localization'},
-						);						
+						);
 					}
 					else {
 						$region = APPRIS::Analysis::CRASHRegion->new (
-										-pstart						=> $report->{'pstart'},						
-										-pend						=> $report->{'pend'},						
-										-s_mean						=> $report->{'s_mean'},					
+										-pstart						=> $report->{'pstart'},
+										-pend						=> $report->{'pend'},
+										-s_mean						=> $report->{'s_mean'},
 										-s_prob						=> $report->{'s_prob'},
-										-d_score					=> $report->{'d_score'},					
+										-d_score					=> $report->{'d_score'},
 										-c_max						=> $report->{'c_max'},
-										-reliability				=> $report->{'reliability'},					
+										-reliability				=> $report->{'reliability'},
 										-localization				=> $report->{'localization'},
-						);						
+						);
 					}
 					push(@{$regions}, $region) if ( defined $region );
 				}
 			}
-			
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::CRASH->new (
 							-result						=> $report->{'result'},
 							-sp_score					=> $report->{'sp_score'},
@@ -2187,34 +2192,34 @@ sub parse_crash($$)
 							-mitochondrial_signal		=> $report->{'mitochondrial_signal'}
 			);
 			$method->regions($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
-			
+
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->crash($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::CRASH->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::CRASH->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->crash($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -2236,8 +2241,8 @@ sub parse_thump_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-	
-	my (@results) = split('>',$result);	
+
+	my (@results) = split('>',$result);
 	foreach my $transcript_result (@results)
 	{
 		#>ENST00000300482    length 1503 a.a.
@@ -2246,7 +2251,7 @@ sub parse_thump_rst($)
 		#helix number 3 start: 868       end: 886
 		#helix number 4 start: 895       end: 908        damaged
 		#helix number 5 start: 935       end: 955
-		#helix number 6 start: 1024      end: 1041		
+		#helix number 6 start: 1024      end: 1041
         if ( $transcript_result =~ /^([^\t]+)\t+length\s+([^\s]+)\s+a\.a\.\n+/ )
 		{
 			# get the helix coordinates
@@ -2268,26 +2273,26 @@ sub parse_thump_rst($)
 						$cutoffs->{$id}->{'num_damaged_tmh'}++;
 					}
 					else {
-						$cutoffs->{$id}->{'num_tmh'}++;						
+						$cutoffs->{$id}->{'num_tmh'}++;
 					}
-					push(@{$transmembrane_list}, $helix_report);					
+					push(@{$transmembrane_list}, $helix_report);
 				}
 			}
-			$cutoffs->{$id}->{'tmhs'} = $transmembrane_list if (defined $transmembrane_list); 
+			$cutoffs->{$id}->{'tmhs'} = $transmembrane_list if (defined $transmembrane_list);
 
 			# save result for each transcript
 			$transcript_result =~ s/\n*#[^#]+#\n+#[^#]+#\n+#[^#]+#//mg;
-			$cutoffs->{$id}->{'result'}='>'.$transcript_result;				
+			$cutoffs->{$id}->{'result'}='>'.$transcript_result;
 		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_thump
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse thump result
@@ -2308,26 +2313,26 @@ sub parse_thump($$)
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	# Create hash object from result
 	my ($cutoffs) = parse_thump_rst($result);
-	
+
 	# Create APPRIS object
 	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
-			if ( $transcript->translate ) {				
+			if ( $transcript->translate ) {
 				if ( exists $report->{'tmhs'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $residue (@{$report->{'tmhs'}}) {
@@ -2337,68 +2342,68 @@ sub parse_thump($$)
 							my ($pro_coord_end) = get_coords_from_residue($transcript, $residue->{'end'});
 							$residue->{'trans_strand'} = $strand;
 							if ( $strand eq '-' ) {
-								$residue->{'trans_end'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_start'} = $pro_coord_end->{'end'};                                              
+								$residue->{'trans_end'} = $pro_coord_start->{'start'};
+								$residue->{'trans_start'} = $pro_coord_end->{'end'};
 							}
 							else {
-								$residue->{'trans_start'} = $pro_coord_start->{'start'};                                                
-								$residue->{'trans_end'} = $pro_coord_end->{'end'};                                              
-							}			
+								$residue->{'trans_start'} = $pro_coord_start->{'start'};
+								$residue->{'trans_end'} = $pro_coord_end->{'end'};
+							}
 							$region = APPRIS::Analysis::THUMPRegion->new (
 											-start								=> $residue->{'trans_start'},
 											-end								=> $residue->{'trans_end'},
-											-strand								=> $residue->{'trans_strand'},						
-											-pstart								=> $residue->{'start'},					
+											-strand								=> $residue->{'trans_strand'},
+											-pstart								=> $residue->{'start'},
 											-pend								=> $residue->{'end'},
-											-damaged							=> $residue->{'damaged'}										
+											-damaged							=> $residue->{'damaged'}
 							);
 						}
 						else {
 							$region = APPRIS::Analysis::THUMPRegion->new (
-											-pstart								=> $residue->{'start'},					
+											-pstart								=> $residue->{'start'},
 											-pend								=> $residue->{'end'},
-											-damaged							=> $residue->{'damaged'}										
+											-damaged							=> $residue->{'damaged'}
 							);
-						}	
+						}
 						push(@{$regions}, $region);
 					}
 				}
 			}
-			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation 			
+			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation
 			my ($method) = APPRIS::Analysis::THUMP->new (
 							-result							=> $report->{'result'},
 							-num_tmh						=> $report->{'num_tmh'},
 							-num_damaged_tmh				=> $report->{'num_damaged_tmh'}
 			);
 			$method->regions($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
-			
+
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->thump($method);
 				$analysis->number($analysis->number+1);
 			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::THUMP->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::THUMP->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->thump($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
@@ -2420,8 +2425,8 @@ sub parse_proteo_rst($)
 {
 	my ($result) = @_;
 	my ($cutoffs);
-		
-	my (@results) = split('\n',$result);	
+
+	my (@results) = split('\n',$result);
 	#$peptide, $gene, $transcripts with, $transcripts without, $no_expts
 	#You should delete all peptides with the "$transcripts from other genes" and "$transcripts without" column.
 	#VSLENYFSLLNEK,ENSG00000000003.11,ENST00000373020.5,ENST00000612152.1;ENST00000614008.1,6
@@ -2429,30 +2434,30 @@ sub parse_proteo_rst($)
 	foreach my $transcript_result (@results)
 	{
 		next unless (defined $transcript_result);
-		
+
 		$transcript_result =~ s/\n*$//;
 		my (@split_line) = split(",", $transcript_result); # version with commas
 		#my (@split_line) = split(/\t/, $transcript_result); # version with tabs
 		next if ( scalar(@split_line) <= 0 );
-		
+
 		my ($mapped_peptide_sequence) = $split_line[0];
 		my ($mapped_gene) = $split_line[1]; # Gene
 		my ($mapped_transcript_list) = $split_line[2]; # GeneTranscripts
 		my ($mapped_transc_without_list) = $split_line[3]; # GeneTranscriptsWithOut
 		my ($num_experiments) = $split_line[4]; # TotalNumExperiments
 		$mapped_peptide_sequence =~ s/^\"//;			$mapped_peptide_sequence =~ s/\"$//;
-		$mapped_peptide_sequence=~s/Z$//;		
-		$mapped_transcript_list =~ s/^\"//;				$mapped_transcript_list =~ s/\"$//;		
-		 		
+		$mapped_peptide_sequence=~s/Z$//;
+		$mapped_transcript_list =~ s/^\"//;				$mapped_transcript_list =~ s/\"$//;
+
 		unless(
 			defined $mapped_gene and $mapped_gene ne '' and
 			defined $mapped_peptide_sequence and $mapped_peptide_sequence ne '' and
 			defined $mapped_transcript_list and $mapped_transcript_list ne '' and
-			defined $num_experiments and $num_experiments ne ''			
+			defined $num_experiments and $num_experiments ne ''
 		){
 			next;
 		}
-		
+
 		# Discard peptides with num of experiments less than 2
 		next if ( $num_experiments < 2 );
 
@@ -2460,15 +2465,15 @@ sub parse_proteo_rst($)
 		{
 			if ( defined $mapped_transc_id and $mapped_transc_id ne '' ) {
 				if ( $mapped_transc_id =~ /^ENS/ ) { $mapped_transc_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
-				my ($peptide) = {						
+				my ($peptide) = {
 								'sequence'			=> $mapped_peptide_sequence,
 								'num_experiments'	=> $num_experiments,
 				};
 				$cutoffs->{$mapped_transc_id}->{'gene_id'} = $mapped_gene;
 				push(@{$cutoffs->{$mapped_transc_id}->{'peptides'}}, $peptide);
-				
+
 				$cutoffs->{$mapped_transc_id}->{'peptide_evidence'} = $APPRIS::Utils::Constant::OK_LABEL;
-				
+
 				# save result for each transcript
 				unless ( exists $cutoffs->{$mapped_transc_id}->{'result'} ) {
 					$cutoffs->{$mapped_transc_id}->{'result'} = $transcript_result."\n";
@@ -2479,18 +2484,18 @@ sub parse_proteo_rst($)
 					$cutoffs->{$mapped_transc_id}->{'result'} .= $transcript_result."\n";
 					$cutoffs->{$mapped_transc_id}->{'num_peptides'}++;
 					$cutoffs->{$mapped_transc_id}->{'num_experiments'} += $num_experiments;
-				}			
+				}
 			}
-		}		
+		}
 	}
 	$cutoffs->{'result'} = $result;
-	
+
 	return $cutoffs;
 }
 
 =head2 parse_proteo
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse proteo result
@@ -2511,7 +2516,7 @@ sub parse_proteo($$)
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	# Create hash object from result
 	my ($cutoffs) = parse_proteo_rst($result);
 
@@ -2521,16 +2526,16 @@ sub parse_proteo($$)
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
-			$transcript_ver = $transcript->version;			
+			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'peptide_evidence'} ) {
-			my ($report) = $cutoffs->{$transcript_id};			
+			my ($report) = $cutoffs->{$transcript_id};
 			my ($regions);
-			if ( $transcript->translate and $transcript->translate->sequence ) {				
+			if ( $transcript->translate and $transcript->translate->sequence ) {
 				if ( exists $report->{'peptides'} ) {
 					my ($strand) = $transcript->strand;
 					foreach my $region_info (@{$report->{'peptides'}}) {
@@ -2580,8 +2585,8 @@ sub parse_proteo($$)
 					}
 				}
 			}
-			
-			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation 			
+
+			# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation
 			my ($method) = APPRIS::Analysis::PROTEO->new (
 							-result							=> $report->{'result'},
 							-peptide_evidence				=> $report->{'peptide_evidence'},
@@ -2589,36 +2594,151 @@ sub parse_proteo($$)
 							-num_experiments				=> $report->{'num_experiments'}
 			);
 			$method->peptides($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
-			
+
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->proteo($method);
 				$analysis->number($analysis->number+1);
 			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::PROTEO->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::PROTEO->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->proteo($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
+}
+
+=head2 parse_trifid_rst
+
+  Arg [1]    : string $result
+               Parse trifid result
+  Example    : use APPRIS::Parser qw(parse_trifid_rst);
+               parse_trifid_rst($result);
+  Description: Parse output of trifid.
+  Returntype : Hashref of parsed result or undef
+  Exceptions : return undef
+  Caller     : general
+
+=cut
+
+sub parse_trifid_rst($)
+{
+	my ($result) = @_;
+	my ($cutoffs);
+
+	my ($header, @lines) = split(/\R/, $result);
+	#	#gene_id	gene_name	transcript_id	translation_id	...
+	#	ENSG00000254647	INS	ENST00000421783	ENSP00000408400	...
+	#	ENSG00000254647	INS	ENST00000250971	ENSP00000250971	...
+	#	ENSG00000254647	INS	ENST00000397262	ENSP00000380432	...
+
+	$header =~ s/^#//;
+	my @col_names = split(/\t/, $header);
+	my ($transc_col) = grep { $col_names[$_] eq 'transcript_id' } (0 .. $#col_names);
+	my ($score_col) = grep { $col_names[$_] eq 'trifid_score' } (0 .. $#col_names);
+	my ($seq_col) = grep { $col_names[$_] eq 'sequence' } (0 .. $#col_names);
+
+	if ( defined($transc_col) && defined($score_col) && defined($seq_col) ) {
+		foreach my $line (@lines) {
+			my (@fields) = split(/\t/, $line);
+			my ($transc_id) = $fields[$transc_col];
+			$cutoffs->{$transc_id}{'trifid_score'} = $fields[$score_col];
+			$cutoffs->{$transc_id}{'transl_seq'} = $fields[$seq_col];
+		}
+	}
+
+	return ($cutoffs);
+
+}
+
+=head2 parse_trifid
+
+  Arg [1]    : string $result
+               Parse trifid result
+  Example    : use APPRIS::Parser qw(parse_trifid);
+               parse_trifid($result);
+  Description: Parse output of trifid.
+  Returntype : APPRIS::Gene or undef
+  Exceptions : return undef
+  Caller     : general
+
+=cut
+
+sub parse_trifid($$)
+{
+	my ($gene, $result) = @_;
+
+	my ($gene_id) = $gene->stable_id;
+	my ($transc_reports);
+	my ($index_transcripts);
+	my ($index) = 0;
+
+	# Create hash object from result
+	my ($cutoffs) = parse_trifid_rst($result);
+
+	# Create APPRIS object
+	foreach my $input_transc (@{$gene->transcripts}) {
+		next unless( $input_transc->translate and $input_transc->translate->sequence );
+
+		my ($transc_id) = $input_transc->stable_id;
+		my ($transl_seq) = $input_transc->translate->sequence;
+
+		my ($transc_ver);
+		if ( $input_transc->version ) {
+			$transc_ver = $input_transc->version;
+		}
+
+		my ($analysis);
+		# create method object
+		if ( exists $cutoffs->{$transc_id} and
+				$transl_seq eq $cutoffs->{$transc_id}->{'transl_seq'} ) {
+			my ($trifid_score) = $cutoffs->{$transc_id}->{'trifid_score'};
+
+			# create Analysis object (for transcript)
+			my ($method) = APPRIS::Analysis::TRIFID->new(
+				-trifid_score => $trifid_score
+			);
+
+			$analysis = APPRIS::Analysis->new();
+			if (defined $method) {
+				$analysis->trifid($method);
+				$analysis->number($analysis->number+1);
+			}
+		}
+
+		# create Transcript object
+		my ($transc_report) = APPRIS::Transcript->new( -stable_id => $transc_id );
+		$transc_report->version($transc_ver) if (defined $transc_ver);
+		$transc_report->analysis($analysis) if (defined $analysis);
+		push(@{$transc_reports}, $transc_report);
+		$index_transcripts->{$transc_id} = $index; $index++; # Index the list of transcripts
+	}
+
+	# create Gene object
+	my ($gene_report) = APPRIS::Gene->new( -stable_id => $gene_id );
+	if (defined $transc_reports and defined $index_transcripts) {
+		$gene_report->transcripts($transc_reports, $index_transcripts);
+	}
+
+	return $gene_report;
 }
 
 =head2 parse_appris_rst
@@ -2638,7 +2758,7 @@ sub parse_appris_rst($$)
 {
 	my ($result, $result_label) = @_;
 	my ($cutoffs);
-	
+
 	# Parse result with scores
 	my (@resultscore) = split("\n", $result);
 	foreach my $transcript_result2 (@resultscore)
@@ -2658,7 +2778,7 @@ sub parse_appris_rst($$)
         # pep_signal
         # mit_signal
         # prin_isoform
-        
+
         if ( scalar(@rst2) == 20 ) {
 			my ($gene_id) = $rst2[0];
 			my ($gene_name) = $rst2[1];
@@ -2684,11 +2804,11 @@ sub parse_appris_rst($$)
 			my ($n_pep_annot) = $rst2[17];
 			my ($p_isof_annot) = $rst2[18];
 			my ($relia_annot) = $rst2[19];
-			
+
 			$cutoffs->{$transc_id}->{'functional_residues_score'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_score'} = $con_struct_annot;
 			$cutoffs->{$transc_id}->{'vertebrate_conservation_score'} = $vert_con_annot;
-			$cutoffs->{$transc_id}->{'domain_score'} = $dom_annot;			
+			$cutoffs->{$transc_id}->{'domain_score'} = $dom_annot;
 			$cutoffs->{$transc_id}->{'transmembrane_helices_score'} = $tmh_annot;
 			$cutoffs->{$transc_id}->{'peptide_score'} = $spep_annot;
 			$cutoffs->{$transc_id}->{'mitochondrial_score'} = $mit_annot;
@@ -2696,7 +2816,7 @@ sub parse_appris_rst($$)
 			$cutoffs->{$transc_id}->{'peptide_evidence_score'} = $n_pep_annot;
 			$cutoffs->{$transc_id}->{'principal_isoform_score'} = $p_isof_annot;
 			$cutoffs->{$transc_id}->{'reliability'} = $relia_annot;
-						
+
 			# join transcript results
 			if ( defined $transcript_result2 and ($transcript_result2 ne '') ) {
 					$cutoffs->{$transc_id}->{'result'} = $transcript_result2;
@@ -2707,7 +2827,7 @@ sub parse_appris_rst($$)
 	# join results
 	if ( defined $result and $result ne '') {
 		$cutoffs->{'result'} = $result;
-	}	
+	}
 
 	# Parse result with labels
 	my (@resultlabel) = split("\n", $result_label);
@@ -2728,8 +2848,8 @@ sub parse_appris_rst($$)
         # pep_signal
         # mit_signal
         # prin_isoform
-        
-        if ( scalar(@rst2) == 20 ) {        	
+
+        if ( scalar(@rst2) == 20 ) {
 			my ($gene_id) = $rst2[0];
 			my ($gene_name) = $rst2[1];
 			my ($transc_id) = $rst2[2];
@@ -2749,17 +2869,17 @@ sub parse_appris_rst($$)
 			my ($spep_mit_annot) = $rst2[15];
 			my (@aux_crash_annot) = split(',', $spep_mit_annot);
 			my ($spep_annot) = $aux_crash_annot[0];
-			my ($mit_annot) = $aux_crash_annot[1];			
+			my ($mit_annot) = $aux_crash_annot[1];
 			my ($u_evol_annot) = $rst2[16];
 			my ($n_pep_annot) = $rst2[17];
 			my ($prin_isoform_annot) = $rst2[18];
 			my ($relia_annot) = $rst2[19];
-			
+
 			$cutoffs->{$transc_id}->{'length_aa'} = $aa_length;
 			$cutoffs->{$transc_id}->{'functional_residues_signal'} = $fun_res_annot;
 			$cutoffs->{$transc_id}->{'homologous_structure_signal'} = $con_struct_annot;
 			$cutoffs->{$transc_id}->{'vertebrate_conservation_signal'} = $vert_con_annot;
-			$cutoffs->{$transc_id}->{'domain_signal'} = $dom_annot;			
+			$cutoffs->{$transc_id}->{'domain_signal'} = $dom_annot;
 			$cutoffs->{$transc_id}->{'transmembrane_helices_signal'} = $tmh_annot;
 			$cutoffs->{$transc_id}->{'peptide_signal'} = $spep_annot;
 			$cutoffs->{$transc_id}->{'mitochondrial_signal'} = $mit_annot;
@@ -2767,7 +2887,7 @@ sub parse_appris_rst($$)
 			$cutoffs->{$transc_id}->{'peptide_evidence_signal'} = $n_pep_annot;
 			$cutoffs->{$transc_id}->{'principal_isoform_signal'} = $prin_isoform_annot;
 			$cutoffs->{$transc_id}->{'reliability'} = $relia_annot;
-			
+
 			# join transcript results
 			if ( defined $transcript_result2 and ($transcript_result2 ne '') ) {
 					$cutoffs->{$transc_id}->{'result'} .= "\n#------------------\n";
@@ -2781,13 +2901,13 @@ sub parse_appris_rst($$)
 		$cutoffs->{'result'} .= "\n#------------------\n";
 		$cutoffs->{'result'} .= $result_label;
 	}
-	
-	return $cutoffs;	
+
+	return $cutoffs;
 }
 
 =head2 parse_appris
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse appris result
@@ -2810,12 +2930,12 @@ sub parse_appris($$$)
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	# Create hash object from result
 	my ($cutoffs) = parse_appris_rst($result, $result_label);
-	
+
 	# Create APPRIS object
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
 		my ($transc_eid) = $transcript_id;
@@ -2825,12 +2945,12 @@ sub parse_appris($$$)
 			#$transc_eid = $transcript_id.'.'.$transcript_ver;
 		}
 		my ($analysis);
-		
+
 		# create method object
 		if ( exists $cutoffs->{$transcript_id} ) {
 			my ($report) = $cutoffs->{$transcript_id};
-			
-			# create Analysis object (for trans)			
+
+			# create Analysis object (for trans)
 			my ($method) = APPRIS::Analysis::APPRIS->new (
 							-functional_residues_score			=> $report->{'functional_residues_score'},
 							-homologous_structure_score			=> $report->{'homologous_structure_score'},
@@ -2838,7 +2958,7 @@ sub parse_appris($$$)
 							-domain_score						=> $report->{'domain_score'},
 							-transmembrane_helices_score		=> $report->{'transmembrane_helices_score'},
 							-peptide_score						=> $report->{'peptide_score'},
-							-mitochondrial_score				=> $report->{'mitochondrial_score'},							
+							-mitochondrial_score				=> $report->{'mitochondrial_score'},
 							-unusual_evolution_score			=> $report->{'unusual_evolution_score'},
 							-peptide_evidence_score				=> $report->{'peptide_evidence_score'},
 							-principal_isoform_score			=> $report->{'principal_isoform_score'},
@@ -2853,42 +2973,42 @@ sub parse_appris($$$)
 							-peptide_evidence_signal			=> $report->{'peptide_evidence_signal'},
 							-principal_isoform_signal			=> $report->{'principal_isoform_signal'},
 							-reliability						=> $report->{'reliability'},
-							-result								=> $report->{'result'},							
+							-result								=> $report->{'result'},
 			);
 			$analysis = APPRIS::Analysis->new();
 			if (defined $method) {
 				$analysis->appris($method);
 				$analysis->number($analysis->number+1);
-			}			
+			}
 		}
-				
+
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);		
+		$transcript->version($transcript_ver) if (defined $transcript_ver);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 
 	# create Analysis object (for gene)
-	my ($method2) = APPRIS::Analysis::APPRIS->new( -result => $cutoffs->{'result'} );	
+	my ($method2) = APPRIS::Analysis::APPRIS->new( -result => $cutoffs->{'result'} );
 	my ($analysis2) = APPRIS::Analysis->new();
 	if (defined $method2) {
 		$analysis2->appris($method2);
 		$analysis2->number($analysis2->number+1);
 	}
-	
+
 	# create Gene object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
+	$entity->analysis($analysis2) if (defined $analysis2);
 
 	return $entity;
 }
 
 =head2 parse_appris_methods
 
-  Arg [1]    : APPRIS::Gene $gene 
+  Arg [1]    : APPRIS::Gene $gene
                APPRIS::Gene object
   Arg [2]    : string $result
                Parse firestar result
@@ -2911,9 +3031,9 @@ sub parse_appris($$$)
   Arg [10]    : string $result (optional)
                Parse inertia_prank result
   Arg [11]    : string $result (optional)
-               Parse inertia_kalign result               
+               Parse inertia_kalign result
   Arg [12]    : string $result (optional)
-               Parse inertia_compara result               
+               Parse inertia_compara result
   Arg [13]    : string $result (optional)
                Parse proteo result
   Arg [14]    : string $result (optional)
@@ -2945,12 +3065,12 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 		$appris_result,
 		$appris_lb_result
 	) = @_;
-	
+
 	my ($stable_id) = $gene->stable_id;
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	my ($firestar);
 	my ($matador3d);
 	my ($matador3d2);
@@ -2961,7 +3081,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 	my ($inertia);
 	my ($proteo);
 	my ($appris);
-	
+
 	# get the reports for every method
 	if ( defined $firestar_result ) {
 		$firestar = parse_firestar($gene, $firestar_result);
@@ -2974,13 +3094,13 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($gene, $corsair_result);
-	}	
+	}
 	if ( defined $spade_result ) {
 		$spade = parse_spade($gene, $spade_result);
 	}
 	if ( defined $thump_result ) {
 		$thump = parse_thump($gene, $thump_result);
-	}	
+	}
 	if ( defined $crash_result ) {
 		$crash = parse_crash($gene, $crash_result);
 	}
@@ -2994,12 +3114,12 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 	if ( defined $appris_result ) {
 		$appris = parse_appris($gene, $appris_result, $appris_lb_result);
 	}
-	
+
 	# get the results for each transcript
-	foreach my $transcript (@{$gene->transcripts}) {			
+	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($index) = $gene->{'_index_transcripts'}->{$transcript_id};
-		my ($analysis) = APPRIS::Analysis->new();		
+		my ($analysis) = APPRIS::Analysis->new();
 
 		# get firestar
 		if ( $firestar and $firestar->transcripts->[$index] and $firestar->transcripts->[$index]->analysis ) {
@@ -3010,8 +3130,8 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->firestar($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
-		}			
+			}
+		}
 		# get matador3d
 		if ( $matador3d and $matador3d->transcripts->[$index] and $matador3d->transcripts->[$index]->analysis ) {
 			my ($result) = $matador3d->transcripts->[$index];
@@ -3021,7 +3141,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->matador3d($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
 		# get matador3d2
 		if ( $matador3d2 and $matador3d2->transcripts->[$index] and $matador3d2->transcripts->[$index]->analysis ) {
@@ -3032,7 +3152,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->matador3d2($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
 		# get corsair
 		if ( $corsair and $corsair->transcripts->[$index] and $corsair->transcripts->[$index]->analysis ) {
@@ -3043,8 +3163,8 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->corsair($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
-		}		
+			}
+		}
 		# get spade
 		if ( $spade and $spade->transcripts->[$index] and $spade->transcripts->[$index]->analysis ) {
 			my ($result) = $spade->transcripts->[$index];
@@ -3054,7 +3174,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->spade($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
 		# get thump
 		if ( $thump and $thump->transcripts->[$index] and $thump->transcripts->[$index]->analysis ) {
@@ -3065,8 +3185,8 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->thump($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
-		}		
+			}
+		}
 		# get crash
 		if ( $crash and $crash->transcripts->[$index] and $crash->transcripts->[$index]->analysis ) {
 			my ($result) = $crash->transcripts->[$index];
@@ -3076,7 +3196,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->crash($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
 		# get inertia
 		if ( $inertia and $inertia->transcripts->[$index] and $inertia->transcripts->[$index]->analysis ) {
@@ -3087,7 +3207,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->inertia($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
 		# get proteo
 		if ( $proteo and $proteo->transcripts->[$index] and $proteo->transcripts->[$index]->analysis ) {
@@ -3098,8 +3218,8 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->proteo($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
-		}		
+			}
+		}
 		# get appris
 		if ( $appris and $appris->transcripts->[$index] and $appris->transcripts->[$index]->analysis ) {
 			my ($result) = $appris->transcripts->[$index];
@@ -3109,9 +3229,9 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 					$analysis->appris($method);
 					$analysis->number($analysis->number+1);
 				}
-			}			
+			}
 		}
-				
+
 		# create object
 		my ($transcript) = APPRIS::Transcript->new
 		(
@@ -3119,19 +3239,19 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 		);
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
-		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts		
+		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
-	
+
 	# get the results for gene
 	my ($analysis2) = APPRIS::Analysis->new();
-	
+
 	# get firestar
 	if ( $firestar and $firestar->analysis and $firestar->analysis->firestar ) {
 		my ($method2) = $firestar->analysis->firestar;
 		if (defined $method2) {
 			$analysis2->firestar($method2);
 			$analysis2->number($analysis2->number+1);
-		}			
+		}
 	}
 	# get matador3d
 	if ( $matador3d and $matador3d->analysis and $matador3d->analysis->matador3d ) {
@@ -3156,7 +3276,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 			$analysis2->corsair($method2);
 			$analysis2->number($analysis2->number+1);
 		}
-	}	
+	}
 	# get spade
 	if ( $spade and $spade->analysis and $spade->analysis->spade ) {
 		my ($method2) = $spade->analysis->spade;
@@ -3188,7 +3308,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 			$analysis2->inertia($method2);
 			$analysis2->number($analysis2->number+1);
 		}
-	}	
+	}
 	# get proteo
 	if ( $proteo and $proteo->analysis and $proteo->analysis->proteo ) {
 		my ($method2) = $proteo->analysis->proteo;
@@ -3196,14 +3316,14 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 			$analysis2->proteo($method2);
 			$analysis2->number($analysis2->number+1);
 		}
-	}	
-	
+	}
+
 	# create object
 	my ($entity) = APPRIS::Gene->new( -stable_id => $stable_id );
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
-	
-	return $entity;	
+	$entity->analysis($analysis2) if (defined $analysis2);
+
+	return $entity;
 }
 
 =head2 create_appris_entity
@@ -3264,7 +3384,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 		$appris_lb_result,
 		$ids
 	) = @_;
-	
+
 	# get entity from input files
 	my ($entity);
 	my ($entities);
@@ -3279,12 +3399,12 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	} else {
 		return undef;
 	}
-	
+
 	my ($stable_id) = $entity->stable_id;
 	my ($transcripts);
 	my ($index_transcripts);
 	my ($index) = 0;
-	
+
 	my ($firestar);
 	my ($matador3d);
 	my ($matador3d2);
@@ -3296,7 +3416,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	my ($inertia);
 	my ($proteo);
 	my ($appris);
-	
+
 	# get the reports for every method
 	if ( defined $firestar_result ) {
 		$firestar = parse_firestar($entity, $firestar_result);
@@ -3309,13 +3429,13 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($entity, $corsair_result);
-	}	
+	}
 	if ( defined $spade_result ) {
 		$spade = parse_spade($entity, $spade_result);
 	}
 	if ( defined $thump_result ) {
 		$thump = parse_thump($entity, $thump_result);
-	}	
+	}
 	if ( defined $crash_result ) {
 		$crash = parse_crash($entity, $crash_result);
 	}
@@ -3330,7 +3450,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	}
 
 	# get the results for each transcript
-	foreach my $transcript (@{$entity->transcripts}) {			
+	foreach my $transcript (@{$entity->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($index);
 		if ( !defined $ids ) { # by default all
@@ -3350,8 +3470,8 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->firestar($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
-			}			
+				}
+			}
 			# get matador3d
 			if ( $matador3d and $matador3d->transcripts->[$index] and $matador3d->transcripts->[$index]->analysis ) {
 				my ($result) = $matador3d->transcripts->[$index];
@@ -3361,7 +3481,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->matador3d($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
 			# get matador3d2
 			if ( $matador3d2 and $matador3d2->transcripts->[$index] and $matador3d2->transcripts->[$index]->analysis ) {
@@ -3372,7 +3492,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->matador3d2($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
 			# get corsair
 			if ( $corsair and $corsair->transcripts->[$index] and $corsair->transcripts->[$index]->analysis ) {
@@ -3383,8 +3503,8 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->corsair($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
-			}		
+				}
+			}
 			# get spade
 			if ( $spade and $spade->transcripts->[$index] and $spade->transcripts->[$index]->analysis ) {
 				my ($result) = $spade->transcripts->[$index];
@@ -3394,7 +3514,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->spade($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
 			# get thump
 			if ( $thump and $thump->transcripts->[$index] and $thump->transcripts->[$index]->analysis ) {
@@ -3405,8 +3525,8 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->thump($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
-			}		
+				}
+			}
 			# get crash
 			if ( $crash and $crash->transcripts->[$index] and $crash->transcripts->[$index]->analysis ) {
 				my ($result) = $crash->transcripts->[$index];
@@ -3416,7 +3536,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->crash($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
 			# get inertia
 			if ( $inertia and $inertia->transcripts->[$index] and $inertia->transcripts->[$index]->analysis ) {
@@ -3427,7 +3547,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->inertia($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
 			# get proteo
 			if ( $proteo and $proteo->transcripts->[$index] and $proteo->transcripts->[$index]->analysis ) {
@@ -3438,8 +3558,8 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->proteo($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
-			}		
+				}
+			}
 			# get appris
 			if ( $appris and $appris->transcripts->[$index] and $appris->transcripts->[$index]->analysis ) {
 				my ($result) = $appris->transcripts->[$index];
@@ -3449,26 +3569,26 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 						$analysis->appris($method);
 						$analysis->number($analysis->number+1);
 					}
-				}			
+				}
 			}
-					
+
 			# add analysis into transcript
 			$transcript->analysis($analysis) if (defined $analysis);
 			push(@{$transcripts}, $transcript);
 			$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 		}
 	}
-	
+
 	# get the results for gene
 	my ($analysis2) = APPRIS::Analysis->new();
-	
+
 	# get firestar
 	if ( $firestar and $firestar->analysis and $firestar->analysis->firestar ) {
 		my ($method2) = $firestar->analysis->firestar;
 		if (defined $method2) {
 			$analysis2->firestar($method2);
 			$analysis2->number($analysis2->number+1);
-		}			
+		}
 	}
 	# get matador3d
 	if ( $matador3d and $matador3d->analysis and $matador3d->analysis->matador3d ) {
@@ -3493,7 +3613,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 			$analysis2->corsair($method2);
 			$analysis2->number($analysis2->number+1);
 		}
-	}	
+	}
 	# get spade
 	if ( $spade and $spade->analysis and $spade->analysis->spade ) {
 		my ($method2) = $spade->analysis->spade;
@@ -3534,13 +3654,13 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 			$analysis2->number($analysis2->number+1);
 		}
 	}
-	
-	
+
+
 	# add analysis into gene
 	$entity->transcripts($transcripts, $index_transcripts) if (defined $transcripts and defined $index_transcripts);
-	$entity->analysis($analysis2) if (defined $analysis2);	
-	
-	return $entity;	
+	$entity->analysis($analysis2) if (defined $analysis2);
+
+	return $entity;
 }
 
 # *********************** #
@@ -3552,7 +3672,7 @@ sub _get_id_version($)
 {
 	my ($i_id) = @_;
 	my ($id, $version) = (undef,undef);
-	
+
 	if ( $i_id =~ /^(ENS[^\.]*)\.(\d*)$/ ) {
 		($id, $version) = ($1, $2);
 	}
@@ -3560,15 +3680,15 @@ sub _get_id_version($)
 		$id = $i_id;
 	}
 	return ($id, $version);
-		
+
 } # End _get_id_version
 
 # Is RefSeq gene data
 sub _is_refseq($)
 {
 	my ($file) = @_;
-	my ($is_refseq) = 0;	
-	
+	my ($is_refseq) = 0;
+
 
 	open (IN_FILE, $file) or throw('Can not open file');
 	while ( my $line = <IN_FILE> )
@@ -3583,39 +3703,39 @@ sub _is_refseq($)
 		}
 	}
 	close(IN_FILE);
-	
+
 	return $is_refseq;
-	
+
 } # End _is_refseq
 
 sub _parse_dataline($)
 {
 	my ($line) = @_;
 	my ($fields);
-	
+
 	if ( defined $line and ($line ne '') and ($line !~ /^#/) ) {
 		my ($chr,$source,$type,$start,$end,$score,$strand,$phase,$attributes) = split("\t", $line);
-		next unless(defined $chr and 
+		next unless(defined $chr and
 					defined $source and
 					defined $type and
 					defined $start and
 					defined $end and
 					defined $score and
 					defined $strand and
-					defined $phase and 
+					defined $phase and
 					defined $attributes);
-		if (defined $chr and $chr=~/chr(\w*)/) { $chr = $1 if(defined $1) }		
-		
+		if (defined $chr and $chr=~/chr(\w*)/) { $chr = $1 if(defined $1) }
+
 		#store ids and additional information in second hash
 		my ($attribs);
-		my (@add_attributes) = split(";", $attributes);				
+		my (@add_attributes) = split(";", $attributes);
 		for ( my $i=0; $i<scalar @add_attributes; $i++ )
 		{
 			my ($c_type);
 			my ($c_value);
 			if ( $add_attributes[$i] =~ /^(.+)\s+\"([^\"]*)\"$/ ) {
 				$c_type  = $1;
-				$c_value = $2;			
+				$c_value = $2;
 			}
 			elsif ( $add_attributes[$i] =~ /^(.+)=(.+)$/ ) {
 				$c_type  = $1;
@@ -3627,16 +3747,16 @@ sub _parse_dataline($)
 				$c_type =~ s/^\s*//g;
 				$c_value =~ s/"//g;
 				if(!exists($attribs->{$c_type})) {
-					$attribs->{$c_type} = $c_value;						
+					$attribs->{$c_type} = $c_value;
 				}
 				else {
 					if ( $c_type eq 'tag' ) {
 						$attribs->{$c_type} .= ','.$c_value;
 					}
-				}				
+				}
 			}
 		}
-		
+
 		#store nine columns in hash
 		$fields = {
 				chr        => $chr,
@@ -3650,18 +3770,18 @@ sub _parse_dataline($)
 				attrs      => $attribs,
 		};
 	}
-			
+
 	return $fields;
-	
+
 } # End _parse_dataline
 
 # Parse GFT file
 sub _parse_indata($)
 {
 	my ($file) = @_;
-	my ($data);	
+	my ($data);
 	return $data unless (-e $file and (-s $file > 0) );
-	
+
 	open (IN_FILE, $file) or throw('Can not open file');
 	while ( my $line = <IN_FILE> )
 	{
@@ -3678,50 +3798,50 @@ sub _parse_indata($)
 			$fields->{'phase'},
 			$fields->{'attrs'}
 		);
-		
+
 		# Always we have Gene Id
 		if(	exists $attribs->{'gene_id'} and defined $attribs->{'gene_id'} )
 		{
 			my ($gene_id, $gene_version) = _get_id_version($attribs->{'gene_id'});
 			my ($transcript_id, $trans_version) = (undef, undef);
 			if ( exists $attribs->{'transcript_id'} and defined $attribs->{'transcript_id'} ) {
-				($transcript_id, $trans_version) = _get_id_version($attribs->{'transcript_id'});				
+				($transcript_id, $trans_version) = _get_id_version($attribs->{'transcript_id'});
 			}
 
 			if (defined $gene_id and ($type eq 'gene') ) # Gene Information
 			{
-				$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
+				$data->{$gene_id}->{'chr'} = $chr if(defined $chr);
 				$data->{$gene_id}->{'start'} = $start if(defined $start);
 				$data->{$gene_id}->{'end'} = $end if(defined $end);
 				$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
 
 				if (defined $source)
 				{
-					$data->{$gene_id}->{'source'} = $source; 					
+					$data->{$gene_id}->{'source'} = $source;
 				}
 				if(exists $attribs->{'gene_status'} and defined $attribs->{'gene_status'})
 				{
-					$data->{$gene_id}->{'status'} = $attribs->{'gene_status'};	
-				}			
+					$data->{$gene_id}->{'status'} = $attribs->{'gene_status'};
+				}
 				if(exists $attribs->{'gene_type'} and defined $attribs->{'gene_type'})
 				{
-					$data->{$gene_id}->{'biotype'} = $attribs->{'gene_type'};	
+					$data->{$gene_id}->{'biotype'} = $attribs->{'gene_type'};
 				}
 				elsif(exists $attribs->{'gene_biotype'} and defined $attribs->{'gene_biotype'})
 				{
-					$data->{$gene_id}->{'biotype'} = $attribs->{'gene_biotype'};	
+					$data->{$gene_id}->{'biotype'} = $attribs->{'gene_biotype'};
 				}
 				if(exists $attribs->{'gene_name'} and defined $attribs->{'gene_name'})
 				{
-					$data->{$gene_id}->{'external_id'} = $attribs->{'gene_name'};	
+					$data->{$gene_id}->{'external_id'} = $attribs->{'gene_name'};
 				}
 				if(exists $attribs->{'havana_gene'} and defined $attribs->{'havana_gene'})
 				{
-					$data->{$gene_id}->{'havana_gene'} = $attribs->{'havana_gene'};	
+					$data->{$gene_id}->{'havana_gene'} = $attribs->{'havana_gene'};
 				}
 				if(exists $attribs->{'level'} and defined $attribs->{'level'})
 				{
-					$data->{$gene_id}->{'level'} = $attribs->{'level'};	
+					$data->{$gene_id}->{'level'} = $attribs->{'level'};
 				}
 				if (defined $gene_version)
 				{
@@ -3730,7 +3850,7 @@ sub _parse_indata($)
 				elsif(exists $attribs->{'gene_version'} and defined $attribs->{'gene_version'})
 				{
 					$data->{$gene_id}->{'version'} = $attribs->{'gene_version'};
-				}				
+				}
 			}
 			elsif (defined $gene_id and defined $transcript_id and ($type eq 'transcript') ) # Transcript Information
 			{
@@ -3738,7 +3858,7 @@ sub _parse_indata($)
 				$transcript->{'chr'} = $chr if(defined $chr);
 				$transcript->{'start'} = $start if(defined $start);
 				$transcript->{'end'} = $end if(defined $end);
-				$transcript->{'strand'} = $strand if(defined $strand);					
+				$transcript->{'strand'} = $strand if(defined $strand);
 
 				if (defined $source)
 				{
@@ -3746,23 +3866,23 @@ sub _parse_indata($)
 				}
 				if(exists $attribs->{'transcript_status'} and defined $attribs->{'transcript_status'})
 				{
-					$transcript->{'status'} = $attribs->{'transcript_status'};	
-				}			
+					$transcript->{'status'} = $attribs->{'transcript_status'};
+				}
 				if(exists $attribs->{'transcript_type'} and defined $attribs->{'transcript_type'})
 				{
-					$transcript->{'biotype'} = $attribs->{'transcript_type'};	
+					$transcript->{'biotype'} = $attribs->{'transcript_type'};
 				}
 				elsif(exists $attribs->{'transcript_biotype'} and defined $attribs->{'transcript_biotype'})
 				{
-					$transcript->{'biotype'} = $attribs->{'transcript_biotype'};	
-				}				
+					$transcript->{'biotype'} = $attribs->{'transcript_biotype'};
+				}
 				if(exists $attribs->{'transcript_name'} and defined $attribs->{'transcript_name'})
 				{
-					$transcript->{'external_id'} = $attribs->{'transcript_name'};	
+					$transcript->{'external_id'} = $attribs->{'transcript_name'};
 				}
 				if(exists $attribs->{'havana_transcript'} and defined $attribs->{'havana_transcript'})
 				{
-					$transcript->{'havana_transcript'} = $attribs->{'havana_transcript'};	
+					$transcript->{'havana_transcript'} = $attribs->{'havana_transcript'};
 				}
 				if(exists $attribs->{'protein_id'} and defined $attribs->{'protein_id'})
 				{
@@ -3772,7 +3892,7 @@ sub _parse_indata($)
 				}
 				if(exists $attribs->{'level'} and defined $attribs->{'level'})
 				{
-					$transcript->{'level'} = $attribs->{'level'};	
+					$transcript->{'level'} = $attribs->{'level'};
 				}
 				if (defined $trans_version)
 				{
@@ -3781,14 +3901,14 @@ sub _parse_indata($)
 				elsif(exists $attribs->{'transcript_version'} and defined $attribs->{'transcript_version'})
 				{
 					$transcript->{'version'} = $attribs->{'transcript_version'};
-				}								
+				}
 				if(exists $attribs->{'ccdsid'} and defined $attribs->{'ccdsid'})
 				{
-					$transcript->{'ccdsid'} = $attribs->{'ccdsid'};	
+					$transcript->{'ccdsid'} = $attribs->{'ccdsid'};
 				}
 				elsif(exists $attribs->{'ccds_id'} and defined $attribs->{'ccds_id'})
 				{
-					$transcript->{'ccdsid'} = $attribs->{'ccds_id'};	
+					$transcript->{'ccdsid'} = $attribs->{'ccds_id'};
 				}
 				if(exists $attribs->{'tag'} and defined $attribs->{'tag'})
 				{
@@ -3797,13 +3917,13 @@ sub _parse_indata($)
 				if(exists $attribs->{'transcript_support_level'} and defined $attribs->{'transcript_support_level'})
 				{
 					my ($t) = $attribs->{'transcript_support_level'};
-					if ( $t =~ /^([0-9]*)\s*/ ) { $transcript->{'tsl'} = $1 }					
+					if ( $t =~ /^([0-9]*)\s*/ ) { $transcript->{'tsl'} = $1 }
 				}
 				elsif(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
 				{
 					$transcript->{'tsl'} = $attribs->{'tsl'};
 				}
-					
+
 				$data->{$gene_id}->{'transcripts'}->{$transcript_id} = $transcript if(defined $transcript);
 			}
 			elsif (defined $gene_id and defined $transcript_id and ($type eq 'exon') ) # Exon Information
@@ -3812,16 +3932,16 @@ sub _parse_indata($)
 				$exon->{'start'} = $start if(defined $start);
 				$exon->{'end'} = $end if(defined $end);
 				$exon->{'strand'} = $strand if(defined $strand);
-				
+
 				if(exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'})
 				{
 					my ($x) = $attribs->{'exon_id'};
 					if ( $x =~ /^ENS/ ) { $x =~ s/\.\d*$// } # delete suffix in Ensembl ids
 					$exon->{'exon_id'} = $x;
-				}				
-						
+				}
+
 				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'exons'}},$exon);
-			}			
+			}
 			elsif (defined $gene_id and defined $transcript_id and ($type eq 'CDS') ) # CDS Information
 			{
 				my ($cds);
@@ -3829,22 +3949,22 @@ sub _parse_indata($)
 				$cds->{'end'} = $end if(defined $end);
 				$cds->{'strand'} = $strand if(defined $strand);
 				$cds->{'phase'} = $phase if(defined $phase);
-				
+
 				if( (exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'}) or (exists $attribs->{'cds_id'} and defined $attribs->{'cds_id'}) )
 				{
 					my ($x) = (exists $attribs->{'exon_id'} and defined $attribs->{'exon_id'}) ? $attribs->{'exon_id'} : $attribs->{'cds_id'};
 					if ( $x =~ /^ENS/ ) { $x =~ s/\.\d*$// } # delete suffix in Ensembl ids
 					$cds->{'exon_id'} = $x;
-				}				
-				
+				}
+
 				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'cds'}},$cds);
-				
+
 				if(exists $attribs->{'protein_id'} and defined $attribs->{'protein_id'} and !exists $data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'protein_id'} ) # ensembl exception
 				{
 					my ($x) = $attribs->{'protein_id'};
 					if ( $x =~ /^ENS/ ) { $x =~ s/\.\d*$// } # delete suffix in Ensembl ids
 					$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'protein_id'} = $x;
-				}				
+				}
 			}
 			elsif (defined $gene_id and defined $transcript_id and ($type eq 'start_codon') ) # Codon Information
 			{
@@ -3854,7 +3974,7 @@ sub _parse_indata($)
 				$codon->{'end'} = $end if(defined $end);
 				$codon->{'strand'} = $strand if(defined $strand);
 				$codon->{'phase'} = $phase if(defined $phase);
-				
+
 				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);
 			}
 			elsif (defined $gene_id and defined $transcript_id and ($type eq 'stop_codon') ) # Codon Information
@@ -3865,7 +3985,7 @@ sub _parse_indata($)
 				$codon->{'end'} = $end if(defined $end);
 				$codon->{'strand'} = $strand if(defined $strand);
 				$codon->{'phase'} = $phase if(defined $phase);
-				
+
 				push(@{$data->{$gene_id}->{'transcripts'}->{$transcript_id}->{'codons'}},$codon) if(defined $codon);
 			}
 			$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
@@ -3876,9 +3996,9 @@ sub _parse_indata($)
 		}
 	}
 	close(IN_FILE);
-	
+
 	return $data;
-	
+
 } # End _parse_indata
 
 # Parse GFF3 file from RefSeq
@@ -3888,7 +4008,7 @@ sub _parse_indata_refseq($)
 	my ($data);
 	my ($cache_transcId);
 	return $data unless (-e $file and (-s $file > 0) );
-	
+
 	my $_extract_dbXref = sub {
 		my ($data,$patt) = @_;
 		my ($match);
@@ -3897,7 +4017,7 @@ sub _parse_indata_refseq($)
 		}
 		return $match;
 	};
-	
+
 	open (IN_FILE, $file) or throw('Can not open file');
 	while ( my $line = <IN_FILE> )
 	{
@@ -3917,36 +4037,36 @@ sub _parse_indata_refseq($)
 
 		# Only BestRefSeq features
 		#next unless ( ($source =~ /BestRefSeq/) or ($source =~ /Curated Genomic/) or ($source =~ /Gnomon/) );
-		
+
 		# Always we have Gene Id
 		if(	exists $attribs->{'ID'} and defined $attribs->{'ID'} )
-		{			
+		{
 			my ($ID) = $attribs->{'ID'};
 			my ($Parent);
 			if ( exists $attribs->{'Parent'} and defined $attribs->{'Parent'} ) {
-				($Parent) = $attribs->{'Parent'};				
+				($Parent) = $attribs->{'Parent'};
 			}
 			my ($gene_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'GeneID');
 			my ($accesion_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'Genbank');
 			my ($ccds_id) = $_extract_dbXref->($attribs->{'Dbxref'}, 'CCDS');
-			
+
 			if ( defined $gene_id ) {
 				if ( $type eq 'gene' ) # Gene Information
 				{
-					$data->{$gene_id}->{'chr'} = $chr if(defined $chr);			
+					$data->{$gene_id}->{'chr'} = $chr if(defined $chr);
 					$data->{$gene_id}->{'start'} = $start if(defined $start);
 					$data->{$gene_id}->{'end'} = $end if(defined $end);
 					$data->{$gene_id}->{'strand'} = $strand if(defined $strand);
-					
+
 					if (defined $source)
 					{
-						$data->{$gene_id}->{'source'} = $source; 					
+						$data->{$gene_id}->{'source'} = $source;
 						if ( ($source eq 'BestRefSeq') or ($source eq 'Curated Genomic') ) { $data->{$gene_id}->{'level'} = '1' }
 						elsif ( $source eq 'Gnomon' ) { $data->{$gene_id}->{'level'} = '3' }
 					}
 					if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
 					{
-						$data->{$gene_id}->{'external_id'} = $attribs->{'Name'};	
+						$data->{$gene_id}->{'external_id'} = $attribs->{'Name'};
 					}
 				}
 				elsif ( defined $accesion_id and ($type eq 'exon') ) # Exon Information
@@ -3955,11 +4075,11 @@ sub _parse_indata_refseq($)
 					$exon->{'start'} = $start if(defined $start);
 					$exon->{'end'} = $end if(defined $end);
 					$exon->{'strand'} = $strand if(defined $strand);
-					
-					$exon->{'exon_id'} = $ID;			
-									
+
+					$exon->{'exon_id'} = $ID;
+
 					push(@{$data->{$gene_id}->{'transcripts'}->{$accesion_id}->{'exons'}},$exon);
-				}			
+				}
 				elsif ( defined $accesion_id and ($type eq 'CDS') ) # CDS Information
 				{
 					my ($cds);
@@ -3967,30 +4087,30 @@ sub _parse_indata_refseq($)
 					$cds->{'end'} = $end if(defined $end);
 					$cds->{'strand'} = $strand if(defined $strand);
 					$cds->{'phase'} = $phase if(defined $phase);
-									
+
 					$cds->{'cds_id'} = $ID;
-					
+
 					if ( (exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent}) or ($accesion_id =~ /^YP\_/ ) ) {
 						my ($transc_id);
 						if ( exists $cache_transcId->{$Parent} and defined $cache_transcId->{$Parent} ) { $transc_id = $cache_transcId->{$Parent} }
 						elsif ($accesion_id =~ /^YP\_/ ) { $transc_id = $accesion_id; }
-						
+
 						if ( defined $transc_id ) {
 							my ($transc_id) = $cache_transcId->{$Parent};
 							$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'protein_id'} = $accesion_id;
 							$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'ccdsid'} = $ccds_id if ( defined $ccds_id );
 							push(@{$data->{$gene_id}->{'transcripts'}->{$transc_id}->{'cds'}},$cds);
 						}
-					}				
+					}
 				}
 				elsif ( defined $accesion_id ) # Any type of molecule: mRNA, transcript, ncRNA, etc.
-				{				
+				{
 					my ($transcript);
 					$transcript->{'chr'} = $chr if(defined $chr);
 					$transcript->{'start'} = $start if(defined $start);
 					$transcript->{'end'} = $end if(defined $end);
-					$transcript->{'strand'} = $strand if(defined $strand);					
-	
+					$transcript->{'strand'} = $strand if(defined $strand);
+
 					if (defined $source)
 					{
 						$transcript->{'source'} = $source;
@@ -3999,7 +4119,7 @@ sub _parse_indata_refseq($)
 					}
 					if(exists $attribs->{'Name'} and defined $attribs->{'Name'})
 					{
-						$transcript->{'external_id'} = $attribs->{'Name'};	
+						$transcript->{'external_id'} = $attribs->{'Name'};
 					}
 					if(exists $attribs->{'tag'} and defined $attribs->{'tag'})
 					{
@@ -4008,11 +4128,11 @@ sub _parse_indata_refseq($)
 					if(exists $attribs->{'tsl'} and defined $attribs->{'tsl'})
 					{
 						$transcript->{'tsl'} = $attribs->{'tsl'};
-					}				
-					
+					}
+
 					# cache transc Ids
 					$cache_transcId->{$ID} = $accesion_id;
-									
+
 					# HARD-CORE attrs!!
 					#if ( ($transcript_id =~ /^NM\_/) or ($transcript_id =~ /^NR\_/) or ($transcript_id =~ /^NP\_/) or ($transcript_id =~ /^YP\_/) ) {
 					if ( ($accesion_id =~ /^NM\_/) or ($accesion_id =~ /^XM\_/) ) {
@@ -4022,7 +4142,7 @@ sub _parse_indata_refseq($)
 						$transcript->{'status'} = 'UNKNOWN';
 					}
 					$transcript->{'biotype'} = $type;
-									
+
 					# NOTE: HARD-CORE!!! We have decided the all mRNA from RefSeq have start/stop codons
 					for my $type ('start','stop') {
 						my ($codon);
@@ -4037,10 +4157,10 @@ sub _parse_indata_refseq($)
 						$codon->{'phase'} = 0;
 						push(@{$transcript->{'codons'}},$codon) if(defined $codon);
 					}
-					
-					$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);				
+
+					$data->{$gene_id}->{'transcripts'}->{$accesion_id} = $transcript if(defined $transcript);
 				}
-						
+
 				$data->{$gene_id}->{'raw'} .= $line; # Save Raw Data
 			}
 		}
@@ -4050,9 +4170,9 @@ sub _parse_indata_refseq($)
 		}
 	}
 	close(IN_FILE);
-	
+
 	return $data;
-	
+
 } # End _parse_indata_refseq
 
 sub _parse_inseq_transc($)
@@ -4093,10 +4213,10 @@ sub _parse_inseq_transc($)
 			}
 			else {
 				$sequence_id  = $seq->id if ( defined $seq->id );
-				$sequence_id .= $seq->desc if ( defined $seq->desc );				
+				$sequence_id .= $seq->desc if ( defined $seq->desc );
 				$sequence_id  =~ s///mg;
 			}
-						
+
 			if ( defined $sequence_id ) {
 				$sequence_id =~ s/\s*//;
 				if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
@@ -4106,13 +4226,13 @@ sub _parse_inseq_transc($)
 				else {
 					my ($sequence) = $seq->seq;
 					my ($seq_len) = length($sequence);
-					$data->{$sequence_id} = $seq->seq;						
-				}				
+					$data->{$sequence_id} = $seq->seq;
+				}
 			}
-		}		
+		}
 	}
 	return $data;
-	
+
 } # End _parse_inseq_transc
 
 sub _parse_inseq_transl($)
@@ -4134,7 +4254,7 @@ sub _parse_inseq_transl($)
 		$in = Bio::SeqIO-> new(
 								-fh     => $stringfh,
 								-format => 'Fasta'
-		);		
+		);
 	}
 	if ( defined $in ) {
 		while ( my $seq = $in->next_seq() )
@@ -4165,13 +4285,13 @@ sub _parse_inseq_transl($)
 			elsif ( $seq->id =~ /^(.*)$/ ) { # General case
 				my ($id1) = $1;
 				$sequence_id = $id1;
-			}			
+			}
 			else {
 				$sequence_id  = $seq->id if ( defined $seq->id );
-				$sequence_id .= $seq->desc if ( defined $seq->desc );				
+				$sequence_id .= $seq->desc if ( defined $seq->desc );
 				$sequence_id  =~ s///mg;
 			}
-			
+
 			if ( defined $sequence_id ) {
 				$sequence_id =~ s/\s*//;
 				if ( $sequence_id =~ /^ENS/ ) { $sequence_id =~ s/\.\d*$// } # delete suffix in Ensembl ids
@@ -4182,13 +4302,13 @@ sub _parse_inseq_transl($)
 				else {
 					my ($sequence) = $seq->seq;
 					my ($seq_len) = length($sequence);
-					$data->{$sequence_id} = $seq->seq;						
-				}				
+					$data->{$sequence_id} = $seq->seq;
+				}
 			}
-		}		
+		}
 	}
 	return $data;
-	
+
 } # End _parse_inseq_transl
 
 sub _parse_seq_data($)
@@ -4198,13 +4318,13 @@ sub _parse_seq_data($)
 	my ($source) = 'wserver';
 
 	if (-e $file and (-s $file > 0) ) {
-		
+
 		# get main id from file
 		my ($dirname,$basename) = parse_file($file, 'transl.fa');
 		if ( defined $basename ) {
 			my (@dirs) = split('/',$dirname);
 			my ($main_id) = $dirs[scalar(@dirs)-1];
-			
+
 			# get data from sequence file
 			my ($in) = Bio::SeqIO->new(
 								-file => $file,
@@ -4216,7 +4336,7 @@ sub _parse_seq_data($)
 				{
 					my ($sequence_id) = $1;
 					$source = 'sequence';
-					
+
 					my ($transl_id, $transc_id, $gene_id, $gene_name, $ccds_id) = (undef,undef,undef,undef,undef);
 					my (@ids) = split('\|', $seq->id);
 					if ( scalar(@ids) > 4 ) {
@@ -4225,24 +4345,24 @@ sub _parse_seq_data($)
 						$gene_id = $ids[2];
 						$gene_name = $ids[3];
 						$ccds_id = $ids[4];
-						
+
 						$main_id = $gene_id;
 					}
 					elsif ( scalar(@ids) > 1 and $ids[0] eq 'appris' ) {
 						$sequence_id = $ids[1];
 						$transl_id = $ids[1];
 					}
-					
+
 					my ($gene_ids);
 					if ( $seq->desc =~ /gene_ids\>([^\s]+)/ ) { $gene_ids = $1 }
-					
+
 					unless ( exists $data->{$main_id} ) {
 						$data->{$main_id}->{'source'} = $source;
 						$data->{$main_id}->{'transcripts'} = undef;
 						if ( defined $gene_name ) { $data->{$main_id}->{'name'} = $gene_name }
 						if ( defined $gene_ids )  { $data->{$main_id}->{'gene_ids'} = $gene_ids }
 					}
-					
+
 					if(exists $data->{$main_id}->{'transcripts'}->{$sequence_id}) {
 						throw("Duplicated sequence: $sequence_id");
 					}
@@ -4262,14 +4382,14 @@ sub _parse_seq_data($)
 						if ( defined $ccds_id and $ccds_id ne '' and $ccds_id ne '-' ) {
 							$data->{$main_id}->{'transcripts'}->{$sequence_id}->{'ccdsid'} = $ccds_id
 						}
-					}						
+					}
 				}
 			}
 		}
 	}
-	
+
 	return $data;
-	
+
 } # End _parse_seq_data
 
 # Create APPRIS::Transcript object from gencode data (GTF)
@@ -4278,8 +4398,8 @@ sub _fetch_transc_objects($$;$;$)
 	my ($gene_id, $gene_features, $transc_seq, $transl_seq) = @_;
 	my ($transcripts);
 	my ($index_transcripts);
-	my ($index) = 0;	
-	
+	my ($index) = 0;
+
 	# Scan transcripts
 	while (my ($transcript_id, $transcript_features) = each(%{$gene_features}) )
 	{
@@ -4303,7 +4423,7 @@ sub _fetch_transc_objects($$;$;$)
 			-tsl		=> $transcript_features->{'tsl'},
 			-tag		=> $transcript_features->{'tag'}
 		);
-			
+
 		# Xref identifiers
 		if ( defined $gene_id ) {
 			push(@{$xref_identities},
@@ -4315,7 +4435,7 @@ sub _fetch_transc_objects($$;$;$)
 			);
 		}
 		if ( exists $transcript_features->{'external_id'} and defined $transcript_features->{'external_id'} ) {
-			$transcript->external_name($transcript_features->{'external_id'}); 
+			$transcript->external_name($transcript_features->{'external_id'});
 			push(@{$xref_identities},
 					APPRIS::XrefEntry->new
 					(
@@ -4342,13 +4462,13 @@ sub _fetch_transc_objects($$;$;$)
 					)
 			);
 		}
-		
+
 		# Get transcript sequence
 		if ( defined $transc_seq and
 			 exists $transc_seq->{$transcript_id} and defined $transc_seq->{$transcript_id} ) {
 				$sequence = $transc_seq->{$transcript_id};
 		}
-			
+
 		# Get exon ids
 		if ( exists $transcript_features->{'exons'} and scalar(@{$transcript_features->{'exons'}} > 0) )
 		{
@@ -4374,18 +4494,18 @@ sub _fetch_transc_objects($$;$;$)
 
 		# Add translation
 		my ($translate) = _fetch_transl_objects($transcript_id, $transcript_features, $transl_seq);
-		
-		
+
+
 		$transcript->xref_identify($xref_identities) if (defined $xref_identities);
 		$transcript->sequence($sequence) if (defined $sequence);
 		$transcript->exons($exons) if (defined $exons);
 		$transcript->translate($translate) if (defined $translate);
-			
+
 		push(@{$transcripts}, $transcript) if (defined $transcript);
-		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts		
+		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
 	}
 	return ($transcripts,$index_transcripts);
-	
+
 } # End _fetch_transc_objects
 
 # Create APPRIS::Translation object from gencode data
@@ -4396,7 +4516,7 @@ sub _fetch_transl_objects($$;$)
 	my ($protein_id);
 	my ($sequence);
 	my ($cds);
-	my ($codons);	
+	my ($codons);
 
 	# Get protein id
 	if ( exists $transcript_features->{'protein_id'} and defined $transcript_features->{'protein_id'} ) {
@@ -4415,7 +4535,7 @@ sub _fetch_transl_objects($$;$)
 			$sequence = $transl_seq->{$protein_id};
 		}
 	}
-		
+
 	# Get cds
 	if ( exists $transcript_features->{'cds'} and scalar(@{$transcript_features->{'cds'}} > 0) )
 	{
@@ -4425,7 +4545,7 @@ sub _fetch_transl_objects($$;$)
 			my ($exon_id);
 			if (exists $cds->{'exon_id'} and defined $cds->{'exon_id'}) {
 				$exon_id = $cds->{'exon_id'};
-			}			
+			}
 			push(@{$aux_cds},
 				APPRIS::CDS->new
 				(
@@ -4438,7 +4558,7 @@ sub _fetch_transl_objects($$;$)
 			);
 		}
 		$cds = sort_cds($aux_cds, $transcript_features->{'strand'}); # sort exons
-	}	
+	}
 
 	# Get codons
 	if ( exists $transcript_features->{'codons'} and scalar(@{$transcript_features->{'codons'}} > 0) )
@@ -4457,23 +4577,23 @@ sub _fetch_transl_objects($$;$)
 			);
 		}
 	}
-	
+
 	if ( defined $sequence ) {
-		
+
 		# Create object
 		$translate = APPRIS::Translation->new
 		(
 			-stable_id	=> $protein_id,
-		);			
+		);
 		$translate->sequence($sequence);
 		$translate->protein_id($protein_id) if (defined $protein_id);
 		$translate->cds($cds) if (defined $cds);
 		$translate->codons($codons) if (defined $codons);
-		$translate->cds_sequence($translate);	
+		$translate->cds_sequence($translate);
 	}
-	
+
 	return $translate;
-	
+
 } # End _fetch_transl_objects
 
 # Parser result file of INERTIA method
@@ -4481,43 +4601,43 @@ sub _parse_inertia_file($$\$)
 {
 	my ($type, $result, $ref_cutoffs) = @_;
 
-	my ($transcript_id);	
+	my ($transcript_id);
 	my (@results) = split( '\n', $result);
-	
+
 	foreach my $line (@results)
 	{
 		next if( $line =~ /^#/ ); # Skip comment line
 		$line.="\n"; # Due we are spliting by '\n'
-		
+
 		if ( $line =~ /^>([^\t]+)\t+([^\n]+)\n+$/ )
 		{
 			$transcript_id = $1;
 			my ($unusual_evolution) = $2;
 
-			${$ref_cutoffs}->{$transcript_id}->{$type}->{'unusual_evolution'} = $unusual_evolution;			
+			${$ref_cutoffs}->{$transcript_id}->{$type}->{'unusual_evolution'} = $unusual_evolution;
 			unless ( exists ${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} ) {
 				${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} = $line;
 			} else {
 				${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} .= $line;
-			}			
-		}		
+			}
+		}
 		elsif ( defined $transcript_id and ($line =~ /^\t+([^\:]+)\:([^\_]+)\:([^\t]+)\t([^\n]+)\n+$/) )
 		{
 			my ($start) = $1;
 			my ($end) = $2;
 			my ($strand) = $3;
 			my ($exon_annotation) = $4;
-		
+
 			my ($exon_report) = {
 							'start'					=> $start,
 							'end'					=> $end,
 							'strand'				=> $strand,
-							'unusual_evolution'		=> $exon_annotation						
+							'unusual_evolution'		=> $exon_annotation
 			};
 			push( @{${$ref_cutoffs}->{$transcript_id}->{$type}->{'residues'}}, $exon_report );
 			${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} .= $line;
-		}		
-	}	
+		}
+	}
 } # End _parse_inertia_file
 
 # Parser result file of Omega-INERTIA
@@ -4526,12 +4646,12 @@ sub _parse_omega_file($$\$)
 	my ($type, $result, $ref_cutoffs) = @_;
 
 	my (@results) = split( '\n', $result);
-	
+
 	foreach my $line (@results)
 	{
 		next if( $line =~/^#/ ); # Skip comment line
 		$line.="\n"; # Due we are spliting by '\n'
-				
+
 		# omega_average omega_exon_id   start_exon      end_exon        strand_exon     difference_value        p_value st_desviation   exon_annotation transcript_list
 		if ( $line =~ /^([^\t]+)\t+([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\t]+)\t+([^\n]+)\n+$/ )
 		{
@@ -4545,13 +4665,13 @@ sub _parse_omega_file($$\$)
 			my ($st_desviation) = $8;
 			my ($exon_annotation) = $9;
 			my ($exon_transcrits_list) = $10;
-		
+
 			# Get the trasncipt with omega exons
 			my (@exon_transcrits);
 			if ( $exon_transcrits_list ne 'NULL' ) {
-				@exon_transcrits = split(';',$exon_transcrits_list);			
+				@exon_transcrits = split(';',$exon_transcrits_list);
 			}
-			
+
 			foreach my $transcript_id (@exon_transcrits)
 			{
 				my ($omega_exon_report) = {
@@ -4563,7 +4683,7 @@ sub _parse_omega_file($$\$)
 							'st_deviation'			=> $st_desviation,
 							'difference_value'		=> $d_value,
 							'p_value'				=> $p_value,
-							'unusual_evolution'		=> $exon_annotation						
+							'unusual_evolution'		=> $exon_annotation
 				};
 				push( @{${$ref_cutoffs}->{$transcript_id}->{$type}->{'residues'}}, $omega_exon_report );
 				unless ( exists ${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} ) {
@@ -4580,13 +4700,13 @@ sub _parse_omega_file($$\$)
 			my ($transcript_id) = $1;
 			my ($unusual_evolution) = $2;
 
-			${$ref_cutoffs}->{$transcript_id}->{$type}->{'unusual_evolution'} = $unusual_evolution;			
+			${$ref_cutoffs}->{$transcript_id}->{$type}->{'unusual_evolution'} = $unusual_evolution;
 			${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} .= "----------------------------------------------------------------------\n";
 			${$ref_cutoffs}->{$transcript_id}->{$type}->{'result'} .= $line;
 
 			${$ref_cutoffs}->{$transcript_id}->{$type}->{'omega_average'} = 0; # DEPRECATED
-			${$ref_cutoffs}->{$transcript_id}->{$type}->{'omega_st_desviation'} = 0; # DEPRECATED			
-		}		
+			${$ref_cutoffs}->{$transcript_id}->{$type}->{'omega_st_desviation'} = 0; # DEPRECATED
+		}
 	}
 } # End _parse_omega_file
 

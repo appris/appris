@@ -112,6 +112,10 @@ $GTF_CONSTANTS = {
 		'source'=>'PROTEO',
 		'type'=>'proteomic_evidence',
 	},
+	'trifid'=>{
+		'source'=>'TRIFID',
+		'type'=>'functional_importance',
+	},
 };
 
 =head2 get_trans_annotations
@@ -209,6 +213,12 @@ sub get_trans_annotations {
 						   		        					$gene_id,
 	   		        										$external_id,
 	           												$feature);
+				}
+				if ( ($source =~ /trifid/) or ($source eq 'all') ) {
+					$output .= get_trifid_annotations(	$transcript_id,
+														$gene_id,
+														$external_id,
+														$feature);
 				}
 			}
 		}
@@ -1407,5 +1417,64 @@ sub get_proteo_annotations {
 	return $output;
 	
 } # End get_proteo_annotations
+
+=head2 get_trifid_annotations
+
+  Arg [1]    : String - the stable identifier of transcript
+  Arg [2]    : String - the stable identifier of gene
+  Arg [3]    : String - the external database name associated with transcript
+  Arg [4]    : APPRIS::Transcript
+  Example    : $annot = get_trifid_annotations($trans_id, $gen_id, $ext_id, $feat);
+  Description: Retrieves specific annotation.
+  Returntype : String or undef
+
+=cut
+sub get_trifid_annotations {
+	my ($transcript_id, $gene_id, $external_id, $feature) = @_;
+	my ($output) = '';
+
+	if ( $feature->analysis ) {
+		my ($analysis) = $feature->analysis;
+		if ( $analysis->trifid ) {
+			if ( defined($analysis->trifid->trifid_score) ) {
+				my ($trifid_score) = $analysis->trifid->trifid_score;
+
+				my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
+				my ($method_source) = $GTF_CONSTANTS->{'trifid'}->{'source'};
+				my ($method_type) = $GTF_CONSTANTS->{'trifid'}->{'type'};
+				my ($method_start) = $feature->start;
+				my ($method_end) = $feature->end;
+				my ($method_score) = $trifid_score;
+				my ($method_strand) = $feature->strand;
+				my ($method_phase) = '.';
+
+				# Common attributes
+				my ($common) = {
+						'seqname'	=> $method_seqname,
+						'source'	=> $method_source,
+						'type'		=> $method_type,
+						'start'		=> $method_start,
+						'end'		=> $method_end,
+						'score'		=> $method_score,
+						'strand'	=> $method_strand,
+						'phase'		=> $method_phase
+				};
+
+				# Optional attributes
+				my($optional);
+				$optional->{'gene_id'}			= $gene_id;
+				$optional->{'transcript_id'}	= $transcript_id;
+				$optional->{'transcript_name'}	= $external_id;
+				$optional->{'annotation'} = $trifid_score;
+				if (defined $common and defined $optional) {
+					$output .= print_annotations($common,$optional);
+				}
+			}
+		}
+	}
+
+	return $output;
+
+} # End get_trifid_annotations
 
 1;

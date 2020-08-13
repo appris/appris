@@ -47,6 +47,7 @@ my ($data_file) = undef;
 my ($pdata_file) = undef;
 my ($transc_file) = undef;
 my ($transl_file) = undef;
+my ($trifid_pred_file) = undef;
 my ($inpath) = undef;
 my ($species) = undef;
 my ($e_version) = undef;
@@ -66,6 +67,7 @@ my ($loglevel) = undef;
 	'pdata=s'				=> \$pdata_file,
 	'transc=s'				=> \$transc_file,
 	'transl=s'				=> \$transl_file,
+	'trifid=s'				=> \$trifid_pred_file,
 	'species=s'				=> \$species,
 	'e-version=s'			=> \$e_version,		
 	'inpath=s'				=> \$inpath,
@@ -719,18 +721,22 @@ sub run_pipeline($$$)
 		};
 		$logger->error("runing $m: ".$!) if($@);	
 	}
-	# trifid is executed every time
+
+	# trifid is executed if predictions file is specified
 	my ($trifid_file) = "${outpath}/trifid";
-	eval {
-		my ($cmd) = "perl $SRC_DIR/trifid/trifid.pl ".
-							"--conf='".$config_file."' ".
-							"--data='".$files->{'annot'}."' ".
-							"--output='".$trifid_file."' ".
-							"$LOGGER_CONF ";
-		$logger->info("\n** script: $cmd\n");
-		system ($cmd);
-	};
-	$logger->error("executing trifid: ".$!) if($@);
+	if ( defined $trifid_pred_file ) {
+		eval {
+			my ($cmd) = "perl $SRC_DIR/trifid/trifid.pl ".
+								"--input='".$files->{'transl'}."' ".
+								"--trifid='".$trifid_pred_file."' ".
+								"--output='".$trifid_file."' ".
+								"$LOGGER_CONF ";
+			$logger->info("\n** script: $cmd\n");
+			system ($cmd);
+		};
+		$logger->error("executing trifid: ".$!) if($@);
+	}
+
 	# appris is allways executed
 	my ($m) = 'appris';
 	eval {
@@ -824,6 +830,8 @@ appris
 =head2 Optional arguments (methods):
 		
   --methods= <List of APPRIS's methods ('firestar,matador3d,spade,corsair,thump,crash,appris'. Default: ALL)>
+
+  --trifid= <TRIFID predictions file>
 
 =head2 Required arguments (outputs):
 	

@@ -60,6 +60,8 @@ use APPRIS::Utils::Exception qw(throw warning deprecate);
        APPRIS::Analysis::CORSAIR - analysis object of CORSAIR method
   Arg [-proteo]  : (optional)
        APPRIS::Analysis::PROTEO - analysis object of PROTEO method
+  Arg [-trifid]  : (optional)
+       APPRIS::Analysis::TRIFID - analysis object of TRIFID method
   Arg [-appris]  : (optional)
        APPRIS::Analysis::APPRIS - analysis object of APPRIS method
   Example    : $analysis = APPRIS::Analysis->new(...);
@@ -86,8 +88,8 @@ sub new {
 		$spade,		$inertia,
 		$crash,		$thump,
 		$cexonic,
-    $corsair, $corsair_alt,
-		$proteo,
+		$corsair,	$corsair_alt,
+		$proteo,	$trifid,
 		$appris
 		
 	)
@@ -98,8 +100,8 @@ sub new {
 		'spade',	'inertia',
 		'crash',	'thump',
 		'cexonic',
-    'corsair', 'corsair_alt',
-		'proteo',
+		'corsair',	'corsair_alt',
+		'proteo',	'trifid',
 		'appris'
 	],
 	@_
@@ -116,8 +118,9 @@ sub new {
 	$self->thump($thump) if(defined $thump);
 	$self->cexonic($cexonic) if(defined $cexonic);
 	$self->corsair($corsair) if(defined $corsair);
-  $self->corsair_alt($corsair_alt) if(defined $corsair_alt);
+	$self->corsair_alt($corsair_alt) if(defined $corsair_alt);
 	$self->proteo($proteo) if(defined $proteo);
+	$self->trifid($trifid) if(defined $trifid);
 	$self->appris($appris) if(defined $appris);
 	
 	return $self;
@@ -348,6 +351,25 @@ sub proteo {
 	my ($self) = shift;
 	$self->{'proteo'} = shift if(@_);
 	return $self->{'proteo'};
+}
+
+=head2 trifid
+
+  Arg [1]    : (optional) APPRIS::Analysis::TRIFID - the trifid
+               object to set
+  Example    : $analysis->trifid($method);
+  Description: Getter/setter for the trifid object
+  Returntype : APPRIS::Analysis::TRIFID or undef
+  Exceptions : none
+  Caller     : general
+  Status     : At Risk
+
+=cut
+
+sub trifid {
+	my ($self) = shift;
+	$self->{'trifid'} = shift if(@_);
+	return $self->{'trifid'};
 }
 
 =head2 appris

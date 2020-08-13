@@ -107,12 +107,18 @@ h2 .appris-table-tshow {
     /*background-color: rgba(254, 102, 0, 0.4);*/
     background-color: #f9dfbd;
 }
+.appris-table-main>tbody>tr.trifid-high-score>td {
+    font-weight: bold;
+}
 .appris-table-detail>tbody>tr.principal>td {
     background-color: #c3e8d1;
 }
 .appris-table-detail>tbody>tr.candidate>td {
     /*background-color: #fcf6db;*/
     background-color: #f9dfbd;
+}
+.appris-table-detail>tbody>tr.trifid-high-score>td {
+    font-weight: bold;
 }
 
 
