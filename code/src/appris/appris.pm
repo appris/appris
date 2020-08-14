@@ -162,13 +162,13 @@ $METRIC_WEIGHTED = {
 };
 
 
-sub appris_decider_default($$$$$$$$)
+sub appris_decider_classic($$$$$$$$)
 {
 	my ($gene, $tag, $princ_list, $isof_report, $scores, $s_scores, $nscores, $annots) = @_;
 
 	# 2. from preserved transcripts, we keep those with a single unique CCDS
 	$princ_list = step_ccds($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_PRINC_LIST_2: \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 2;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -177,7 +177,7 @@ sub appris_decider_default($$$$$$$$)
 
 	# 3-1. from preserved transcripts, we keep those with eldest CCDS
 	$princ_list = step_ccds_eldest($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 3;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -186,7 +186,7 @@ sub appris_decider_default($$$$$$$$)
 
 	# 3-2. from preserved transcripts, we keep those with TSL1
 	$princ_list = step_tsl($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_PRINC_LIST_3: \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 3;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -195,9 +195,9 @@ sub appris_decider_default($$$$$$$$)
 
 	# 4. from preserved transcript, we keep those with longest seq with CCDS
 	$princ_list = step_ccds_longest($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_4: \n".Dumper($princ_list)."\n");
-#	warning("DEFAULT_ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
-#	warning("DEFAULT_NSCORES_4: \n".Dumper($nscores)."\n");
+#	warning("CLASSIC_PRINC_LIST_4: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_ISOF_REPORT_4: \n".Dumper($isof_report)."\n");
+#	warning("CLASSIC_NSCORES_4: \n".Dumper($nscores)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 4;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -206,7 +206,7 @@ sub appris_decider_default($$$$$$$$)
 
 	# 5-1. from preserved transcripts, we keep those that have been validated manually
 	$princ_list = step_validated($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_PRINC_LIST_5_val: \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 5;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -215,7 +215,7 @@ sub appris_decider_default($$$$$$$$)
 
 	# 5-2. from preserved transcripts, we keep those with longest sequence
 	$princ_list = step_longest($princ_list, $isof_report, $nscores);
-#	warning("DEFAULT_PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
+#	warning("CLASSIC_PRINC_LIST_5_len: \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 5;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -223,13 +223,13 @@ sub appris_decider_default($$$$$$$$)
 	}
 	else {  # 5-3. we take the transcript with the first-sorting ID
 		$princ_list = step_smaller_id($princ_list, $isof_report, $nscores);
-#		warning("DEFAULT_PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
+#		warning("CLASSIC_PRINC_LIST_5_id: \n".Dumper($princ_list)."\n");
 		step_tags(5, $scores, $princ_list, $isof_report, \$annots);
 	}
 
 	return $tag;
 
-} # End appris_decider_default
+} # End appris_decider_classic
 
 sub appris_decider_trifid($$$$$$$$$)
 {
@@ -979,7 +979,7 @@ sub get_final_annotations($$$$$$;$)
 			$tag = appris_decider_trifid($gene, $tag, $princ_list, $isof_report,
 				$scores, $s_scores, $nscores, $annots, $trifid_report);
 		} else {
-			$tag = appris_decider_default($gene, $tag, $princ_list, $isof_report,
+			$tag = appris_decider_classic($gene, $tag, $princ_list, $isof_report,
 				$scores, $s_scores, $nscores, $annots);
 		}
 	}

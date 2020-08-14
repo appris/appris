@@ -85,6 +85,7 @@ our $CORSAIR_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'corsair_cutoff');
 our $THUMP_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'thump_cutoff');
 our $PROTEO_CUTOFF			= $cfg->val( 'APPRIS_VARS', 'proteo_cutoff');
 our $TRIFID_MIN_LEAD		= $cfg->val( 'APPRIS_VARS', 'trifid_min_lead');
+our $DECIDER				= $cfg->val( 'APPRIS_VARS', 'decider', 'auto');
 
 our ($EXP_CFG) = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 
@@ -247,16 +248,30 @@ sub main()
 	else {
 		$logger->info("file does not exit\n");
 	}	
-	$logger->info("get trifid result\n");
-	if ( -e $trifid_file and (-s $trifid_file > 0) ) {
-		my ($trifid_result) = getStringFromFile($trifid_file);
-		unless ( defined($trifid_result) ) {
-			$logger->error("can not open trifid result: $!\n");
+
+	if ( $DECIDER eq 'trifid' || $DECIDER eq 'auto' ) {
+		$logger->info("get trifid result\n");
+		if ( -e $trifid_file and (-s $trifid_file > 0) ) {
+			my ($trifid_result) = getStringFromFile($trifid_file);
+			unless ( defined($trifid_result) ) {
+				$logger->error("cannot open trifid result: $!\n");
+			}
+			$trifid_report = parse_trifid($gene, $trifid_result);
+			$logger->info("using trifid transcript selection\n");
 		}
-		$trifid_report = parse_trifid($gene, $trifid_result);
+		else {
+			if ($DECIDER eq 'trifid') {
+				$logger->error("cannot use trifid transcript selection - trifid result not found\n");
+			} else {  # i.e. $DECIDER eq 'auto'
+				$logger->info("trifid result not found, using classic transcript selection\n");
+			}
+		}
+	}
+	elsif ( $DECIDER eq 'classic' ) {
+		$logger->info("using classic transcript selection\n");
 	}
 	else {
-		$logger->info("trifid file not found\n");
+		$logger->error("invalid transcript selection parameter: '$DECIDER'\n");
 	}
 
 	# get object of reports
