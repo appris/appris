@@ -149,7 +149,7 @@ sub parse_trifid($$);
 sub parse_appris_rst($$);
 sub parse_appris($$$);
 sub parse_appris_methods($$$$$$$$$;$;$;$);
-sub create_appris_entity($$$$$$$$$$$$$$$);
+sub create_appris_entity($$$$$$$$$$$$$$$$);
 
 
 =head2 parse_infiles
@@ -3331,6 +3331,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 	return $entity;
 }
 
+
 =head2 create_appris_entity
 
   Arg [1]    : string $data_file
@@ -3343,24 +3344,29 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
                Parse firestar result
   Arg [5]    : string $result
                Parse matador3d result
-  Arg [5]    : string $result
-               Parse matador3d2 result
   Arg [6]    : string $result
-               Parse spade result
+               Parse matador3d2 result
   Arg [7]    : string $result
-               Parse proteo result
+               Parse spade result
   Arg [8]    : string $result
-               Parse crash result
+               Parse corsair result
   Arg [9]    : string $result
-               Parse thump result
+               Parse corsair_alt result
   Arg [10]   : string $result
-               Parse inertia result
+               Parse crash result
   Arg [11]   : string $result
+               Parse thump result
+  Arg [12]   : string $result
                Parse inertia result
-  Arg [12]   : string $result (optional)
+  Arg [13]   : string $result
+               Parse proteo result
+  Arg [14]   : string $result
                Parse appris result
-  Arg [13]   : string $result (optional)
+  Arg [15]   : string $result
                Parse appris_label result
+  Arg [16]   : string $ids
+               Identifiers of transcripts to include in
+               the entity. By default, all are included.
   Example    : use APPRIS::Parser qw(create_appris_entity);
                create_appris_entity([$results]);
   Description: Parse output of methods of appris.
@@ -3370,7 +3376,7 @@ sub parse_appris_methods($$$$$$$$$;$;$;$)
 
 =cut
 
-sub create_appris_entity($$$$$$$$$$$$$$$)
+sub create_appris_entity($$$$$$$$$$$$$$$$)
 {
 	my (
 		$data_file,
@@ -3381,6 +3387,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 		$matador3d2_result,
 		$spade_result,
 		$corsair_result,
+		$corsair_alt_result,
 		$crash_result,
 		$thump_result,
 		$inertia_result,
@@ -3414,6 +3421,7 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	my ($matador3d);
 	my ($matador3d2);
 	my ($corsair);
+	my ($corsair_alt);
 	my ($spade);
 	my ($cexonic);
 	my ($thump);
@@ -3434,6 +3442,9 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 	}
 	if ( defined $corsair_result ) {
 		$corsair = parse_corsair($entity, $corsair_result);
+	}
+	if ( defined $corsair_alt_result ) {
+		$corsair_alt = parse_corsair($entity, $corsair_alt_result);
 	}
 	if ( defined $spade_result ) {
 		$spade = parse_spade($entity, $spade_result);
@@ -3506,6 +3517,17 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 					my ($method) = $result->analysis->corsair;
 					if (defined $method) {
 						$analysis->corsair($method);
+						$analysis->number($analysis->number+1);
+					}
+				}
+			}
+			# get corsair_alt
+			if ( $corsair_alt and $corsair_alt->transcripts->[$index] and $corsair_alt->transcripts->[$index]->analysis ) {
+				my ($result) = $corsair_alt->transcripts->[$index];
+				if ( $result->analysis->corsair_alt ) {
+					my ($method) = $result->analysis->corsair_alt;
+					if (defined $method) {
+						$analysis->corsair_alt($method);
 						$analysis->number($analysis->number+1);
 					}
 				}
@@ -3616,6 +3638,14 @@ sub create_appris_entity($$$$$$$$$$$$$$$)
 		my ($method2) = $corsair->analysis->corsair;
 		if (defined $method2) {
 			$analysis2->corsair($method2);
+			$analysis2->number($analysis2->number+1);
+		}
+	}
+	# get corsair_alt
+	if ( $corsair_alt and $corsair_alt->analysis and $corsair_alt->analysis->corsair_alt ) {
+		my ($method2) = $corsair_alt->analysis->corsair_alt;
+		if (defined $method2) {
+			$analysis2->corsair_alt($method2);
 			$analysis2->number($analysis2->number+1);
 		}
 	}
