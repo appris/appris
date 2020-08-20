@@ -520,9 +520,24 @@ apprisFilters.filter('activeAnnotClass', function(principal1, principal2, princi
 apprisFilters.filter('activeTrifidClass', function() {
     return function(input){
         var filtered = '';
-        if ( angular.isDefined(input) ) {
-            if ( input > 0.5 ) {
-                filtered = "trifid-high-score";
+        if ( angular.isDefined(input['functional_importance']) ) {
+            if ( input['functional_importance'] > 0.5 ) {
+
+                var has_decay_biotype = false;
+                if ( angular.isDefined(input['biotype']) ) {
+                    var decay_biotypes = ['nonsense_mediated_decay', 'non_stop_decay'];
+                    has_decay_biotype = decay_biotypes.includes(input['biotype']);
+                }
+
+                var is_readthrough = false;
+                if ( angular.isDefined(input['flags']) ) {
+                    var rt_regex = RegExp(/(^|, )ReadThrough(, |$)/);
+                    is_readthrough = rt_regex.test(input['flags']);
+                }
+
+                if ( ! (has_decay_biotype || is_readthrough) ) {
+                    filtered = 'trifid-high-score';
+                }
             }
         }
         return filtered;
