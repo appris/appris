@@ -178,7 +178,7 @@ else
 		if [ "${GENCODE_TRANSLATION_FILE}" != "" ]; then
 			GENCODE_PARAMETERS=" --transl=${GENCODE_TRANSLATION_FILE}"
 		else	
-			echo Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!
+			echo "Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!"
 			exit 1
 		fi
 	fi

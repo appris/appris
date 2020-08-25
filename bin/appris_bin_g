@@ -169,7 +169,7 @@ else
 	if [ -s "${INPATH}/transl.fa" ]; then
 		INDATA_PARAMETERS=" --transl=${INPATH}/transl.fa"
 	else	
-		echo Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!
+		echo "Error within env variables: APPRIS required GENCODE | ENSEMBL | SEQUENCE data input!!"
 		exit 1
 	fi
 fi
