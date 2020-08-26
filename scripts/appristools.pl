@@ -56,11 +56,11 @@ unless ( defined $methods ) {
 else {
 	my ($met) = '';
 	if ( $methods =~ /f/  ) { $met .= 'firestar,'    }
-	if ( $methods =~ /m/  ) { $met .= 'matador3d,'   }
+	if ( $methods =~ /m1/ ) { $met .= 'matador3d,'   }
 	if ( $methods =~ /m2/ ) { $met .= 'matador3d2,'  }
 	if ( $methods =~ /s/  ) { $met .= 'spade,'       }
-	if ( $methods =~ /c/  ) { $met .= 'corsair,'     }
-	if ( $methods =~ /ca/ ) { $met .= 'corsair_alt,' }
+	if ( $methods =~ /c1/ ) { $met .= 'corsair,'     }
+	if ( $methods =~ /c2/ ) { $met .= 'corsair_alt,' }
 	if ( $methods =~ /t/  ) { $met .= 'thump,'       }
 	if ( $methods =~ /r/  ) { $met .= 'crash,'       }
 	if ( $methods =~ /p/  ) { $met .= 'proteo,'      }
@@ -472,10 +472,11 @@ Executes all APPRIS 'steps
 	
   -m, --methods {vector} <List of methods. Characters of methods: fmsctrpa (default: all)>
 	* f  - Functionally important residues, firestar
-	* m  - Protein structural information, Matador3D
+	* m1 - Protein structural information, Matador3D
+	* m2 - Protein structural information, Matador3D2
 	* s  - Presence of whole protein domains, SPADE
-	* c  - Presence of conservation, CORSAIR
-	* ca - Presence of conservation, CORSAIR_ALT
+	* c1 - Presence of conservation, CORSAIR
+	* c2 - Presence of conservation, CORSAIR_ALT
 	* t  - Presence of whole trans-membrane helices, THUMP
 	* r  - Prediction of signal peptide and sub-cellular location, CRASH
 	* p  - Proteomic evidence, PROTEO

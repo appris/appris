@@ -32,8 +32,8 @@ Optional arguments:\n
 \t\t m1 -> matador3d\n
 \t\t m2 -> matador3d2\n
 \t\t s -> spade\n
-\t\t c -> corsair\n
-\t\t ca -> corsair_alt\n
+\t\t c1 -> corsair\n
+\t\t c2 -> corsair_alt\n
 \t\t t -> thump\n
 \t\t r -> crash\n
 \t\t p -> proteo\n
@@ -128,10 +128,10 @@ if [ "${METHODS}" != "" ]; then
 	if [[ "${METHODS}" == *"s"* ]]; then
 		MET="${MET},spade"
 	fi
-	if [[ "${METHODS}" == *"c"* ]]; then
+	if [[ "${METHODS}" == *"c1"* ]]; then
 		MET="${MET},corsair"
 	fi
-	if [[ "${METHODS}" == *"ca"* ]]; then
+	if [[ "${METHODS}" == *"c2"* ]]; then
 		MET="${MET},corsair_alt"
 	fi
 	if [[ "${METHODS}" == *"t"* ]]; then
