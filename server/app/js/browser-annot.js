@@ -71,7 +71,7 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
                             if ( angular.isArray(match) && angular.isDefined(match[1]) && angular.isDefined(match[2]) ) {
                                 var acc = match[1];
                                 var eval = match[2];
-                                var id = acc.replace(/_[a-zA-z]*/g,'');
+                                var id = acc.replace(/_[A-Z0-9]{1,4}$/i,'');
                                 annot = "<a href='"+consUrlPDBstructure+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
                             }
                         }
