@@ -62,7 +62,11 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
                                 annot = '';
                                 angular.forEach(match[1].split(','), function(id,i) {
                                     var sc = match[2].split(',')[i];
-                                    annot += "<a href='"+consUrlFirestarligand+id+"' target='_blank'>" + id + "</a>(" + sc + ") ";
+                                    if ( id == "Cat_Site_Atl" ) {
+                                        annot += id + " (" + sc + ") ";
+                                    } else {
+                                        annot += "<a href='"+consUrlFirestarligand+id+"' target='_blank'>" + id + "</a>(" + sc + ") ";
+                                    }
                                 });
                             }
                         }
