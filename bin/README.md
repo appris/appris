@@ -120,6 +120,9 @@ Internal files
 
 * __appris_killall__, kills all APPRIS processes.
 
+> __Note:__ The __appris_killall__ command really does kill _all_ APPRIS processes for _all_ users.
+>           Before using this command to stop an APPRIS run, check that no other instances of
+>           APPRIS are running at the same time.
 
 
 Deprecated files
