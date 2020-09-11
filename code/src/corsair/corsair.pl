@@ -190,7 +190,7 @@ sub main()
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e0.0001 -o $blast_sequence_file";
+					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e $PROG_EVALUE -o $blast_sequence_file";
 					$logger->debug("$cmd\n");						
 					system($cmd);
 				};
