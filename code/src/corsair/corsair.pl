@@ -192,7 +192,7 @@ sub main()
 					$logger->info("Running blast\n");
 					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e $PROG_EVALUE -o $blast_sequence_file";
 					$logger->debug("$cmd\n");						
-					system($cmd);
+					system($cmd) == 0 or $logger->error("system call exit code: $?");
 				};
 				$logger->error("Running blast: $!\n") if($@);
 			}
