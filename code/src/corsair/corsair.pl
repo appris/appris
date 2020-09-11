@@ -29,6 +29,7 @@ use vars qw(
 	$WSPACE_CACHE
 	$CACHE_FLAG
 	$RUN_PROGRAM
+	$PROG_DB_PREFIX
 	$PROG_DB
 	$PROG_DB_V
 	$PROG_DB_INV
@@ -78,9 +79,10 @@ $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $CACHE_FLAG			= $cfg->val('CORSAIR_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val('CORSAIR_VARS', 'program');
+$PROG_DB_PREFIX		= $ENV{APPRIS_PROGRAMS_DB_DIR};
 $PROG_DB			= undef;
-$PROG_DB_V			= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_v');
-$PROG_DB_INV		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$cfg->val('CORSAIR_VARS', 'db_inv');
+$PROG_DB_V			= $cfg->val('CORSAIR_VARS', 'db_v');
+$PROG_DB_INV		= $cfg->val('CORSAIR_VARS', 'db_inv');
 $PROG_EVALUE		= $cfg->val('CORSAIR_VARS', 'evalue');
 $PROG_MINLEN		= $cfg->val('CORSAIR_VARS', 'minlen');
 $PROG_CUTOFF		= $cfg->val('CORSAIR_VARS', 'cutoff');
@@ -133,7 +135,13 @@ sub main()
 	else {
 		$logger->error("Species does not exit");
 	}
-	
+
+	my ($PROG_DB_UID) = split('/', $PROG_DB);
+	my ($PROG_DB_PATH) = $PROG_DB_PREFIX.'/'.$PROG_DB;
+	if ( ! -e $PROG_DB_PATH ) {
+		$logger->error("BLAST database not found: $PROG_DB_PATH");
+	}
+
 	# Handle sequence file
 	my $in = Bio::SeqIO->new(
 						-file => $input_file,
@@ -183,14 +191,13 @@ sub main()
 			$exons->{$edges} =  undef;
 			
 			# Run blast
-			my ($blast_sequence_file) = $ws_cache.'/seq.refseq';
-			#my ($blast_sequence_file) = $ws_cache.'/seq.'.$PROG_DB;
+			my ($blast_sequence_file) = $ws_cache.'/seq.'.$PROG_DB_UID;
 			unless (-e $blast_sequence_file and (-s $blast_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Blast Cache
 			{
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB -i $fasta_sequence_file -e $PROG_EVALUE -o $blast_sequence_file";
+					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e $PROG_EVALUE -o $blast_sequence_file";
 					$logger->debug("$cmd\n");						
 					system($cmd) == 0 or $logger->error("system call exit code: $?");
 				};
