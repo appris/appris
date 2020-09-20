@@ -18,6 +18,9 @@
 .lesshst
 .vim/
 .vimrc
+.Trash-*
+lost+found
+
 
 # 'server' dir
 server/logs/
@@ -57,4 +60,3 @@ modules
 
 # text editor backup files
 *~
-
