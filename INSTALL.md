@@ -117,7 +117,10 @@ Installation from Scratch
 Requirements
 ------------
 
-APPRIS should be installed on an Ubuntu Linux x86_64 machine.
+APPRIS should be installed on an Ubuntu Linux x86_64 machine,
+ideally with Perl 5.18. To configure a compatible version of
+Perl, it may be helpful to use a tool such as
+[Perlbrew](https://perlbrew.pl/).
 
 ### Software dependencies
 
@@ -183,7 +186,7 @@ but are needed by some auxiliary scripts:
 - [Ensembl API](http://www.ensembl.org/info/docs/api/api_installation.html)
 
 
-Other Dependencies
+Further Dependencies
 ------------------
 
 The command `appris_retrieve_method_data` (used in `appristools`) depends on
