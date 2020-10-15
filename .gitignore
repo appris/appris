@@ -20,6 +20,13 @@
 .vimrc
 .Trash-*
 lost+found
+.config/
+.cpanm/
+.perlbrew/
+.wget-hsts
+.wgetrc
+perl5/
+var/
 
 
 # 'server' dir
