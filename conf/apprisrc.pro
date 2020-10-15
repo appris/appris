@@ -8,15 +8,15 @@
 
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
-export APPRIS_PROGRAMS_CACHE_DIR="/local/appris/cache"
+export APPRIS_PROGRAMS_CACHE_DIR="${APPRIS_HOME}/cache/wserver"
 
-export APPRIS_PROGRAMS_DB_DIR="/local/appris/db"
+export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"
 
 export APPRIS_BIN_DIR="${APPRIS_HOME}/bin"
 
 export APPRIS_SCRIPTS_DIR="${APPRIS_HOME}/scripts"
 
-export APPRIS_FEATURES_DIR="/local/appris/features"
+export APPRIS_FEATURES_DIR="${APPRIS_HOME}/features"
 
 export APPRIS_ANNOT_DIR="${APPRIS_HOME}/annotations"
 
