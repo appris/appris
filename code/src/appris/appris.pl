@@ -132,9 +132,10 @@ sub main()
 	my ($trifid_report);
 
 	# determine the methods involved in the final decision
-	# By default, we use Matador3D2 but If we have genome coordinates, then we use Matador3D.
+	# By default, we use Matador3D2 but If we have genome coordinates and a Matador3D result, then we use Matador3D.
 	my ($involved_methods) = $APPRIS_METHODS;
-	if ( defined $data_file and defined $transcripts_file and defined $translations_file ) {
+	if ( defined $data_file and defined $transcripts_file and defined $translations_file and
+	     defined $matador3d_file and -e $matador3d_file and (-s $matador3d_file > 0) ) {
 		$involved_methods =~ s/matador3d2/matador3d/g;
 	}
 
