@@ -327,11 +327,12 @@ sub psiBlaster{
 sub HHsearcher{
 	my ($this)=@_;
 	my $variables=Config::IniFiles->new(-file => $this->{config_file});
+	my $hhblits_cmd=$variables->val('PROGRAMS','hhblits');
 	my $release_date=$variables->val('DATABASES','release');
 	my $path2db=$variables->val('DATABASES','hhdb_path');
 	my $hhbdb=$variables->val('DATABASES','hhbdb');
 	my $hh_nr_db=$variables->val('DATABASES','hhprof');
-	`hhblits -cpu 4 -i $this->{full}.faa -d $path2db/$hh_nr_db -oa3m $this->{full}.a3m -o /dev/null`;
+	`$hhblits_cmd -cpu 4 -i $this->{full}.faa -d $path2db/$hh_nr_db -oa3m $this->{full}.a3m -o /dev/null`;
 	`perl $ENV{"HHLIB"}/scripts/addss.pl -i $this->{full}.a3m`;
 	`hhmake -i $this->{full}.a3m`;
 	`hhsearch -cpu 4 -d $path2db/$hhbdb$release_date\_hhm_db -i $this->{full}.hhm`;
