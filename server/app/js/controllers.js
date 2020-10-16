@@ -233,10 +233,10 @@ apprisControllers.controller('NavTopController', ['$scope',
 apprisControllers.controller('AboutController', ['$scope',
     function($scope) {
         $scope.logoCNIO = 'img/CNIO-logo_small.png';
-        $scope.linkCNIO = 'http://www.cnio.es';
+        $scope.linkCNIO = 'https://www.cnio.es';
         $scope.logoINB = 'img/INB-logo_small.png';
-        $scope.linkINB = 'http://www.inab.org';
-        $scope.linkGENCODE = 'http://www.gencodegenes.org/';
+        $scope.linkINB = 'https://inb-elixir.es';
+        $scope.linkGENCODE = 'https://www.gencodegenes.org/';
         $scope.linkENCODE = 'https://www.encodeproject.org/';
         $scope.linkEnsembl = 'https://www.ensembl.org/';
     }
@@ -245,7 +245,7 @@ apprisControllers.controller('AboutController', ['$scope',
 apprisControllers.controller('ContactController', ['$scope',
     function($scope) {
         $scope.logoBlogger = 'img/blogger-ico.png';
-        $scope.linkBlogger = 'http://appris-cnio.blogspot.com.es';
+        $scope.linkBlogger = 'https://appris-cnio.blogspot.com';
         $scope.logoTwitter = 'img/twitter-ico.png';
         $scope.linkTwitter = 'https://twitter.com/appris_cnio';
     }

@@ -7,7 +7,11 @@
     <p>firestar predicts functionally important residues. The box shows the total number of functional residues detected by firestar for each transcript.</p>
 
     <h4>Tertiary Structure Score</h4>
-    <p>Matador3D (and Matador3Dv2) analyze protein structural information for each isoform. For both, protein sequences from the same gene are mapped onto 3D structures by running BLAST against the <a href="http://www.pdb.org/" target="_blank">PDB</a>, but depending on whether or not we have genomic information, the score is calculated in one of two ways.</p>
+    <p>Matador3D (and Matador3Dv2) analyze protein structural information for each isoform. For
+        both, protein sequences from the same gene are mapped onto 3D structures by running BLAST
+        against the <a href="https://www.wwpdb.org/" target="_blank">PDB</a>, but depending on
+        whether or not we have genomic information, the score is calculated in one of two ways.
+    </p>
     <p>When we made use of genomic coordinates, the score is based on the number of exons that can be mapped
         to structural homologues. When we don't know the genomic coordinates, the score is the sum of bit-scores in
         PDB alignment.
@@ -30,7 +34,19 @@
 
     <h4>No. Mapping Peptides</h4>
     <p>Proteomic evidence only for the human genome (GENCODE gene set).</p>
-    <p>PROTEO collects peptides from seven separate MS sources. Two came from large-scale proteomics databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and <a href="http://peptide.nist.gov/">NIST</a>. Another four datasets were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as “CNIO") in house from an <a href="http://www.ncbi.nlm.nih.gov/pubmed/14558131">X!Tandem</a> search against spectra from the <a href="http://www.ncbi.nlm.nih.gov/pubmed/15595733">GPM</a> and PeptideAtlas databases, following the protocol set out in <a href="http://www.ncbi.nlm.nih.gov/pubmed/22446687">Ezkurdia et al</a> with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.</p>
+    <p>PROTEO collects peptides from seven separate MS sources. Two came from large-scale proteomics
+        databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and
+        <a href="https://peptide.nist.gov/">NIST</a>. Another four datasets were recently published
+        large-scale MS experiments. For all six datasets the starting point was the list of peptides
+        provided by the authors or databases. We generated the final set of peptides (referred to as
+        “CNIO") in house from an <a href="https://www.ncbi.nlm.nih.gov/pubmed/14558131">X!Tandem</a>
+        search against spectra from the <a
+        href="https://www.ncbi.nlm.nih.gov/pubmed/15595733">GPM</a> and PeptideAtlas databases,
+        following the protocol set out in <a
+        href="https://pubmed.ncbi.nlm.nih.gov/22446687">Ezkurdia et al</a> with a false discovery
+        rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell
+        types.
+    </p>
     <p>In order to improve reliability the peptides from each of these studies were filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.</p>
 
     <h4>Functional Importance</h4>
