@@ -1,0 +1,68 @@
+/* Bootstrap substitutions */
+
+.nav a, .pagination a, .carousel a, .panel-title a { cursor: pointer; }
+
+.navbar-appris {
+    background-color: #F4A927;
+    border-color: #121212;
+}
+.navbar-browser {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+    color: #000000 !important;
+    min-height: 38px;
+    padding: 2px 2px 2px 2px;
+}
+
+.view-status p { padding: 15px; border-radius: 4px; }
+
+.input-sequence select { width: auto !important; }
+
+textarea { resize: vertical; }
+
+body { padding-top: 70px; padding-bottom: 70px; }
+
+hr { margin-top: 30px; margin-bottom: 30px }
+
+.navbar-nav.navbar-right:last-child { margin-right: 0; }
+
+.container-fluid {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.pointer {
+    cursor: pointer;
+}
+.glyphicon {
+    top: 2px;
+}
+/* centered columns styles */
+.row-centered {
+    text-align:center;
+}
+.col-centered {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align:left;
+    /* inline-block space fix */
+    margin-right:-4px;
+}
+.img-center {
+    display: block;
+    margin: 0 auto;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    background-color: #121212;
+}
+
+.appris-service-cta {
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
