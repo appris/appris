@@ -70,7 +70,7 @@ do
 		        	LOG_LEVEL=$2
 					;;
 				* )
-					echo Unknown loglevel: "$2" 
+					echo Unknown loglevel: "$2"
 					echo -e $USAGE
 					exit 1
 					;;
@@ -78,7 +78,7 @@ do
 			shift
 			;;
 		-h | -help )
-			echo -e $USAGE		
+			echo -e $USAGE
 			exit
 			;;
 		-v | -version )
@@ -153,9 +153,9 @@ if [[ "${GENE_LIST}" != ""  || "${APPRIS_CHR_LIST}" == "" ]] ; then
 	find ${APPRIS_ANNOT_DIR} -type f -name "appris" -exec cat {} \; >> ${ANNOT_RST_MAIN_FILE}
 	find ${APPRIS_ANNOT_DIR} -type f -name "appris.label" -exec cat {} \; >> ${ANNOT_RST_LABEL_FILE}
 	find ${APPRIS_ANNOT_DIR} -type f -name "transl.fa" -exec cat {} \; >> ${ANNOT_RST_TRANSL_FILE}
-	find ${APPRIS_ANNOT_DIR} -type f -name "annot.gtf" -exec cat {} \; >> ${ANNOT_RST_ANNOT_FILE}	
+	find ${APPRIS_ANNOT_DIR} -type f -name "annot.gtf" -exec cat {} \; >> ${ANNOT_RST_ANNOT_FILE}
 	echo "================="
-	
+
 # for the whole genome chromsome by chromosome
 else
 
@@ -163,34 +163,28 @@ else
 	CHROMOSOME=(${APPRIS_CHR_LIST//,/ })
 	INDEX=${#CHROMOSOME[@]}
 	for ((i=0;i<$INDEX;i++)); do
-	
+
 		# local vars
 		CHR="${CHROMOSOME[${i}]}"
-		POSITION="${CHR}"	
-		CHR_RST_MAIN_FILES="${APPRIS_ANNOT_DIR}/${POSITION}/*/appris"
-		CHR_RST_LABEL_FILES="${APPRIS_ANNOT_DIR}/${POSITION}/*/appris.label"
-		CHR_RST_TRANSL_FILES="${APPRIS_ANNOT_DIR}/${POSITION}/*/transl.fa"
-		CHR_RST_ANNOT_FILES="${APPRIS_ANNOT_DIR}/${POSITION}/*/annot.gtf"
-			
+		POSITION="${CHR}"
+
 		# concatenate annotations ------------------
-		echo "================="	
-		echo "cat ${CHR_RST_MAIN_FILES} >> ${ANNOT_RST_MAIN_FILE}"
-		cat ${CHR_RST_MAIN_FILES} >> ${ANNOT_RST_MAIN_FILE}
-		
-		echo "cat ${CHR_RST_LABEL_FILES} >> ${ANNOT_RST_LABEL_FILE}"
-		cat ${CHR_RST_LABEL_FILES} >> ${ANNOT_RST_LABEL_FILE}		
 		echo "================="
-		
-		# concatenate sequences ------------------
-		echo "================="	
-		echo "cat ${CHR_RST_TRANSL_FILES} >> ${ANNOT_RST_TRANSL_FILE}"
-		cat ${CHR_RST_TRANSL_FILES} >> ${ANNOT_RST_TRANSL_FILE}
-		echo "cat ${CHR_RST_ANNOT_FILES} >> ${ANNOT_RST_ANNOT_FILE}"
-		cat ${CHR_RST_ANNOT_FILES} >> ${ANNOT_RST_ANNOT_FILE}
+		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"appris\" -exec cat {} \; >> \"${ANNOT_RST_MAIN_FILE}\""
+		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "appris" -exec cat {} \; >> $"{ANNOT_RST_MAIN_FILE}"
+
+		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"appris.label\" -exec cat {} \; >> \"${ANNOT_RST_LABEL_FILE}\""
+		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "appris.label" -exec cat {} \; >> "${ANNOT_RST_LABEL_FILE}"
+
+		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"transl.fa\" -exec cat {} \; >> \"${ANNOT_RST_TRANSL_FILE}\""
+		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "transl.fa" -exec cat {} \; >> "${ANNOT_RST_TRANSL_FILE}"
+
+		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"annot.gtf\" -exec cat {} \; >> \"${ANNOT_RST_ANNOT_FILE}\""
+		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "annot.gtf" -exec cat {} \; >> "${ANNOT_RST_ANNOT_FILE}"
 		echo "================="
-	
+
 	done
-		
+
 fi
 
 # print trace
