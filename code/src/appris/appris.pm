@@ -113,7 +113,7 @@ $METRIC_PHASES = {
 	}
 };
 $METRIC_EFF_RANGES = {
-	'firestar'	=> 2,
+	'firestar'	=> 9,
 	'matador3d'	=> 3,
 	'spade_integrity' => 2.5,
 	'spade' => 100  # Spade bitscore
@@ -154,6 +154,18 @@ $METRIC_WEIGHTED = {
 					{
 					  'max'    => 5,
 					  'weight' => 3	
+					},
+					{
+					  'max'    => 6,
+					  'weight' => 4
+					},
+					{
+					  'max'    => 7,
+					  'weight' => 5
+					},
+					{
+					  'max'    => 10,
+					  'weight' => 6
 					}],
 	'thump'		=> 0,
 	'crash'		=> 0,
@@ -776,6 +788,9 @@ sub get_normalized_method_scores($$$\$\$)
 						} else {
 							$n_sc = 0;
 						}
+					} elsif ( $metric eq 'corsair' ) {
+						my ($clipped_score) = $sc > 1.0 ? $sc - 1.0 : 0.0 ;  # raise floor of Corsair score to 1
+						$n_sc = $max > 0.0 ? $clipped_score / $max : 0.0 ;
 					} else {
 						if ( defined $appris_label && $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
 						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
@@ -833,7 +848,10 @@ sub get_appris_scores($$\$\$\$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'corsair' ) {
-					if    ( $max >= $METRIC_WEIGHTED->{$metric}->[2]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[2]->{'weight'} }
+					if    ( $max >= $METRIC_WEIGHTED->{$metric}->[5]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[5]->{'weight'} }
+					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[4]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[4]->{'weight'} }
+					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[3]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[3]->{'weight'} }
+					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[2]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[2]->{'weight'} }
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[1]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[1]->{'weight'} }
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
