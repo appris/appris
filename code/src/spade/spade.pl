@@ -343,8 +343,8 @@ sub _get_best_domain($$$)
 						}
 						else {
 							# different alignment region
-							if ( ! _domain_overlaps_existing($hmm_index, $hmm_name, $best_domains) &&
-									! _domain_overlaps_existing($hmm_index, $hmm_name, $cand_domains) ) {
+							if ( ! _domain_overlaps_existing($sequence_id, $hmm_index, $hmm_name, $best_domains) &&
+									! _domain_overlaps_existing($sequence_id, $hmm_index, $hmm_name, $cand_domains) ) {
 								$adding_domain = 1;
 							}
 						}
@@ -426,9 +426,9 @@ sub _get_best_domain($$$)
 }
 
 # Check if domain overlaps any existing domain.
-sub _domain_overlaps_existing($$)
+sub _domain_overlaps_existing($$$$)
 {
-	my ($hmm_index, $hmm_name, $existing_domains) = @_;
+	my ($sequence_id, $hmm_index, $hmm_name, $existing_domains) = @_;
 	my ($overlap_found) = 0;
 
 	my ($aln_start, $aln_end) = split(/:/, $hmm_index);
@@ -437,11 +437,14 @@ sub _domain_overlaps_existing($$)
 		my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};
 
 		if ( !(exists $exists_hmm_rep->{'discarded'}) && ($hmm_name ne 'Repeat') &&
-				($hmm_name =~ /^$exists_hmm_name/ || $exists_hmm_name =~ /^$hmm_name/) &&
-				($exists_hmm_rep->{'aln_start'} <= $aln_end) &&
-				($aln_start <= $exists_hmm_rep->{'aln_end'}) ) {
-			$overlap_found = 1;
-			last;
+			  ($exists_hmm_rep->{'aln_start'} <= $aln_end) &&
+			  ($aln_start <= $exists_hmm_rep->{'aln_end'}) ) {
+
+			$logger->debug("HMM_PAIR_OVERLAP: $sequence_id $hmm_name $exists_hmm_name\n");
+			if ($hmm_name =~ /^$exists_hmm_name/ || $exists_hmm_name =~ /^$hmm_name/) {
+				$overlap_found = 1;
+				last;
+			}
 		}
 	}
 
