@@ -171,7 +171,7 @@ else
 		# concatenate annotations ------------------
 		echo "================="
 		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"appris\" -exec cat {} \; >> \"${ANNOT_RST_MAIN_FILE}\""
-		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "appris" -exec cat {} \; >> $"{ANNOT_RST_MAIN_FILE}"
+		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "appris" -exec cat {} \; >> "${ANNOT_RST_MAIN_FILE}"
 
 		echo "find \"${APPRIS_ANNOT_DIR}/${POSITION}\" -type f -name \"appris.label\" -exec cat {} \; >> \"${ANNOT_RST_LABEL_FILE}\""
 		find "${APPRIS_ANNOT_DIR}/${POSITION}" -type f -name "appris.label" -exec cat {} \; >> "${ANNOT_RST_LABEL_FILE}"
