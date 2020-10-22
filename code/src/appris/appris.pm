@@ -789,8 +789,10 @@ sub get_normalized_method_scores($$$\$\$)
 							$n_sc = 0;
 						}
 					} elsif ( $metric eq 'corsair' ) {
-						my ($clipped_score) = $sc > 1.0 ? $sc - 1.0 : 0.0 ;  # raise floor of Corsair score to 1
-						$n_sc = $max > 0.0 ? $clipped_score / $max : 0.0 ;
+						my ($delta) = 1.0;
+						my ($d_sc) = $sc > $delta ? $sc - $delta : 0.0 ;  # decrement Corsair score
+						my ($d_max) = $max > $delta ? $max - $delta : 0.0 ;  # decrement maximum Corsair score
+						$n_sc = $d_max > 0.0 ? $d_sc / $d_max : 0.0 ;
 					} else {
 						if ( defined $appris_label && $appris_label ne $NO_LABEL ) { $sc = $max } # give the max value if it pass the method filters (method annotations)
 						if ( $max != 0 and ($max - $min != 0) ) { $n_sc = $sc/$max } # normalize when there are differences between the max and min
