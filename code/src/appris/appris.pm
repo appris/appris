@@ -143,30 +143,6 @@ $METRIC_WEIGHTED = {
 	'matador3d2'=> 6,
 	'spade_integrity' => 2,
 	'spade' => 6,  # Spade bitscore
-	'corsair'	=> [{
-					  'max'    => 3,
-				  	  'weight' => 1.5	
-					},
-					{
-					  'max'    => 4,
-				  	  'weight' => 2	
-					},
-					{
-					  'max'    => 5,
-					  'weight' => 3	
-					},
-					{
-					  'max'    => 6,
-					  'weight' => 4
-					},
-					{
-					  'max'    => 7,
-					  'weight' => 5
-					},
-					{
-					  'max'    => 10,
-					  'weight' => 6
-					}],
 	'thump'		=> 0,
 	'crash'		=> 0,
 	'inertia'	=> 0,
@@ -850,12 +826,10 @@ sub get_appris_scores($$\$\$\$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'corsair' ) {
-					if    ( $max >= $METRIC_WEIGHTED->{$metric}->[5]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[5]->{'weight'} }
-					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[4]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[4]->{'weight'} }
-					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[3]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[3]->{'weight'} }
-					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[2]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[2]->{'weight'} }
-					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[1]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[1]->{'weight'} }
-					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
+					if    ( $max >= 12 ) { $weight = 4; }
+					elsif ( $max >= 7 )  { $weight = 3; }
+					elsif ( $max >= 5 )  { $weight = 2; }
+					else                 { $weight = 1; }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
 					$weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
