@@ -829,7 +829,8 @@ sub get_appris_scores($$\$\$\$)
 					if    ( $max >= 12 ) { $weight = 4; }
 					elsif ( $max >= 7 )  { $weight = 3; }
 					elsif ( $max >= 5 )  { $weight = 2; }
-					else                 { $weight = 1; }
+					elsif ( $max >= 3 )  { $weight = 1; }
+					else                 { $weight = 0; }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
 					$weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
