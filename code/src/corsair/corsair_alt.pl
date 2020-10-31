@@ -28,6 +28,7 @@ use vars qw(
 	$GIVEN_SPECIES
 	$WSPACE_TMP
 	$WSPACE_CACHE
+	$CODE_CONF_DIR
 	$CACHE_FLAG
 	$RUN_PROGRAM
 	$PROG_DB_PREFIX
@@ -40,10 +41,9 @@ use vars qw(
 	$OK_LABEL
 	$UNKNOWN_LABEL
 	$NO_LABEL
-	$DEFALULT_CORSAIR_PRIMATES_FILE
-	$DEFALULT_CORSAIR_DIVERGE_TIME_FILE
-	$PRIMATES
+	$META_CONFIG
 	$DIVERGE_TIME
+	$NONSCORING_CLADE
 );
 		
 # Input parameters
@@ -82,24 +82,22 @@ $LOCAL_PWD			= $FindBin::Bin;
 $GIVEN_SPECIES		= $cfg->val('APPRIS_PIPELINE', 'species');
 $WSPACE_TMP			= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
+$CODE_CONF_DIR		= $ENV{APPRIS_CODE_CONF_DIR};
 $CACHE_FLAG			= $cfg->val('CORSAIR_ALT_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val( 'CORSAIR_ALT_VARS', 'program');
 $PROG_DB_PREFIX		= $ENV{APPRIS_PROGRAMS_DB_DIR};
 $PROG_DB_V			= $cfg->val('CORSAIR_ALT_VARS', 'db_v');
 $PROG_DB_INV		= $cfg->val('CORSAIR_ALT_VARS', 'db_inv');
-# HARDCORE!! vertebrate by default until we have the separation of VERT and INVERT
-# TODO! Include an attribute ( "animal": "vertebrates") like corsair.species.json in the corsair_alt.diverge_time.human.json
-$PROG_DB			= $PROG_DB_V;
+$PROG_DB			= undef;
 $PROG_EVALUE		= $cfg->val('CORSAIR_ALT_VARS', 'evalue');
 $PROG_MINLEN		= $cfg->val('CORSAIR_ALT_VARS', 'minlen');
 $PROG_CUTOFF		= $cfg->val('CORSAIR_ALT_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
-$DEFALULT_CORSAIR_PRIMATES_FILE		= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_alt.primates.json';
-$DEFALULT_CORSAIR_DIVERGE_TIME_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/corsair_alt.diverge_time.human.json';
-$PRIMATES = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_PRIMATES_FILE) );
-$DIVERGE_TIME = JSON->new()->decode( getStringFromFile($DEFALULT_CORSAIR_DIVERGE_TIME_FILE) );
+
+my ($meta_config_file) = $CODE_CONF_DIR.'/corsair_alt.meta.json';
+$META_CONFIG = JSON->new()->decode( getStringFromFile($meta_config_file) );
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -127,8 +125,34 @@ sub main()
 	my ($seq_report);
 	my ($seq_e_report);
 	my ($vert_score);
-	
-	my ($PROG_DB_UID) = split('/', $PROG_DB);
+
+	# Get the variables for given species
+	my ($PROG_DB_UID);
+	if ( exists $META_CONFIG->{$GIVEN_SPECIES} and exists $META_CONFIG->{$GIVEN_SPECIES}->{'animal'} ) {
+		my ($animal) = $META_CONFIG->{$GIVEN_SPECIES}->{'animal'};
+
+		if ( $animal eq 'vertebrates' ) {
+			$PROG_DB = $PROG_DB_V;
+			$PROG_DB_UID = (split('/', $PROG_DB))[0];
+		}
+		elsif ( $animal eq 'invertebrates' ) {
+			$PROG_DB = $PROG_DB_INV;
+			$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
+		}
+		else {
+			$logger->error("Unknown/invalid animal group: '$animal'");
+		}
+
+		my ($diverge_time_file) = $CODE_CONF_DIR.'/'.$META_CONFIG->{$GIVEN_SPECIES}->{'diverge_time_file'};
+		$DIVERGE_TIME = JSON->new()->decode( getStringFromFile($diverge_time_file) );
+
+		my ($clade_file) = $CODE_CONF_DIR.'/'.$META_CONFIG->{$GIVEN_SPECIES}->{'clade_file'};
+		$NONSCORING_CLADE = JSON->new()->decode( getStringFromFile($clade_file) );
+	}
+	else {
+		$logger->error("Species not supported: '$GIVEN_SPECIES'");
+	}
+
 	my ($PROG_DB_PATH) = $PROG_DB_PREFIX.'/'.$PROG_DB;
 
 	# Handle sequence file
@@ -407,7 +431,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 				{ }
 			elsif (exists $species_found->{$species}) # gets no points for this sequence
 				{ }
-			elsif ( exists $PRIMATES->{$species_firstname} ) # only we accept species out of primates
+			elsif ( exists $NONSCORING_CLADE->{$species_firstname} ) # skip closely related species
 				{ }
 			else
 			{

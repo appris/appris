@@ -1,0 +1,48 @@
+{
+    "Cavia": [
+        {
+            "name": "Cavia porcellus",
+            "desc": "domestic guinea pig"
+        }
+    ],
+    "Dipodomys": [
+        {
+            "name": "Dipodomys ordii",
+            "desc": "Ord's kangaroo rat"
+        }
+    ],
+    "Ictidomys": [
+        {
+            "name": "Ictidomys tridecemlineatus",
+            "desc": "thirteen-lined ground squirrel"
+        }
+    ],
+    "Mus": [
+        {
+            "name": "Mus musculus",
+            "desc": "house mouse"
+        },
+        {
+            "name": "Mus spretus",
+            "desc": "western wild mouse"
+        }
+    ],
+    "Ochotona": [
+        {
+            "name": "Ochotona princeps",
+            "desc": "American pika"
+        }
+    ],
+    "Oryctolagus": [
+        {
+            "name": "Oryctolagus cuniculus",
+            "desc": "rabbit"
+        }
+    ],
+    "Rattus": [
+        {
+            "name": "Rattus norvegicus",
+            "desc": "Norway rat"
+        }
+    ]
+}

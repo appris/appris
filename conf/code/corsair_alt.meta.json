@@ -1,0 +1,12 @@
+{
+	"Homo sapiens": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.human.json",
+        "clade_file": "corsair_alt.primates.json"
+	},
+    "Mus musculus": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.mouse.json",
+        "clade_file": "corsair_alt.glires.json"
+	}
+}
