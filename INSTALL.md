@@ -192,6 +192,8 @@ Further Dependencies
 The command `appris_retrieve_method_data` (used in `appristools`) depends on
 [bedToBigBed](https://www.encodeproject.org/software/bedToBigBed/).
 
+The APPRIS script `retrieve_exon_data_fromfile.pl` depends on
+[bedtools](https://bedtools.readthedocs.io).
 
 Installation
 ------------
