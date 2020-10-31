@@ -536,31 +536,70 @@ sub _parse_pfamscan($$)
 			$transcript_result .= '>'.$line;
 				
 			my ($value_line) = $1;
-			my (@value_list) = split(/\s+/,$value_line);
-			if ( scalar(@value_list) > 12 )
+			# Check if value line matches PfamScan (Pfam-A) output, as
+			# specified in Bio::Pfam::HMM::HMMResultsIO::write_ascii_out,
+			# allowing for most non-numeric fields to be empty strings.
+			if( $value_line=~/^
+					(?<seq_id>\S+)
+					\s
+					\s{0,5}(?<alignment_start>[0-9]+)
+					\s
+					\s{0,5}(?<alignment_end>[0-9]+)
+					\s
+					\s{0,5}(?<envelope_start>[0-9]+)
+					\s
+					\s{0,5}(?<envelope_end>[0-9]+)
+					\s
+					(?<hmm_acc>\S*)\s{0,11}
+					\s
+					(?<hmm_name>\S*)\s{0,16}
+					\s
+					\s{0,7}(?<hmm_type>\S*)
+					\s
+					\s{0,4}(?<hmm_start>[0-9]+)
+					\s
+					\s{0,4}(?<hmm_end>[0-9]+)
+					\s
+					\s{0,4}(?<hmm_length>[0-9]+)
+					\s
+					\s{0,7}(?<bit_score>\S+)
+					\s
+					\s{0,8}(?<e_value>\S+)
+					\s
+					\s{0,2}(?<significance>[0-9]+)
+					\s
+					(?<clan>\S+)\s{0,7}
+					\s
+					\s(?<predicted_active_site_residues>predicted_active_site)?
+					$/x )
 			{
-				my ($id) = $value_list[0];
-				my ($alignment_start) = $value_list[1];
-				my ($alignment_end) = $value_list[2];
-				my ($envelope_start) = $value_list[3];
-				my ($envelope_end) = $value_list[4];
-				my ($hmm_acc) = $value_list[5];
-				my ($hmm_name) = $value_list[6];
-				my ($hmm_type) = $value_list[7];
-				my ($hmm_start) = $value_list[8];
-				my ($hmm_end) = $value_list[9];
-				my ($hmm_length) = $value_list[10];
-				my ($bit_score) = $value_list[11];
-				my ($e_value) = $value_list[12];
-					
-				if( $e_value < $PROG_EVALUE &&
-					$alignment_start =~ /^[0-9]+$/ && $alignment_end =~ /^[0-9]+$/ )  # sanity check of alignment position
+				my ($alignment_start) = $+{'alignment_start'};
+				my ($alignment_end) = $+{'alignment_end'};
+				my ($hmm_name) = $+{'hmm_name'};
+				my ($hmm_start) = $+{'hmm_start'};
+				my ($hmm_end) = $+{'hmm_end'};
+				my ($hmm_length) = $+{'hmm_length'};
+				my ($bit_score) = $+{'bit_score'};
+				my ($e_value) = $+{'e_value'};
+
+				# We can't use a PfamScan result that has an empty HMM
+				# name, and it's a sign that something has gone wrong.
+				if ( $hmm_name eq '' ) {
+					$logger->error("Cannot process pfamscan result due to empty hmm name: '$value_line'\n");
+				}
+
+				# In a small proportion of PfamScan output files the HMM accession and HMM type
+				# are parsed out as empty strings. We assign placeholder values to avoid confusion.
+				my ($hmm_acc) = $+{'hmm_acc'} ne '' ? $+{'hmm_acc'} : 'Unknown_accession' ;
+				my ($hmm_type) = $+{'hmm_type'} ne '' ? $+{'hmm_type'} : 'Unknown_type' ;
+
+				if( $e_value < $PROG_EVALUE )
 				{
 					$alignment_report->{'alignment_start'} = $alignment_start;
 					$alignment_report->{'alignment_end'} = $alignment_end;
 					$alignment_report->{'alignment_length'} = ($alignment_end - $alignment_start)+1;
-					$alignment_report->{'envelope_start'} = $envelope_start;
-					$alignment_report->{'envelope_end'} = $envelope_end;
+					$alignment_report->{'envelope_start'} = $+{'envelope_start'};
+					$alignment_report->{'envelope_end'} = $+{'envelope_end'};
 					$alignment_report->{'hmm_acc'} = $hmm_acc;
 					$alignment_report->{'hmm_name'} = $hmm_name;
 					$alignment_report->{'hmm_type'} = $hmm_type;
@@ -569,9 +608,12 @@ sub _parse_pfamscan($$)
 					$alignment_report->{'hmm_length'} = $hmm_length;
 					$alignment_report->{'bit_score'} = $bit_score;
 					$alignment_report->{'e_value'} = $e_value;
-					$alignment_report->{'significance'} = $value_list[13] if(defined $value_list[13]);
-					$alignment_report->{'clan'} = $value_list[14] if(defined $value_list[14]);
-					$alignment_report->{'predicted_active_site_residues'} = $value_list[15] if(defined $value_list[15]);
+					$alignment_report->{'significance'} = $+{'significance'} if($+{'significance'});
+					$alignment_report->{'clan'} = $+{'clan'} if($+{'clan'});
+
+					if ( defined $+{'predicted_active_site_residues'} ) {
+						$alignment_report->{'predicted_active_site_residues'} = $+{'predicted_active_site_residues'};
+					}
 
 					if ( $line =~ /(#HMM[^\n]*)\n*(#MATCH[^\n]*)\n*(#PP[^\n]*)\n*(#SEQ[^\n]*)\n*/ )			
 					{
