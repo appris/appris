@@ -14,6 +14,7 @@ use Bio::SeqIO;
 use JSON;
 use Config::IniFiles;
 use Data::Dumper;
+use File::Copy qw( move );
 
 use APPRIS::Utils::CacheMD5;
 use APPRIS::Utils::Logger;
@@ -138,9 +139,6 @@ sub main()
 
 	my ($PROG_DB_UID) = split('/', $PROG_DB);
 	my ($PROG_DB_PATH) = $PROG_DB_PREFIX.'/'.$PROG_DB;
-	if ( ! -e $PROG_DB_PATH ) {
-		$logger->error("BLAST database not found: $PROG_DB_PATH");
-	}
 
 	# Handle sequence file
 	my $in = Bio::SeqIO->new(
@@ -191,17 +189,23 @@ sub main()
 			$exons->{$edges} =  undef;
 			
 			# Run blast
+			my ($tmp_blast_file) = $ws_tmp.'/seq.'.$PROG_DB_UID;
 			my ($blast_sequence_file) = $ws_cache.'/seq.'.$PROG_DB_UID;
 			unless (-e $blast_sequence_file and (-s $blast_sequence_file > 0) and ($CACHE_FLAG eq 'yes')) # Blast Cache
 			{
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e $PROG_EVALUE -o $blast_sequence_file";
+					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e $PROG_EVALUE -o $tmp_blast_file";
 					$logger->debug("$cmd\n");						
 					system($cmd) == 0 or $logger->error("system call exit code: $?");
 				};
 				$logger->error("Running blast: $!\n") if($@);
+
+				# Given that no errors were detected, cache the BLAST result file.
+				if ( -e $tmp_blast_file && -s $tmp_blast_file > 0 ) {  # avoid caching empty BLAST result
+					move($tmp_blast_file, $blast_sequence_file) or $logger->error("Caching blast result\n");
+				}
 			}
 			
 			# Parse blast
