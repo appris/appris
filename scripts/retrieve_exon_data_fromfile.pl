@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use FindBin;
+use File::Path qw( make_path );
 use Data::Dumper;
 
 use APPRIS::Parser;
@@ -86,6 +87,10 @@ sub main()
 	my ($main_report) = common::get_main_report($input_main_file, $translations_file, $data_file);	
 	$logger->debug("MAIN_REPORT:\n".Dumper($main_report)."\n");
 	
+	# Ensure output directory exists.
+	$logger->info("-- ensure output directory exists -------\n");
+	make_path($outpath);
+
 	# Get data by region
 	$logger->info("-- get exon data -------\n");
 	my ($outfile) = $outpath.'/appris_data.exons.gff';
