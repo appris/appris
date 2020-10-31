@@ -62,8 +62,8 @@ $SRV_NAME				= $dev_mode ? 'appris-dev@appris' : 'appris@appris' ;
 $SRV_DB_HOST			= 'localhost';
 $SRV_DB_USER			= 'appris';
 $SRV_DB_PWD				= 'appris.appris';
-$SRV_WSDIR				= '/local2/appris';
-$SRV_PUB_RELEASE_DIR	= $SRV_WSDIR.'/pub/releases';
+$SRV_WSDIR				= '/home/appris';
+$SRV_PUB_RELEASE_DIR	= $SRV_WSDIR.'/ws/pub/releases';
 $SRV_FEATURES_DIR		= $SRV_WSDIR.'/features';
 
 $LOC_WSDIR				= '/tmp/appris';
