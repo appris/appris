@@ -122,12 +122,15 @@ sub main()
 	my ($vert_score);
 	
 	# Get the variables from determined specie
+	my ($PROG_DB_UID);
 	if ( exists $SPECIES->{$GIVEN_SPECIES} and exists $SPECIES->{$GIVEN_SPECIES}->{'animal'} ) {
 		if ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'vertebrates' ) {
 			$PROG_DB = $PROG_DB_V;
+			$PROG_DB_UID = (split('/', $PROG_DB))[0];
 		}
 		elsif ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'invertebrates' ) {
 			$PROG_DB = $PROG_DB_INV;
+			$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
 		}
 		else {
 			$logger->error("Animal category does not exit");			
@@ -137,7 +140,6 @@ sub main()
 		$logger->error("Species does not exit");
 	}
 
-	my ($PROG_DB_UID) = split('/', $PROG_DB);
 	my ($PROG_DB_PATH) = $PROG_DB_PREFIX.'/'.$PROG_DB;
 
 	# Handle sequence file
