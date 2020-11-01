@@ -420,6 +420,7 @@ sub get_features
 					my ($trifid_release) = $registry->{'trifid_release'};
 					if ( defined($trifid_release) ) {
 						my ($pred_file_url) = get_trifid_pred_file_url($self->trifid_url,
+						                                               $registry->{'species'},
 						                                               $trifid_release);
 						my ($trifid_report) = _fetch_trifid_report($feature, $pred_file_url);
 						if ( defined($trifid_report) ) {

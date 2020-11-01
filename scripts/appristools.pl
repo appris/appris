@@ -142,6 +142,7 @@ sub main()
 								exists($cfg_dataset->{'trifid'}{'release'}) ) {
 							$config_dataset->{'trifid_pred_file'} = get_trifid_pred_file_path(
 								$ENV{APPRIS_TRIFID_BASE_DIR},
+								$species_id,
 								$cfg_dataset->{'trifid'}{'release'}
 							);
 						}
