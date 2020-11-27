@@ -598,12 +598,13 @@ sub merge_annotations {
 			$transcripts
 		) = @cols;
 		my ($idx) = $chrom.":".$chromStart."-".$chromEnd;
+		my (@name_parts) = split(/;/, $name);
 		unless ( $report->{$idx} ) {
 			$report->{$idx} = {
 					'chrom' 		=> $chrom,
 					'chromStart'	=> $chromStart,
 					'chromEnd'		=> $chromEnd,
-					'name'			=> $name, 
+					'name'			=> \@name_parts,
 					'score'			=> $score, 
 					'strand'		=> $strand,
 					'thickStart'	=> $thickStart,
@@ -616,9 +617,11 @@ sub merge_annotations {
 			}
 		}
 		else {
-			unless ( ($report->{$idx}->{'name'} =~ /^($name)/) or ($report->{$idx}->{'name'} =~ /\;($name)\;/) ) {
-				$report->{$idx}->{'name'}		.= ';'.$name;
-			}			
+			foreach my $name_part (@name_parts) {
+				if ( ! grep { $_ eq $name_part } @{$report->{$idx}->{'name'}} ) {
+					push(@{$report->{$idx}->{'name'}}, $name_part);
+				}
+			}
 			$report->{$idx}->{'transcripts'}	.= ';'.$transcripts if ( defined $transcripts );
 		}
 	}
@@ -628,7 +631,7 @@ sub merge_annotations {
 			$output .= $rep->{'chrom'}."\t".
 						$rep->{'chromStart'}."\t".
 						$rep->{'chromEnd'}."\t".
-						$rep->{'name'}."\t".
+						join(';', @{$rep->{'name'}})."\t".
 						$rep->{'score'}."\t".
 						$rep->{'strand'}."\t".
 						$rep->{'thickStart'}."\t".
@@ -1120,20 +1123,18 @@ sub _aux_get_firestar_annotations {
 					}
 				}
 				if ( $res->ligands ) {
-					my ($lig) = '';
-					my (@ligands) = split(/\|/, $res->ligands);
-					foreach my $ligs (@ligands) {
-						if ( $ligs ne '' ) {
-							if ( $ligs =~ /^([^\[]*)\[/ ) {
-								$lig .= $1.',';
+					my (@ligands);
+					my (@ligand_fields) = split(/\|/, $res->ligands);
+					foreach my $ligand_field (@ligand_fields) {
+						if ( $ligand_field =~ /^([^[]+)\[/ ) {
+							my ($ligand) = $1;
+							if ( ! grep { $_ eq $ligand } @ligands ) {
+								push(@ligands, $ligand);
 							}
-							$ligs =~ s/^[^\[]*\[[^\,]*\,//;
-							$ligs =~ s/\,[^\]]*\]$//;
 						}
 					}
-					$lig =~ s/\,$//;
-					if ( $lig ne '' ) {
-						$data->{'note'} = $lig;
+					if (@ligands) {
+						$data->{'note'} = join(';', @ligands);
 					}
 				}
 			}
