@@ -364,46 +364,11 @@ sub get_trans_annotations {
 					);
 				}
 				if ( (exists $sc{spade}) or ($methods eq 'all') ) {
-					if ( $methods =~ /spade\-([^\,\$]*)/ ) {
-						while ( $methods =~ /spade\-([^\,\$]*)/mg ) {
-							my ($s_name) = $1;
-							if ( $s_name eq 'domain' ) {		
-								get_spade_annotations(	$typebed,
-														$transcript_id,
-				           								$feature,
-				           								\$track->[3],
-				           								$s_name
-								);
-							}
-							elsif ( $s_name eq 'damaged_domain' ) {		
-								get_spade_annotations(	$typebed,
-														$transcript_id,
-				           								$feature,
-				           								\$track->[3],
-				           								$s_name
-								);
-							}
-						}
-					} else {
-						get_spade_annotations(	$typebed,
-												$transcript_id,
-		           								$feature,
-		           								\$track->[3],
-		           								$methods
-						);
-						get_spade_annotations(	$typebed,
-												$transcript_id,
-		           								$feature,
-		           								\$track->[3],
-		           								'domain'
-						);
-						get_spade_annotations(	$typebed,
-												$transcript_id,
-		           								$feature,
-		           								\$track->[3],
-		           								'damaged_domain'
-						);
-					}	
+					get_spade_annotations(	$typebed,
+											$transcript_id,
+											$feature,
+											\$track->[3]
+					);
 				}
 				if ( (exists $sc{corsair}) or ($methods eq 'all') ) {				
 					get_corsair_annotations(	$typebed,
@@ -1303,81 +1268,9 @@ sub get_matador3d2_annotations {
  	}
 }
 
-=head2 get_spade_annotations
-
-  Arg [1]    : String - the stable identifier of transcript
-  Arg [4]    : APPRIS::Transcript
-  Arg [5]    : Object - internal BED variable 
-  Example    : $annot = get_spade_annotations($trans_id, $feat, $ref_out);  
-  Description: Retrieves specific annotation.
-  Returntype : String or undef
-
-=cut
-
-# PRINT the alignments together from Pfam 
-#sub get_spade_annotations {
-#	my ($transcript_id, $feature, $ref_output, $methods) = @_;
-#
-#	# Get annotations
-# 	if ( $feature->analysis ) {
-# 		my ($analysis) = $feature->analysis;
-# 		if ( $analysis->spade ) { 			
-#	 		my ($method) = $analysis->spade;
-#	 		# get residue annotations
-#			if ( defined $method->regions ) {
-#								
-#				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
-#				my ($res_list) = $method->regions;
-#				my ($num_res) = scalar(@{$res_list});
-#				my ($res_domains);
-#				my ($res_damaged_domains);
-#				foreach my $res (@{$res_list}) {
-#					if ( $res->type_domain eq 'domain' ) {
-#						#push(@{$res_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_possibly_damaged' ) {
-#						push(@{$res_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_damaged' ) {
-#						push(@{$res_damaged_domains}, $res);
-#					}
-#					elsif ( $res->type_domain eq 'domain_wrong' ) {
-#						push(@{$res_damaged_domains}, $res);
-#					}
-#				}
-#				if ( $methods eq 'domain' ) {
-#					_aux_get_spade_annotations('domain',
-#												$transcript_id,
-#												$feature,
-#												$res_domains,
-#												$ref_output);
-#				}
-#				elsif ( $methods eq 'damaged_domain' ) {
-#					_aux_get_spade_annotations('damaged_domain',
-#												$transcript_id,
-#												$feature,
-#												$res_damaged_domains,
-#												$ref_output);
-#				}
-#				else {
-#					_aux_get_spade_annotations('domain',
-#												$transcript_id,
-#												$feature,
-#												$res_domains,
-#												$ref_output);
-#					_aux_get_spade_annotations('damaged_domain',
-#												$transcript_id,
-#												$feature,
-#												$res_damaged_domains,
-#												$ref_output);
-#				}
-#			}
-# 		}
-# 	}
-#}
-# PRINT the alignments from Pfam separetly
+# PRINT the alignments from Pfam separately
 sub get_spade_annotations {
-	my ($typebed, $transcript_id, $feature, $ref_output, $methods) = @_;
+	my ($typebed, $transcript_id, $feature, $ref_output) = @_;
 
 	# Get annotations
  	if ( $feature->analysis ) {
@@ -1386,7 +1279,7 @@ sub get_spade_annotations {
 	 		my ($method) = $analysis->spade;
 	 		# get residue annotations
 			if ( defined $method->regions ) {								
-				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separetly
+				# get the residues with 'domain', 'domain_possibly_damaged', 'domain_damaged', and 'domain_wrong' separately
 				my ($res_list) = $method->regions;
 				my ($num_res) = scalar(@{$res_list});
 				foreach my $res (@{$res_list}) {
@@ -1404,30 +1297,24 @@ sub get_spade_annotations {
 					elsif ( $res->type_domain eq 'domain_wrong' ) {
 						push(@{$res_damaged_domains}, $res);
 					}
-					my ($data_domain);
-					if ( ($methods eq 'domain') or ($methods eq 'spade') ) {
-						$data_domain = extract_track_region( $transcript_id,
-															$feature,
-															$res_domains,
-															[{
-																'name' => 'note',
-																'value' => 'hmm_name'
-															}]);						
-					}
-					my ($data_damg_domain);
-					if ( ($methods eq 'damaged_domain') or ($methods eq 'spade') ) {
-						$data_damg_domain = extract_track_region( $transcript_id,
-															$feature,
-															$res_damaged_domains,
-															[{
-																'name' => 'note',
-																'value' => 'hmm_name'
-															}]);
-					}
-					if (defined $data_domain ) {
+					if ( defined $res_domains ) {
+						my ($data_domain) = extract_track_region( $transcript_id,
+																$feature,
+																$res_domains,
+																[{
+																	'name' => 'note',
+																	'value' => 'hmm_name'
+																}]);
 						${$ref_output}->[1]->{'body'} .= print_track($typebed, $data_domain);
 					}
-					if (defined $data_damg_domain ) {
+					if ( defined $res_damaged_domains ) {
+						my ($data_damg_domain) = extract_track_region( $transcript_id,
+																	$feature,
+																	$res_damaged_domains,
+																	[{
+																		'name' => 'note',
+																		'value' => 'hmm_name'
+																	}]);
 						${$ref_output}->[2]->{'body'} .= print_track($typebed, $data_damg_domain);
 					}
 				}
@@ -1435,124 +1322,6 @@ sub get_spade_annotations {
  		}
  	}
 }
-#sub _aux_get_spade_annotations {
-#	my ($type, $transcript_id, $feature, $aux_res_list, $attribues) = @_;
-#	my ($data);
-#
-#	if ( (ref($aux_res_list) eq 'ARRAY') and (scalar(@{$aux_res_list}) > 0) ) {
-#		
-#		# sort the list of alignments
-#		my ($res_list);
-#		if ($feature->strand eq '-') {
-#			@{$res_list} = sort { $b->start <=> $a->start } @{$aux_res_list};
-#		}
-#		else {
-#			@{$res_list} = sort { $a->start <=> $b->start } @{$aux_res_list};
-#		}
-#				
-#		# get initial data
-#		my ($num_res) = scalar(@{$res_list});		
-#		my ($trans_chr) = $feature->chromosome;
-#		my ($trans_start) = $feature->start;
-#		my ($trans_end) = $feature->end;
-#		my ($trans_strand) = $feature->strand;
-#		my ($score) = 0;
-#		my ($thick_start) = $feature->start;
-#		my ($thick_end) = $feature->end;
-#		my ($color) = 0;
-#		my ($blocks) = 0;
-#		if ( $trans_strand eq '-' ) {
-#			$trans_start = $res_list->[$num_res-1]->start;
-#			$trans_end = $res_list->[0]->end;
-#			$thick_start = $trans_start;
-#			$thick_end = $trans_end;
-#		}
-#		else {
-#			$trans_start = $res_list->[0]->start; 
-#			$trans_end = $res_list->[$num_res-1]->end;
-#			$thick_start = $trans_start;
-#			$thick_end = $trans_end;
-#		}
-#		$data = {
-#				'chr'			=> $trans_chr,
-#				'name'			=> $transcript_id,
-#				'start'			=> $trans_start,
-#				'end'			=> $trans_end,
-#				'strand'		=> $trans_strand,
-#				'score'			=> $score,
-#				'thick_start'	=> $thick_start,
-#				'thick_end'		=> $thick_end,			
-#				'color'			=> $color,
-#				'blocks'		=> $blocks
-#		};
-#		# get block annotations
-#		if ( $feature->translate and $feature->translate->cds ) {
-#			my ($translation) = $feature->translate;
-#			my ($cds_list) = $translation->cds;
-#			my ($num_cds) = scalar(@{$cds_list});						
-#			foreach my $res (@{$res_list}) {
-#				my ($contained_cds) = $translation->get_overlapping_cds($res->start, $res->end);
-#				my (@sorted_contained_cds) = @{$contained_cds};
-#				for (my $i = 0; $i < scalar(@sorted_contained_cds); $i++) {
-#						
-#					if ( scalar(@sorted_contained_cds) == 1 ) { # Within one CDS
-#						my ($pos_start) = $res->start;
-#						my ($pos_end) = $res->end;
-#						my ($pos_strand) = $res->strand;
-#						if ($trans_strand eq '-') {
-#							$pos_start = $res->end;
-#							$pos_end = $res->start;
-#						}
-#						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $data->{'thick_start'}, $data->{'thick_end'});
-#						push(@{$data->{'block_starts'}}, $init);
-#						push(@{$data->{'block_sizes'}}, $length);
-#						$data->{'blocks'}++;	
-#						last;
-#					}								
-#					else { # Within several CDS
-#						my ($cds_out) = $sorted_contained_cds[$i];
-#						my ($pos_start) = $cds_out->start;
-#						my ($pos_end) = $cds_out->end;
-#						my ($pos_strand) = $cds_out->strand;
-#						if ( $trans_strand eq '-' ) {
-#							$pos_start = $cds_out->end;
-#							$pos_end = $cds_out->start;
-#						}
-#
-#						if ( $i==0 ) {
-#							if ($trans_strand eq '-') {
-#								$pos_start = $res->end;
-#								$pos_end = $cds_out->start;
-#							}
-#							else {
-#								$pos_start = $res->start;
-#								$pos_end = $cds_out->end;
-#							}
-#						}
-#						elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
-#							if ( $trans_strand eq '-' ) {
-#								$pos_start = $cds_out->end;
-#								$pos_end = $res->start;
-#							}
-#							else {
-#								$pos_start = $cds_out->start;
-#								$pos_end = $res->end;
-#							}
-#						}
-#						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $data->{'thick_start'}, $data->{'thick_end'});
-#						push(@{$data->{'block_starts'}}, $init);
-#						push(@{$data->{'block_sizes'}}, $length);
-#						$data->{'blocks'}++;	
-#					}					
-#				}
-#				if ( $res->hmm_name ) {
-#					$data->{'note'} = $res->hmm_name;
-#				}				
-#			}
-#		}
-#	}
-#	return $data;
-#}
 
 =head2 get_corsair_annotations
 
