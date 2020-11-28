@@ -677,9 +677,21 @@ sub get_firestar_annotations {
 						$optional->{'gene_id'}			= $gene_id;
 						$optional->{'transcript_id'}	= $transcript_id;
 						$optional->{'note'}				= "pep_position:".$region->residue if ($region->residue);
-						if ( $region->ligands =~ /^([^\[]*)/ ) {
-							$optional->{'note'}			.= ",ligands:".$1;								
+
+						my (@ligands);
+						my (@ligand_fields) = split(/\|/, $region->ligands);
+						foreach my $ligand_field (@ligand_fields) {
+							if ( $ligand_field =~ /^([^[]+)\[/ ) {
+								my ($ligand) = $1;
+								if ( ! grep { $_ eq $ligand } @ligands ) {
+									push(@ligands, $ligand);
+								}
+							}
 						}
+						if (@ligands) {
+							$optional->{'note'}			.= ",ligands:".join('|', @ligands);
+						}
+
 						if (defined $common and defined $optional) {
 							$output .= print_annotations($common,$optional);			
 						}													 	
