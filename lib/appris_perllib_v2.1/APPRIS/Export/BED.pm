@@ -891,7 +891,27 @@ sub extract_track_region {
 					my ($a_name) = $attr->{'name'};
 					my ($v_name) = $attr->{'value'};
 					if ( $res->$v_name ) {
-						$data->{$a_name} = $res->$v_name;
+						if ( ! exists $data->{$a_name} ) {
+							$data->{$a_name} = $res->$v_name;
+						}
+						else {
+							if ( $a_name eq 'note' ) {
+								my (@track_note_parts) = split(/;/, $data->{'note'});
+								my (@res_note_parts) = split(/;/, $res->$v_name);
+								foreach my $res_note_part (@res_note_parts) {
+									if ( ! grep { $_ eq $res_note_part } @track_note_parts ) {
+										push(@track_note_parts, $res_note_part);
+									}
+								}
+								$data->{$a_name} = join(';', @track_note_parts);
+							}
+							elsif ( $a_name eq 'score' && $data->{'score'} == 0 ) {  # i.e. first score in track region
+								$data->{'score'} = $res->$v_name;
+							}
+							else {
+								throw("Aggregation method not defined for attribute '$a_name'");
+							}
+						}
 					}
 				}
 			}
