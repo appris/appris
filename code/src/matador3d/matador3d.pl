@@ -27,7 +27,8 @@ use vars qw(
 	$PROG_DB_DIR
 	$PROG_EVALUE
 	$APPRIS_CUTOFF
-	$MIN_LENGTH_CDS
+	$MIN_CDS_AA
+	$MIN_MINI_CDS_NT
 );
        
 # Input parameters
@@ -72,7 +73,8 @@ $PROG_DB			= $cfg->val('MATADOR3D_VARS', 'db');
 $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('MATADOR3D_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('MATADOR3D_VARS', 'cutoff');
-$MIN_LENGTH_CDS		= 6;
+$MIN_CDS_AA			= 6;
+$MIN_MINI_CDS_NT	= 3;
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -464,7 +466,7 @@ sub _check_alignment($$$)
 
 			# Skip mini-CDS shorter than the minimum length, but only after having
 			# advanced the HSP index to the start of the subsequent mini-CDS.
-			if ( (($mini_cds_end - $mini_cds_start) + 1) < $MIN_LENGTH_CDS)
+			if ( (($mini_cds_end - $mini_cds_start) + 1) < $MIN_CDS_AA)
 			{
 				$mini_cds_score_list->{$mini_cds_index} = {
 					'index'		=> $mini_cds_index,
@@ -644,7 +646,7 @@ sub _get_best_cds_score($)
 			{
 				# cds must be bigger than 6 residues
 				my (@cds_pep_coord) = split(':', $pdb_cds_report->{'index'});		
-				if ( ( ($cds_pep_coord[1] - $cds_pep_coord[0]) + 1 ) >= $MIN_LENGTH_CDS )
+				if ( ( ($cds_pep_coord[1] - $cds_pep_coord[0]) + 1 ) >= $MIN_CDS_AA )
 				{
 					$logger->debug("#_get_biggest_score: $sequence_id\n");
 					$pdb_cds_score += _get_biggest_score($sequence_id, $pdb_cds_report, \%aux_transcript_report);
@@ -670,7 +672,7 @@ sub _get_biggest_score($$$)
 		{							
 			# mini cds must be bigger than 6 residues
 			my (@mini_cds_pep_coord) = split(':', $mini_pdb_cds_report->{'index'});
-			if ( ( ($mini_cds_pep_coord[1] - $mini_cds_pep_coord[0])+1 ) >= $MIN_LENGTH_CDS )
+			if ( ( ($mini_cds_pep_coord[1] - $mini_cds_pep_coord[0])+1 ) >= $MIN_CDS_AA )
 			{
 				$logger->debug("#_get_biggest_mini_cds:\n");
 				my ($external_seq_id, $big_mini_pdb_cds_report) = _get_biggest_mini_cds($sequence_id, $mini_pdb_cds_report, $transcript_report);
@@ -1307,6 +1309,7 @@ sub _get_init_report($$$$)
 		my ($trans_strand) = $trans_cds_coords->{$sequence_id}->{'strand'};
 		my ($cds_coords) = $trans_cds_coords->{$sequence_id}->{'coord'}->[$cds_order_id];
 		my (@boundaries) = split ":", $cds_coords;
+		my (@trans_cds_interval) = @boundaries[0..1];
 		my ($trans_cds_start) = $boundaries[0];
 		my ($trans_cds_end) = $boundaries[1];
 		my ($trans_cds_frame) = $boundaries[2];
@@ -1338,22 +1341,7 @@ sub _get_init_report($$$$)
 		$logger->debug("#Trans_CDS:$trans_cds_start-$trans_cds_end:$trans_cds_frame\[$pep_cds_start-$pep_cds_end\]\n");
 				
 		# Get the list of mini-CDS intervals depending on strand
-		my (@mini_cds_intervals);
-		if ($trans_strand eq '-') {
-			my @interval_pool = @{$mini_cds_interval_pool->{'-'}};
-			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_end } 0 .. $#interval_pool;  # GFF 'end' is reverse-strand CDS start
-			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_start } 0 .. $#interval_pool;  # GFF 'start' is reverse-strand CDS end
-			if ( @match_start_idxs && @match_end_idxs ) {
-				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
-			}
-		} elsif ($trans_strand eq '+') {
-			my @interval_pool = @{$mini_cds_interval_pool->{'+'}};
-			my @match_start_idxs = grep { $interval_pool[$_][0] == $trans_cds_start } 0 .. $#interval_pool;
-			my @match_end_idxs = grep { $interval_pool[$_][1] == $trans_cds_end } 0 .. $#interval_pool;
-			if ( @match_start_idxs && @match_end_idxs ) {
-				@mini_cds_intervals = @interval_pool[ $match_start_idxs[0] .. $match_end_idxs[-1] ]
-			}
-		}
+		my (@mini_cds_intervals) = _get_mini_cds_intervals(\@trans_cds_interval, $mini_cds_interval_pool);
 
 		if(@mini_cds_intervals)
 		{
@@ -1487,7 +1475,87 @@ sub _get_init_report($$$$)
 	return $cds_list;	
 }
 
+# Get block score (for choosing mini-CDS intervals).
+sub _get_block_score($) {
+	my ($block_cells) = @_;
+	my ($last_idx) = scalar(@{$block_cells}) - 1;
+	my ($block_length) = abs($block_cells->[$last_idx]->[1] - $block_cells->[0]->[0]) + 1;
+	my ($block_score) = $block_length >= $MIN_MINI_CDS_NT ? 1 : 0 ;
+	return $block_score;
+}
 
+# Get end score (for choosing mini-CDS intervals).
+sub _get_end_score($$$) {
+	my ($j, $n1, $cells) = @_;
+	my (@block_cells) = @{$cells}[ $j-1 .. $n1-1 ];
+	return _get_block_score(\@block_cells);
+}
+
+# Choose mini-CDS intervals from the available pool.
+# To ensure that mini-CDS intervals satisfy minimum length constraints,
+# this function uses the interval partitioning algorithm from the paper
+# B. Jackson et al. (2005) "An algorithm for optimal partitioning of data on an interval."
+# IEEE Signal Processing Letters. 12(2):105-108. https://doi.org/10.1109/LSP.2001.838216
+sub _get_mini_cds_intervals($$)
+{
+	my ($cds_interval, $mini_cds_interval_pool) = @_;
+
+	my (@strands) = keys(%{$mini_cds_interval_pool});
+	my ($num_strands) = scalar(@strands);
+
+	my ($strand);
+	if ( $num_strands == 1 ) {
+		$strand = $strands[0];
+	}
+	elsif ( $num_strands > 1 ) {
+		$logger->error("Mini-CDS interval pool has inconsistent strands\n");
+	}
+	else {
+		$logger->error("Mini-CDS interval pool is empty\n");
+	}
+
+	my ($cds_start, $cds_end) = @{$cds_interval};
+
+	my (@cells);
+	if ( $strand eq '-' ) {
+		@cells = grep { $_->[1] >= $cds_start &&
+		                $_->[0] <= $cds_end } @{$mini_cds_interval_pool->{'-'}};
+	}
+	else {  # i.e. $strand eq '+'
+		@cells = grep { $_->[0] >= $cds_start &&
+		                $_->[1] <= $cds_end } @{$mini_cds_interval_pool->{'+'}};
+	}
+
+	my (@opts) = (0);
+	my (@last_changes) = ();
+	foreach my $n1 ( 1 .. scalar(@cells) ) {
+		my ($opt_n1);
+		my ($last_change);
+		foreach my $j (1 .. $n1) {
+			my ($opt_j) = $opts[$j-1] + _get_end_score($j, $n1, \@cells);
+			if ( ! defined $opt_n1 || $opt_j > $opt_n1 ) {
+				$last_change = $j;
+				$opt_n1 = $opt_j;
+			}
+		}
+		push(@last_changes, $last_change);
+		push(@opts, $opt_n1);
+	}
+
+	my %seen = ();
+	my (@block_start_idxs) = grep { ! $seen{$_}++ } map { $_ - 1 } @last_changes;
+	my (@block_end_idxs) = map { $_ - 1 } @block_start_idxs[ 1 .. $#block_start_idxs ];
+	push(@block_end_idxs, (scalar(@cells) - 1));
+
+	my (@mini_cds_intervals) = ();
+	foreach my $block_idx ( 0 .. scalar(@block_start_idxs) - 1 ) {
+		my $start_idx = $block_start_idxs[$block_idx];
+		my $end_idx = $block_end_idxs[$block_idx];
+		push(@mini_cds_intervals, [$cells[$start_idx][0], $cells[$end_idx][1]]);
+	}
+
+	return @mini_cds_intervals
+}
 
 
 main();
