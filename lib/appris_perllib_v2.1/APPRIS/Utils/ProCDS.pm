@@ -44,6 +44,7 @@ use warnings;
 
 use APPRIS::CDS;
 use APPRIS::ProCDS;
+use APPRIS::Utils::Exception qw(throw);
 
 use Exporter;
 
@@ -108,7 +109,6 @@ sub sort_cds($$)
 sub get_protein_cds_sequence($;$)
 {
 	my ($cds_list, $sequence) = @_;
-
 	my ($protein_cds_list);
 	
 	my ($pro_cds_start) = 0;
@@ -374,7 +374,7 @@ sub get_cds_init_length($$$$)
                get_coords_from_residue($transcript,$residue);
   Description: Get genomic region from peptide position.
   Returntype : APPRIS::CDS or undef
-  Exceptions : none
+  Exceptions : if residue coordinates cannot be obtained
 
 =cut
 
@@ -404,6 +404,7 @@ sub get_coords_from_residue($$)
 		$transcript_nucleotide_relative_position = ($residue-1)*3 + $j;
 
 #print STDERR "J:$transcript_nucleotide_relative_position = ($residue-1)*3 + $j\n";
+
 		my ($cds_length_accumulate) = 0;
 		foreach my $cds (@{$sort_cds_list})
 		{
@@ -444,21 +445,6 @@ sub get_coords_from_residue($$)
 				}
 			}
 		}
-		$j = $j+2; # Third transcrip residue for aminoacid
-	}
-#print STDERR "FRAMESHIFT: $transcript_nucleotide_relative_position = ($trans_length +1) and !(defined $residue_end)\n";	
-	# In the case that residue posotion is within "frameshift" (Start-End codon does not found)
-	if ($transcript_nucleotide_relative_position = ($trans_length +1) and !(defined $residue_end)) {
-		if ( $trans_strand eq '-' )
-		{
-			$residue_end = $sort_cds_list->[scalar(@{$sort_cds_list})-1]->start;
-			$residue_start = $residue_end - 3;
-#print STDERR "RES_END:$residue:$residue_end\n";
-		} else {
-			$residue_end = $sort_cds_list->[scalar(@{$sort_cds_list})-1]->end;
-			$residue_start = $residue_end - 3;
-#print STDERR "RES_END:$residue:$residue_end\n";
-		}			
 	}
 #print STDERR "RES_START:$residue_start RES_END:$residue:$residue_end\n";	
 	if ( defined $residue_start and defined $residue_end )
@@ -468,6 +454,8 @@ sub get_coords_from_residue($$)
 						-end		=> $residue_end,
 						-strand		=> $trans_strand,
 		);
+	} else {
+		throw("Failed to get coordinates for residue $residue of transcript '".$transcript->stable_id."'");
 	}
 	return $protein_cds;
 	
