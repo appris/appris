@@ -115,8 +115,11 @@ sub get_protein_cds_sequence($;$)
 	my ($pro_cds_end) = 0;
 	my ($start_phase) = 0;
 	my ($end_phase) = 0;
+	my ($last_cds_idx) = scalar(@{$cds_list}) - 1;
+	my ($pro_seq_length) = length($sequence);
 
-	foreach my $cds (@{$cds_list}) {
+	foreach my $cds_idx (0 .. $last_cds_idx) {
+		my ($cds) = $cds_list->[$cds_idx];
 
 		my ($accumulate) = 0;
 		$start_phase = $end_phase;
@@ -153,6 +156,19 @@ sub get_protein_cds_sequence($;$)
 			$pro_cds_end = $pro_cds_start + $pro_cds_end_div - 1;
 			$end_phase = 0;
 		}
+
+		if ( $cds_idx == $last_cds_idx && $pro_cds_end != $pro_seq_length ) {
+			if ( $pro_cds_end == ($pro_seq_length + 1) && $end_phase != 0 ) {
+				# If the final codon is incomplete and there is no amino acid in the
+				# protein sequence at that position, adjust the CDS end position to
+				# match the length of the protein sequence.
+				$pro_cds_end = $pro_seq_length;
+			} else {
+				my ($misses) = $pro_cds_end < $pro_seq_length ? 'undershoots' : 'overshoots' ;
+				warning("ProCDS end ($pro_cds_end) $misses end of protein sequence ($pro_seq_length)\n");
+			}
+		}
+
 		my ($protein_cds) = APPRIS::ProCDS->new(
 											-start				=> $pro_cds_start,
 											-end				=> $pro_cds_end,
@@ -587,7 +603,6 @@ sub exon_idx_within_cds($$)
 	return $idx;
 	
 } # End exon_idx_within_cds
-
 
 # Get nucleotide position of residue with respect to its transcript.
 sub _get_res_nuc_pos_wrt_transc($$$$$) {

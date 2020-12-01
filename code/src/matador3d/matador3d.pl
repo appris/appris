@@ -102,7 +102,7 @@ sub _get_biggest_mini_cds($$$);
 sub _get_record_annotations($);
 sub _get_appris_annotations($);
 sub _get_cds_coordinates_from_gff($$);
-sub _get_peptide_coordinate_with_frames($$$$$$);
+sub _get_peptide_coordinate_with_frames($$$$$$$);
 sub _get_peptide_coordinate_sans_frames($$$$$$);
 sub _get_mini_peptide_coordinate_with_frames($$$$$$$);
 sub _get_mini_peptide_coordinate_sans_frames($$$$$$$);
@@ -1159,14 +1159,15 @@ sub _get_peptide_coordinate_sans_frames($$$$$$)
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_peptide_coordinate_with_frames($$$$$$)
+sub _get_peptide_coordinate_with_frames($$$$$$$)
 {
-	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_end,
+		$frame, $cds_order_id, $num_cds, $pep_total_length) = @_;
 
 	my ($pep_cds_start) = $pep_cds_end+1;
 	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
 	my ($offset_pep_cds_len) = $pep_cds_len - $frame;
-	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # include partial codon at end, if present
+	my ($pep_cds_end_div) = ceil($offset_pep_cds_len / 3);  # we include partial codon between CDS, if present
 	my ($pep_cds_end_mod) = $offset_pep_cds_len % 3;
 
 	my $next_frame;
@@ -1192,8 +1193,15 @@ sub _get_peptide_coordinate_with_frames($$$$$$)
 	} else {
 		$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
 	}
-	if ( $cds_order_id == ($num_cds - 1) && $next_frame != 0 ) {
-		warnings::warn("CDS has incomplete reading frame\n");
+
+	if ( $cds_order_id == ($num_cds - 1) && $pep_cds_end != $pep_total_length ) {
+		if ( $pep_cds_end == ($pep_total_length + 1) && $next_frame != 0 ) {
+			# $logger->debug("incomplete reading frame - adjusting CDS end position from $pep_cds_end to $pep_total_length\n");
+			$pep_cds_end = $pep_total_length;
+		} else {
+			my ($misses) = $pep_cds_end < $pep_total_length ? 'undershoots' : 'overshoots' ;
+			$logger->warning("CDS end ($pep_cds_end) $misses end of peptide sequence ($pep_total_length)\n");
+		}
 	}
 
 	if ($calc_frames) {
@@ -1293,6 +1301,7 @@ sub _get_init_report($$$$)
 	my ($pep_cds_end) = 0;
 	my $pep_cds_start_frame;
 	my $pep_cds_end_frame;
+	my ($pep_total_length) = length($sequence);
 	for ( my $cds_order_id = 0; $cds_order_id < $num_cds; $cds_order_id++ )
 	{
 		my ($trans_strand) = $trans_cds_coords->{$sequence_id}->{'strand'};
@@ -1308,8 +1317,7 @@ sub _get_init_report($$$$)
 				$pep_cds_end_frame = $trans_cds_frame;
 			}
 			$pep_cds_start_frame = $pep_cds_end_frame;
-
-			($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate_with_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
+			($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate_with_frames($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds, $pep_total_length);
 			if ( $cds_order_id + 1 < $num_cds ) {
 				my ($pred_next_frame) = $pep_cds_end_frame;
 				my ($next_coords) = $trans_cds_coords->{$sequence_id}->{'coord'}->[$cds_order_id + 1];
