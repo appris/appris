@@ -389,6 +389,7 @@ sub get_coords_from_residue($$)
 	my ($trans_strand) = $transcript->strand;
 	my ($trans_length) = length($transcript->sequence);
 	my ($cds_list) = $transcript->translate->cds;
+	my ($transl_aa_length) = length($transcript->translate->sequence);
 
 #print STDERR "TRANSCRIPT_ID:".$transcript->stable_id."\n";
 #print STDERR "TRANS_LENGTH: $trans_length\n";	
@@ -398,12 +399,18 @@ sub get_coords_from_residue($$)
 
 	# Start transcript residue
 	my ($transcript_nucleotide_relative_position) = 0;
-	my ($j) = 1; # First residue
-	while ( $j <= 3 )
-	{
-		$transcript_nucleotide_relative_position = ($residue-1)*3 + $j;
 
-#print STDERR "J:$transcript_nucleotide_relative_position = ($residue-1)*3 + $j\n";
+	# Get initial and final phases of the CDS.
+	my ($initial_phase) = $sort_cds_list->[0]->phase;
+	my ($final_cds) = $sort_cds_list->[scalar(@{$sort_cds_list})-1];
+	my ($final_cds_length) = $final_cds->end - $final_cds->start + 1;
+	my ($final_codon_length) = ($final_cds_length - $final_cds->phase) % 3;
+	my ($final_phase) = (3 - $final_codon_length) % 3;
+
+	foreach my $j (1, 3)  # First and third nucleotides in codon
+	{
+		$transcript_nucleotide_relative_position = _get_res_nuc_pos_wrt_transc($residue, $j, $initial_phase,
+		                                                                       $final_phase, $transl_aa_length);
 
 		my ($cds_length_accumulate) = 0;
 		foreach my $cds (@{$sort_cds_list})
@@ -580,6 +587,45 @@ sub exon_idx_within_cds($$)
 	return $idx;
 	
 } # End exon_idx_within_cds
+
+
+# Get nucleotide position of residue with respect to its transcript.
+sub _get_res_nuc_pos_wrt_transc($$$$$) {
+
+	my ($residue, $nuc_pos_wrt_codon, $initial_phase, $final_phase, $transl_aa_length) = @_;
+	my ($res_nuc_pos_wrt_transc);
+
+	if ( $residue > $transl_aa_length ) {
+		throw("Residue position $residue exceeds translation length $transl_aa_length");
+	}
+
+	if ( $initial_phase == 0 ) {
+		$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon;
+	} else {
+		# For CDS with nonzero initial phase, we define an offset with
+		# respect to the first codon to adjust nucleotide position.
+		my ($offset_wrt_first_codon) = (3 - $initial_phase) % 3;
+
+		# If this is the first nucleotide in the codon for the first residue,
+		# we also adjust the nucleotide position w.r.t. the codon to account
+		# for the fact that the first codon is incomplete.
+		if ( $residue == 1 && $nuc_pos_wrt_codon == 1 ) {
+			$nuc_pos_wrt_codon += $offset_wrt_first_codon;
+		}
+
+		$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon - $offset_wrt_first_codon;
+	}
+
+	if ( $final_phase != 0 && $residue == $transl_aa_length && $nuc_pos_wrt_codon == 3 ) {
+		# For CDS with nonzero final phase, if this is the final nucleotide
+		# in the codon corresponding to the final residue, we adjust its
+		# position to account for the fact that the final codon is incomplete.
+		$res_nuc_pos_wrt_transc -= $final_phase;
+	}
+
+	return $res_nuc_pos_wrt_transc;
+
+} # End _get_res_nuc_pos_wrt_transc
 
 
 1;
