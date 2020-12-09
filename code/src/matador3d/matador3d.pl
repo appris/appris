@@ -74,7 +74,7 @@ $PROG_DB_DIR		= $ENV{APPRIS_PROGRAMS_DB_DIR}.'/'.$PROG_DB;
 $PROG_EVALUE		= $cfg->val('MATADOR3D_VARS', 'evalue');
 $APPRIS_CUTOFF		= $cfg->val('MATADOR3D_VARS', 'cutoff');
 $MIN_CDS_AA			= 6;
-$MIN_MINI_CDS_NT	= 3;
+$MIN_MINI_CDS_NT	= 5;  # ensure at least 1 complete codon
 
 # Get log filehandle and print heading and parameters to logfile
 my ($logger) = new APPRIS::Utils::Logger(
@@ -103,7 +103,7 @@ sub _get_biggest_mini_cds($$$);
 sub _get_record_annotations($);
 sub _get_appris_annotations($);
 sub _get_cds_coordinates_from_gff($$);
-sub _get_peptide_coordinate($$$$$$$);
+sub _get_peptide_coordinate($$$$$$);
 sub _get_mini_peptide_coordinate($$$$$$$);
 sub _get_init_report($$$$);
 
@@ -1110,10 +1110,9 @@ sub _get_cds_coordinates_from_gff($$)
 }
 
 # Get relative coordinates of peptide coming from transcriptome coordinates
-sub _get_peptide_coordinate($$$$$$$)
+sub _get_peptide_coordinate($$$$$$)
 {
-	my ($trans_cds_start, $trans_cds_end, $pep_cds_end,
-		$frame, $cds_order_id, $num_cds, $pep_total_length) = @_;
+	my ($trans_cds_start, $trans_cds_end, $pep_cds_end, $frame, $cds_order_id, $num_cds) = @_;
 
 	my ($pep_cds_start) = $pep_cds_end+1;
 	my ($pep_cds_len) = abs($trans_cds_end - $trans_cds_start) + 1;
@@ -1143,16 +1142,6 @@ sub _get_peptide_coordinate($$$$$$$)
 			$pep_cds_end=$pep_cds_start;
 	} else {
 		$pep_cds_end = $pep_cds_start + $pep_cds_end_div - 1;
-	}
-
-	if ( $cds_order_id == ($num_cds - 1) && $pep_cds_end != $pep_total_length ) {
-		if ( $pep_cds_end == ($pep_total_length + 1) && $next_frame != 0 ) {
-			# $logger->debug("incomplete reading frame - adjusting CDS end position from $pep_cds_end to $pep_total_length\n");
-			$pep_cds_end = $pep_total_length;
-		} else {
-			my ($misses) = $pep_cds_end < $pep_total_length ? 'undershoots' : 'overshoots' ;
-			$logger->warning("CDS end ($pep_cds_end) $misses end of peptide sequence ($pep_total_length)\n");
-		}
 	}
 
 	return ($pep_cds_start,$pep_cds_end,$next_frame);
@@ -1207,6 +1196,7 @@ sub _get_init_report($$$$)
 	my ($pep_cds_end) = 0;
 	my $pep_cds_start_frame;
 	my $pep_cds_end_frame;
+	my (@mini_cds_idx_pairs);
 	my ($pep_total_length) = length($sequence);
 	for ( my $cds_order_id = 0; $cds_order_id < $num_cds; $cds_order_id++ )
 	{
@@ -1222,7 +1212,7 @@ sub _get_init_report($$$$)
 			$pep_cds_end_frame = $trans_cds_frame;
 		}
 		$pep_cds_start_frame = $pep_cds_end_frame;
-		($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds, $pep_total_length);
+		($pep_cds_start,$pep_cds_end,$pep_cds_end_frame) = _get_peptide_coordinate($trans_cds_start, $trans_cds_end, $pep_cds_end, $pep_cds_start_frame, $cds_order_id, $num_cds);
 		if ( $cds_order_id + 1 < $num_cds ) {
 			my ($pred_next_frame) = $pep_cds_end_frame;
 			my ($next_coords) = $trans_cds_coords->{$sequence_id}->{'coord'}->[$cds_order_id + 1];
@@ -1245,11 +1235,46 @@ sub _get_init_report($$$$)
 		if(@mini_cds_intervals)
 		{
 			my ($mini_cds_list);
-			if (scalar(@mini_cds_intervals) == 1) {
-				# Theres is not mini cds => the same CDS coordinates
-				my ($mini_cds_edges) = join ":", $pep_cds_start,$pep_cds_end;
-				my ($mini_cds_seq) = substr($sequence, $pep_cds_start-1, ($pep_cds_end - $pep_cds_start) + 1 );
-				my ($mini_exon_edges) = join ":", $trans_cds_start,$trans_cds_end;
+			if (scalar(@mini_cds_intervals) == 1) {  # Theres is not mini cds => the same CDS coordinates
+
+				my ($mini_cds_seq);
+				if ( $cds_order_id > 0 && ($trans_cds_end - $trans_cds_start + 1) == $trans_cds_frame ) {
+					# TODO: reduce redundancy
+
+					my ($prev_cds_idx, $prev_mini_cds_idx) = @{$mini_cds_idx_pairs[scalar(@mini_cds_idx_pairs) - 1]};
+					my ($prev_cds) = $cds_list->[$prev_cds_idx];
+					my ($prev_mini_cds) = $prev_cds->{'mini_cds'}->[$prev_mini_cds_idx];
+					my ($prev_mini_cds_start, $prev_mini_cds_end) = split(':', $prev_mini_cds->{'index'});
+
+					if ( length($prev_mini_cds->{'seq'}) > 1 ) {
+
+						my ($old_prev_seq) = $prev_mini_cds->{'seq'};
+						my ($new_prev_seq) = substr($old_prev_seq, 0, length($old_prev_seq) - 1);
+						$mini_cds_seq = substr($old_prev_seq, -1, 1);
+
+						$pep_cds_start -= 1;
+						$pep_cds_end -= 1;
+						$pep_cds_end_frame = 0;
+						$logger->debug("#Trans_CDS_adjusted:$trans_cds_start-$trans_cds_end:$trans_cds_frame\[$pep_cds_start-$pep_cds_end\]\n");
+
+						$cds_index = join(':', ($pep_cds_start, $pep_cds_end));
+
+						$prev_mini_cds->{'index'} = join(':', ($prev_mini_cds_start, $prev_mini_cds_end - 1));
+						$prev_mini_cds->{'seq'} = $new_prev_seq;
+						my ($prev_cds_start, $prev_cds_end) = split(':', $prev_cds->{'index'});
+						$prev_cds->{'index'} = join(':', ($prev_cds_start, $prev_cds_end - 1));
+
+					} else {
+						$logger->warning("transcript $sequence_id has consecutive ultra-short mini-CDS regions\n");
+					}
+				}
+
+				if ( ! defined($mini_cds_seq) ) {
+					$mini_cds_seq = substr($sequence, $pep_cds_start-1, ($pep_cds_end - $pep_cds_start) + 1 );
+				}
+
+				my ($mini_cds_edges) = join(':', ($pep_cds_start, $pep_cds_end));
+				my ($mini_exon_edges) = join(':', ($trans_cds_start, $trans_cds_end));
 				push(@{$mini_cds_list}, {
 							'index'	=> $mini_cds_edges,
 							'coord'	=> $mini_exon_edges,
@@ -1257,7 +1282,7 @@ sub _get_init_report($$$$)
 							'score'	=> '-',
 							'seq'	=> $mini_cds_seq,
 				});
-
+				push(@mini_cds_idx_pairs, [$cds_order_id, 0]);
 			}
 			else
 			{
@@ -1296,6 +1321,7 @@ sub _get_init_report($$$$)
 									'score'	=> '-',
 									'seq'	=> $mini_cds_seq,
 						});
+						push(@mini_cds_idx_pairs, [$cds_order_id, $k]);
 						$logger->debug("\tMini_trans_CDS:$mini_exon_edges\[$mini_cds_edges\]\n");					
 					}
 					else {
@@ -1324,6 +1350,7 @@ sub _get_init_report($$$$)
 									'score'	=> '-',
 									'seq'	=> $mini_cds_seq,
 						});
+						push(@mini_cds_idx_pairs, [$cds_order_id, $num_mini_cds]);
 						$logger->debug("\tMini_trans_CDS_2:$mini_exon_edges\[$mini_cds_edges\]\n");
 					}
 					else {
@@ -1340,6 +1367,119 @@ sub _get_init_report($$$$)
 			});					
 		}
 	}
+
+	my ($total_mini_cds) = scalar(@mini_cds_idx_pairs);
+
+	my ($final_cds_idx, $final_mini_cds_idx) = @{$mini_cds_idx_pairs[$total_mini_cds - 1]};
+	my ($final_cds) = $cds_list->[$final_cds_idx];
+	my ($final_mini_cds) = $final_cds->{'mini_cds'}->[$final_mini_cds_idx];
+
+	if ( $final_mini_cds->{'seq'} eq '' ) {
+
+		my ($penult_cds_idx, $penult_mini_cds_idx) = @{$mini_cds_idx_pairs[$total_mini_cds - 2]};
+		my ($penult_cds) = $cds_list->[$penult_cds_idx];
+		my ($penult_mini_cds) = $penult_cds->{'mini_cds'}->[$penult_mini_cds_idx];
+
+		my ($old_penult_mini_cds_start, $old_penult_mini_cds_end) = split(':', $penult_mini_cds->{'index'});
+		my ($old_final_mini_cds_start, $old_final_mini_cds_end) = split(':', $final_mini_cds->{'index'});
+
+		# TODO: reduce redundancy
+		if ( $final_mini_cds->{'frame'} != 0 &&
+				$old_final_mini_cds_start == $old_final_mini_cds_end &&
+				$old_final_mini_cds_start == ($pep_total_length + 1) ) {
+
+			if ( length($penult_mini_cds->{'seq'}) > 1 ) {
+
+				my ($old_penult_seq) = $penult_mini_cds->{'seq'};
+				my ($new_penult_seq) = substr($old_penult_seq, 0, length($old_penult_seq) - 1);
+				my ($new_final_seq) = substr($old_penult_seq, -1, 1);
+
+				my $new_penult_mini_cds_start = $old_penult_mini_cds_start;
+				my $new_penult_mini_cds_end = $old_penult_mini_cds_end - 1;
+				my $new_final_mini_cds_start = $old_final_mini_cds_start - 1;
+
+				my $new_final_mini_cds_end = $old_final_mini_cds_end;
+				my ($final_mini_exon_start, $final_mini_exon_end) = split(':', $final_mini_cds->{'coord'});
+				my ($final_mini_cds_length) = (abs($final_mini_exon_end - $final_mini_exon_start) + 1);
+				my ($tail_length) = ($final_mini_cds_length - $final_mini_cds->{'frame'}) % 3;
+				if ( $tail_length == 0 ) {
+					$new_final_mini_cds_end -= 1;
+				}
+
+				$penult_mini_cds->{'index'} = join(':', ($new_penult_mini_cds_start, $new_penult_mini_cds_end));
+				$penult_mini_cds->{'seq'} = $new_penult_seq;
+
+				$final_mini_cds->{'index'} = join(':', ($new_final_mini_cds_start, $new_final_mini_cds_end));
+				$final_mini_cds->{'seq'} = $new_final_seq;
+
+				if ( $penult_cds_idx != $final_cds_idx ) {
+					my ($old_penult_cds_start, $old_penult_cds_end) = split(':', $penult_cds->{'index'});
+					$penult_cds->{'index'} = join(':', ($old_penult_cds_start, $new_penult_mini_cds_end));
+					$final_cds->{'index'} = join(':', ($new_final_mini_cds_start, $new_final_mini_cds_end));
+				}
+
+			} else {
+				$logger->warning("transcript $sequence_id has consecutive ultra-short mini-CDS regions\n");
+			}
+		} else {
+			$logger->warning("final mini-CDS in $sequence_id has no residues\n");
+		}
+	}
+
+	my ($final_mini_cds_start, $final_mini_cds_end) = split(':', $final_mini_cds->{'index'});
+	if ( $final_mini_cds_end != $pep_total_length ) {
+
+		my ($final_mini_exon_start, $final_mini_exon_end) = split(':', $final_mini_cds->{'coord'});
+		my ($final_mini_cds_length) = abs($final_mini_exon_end - $final_mini_exon_start) + 1;
+		my ($tail_length) = ($final_mini_cds_length - $final_mini_cds->{'frame'}) % 3;
+
+		if ( $final_mini_cds_end == ($pep_total_length + 1) && $tail_length != 0 ) {
+
+			my ($new_final_mini_cds_end) = $pep_total_length;
+			my ($new_final_mini_exon_end) = $final_mini_exon_end - $tail_length;
+
+			if ( $final_mini_cds_start <= $new_final_mini_cds_end && $final_mini_exon_start <= $new_final_mini_exon_end ) {
+				$final_mini_cds->{'index'} = join(':', ($final_mini_cds_start, $new_final_mini_cds_end));
+				$final_mini_cds->{'coord'} = join(':', ($final_mini_exon_start, $new_final_mini_exon_end));
+			} elsif ( $final_mini_cds->{'seq'} ne '' ) {  # warning already issued for mini-CDS without residues
+				$logger->warning("failed to reconcile final mini-CDS position ($final_mini_cds_end)"
+				                ." with peptide sequence length ($pep_total_length) of $sequence_id\n");
+			}
+
+		} else {
+			my ($misses) = $final_mini_cds_end < $pep_total_length ? 'undershoots' : 'overshoots' ;
+			$logger->warning("mini-CDS end ($final_mini_cds_end) $misses end of"
+			                ." peptide sequence ($pep_total_length) of $sequence_id\n");
+		}
+	}
+
+	my ($final_cds_start, $final_cds_end) = split(':', $final_cds->{'index'});
+	if ( $final_cds_end != $pep_total_length ) {
+
+		my ($final_exon_start, $final_exon_end) = split(':', $final_cds->{'coord'});
+		my ($final_cds_length) = abs($final_exon_end - $final_exon_start) + 1;
+		my ($tail_length) = ($final_cds_length - $final_cds->{'frame'}) % 3;
+
+		if ( $final_cds_end == ($pep_total_length + 1) && $tail_length != 0 ) {
+
+			$final_cds_end = $pep_total_length;
+			$final_exon_end -= $tail_length;
+
+			if ( $final_cds_start <= $final_cds_end && $final_exon_start && $final_exon_end ) {
+				$final_cds->{'index'} = join(':', ($final_cds_start, $final_cds_end));
+				$final_cds->{'coord'} = join(':', ($final_exon_start, $final_exon_end));
+			} elsif ( $final_mini_cds->{'seq'} ne '' ) {  # warning already issued for CDS without residues
+				$logger->warning("failed to reconcile final CDS position ($final_mini_cds_end) with"
+				                ." peptide sequence length ($pep_total_length) of $sequence_id\n");
+			}
+
+		} else {
+			my ($misses) = $final_cds_end < $pep_total_length ? 'undershoots' : 'overshoots' ;
+			$logger->warning("CDS end ($final_cds_end) $misses end of"
+			                ." peptide sequence ($pep_total_length) of $sequence_id\n");
+		}
+	}
+
 	return $cds_list;	
 }
 

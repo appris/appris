@@ -40,11 +40,10 @@ to handle files.
 package APPRIS::Utils::ProCDS;
 
 use strict;
-use warnings;
 
 use APPRIS::CDS;
 use APPRIS::ProCDS;
-use APPRIS::Utils::Exception qw(throw);
+use APPRIS::Utils::Exception qw(warning);
 
 use Exporter;
 
@@ -106,19 +105,28 @@ sub sort_cds($$)
 
 =cut
 
-sub get_protein_cds_sequence($;$)
+sub get_protein_cds_sequence($$)
 {
 	my ($cds_list, $sequence) = @_;
 	my ($protein_cds_list);
 	
 	my ($pro_cds_start) = 0;
 	my ($pro_cds_end) = 0;
-	my ($start_phase) = 0;
-	my ($end_phase) = 0;
-	my ($last_cds_idx) = scalar(@{$cds_list}) - 1;
-	my ($pro_seq_length) = length($sequence);
+	my ($start_phase) = (3 - $cds_list->[0]->phase) % 3;
+	my ($end_phase) = $start_phase;
+	my ($num_cds) = scalar(@{$cds_list});
 
-	foreach my $cds_idx (0 .. $last_cds_idx) {
+	my ($initial_padding) = 0;
+	if ($start_phase != 0) {
+		if ( substr($sequence, 0, 1) eq 'X' ) {
+			$initial_padding = 1;
+		} else {
+			warning("Initial residue 'X' not found - assuming initial"
+					." partial codon not included in protein sequence");
+		}
+	}
+
+	foreach my $cds_idx ( 0 .. $num_cds - 1 ) {
 		my ($cds) = $cds_list->[$cds_idx];
 
 		my ($accumulate) = 0;
@@ -132,11 +140,15 @@ sub get_protein_cds_sequence($;$)
 		else {
 			$accumulate = 0;
 		}
+		if ($cds_idx == 0 && $initial_padding) {
+			$accumulate = 0;
+		}
 		my ($cds_start) = $cds->start;
 		my ($cds_end) = $cds->end;
+		my ($cds_length) = abs($cds_end - $cds_start) + 1;
 				
 		$pro_cds_start = $pro_cds_end + 1;
-		my ($pro_cds_end_div) = (abs($cds_end - $cds_start) + 1 - $accumulate) / 3;
+		my ($pro_cds_end_div) = ($cds_length - $accumulate) / 3;
 		if ($pro_cds_end_div == 0) {
 			$pro_cds_end = $pro_cds_start + $pro_cds_end_div;
 			$end_phase = 0;
@@ -156,33 +168,92 @@ sub get_protein_cds_sequence($;$)
 			$pro_cds_end = $pro_cds_start + $pro_cds_end_div - 1;
 			$end_phase = 0;
 		}
-
-		if ( $cds_idx == $last_cds_idx && $pro_cds_end != $pro_seq_length ) {
-			if ( $pro_cds_end == ($pro_seq_length + 1) && $end_phase != 0 ) {
-				# If the final codon is incomplete and there is no amino acid in the
-				# protein sequence at that position, adjust the CDS end position to
-				# match the length of the protein sequence.
-				$pro_cds_end = $pro_seq_length;
-			} else {
-				my ($misses) = $pro_cds_end < $pro_seq_length ? 'undershoots' : 'overshoots' ;
-				warning("ProCDS end ($pro_cds_end) $misses end of protein sequence ($pro_seq_length)\n");
-			}
-		}
-
 		my ($protein_cds) = APPRIS::ProCDS->new(
 											-start				=> $pro_cds_start,
 											-end				=> $pro_cds_end,
 											-start_phase		=> $start_phase,
 											-end_phase			=> $end_phase
 										);
-		if (defined $sequence) {
-			my ($pro_cds_length) = ($pro_cds_end - $pro_cds_start) + 1;
-			my ($pro_seq) = substr($sequence, ($pro_cds_start - 1), $pro_cds_length);
-			$protein_cds->sequence($pro_seq) if (defined $pro_seq);
+
+		my ($pro_cds_length) = ($pro_cds_end - $pro_cds_start) + 1;
+		my ($pro_seq) = substr($sequence, ($pro_cds_start - 1), $pro_cds_length);
+		$protein_cds->sequence($pro_seq) if (defined $pro_seq);
+
+		# TODO: reduce redundancy
+		if ( $cds_idx > 0 && $protein_cds->end_phase == 0 && $cds_length < 3 ) {
+			my ($prev_pro_cds) = $protein_cds_list->[$cds_idx-1];
+
+			if ( length($prev_pro_cds->sequence) > 1 ) {
+
+				my ($old_prev_seq) = $prev_pro_cds->sequence;
+				my ($new_prev_seq) = substr($old_prev_seq, 0, length($old_prev_seq) - 1);
+				$pro_seq = substr($old_prev_seq, -1, 1);
+
+				$prev_pro_cds->end($prev_pro_cds->end - 1);
+				$prev_pro_cds->sequence($new_prev_seq);
+
+				$protein_cds->start($protein_cds->start - 1);
+				$protein_cds->end($protein_cds->end - 1);
+				$protein_cds->sequence($pro_seq);
+
+				$pro_cds_start -= 1;
+				$pro_cds_end -= 1;
+
+			} else {
+				warning("Transcript has consecutive ultra-short exons");
+			}
 		}
+
 		push(@{$protein_cds_list}, $protein_cds);
 	}
-	
+
+	my ($final_pro_cds) = $protein_cds_list->[$num_cds-1];
+	my ($pro_seq_length) = length($sequence);
+
+	if ( $final_pro_cds->sequence eq '' ) {
+
+		# TODO: reduce redundancy
+		if ( $final_pro_cds->start_phase != 0 &&
+				$final_pro_cds->start == $final_pro_cds->end &&
+				$final_pro_cds->start == ($pro_seq_length + 1) ) {
+
+			my ($penult_pro_cds) = $protein_cds_list->[$num_cds-2];
+
+			if ( length($penult_pro_cds->sequence) > 1 ) {
+
+				my ($old_penult_seq) = $penult_pro_cds->sequence;
+				my ($new_penult_seq) = substr($old_penult_seq, 0, length($old_penult_seq) - 1);
+				my ($new_final_seq) = substr($old_penult_seq, -1, 1);
+
+				$penult_pro_cds->end($penult_pro_cds->end - 1);
+				$penult_pro_cds->sequence($new_penult_seq);
+
+				$final_pro_cds->start($final_pro_cds->start - 1);
+				$final_pro_cds->end($final_pro_cds->end_phase == 0 ? $final_pro_cds->end - 1 : $final_pro_cds->end);
+				$final_pro_cds->sequence($new_final_seq);
+
+			} else {
+				warning("Transcript has consecutive ultra-short exons");
+			}
+		} else {
+			warning("Final ProCDS has no residues");
+		}
+	}
+
+	if ( $final_pro_cds->end != $pro_seq_length ) {
+		if ( $final_pro_cds->end == ($pro_seq_length + 1) && $final_pro_cds->end_phase != 0 ) {
+			if ( $final_pro_cds->start <= $pro_seq_length ) {
+				$final_pro_cds->end($pro_seq_length);
+			} elsif ( $final_pro_cds->sequence ne '' ) {  # warning already issued for CDS without residues
+				warning("Failed to reconcile final ProCDS position (".$final_pro_cds->end
+				       .") with peptide sequence length ($pro_seq_length)");
+			}
+		} else {
+			my ($misses) = $final_pro_cds->end < $pro_seq_length ? 'undershoots' : 'overshoots' ;
+			warning("ProCDS end (".$final_pro_cds->end.") $misses end of peptide sequence ($pro_seq_length)\n");
+		}
+	}
+
 	return $protein_cds_list;
 }	
 
@@ -390,7 +461,7 @@ sub get_cds_init_length($$$$)
                get_coords_from_residue($transcript,$residue);
   Description: Get genomic region from peptide position.
   Returntype : APPRIS::CDS or undef
-  Exceptions : if residue coordinates cannot be obtained
+  Exceptions : none
 
 =cut
 
@@ -419,14 +490,22 @@ sub get_coords_from_residue($$)
 	# Get initial and final phases of the CDS.
 	my ($initial_phase) = $sort_cds_list->[0]->phase;
 	my ($final_cds) = $sort_cds_list->[scalar(@{$sort_cds_list})-1];
-	my ($final_cds_length) = $final_cds->end - $final_cds->start + 1;
-	my ($final_codon_length) = ($final_cds_length - $final_cds->phase) % 3;
-	my ($final_phase) = (3 - $final_codon_length) % 3;
+	my ($final_cds_length) = abs($final_cds->end - $final_cds->start) + 1;
+	my ($tail_length) = ($final_cds_length - $final_cds->phase) % 3;
+	my ($final_phase) = (3 - $tail_length) % 3;
+
+	if ( $residue > $transl_aa_length ) {
+		warning("Residue position ($residue) exceeds translation length ($transl_aa_length)");
+	}
 
 	foreach my $j (1, 3)  # First and third nucleotides in codon
 	{
 		$transcript_nucleotide_relative_position = _get_res_nuc_pos_wrt_transc($residue, $j, $initial_phase,
 		                                                                       $final_phase, $transl_aa_length);
+
+		if ( ! defined($transcript_nucleotide_relative_position) ) {
+			next;
+		}
 
 		my ($cds_length_accumulate) = 0;
 		foreach my $cds (@{$sort_cds_list})
@@ -469,6 +548,19 @@ sub get_coords_from_residue($$)
 			}
 		}
 	}
+
+	if ( ! defined($residue_end) ) {
+		my ($final_codon_length) = 3 - $final_phase;
+		if ( $trans_strand eq '-' )
+		{
+			$residue_end = $final_cds->start;
+			$residue_start = $residue_end + ($final_codon_length - 1);
+		} else {
+			$residue_end = $final_cds->end;
+			$residue_start = $residue_end - ($final_codon_length - 1);
+		}
+	}
+
 #print STDERR "RES_START:$residue_start RES_END:$residue:$residue_end\n";	
 	if ( defined $residue_start and defined $residue_end )
 	{
@@ -477,8 +569,6 @@ sub get_coords_from_residue($$)
 						-end		=> $residue_end,
 						-strand		=> $trans_strand,
 		);
-	} else {
-		throw("Failed to get coordinates for residue $residue of transcript '".$transcript->stable_id."'");
 	}
 	return $protein_cds;
 	
@@ -610,32 +700,31 @@ sub _get_res_nuc_pos_wrt_transc($$$$$) {
 	my ($residue, $nuc_pos_wrt_codon, $initial_phase, $final_phase, $transl_aa_length) = @_;
 	my ($res_nuc_pos_wrt_transc);
 
-	if ( $residue > $transl_aa_length ) {
-		throw("Residue position $residue exceeds translation length $transl_aa_length");
-	}
+	if ( $residue <= $transl_aa_length ) {
 
-	if ( $initial_phase == 0 ) {
-		$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon;
-	} else {
-		# For CDS with nonzero initial phase, we define an offset with
-		# respect to the first codon to adjust nucleotide position.
-		my ($offset_wrt_first_codon) = (3 - $initial_phase) % 3;
+		if ( $initial_phase == 0 ) {
+			$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon;
+		} else {
+			# For CDS with nonzero initial phase, we define an offset with
+			# respect to the first codon to adjust nucleotide position.
+			my ($offset_wrt_first_codon) = (3 - $initial_phase) % 3;
 
-		# If this is the first nucleotide in the codon for the first residue,
-		# we also adjust the nucleotide position w.r.t. the codon to account
-		# for the fact that the first codon is incomplete.
-		if ( $residue == 1 && $nuc_pos_wrt_codon == 1 ) {
-			$nuc_pos_wrt_codon += $offset_wrt_first_codon;
+			# If this is the first nucleotide in the codon for the first residue,
+			# we also adjust the nucleotide position w.r.t. the codon to account
+			# for the fact that the first codon is incomplete.
+			if ( $residue == 1 && $nuc_pos_wrt_codon == 1 ) {
+				$nuc_pos_wrt_codon += $offset_wrt_first_codon;
+			}
+
+			$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon - $offset_wrt_first_codon;
 		}
 
-		$res_nuc_pos_wrt_transc = ($residue-1)*3 + $nuc_pos_wrt_codon - $offset_wrt_first_codon;
-	}
-
-	if ( $final_phase != 0 && $residue == $transl_aa_length && $nuc_pos_wrt_codon == 3 ) {
-		# For CDS with nonzero final phase, if this is the final nucleotide
-		# in the codon corresponding to the final residue, we adjust its
-		# position to account for the fact that the final codon is incomplete.
-		$res_nuc_pos_wrt_transc -= $final_phase;
+		if ( $final_phase != 0 && $residue == $transl_aa_length && $nuc_pos_wrt_codon == 3 ) {
+			# For CDS with nonzero final phase, if this is the final nucleotide
+			# in the codon corresponding to the final residue, we adjust its
+			# position to account for the fact that the final codon is incomplete.
+			$res_nuc_pos_wrt_transc -= $final_phase;
+		}
 	}
 
 	return $res_nuc_pos_wrt_transc;
