@@ -308,14 +308,14 @@ for M in ${METHODS_ARR};do
 		AS_FILE="${UCSC_BED_AS_FILE}.${M2}"
 		BED_TYPE="bed12"
 
-		# If APPRIS, adjust settings for bedToBigBed depending on file contents.
-		if [[ "$M2" == "appris" ]]
+		# For selected methods, adjust settings for bedToBigBed depending on file contents.
+		if [[ "$M2" == "appris" || "$M2" == "matador3d" || "$M2" == "matador3d2" ]]
 		then
 			long_strings=$(awk 'BEGIN {lstrings=0}; length($4) > 255 || length($12) > 255 {lstrings=1; exit;}; END {print lstrings}' "${OUTPUT_METHOD}")
 			if [[ $long_strings == 1 ]]
 			then
-				AS_FILE="${UCSC_BED_AS_FILE}.${M2}.bed3plus9"
-				BED_TYPE="bed3+9"
+				AS_FILE="${UCSC_BED_AS_FILE}.${M2}.bed3plus10"
+				BED_TYPE="bed3+10"
 			fi
 		fi
 
