@@ -1090,7 +1090,6 @@ sub _aux_get_firestar_annotations {
 						my ($pos_end) = $res->end;
 						my ($pos_strand) = $res->strand;
 						my ($init, $length) = get_block_from_exon($pos_start, $pos_end, $pos_strand, $thick_start, $thick_end);
-						$init = 0; # HARD-CORE
 						push(@{$data->{'block_starts'}}, $init);
 						push(@{$data->{'block_sizes'}}, $length);
 						$data->{'blocks'}++;	
