@@ -1,4 +1,102 @@
 ___
+## 2020_11.v37
+```
+SERVER-RELEASE:   2020_11.v37
+CODE-RELEASE:     4.10.2.24
+```
+
+### Highlights
+
++ New release of GENCODE human (version 35).
++ New release of Ensembl (e101 version), for the species:
+	- Caenorhabditis elegans
++ Rereleases of GENCODE human (version 34) and mouse (version vM25).
+
+### Server (4.10)
+
++ Addition of a table of important functional isoforms.
++ Addition of TRIFID scores to gene report in human,
+  highlighting of high-scoring isoforms in bold text.
++ Update of the PDB chain ID regex to reflect current PDB chain IDs,
+  also allowing for the modified PDB chain IDs used by Matador3D2.
++ Removal of the embedded Google Group from APPRIS website front page.
++ Removal of hyperlink from the Cat_Site_Atl PDB ligand
+  in the Firestar annotations section of the gene report.
++ Addition of APPRIS WebServices landing page.
++ Update of documentation and website content,
+  primarily to include information on TRIFID.
+
+### Code (2.24)
+
++ APPRIS:
+	- Integration of Alt-CORSAIR method for human and mouse.
+	- Recalibration of APPRIS method scoring and weighting.
+	- Fixed data concatenation issue affecting chromosomes with many genes.
+	- Updated chromosome sizes for rat and Drosophila melanogaster.
+	- Matador3D results are used in preference to
+	  Matador3D2 results only if they exist.
+	- Harmonisation of APPRIS method parameter codes.
+	- Fixed error whereby redundant BED attributes
+	  were being output for some features.
+	- Fixed error whereby some transcripts with multiple values for a given
+	  attribute were being output with some attribute values missing.
+	- Changed the name of the APPRIS bigBed autoSql config
+	  file to reflect the actual number of fields.
+	- Fixed bug whereby conversion of residue positions to genomic
+	  coordinates was not taking account of the initial and final
+	  reading frames of a coding sequence.
+	- Changed the code converting residue positions to genomic
+	  coordinates, so that microexons shorter than one codon and with
+	  an end phase of zero are assigned the residue at that position.
+	  Previously this residue would have been assigned to the preceding
+	  exon, resulting in a slight misalignment of subsequent exons.
+
++ CORSAIR:
+	- Integration of Alt-CORSAIR method for human and mouse.
+	- Improved error-handling for BLAST search.
+	- Update of vertebrate database to refseq_201811,
+	  invertebrate database to refseq_202010.
+	- Cached BLAST result files are specific
+	  to the configured BLAST database.
+	- Configured E-value is passed to BLAST.
+
++ FIRESTAR:
+	- Fixed error whereby functional residues with multiple ligands
+	were being exported to GTF with only one of those ligands.
+
++ MATADOR3D:
+	- Added a minimum length constraint to mini-exons, so that
+	  every mini-exon has at least one full codon, except in
+	  cases where the corresponding exon is itself shorter
+	  than the minimum length constraint.
+	- Fixed error whereby Matador3D exons were being exported
+	  to BED output alongside the mini-exon alignments, resulting
+	  in overlapping BED blocks.
+	- For Matador3D and Matador3D2, added a bed3+10 format option
+	  for bigBed files, to allow for longer fields where needed.
+
++ PROTEO:
+	- Peptides only contribute to the PROTEO score if they map
+	  to the amino-acid sequence of the given isoform.
+
++ SPADE:
+	- When transferring domains between transcripts, preference
+	  is given to the external transcript whose transferred domains
+	  confer the greatest score increase on the receiving transcript.
+	- PfamScan results are parsed using a regex tailored to Pfam-A output.
+	- Isoforms with internal stop sites are skipped.
+	- Fixed BED export error whereby records were being duplicated.
+
++ TRIFID:
+	- Streamlined TRIFID integration, with the option to choose
+	  the 'TRIFID' or 'classic' transcript selection process.
+	- Independent configuration of TRIFID data for each dataset.
+	- Within APPRIS, the TRIFID module's primary input
+	  is taken from the translation sequences file.
+	- The identity of each isoform is confirmed by matching the translation
+	  sequence against the sequence in the TRIFID prediction file.
+
+___
 ## 2020_06.v32
 ```
 SERVER-RELEASE:   2020_06.v32
