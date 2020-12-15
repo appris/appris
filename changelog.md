@@ -10,7 +10,8 @@ CODE-RELEASE:     4.10.2.24
 + New release of GENCODE human (version 35).
 + New release of Ensembl (e101 version), for the species:
 	- Caenorhabditis elegans
-+ Rereleases of GENCODE human (version 34) and mouse (version vM25).
++ Rereleases of GENCODE datasets for human version 34,
+  human version 27 and mouse version vM25.
 
 ### Server (4.10)
 
