@@ -131,14 +131,27 @@ sub main()
 				-file => $input_file,
 				-format => 'Fasta'
 	);
-	while ( my $seqObj = $in->next_seq() ) {			
+	SEQ: while ( my $seqObj = $in->next_seq() ) {
 		if ( $seqObj->id =~ /^([^|]*)\|([^|]*)/ )
 		{			
 			my ($seq_id) = $2;
 			if ( $seq_id =~ /^ENS/ ) { $seq_id =~ s/\.\d*$// }	
 			my ($seq) = $seqObj->seq;
 			$logger->info("-- $seq_id\n");				
-			
+
+			my ($stop_index) = index($seq, '*');
+			if ( $stop_index >= 0 && $stop_index < length($seq) )
+			{
+				my ($stop_pos) = $stop_index + 1;
+				if ( $stop_pos > 1 ) {
+					$logger->warning("truncating sequence $seq_id at stop site in peptide position $stop_pos\n");
+					$seq = substr($seq, 0, $stop_index);
+				} else {
+					$logger->warning("skipping sequence $seq_id due to stop site in peptide position $stop_pos\n");
+					next SEQ;
+				}
+			}
+
 			# Create cache obj
 			my ($cache) = APPRIS::Utils::CacheMD5->new(
 				-dat => $seq,
