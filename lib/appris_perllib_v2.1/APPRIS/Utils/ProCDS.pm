@@ -116,15 +116,7 @@ sub get_protein_cds_sequence($$)
 	my ($end_phase) = $start_phase;
 	my ($num_cds) = scalar(@{$cds_list});
 
-	my ($initial_padding) = 0;
-	if ($start_phase != 0) {
-		if ( substr($sequence, 0, 1) eq 'X' ) {
-			$initial_padding = 1;
-		} else {
-			warning("Initial residue 'X' not found - assuming initial"
-					." partial codon not included in protein sequence");
-		}
-	}
+	my ($initial_partial_codon) = $start_phase != 0 ? 1 : 0 ;
 
 	foreach my $cds_idx ( 0 .. $num_cds - 1 ) {
 		my ($cds) = $cds_list->[$cds_idx];
@@ -140,7 +132,7 @@ sub get_protein_cds_sequence($$)
 		else {
 			$accumulate = 0;
 		}
-		if ($cds_idx == 0 && $initial_padding) {
+		if ($cds_idx == 0 && $initial_partial_codon) {
 			$accumulate = 0;
 		}
 		my ($cds_start) = $cds->start;
