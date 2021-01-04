@@ -114,16 +114,10 @@ sub main()
             $logger->info("\n##$sequence_id ###############################\n");
 
 			my ($stop_index) = index($sequence, '*');
-			if ( $stop_index >= 0 && $stop_index < length($sequence) )
+			if ( $stop_index >= 0 && $stop_index < length($sequence) - 1 )
 			{
-				my ($stop_pos) = $stop_index + 1;
-				if ( $stop_pos > 1 ) {
-					$logger->warning("truncating sequence $sequence_id at stop site in peptide position $stop_pos\n");
-					$sequence = substr($sequence, 0, $stop_index);
-				} else {
-					$logger->warning("skipping sequence $sequence_id due to stop site in peptide position $stop_pos\n");
-					next SEQ;
-				}
+				$logger->warning("skipping sequence $sequence_id due to internal translation stop site\n");
+				next SEQ;
 			}
 
 			# Run blast
