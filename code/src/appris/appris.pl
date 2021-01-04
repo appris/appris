@@ -303,8 +303,8 @@ sub main()
 
 	# get annotations indexing each transcript
 	$logger->info("-- get final annotations\n");
-	appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots,
-	                              $involved_metrics, $trifid_report);
+	($scores, $nscores, $annots) = appris::get_final_annotations($gene, $scores, $s_scores, $nscores, $annots,
+	                                                             $involved_metrics, $trifid_report);
 	$logger->debug("ANNOTS:\n".Dumper($annots)."\n");
 	
 	# print outputs

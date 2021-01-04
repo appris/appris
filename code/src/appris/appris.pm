@@ -936,7 +936,7 @@ sub get_final_annotations($$$$$$;$)
 		if ( is_unique($princ_list, $isof_report) ) {
 			$tag = 1;
 			step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-			return $tag;
+			return ($scores, $nscores, $annots);
 		}
 
 		if ( $appris_score_mode =~ /^phased_/ ) {
@@ -966,7 +966,7 @@ sub get_final_annotations($$$$$$;$)
 			if ( is_unique($princ_list, $isof_report) ) {
 				$tag = 1;
 				step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
-				return $tag;
+				return ($scores, $nscores, $annots);
 			}
 		}
 
@@ -979,7 +979,7 @@ sub get_final_annotations($$$$$$;$)
 		}
 	}
 
-	return $tag;
+	return ($scores, $nscores, $annots);
 
 } # End get_final_annotations
 
