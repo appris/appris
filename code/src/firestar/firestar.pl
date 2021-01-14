@@ -441,42 +441,42 @@ sub main()
 	#if ( defined $appris )
 	#{
 		# get consensus residues
-		$logger->info("-- print consensus residues\n");	
+		#$logger->info("-- print consensus residues\n");
 		
-		$output_content .= "\n";
-		$output_content .= "# ============================== #\n";
-		$output_content .= "# Prediction of consensus motifs #\n";
-		$output_content .= "# ============================== #\n";
-		foreach my $varname (keys %gene_vars)
-		{
-			$output_content .= "######\n";
-		
-			my ($num_residues) = '';
-			my ($pos_list_residues) = '';
-		
-			if ( exists $repeated_motifs->{$varname} and defined $repeated_motifs->{$varname} )
-			{
-				my ($repeated_motifs_var) = $repeated_motifs->{$varname};		
-				my (@sort_residues) = sort {$a <=> $b} keys %{$repeated_motifs_var};		
-		
-				foreach my $sort_residue (@sort_residues)
-				{
-					my ($repeated_res_score) = $repeated_motifs_var->{$sort_residue}->{'score'};
-					my ($repeated_motifs) = $repeated_motifs_var->{$sort_residue}->{'motif'};
-					my ($repeated_motif_ids) = $repeated_motifs_var->{$sort_residue}->{'ids'};
-					$output_content .= "$sort_residue\t$repeated_motifs\t$repeated_motif_ids\n";
-					$pos_list_residues .= "$sort_residue,";
-				}
-		
-				$pos_list_residues =~ s/\,$//g;
-				$num_residues = scalar(@sort_residues) if ( scalar(@sort_residues) > 0 );		
-			}
-			
-			$output_content .= "C>>\t$varname";
-			$output_content .= "\t".$num_residues if ($num_residues ne '');
-			$output_content .= "\t".$pos_list_residues if ($pos_list_residues ne '');
-			$output_content .= "\n";	
-		}
+		#$output_content .= "\n";
+		#$output_content .= "# ============================== #\n";
+		#$output_content .= "# Prediction of consensus motifs #\n";
+		#$output_content .= "# ============================== #\n";
+		#foreach my $varname (keys %gene_vars)
+		#{
+		#	$output_content .= "######\n";
+		#
+		#	my ($num_residues) = '';
+		#	my ($pos_list_residues) = '';
+		#
+		#	if ( exists $repeated_motifs->{$varname} and defined $repeated_motifs->{$varname} )
+		#	{
+		#		my ($repeated_motifs_var) = $repeated_motifs->{$varname};
+		#		my (@sort_residues) = sort {$a <=> $b} keys %{$repeated_motifs_var};
+		#
+		#		foreach my $sort_residue (@sort_residues)
+		#		{
+		#			my ($repeated_res_score) = $repeated_motifs_var->{$sort_residue}->{'score'};
+		#			my ($repeated_motifs) = $repeated_motifs_var->{$sort_residue}->{'motif'};
+		#			my ($repeated_motif_ids) = $repeated_motifs_var->{$sort_residue}->{'ids'};
+		#			$output_content .= "$sort_residue\t$repeated_motifs\t$repeated_motif_ids\n";
+		#			$pos_list_residues .= "$sort_residue,";
+		#		}
+		#
+		#		$pos_list_residues =~ s/\,$//g;
+		#		$num_residues = scalar(@sort_residues) if ( scalar(@sort_residues) > 0 );
+		#	}
+		#
+		#	$output_content .= "C>>\t$varname";
+		#	$output_content .= "\t".$num_residues if ($num_residues ne '');
+		#	$output_content .= "\t".$pos_list_residues if ($pos_list_residues ne '');
+		#	$output_content .= "\n";
+		#}
 	
 		$logger->info("-- select which is the variant with more functional residues /* APPRIS */\n");	
 
