@@ -426,26 +426,46 @@ sub _get_best_domain($$$)
 }
 
 # Check if domain overlaps any existing domain.
-sub _domain_overlaps_existing($$$$)
+#sub _domain_overlaps_existing($$$$)
+#{
+#	my ($sequence_id, $hmm_index, $hmm_name, $existing_domains) = @_;
+#	my ($overlap_found) = 0;
+#
+#	my ($aln_start, $aln_end) = split(/:/, $hmm_index);
+#
+#	foreach my $exists_hmm_rep (values %{$existing_domains}) {
+#		my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};
+#
+#		if ( !(exists $exists_hmm_rep->{'discarded'}) && ($hmm_name ne 'Repeat') &&
+#			  ($exists_hmm_rep->{'aln_start'} <= $aln_end) &&
+#			  ($aln_start <= $exists_hmm_rep->{'aln_end'}) ) {
+#
+#			$logger->debug("HMM_PAIR_OVERLAP: $sequence_id $hmm_name $exists_hmm_name\n");
+#			if ($hmm_name =~ /^$exists_hmm_name/ || $exists_hmm_name =~ /^$hmm_name/) {
+#				$overlap_found = 1;
+#				last;
+#			}
+#		}
+#	}
+#
+#	return $overlap_found;
+#}
+sub _domain_overlaps_existing($$)
 {
-	my ($sequence_id, $hmm_index, $hmm_name, $existing_domains) = @_;
+	my ($hmm_index, $existing_domains) = @_;
 	my ($overlap_found) = 0;
 
 	my ($aln_start, $aln_end) = split(/:/, $hmm_index);
 
 	foreach my $exists_hmm_rep (values %{$existing_domains}) {
-		my ($exists_hmm_name) = $exists_hmm_rep->{'hmm_name'};
 
-		if ( !(exists $exists_hmm_rep->{'discarded'}) && ($hmm_name ne 'Repeat') &&
+		if ( !(exists $exists_hmm_rep->{'discarded'}) &&
 			  ($exists_hmm_rep->{'aln_start'} <= $aln_end) &&
 			  ($aln_start <= $exists_hmm_rep->{'aln_end'}) ) {
-
-			$logger->debug("HMM_PAIR_OVERLAP: $sequence_id $hmm_name $exists_hmm_name\n");
-			if ($hmm_name =~ /^$exists_hmm_name/ || $exists_hmm_name =~ /^$hmm_name/) {
-				$overlap_found = 1;
-				last;
-			}
+			$overlap_found = 1;
+			last;
 		}
+
 	}
 
 	return $overlap_found;
