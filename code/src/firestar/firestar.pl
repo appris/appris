@@ -323,78 +323,78 @@ sub main()
 
 	
 	# Check the repeated motifs ----------------
-	$logger->debug("-- check the repeated motifs\n");
-	my ($repeated_motifs);
-	foreach my $varname (keys %gene_vars)
-	{
-		$logger->debug(">>$varname:\n");
-		my $seq = $gene_vars{$varname};
-		foreach my $key (keys %motifs)
-		{
-			$logger->debug("Motif: $key: ");
-			# discard the motifs whose orignal length is less than 13			
-			if ( ($key =~ /\w/) and (length $key == 13) ) 
-			{
-				# get the 10 residues beginning from left and rigth
-				my ($motif) = $key;
-				my ($motif_l) = $key;
-				my ($motif_r) = $key;
-				$motif_l =~ s/\w{3}$//g;
-				$motif_r =~ s/^\w{3}//g;
-				
-				# scan for each
-				my @new_motifs = ($motif, $motif_l, $motif_r);
-				my ($index) = 0;
-				my ($find_motif) = 0;
-				while ( $index < scalar(@new_motifs) and ($find_motif == 0) )
-				{
-					my ($new_motif) = $new_motifs[$index]; 
-					$logger->debug("\nNew_Motif:$index: $new_motif");
+	#$logger->debug("-- check the repeated motifs\n");
+	#my ($repeated_motifs);
+	#foreach my $varname (keys %gene_vars)
+	#{
+	#	$logger->debug(">>$varname:\n");
+	#	my $seq = $gene_vars{$varname};
+	#	foreach my $key (keys %motifs)
+	#	{
+	#		$logger->debug("Motif: $key: ");
+	#		# discard the motifs whose orignal length is less than 13			
+	#		if ( ($key =~ /\w/) and (length $key == 13) ) 
+	#		{
+	#			# get the 10 residues beginning from left and rigth
+	#			my ($motif) = $key;
+	#			my ($motif_l) = $key;
+	#			my ($motif_r) = $key;
+	#			$motif_l =~ s/\w{3}$//g;
+	#			$motif_r =~ s/^\w{3}//g;
+	#			
+	#			# scan for each
+	#			my @new_motifs = ($motif, $motif_l, $motif_r);
+	#			my ($index) = 0;
+	#			my ($find_motif) = 0;
+	#			while ( $index < scalar(@new_motifs) and ($find_motif == 0) )
+	#			{
+	#				my ($new_motif) = $new_motifs[$index]; 
+	#				$logger->debug("\nNew_Motif:$index: $new_motif");
 
-					# check if smaller motif match agains other motiff
-					while ( $seq =~ m/($new_motif)/g )
-					{
-						$logger->debug("\nNew_Motif: $new_motif");
-						
-						# see if new motif does not exits within current var
-						if ( !(exist_motif($motif_resnum{$varname}, $new_motif)) )
-						{
-							$logger->debug("\tnot_exist_new_motif:");
-							
-							if (exists $motifs{$key} and defined $motifs{$key} and (scalar(@{$motifs{$key}}) > 0) and 
-								exists $motif_freq{$key} and defined $motif_freq{$key} and
-								exists $motif_score{$key} and defined $motif_score{$key} and exists $motif_score{$key}{'main'}
-							) {
-								$logger->debug("ok1:");
-								
-								# find the correct position of center residue of current var
-								my ($plus) = 7;
-								if ($index == 1) { $plus = 7 } # left side
-								elsif ($index == 2) { $plus = 4 } # right side
-								my ($repeated_residue) = rindex($seq, $new_motif) + $plus;
-																
-								# add residue if not already exist
-								unless (exists $repeated_motifs->{$varname}->{$repeated_residue})
-								{									
-									$find_motif = 1;
-									
-									my ($repeated_motif) = $key;
-									if ($index == 1) { $repeated_motif =~ s/\w{3}$/---/g; } # left side
-									elsif ($index == 2) { $repeated_motif =~ s/^\w{3}/---/g; } # right side
-									
-									my ($repeated_varname) = $motifs{$key}->[0];
-									my ($repeated_res_freq) = $motif_freq{$key}{'main'};
-									my ($repeated_res_score) = $motif_score{$key}{'main'};
-									my ($repeated_res_rel) = $motif_rel{$key}{'main'};
-									my ($repeated_motif_ids) = $motif_ids{$repeated_varname}{$key};
-									$repeated_motif_ids =~ s/\n*//g;									
-									$repeated_motifs->{$varname}->{$repeated_residue} = {
-																					'motif'	=> $repeated_motif,
-																					'freq'	=> $repeated_res_freq,
-																					'score'	=> $repeated_res_score,
-																					'rel'	=> $repeated_res_rel,
-																					'ids'	=> $repeated_motif_ids,
-									};
+	#				# check if smaller motif match agains other motiff
+	#				while ( $seq =~ m/($new_motif)/g )
+	#				{
+	#					$logger->debug("\nNew_Motif: $new_motif");
+	#					
+	#					# see if new motif does not exits within current var
+	#					if ( !(exist_motif($motif_resnum{$varname}, $new_motif)) )
+	#					{
+	#						$logger->debug("\tnot_exist_new_motif:");
+	#						
+	#						if (exists $motifs{$key} and defined $motifs{$key} and (scalar(@{$motifs{$key}}) > 0) and 
+	#							exists $motif_freq{$key} and defined $motif_freq{$key} and
+	#							exists $motif_score{$key} and defined $motif_score{$key} and exists $motif_score{$key}{'main'}
+	#						) {
+	#							$logger->debug("ok1:");
+	#							
+	#							# find the correct position of center residue of current var
+	#							my ($plus) = 7;
+	#							if ($index == 1) { $plus = 7 } # left side
+	#							elsif ($index == 2) { $plus = 4 } # right side
+	#							my ($repeated_residue) = rindex($seq, $new_motif) + $plus;
+	#															
+	#							# add residue if not already exist
+	#							unless (exists $repeated_motifs->{$varname}->{$repeated_residue})
+	#							{									
+	#								$find_motif = 1;
+	#								
+	#								my ($repeated_motif) = $key;
+	#								if ($index == 1) { $repeated_motif =~ s/\w{3}$/---/g; } # left side
+	#								elsif ($index == 2) { $repeated_motif =~ s/^\w{3}/---/g; } # right side
+	#								
+	#								my ($repeated_varname) = $motifs{$key}->[0];
+	#								my ($repeated_res_freq) = $motif_freq{$key}{'main'};
+	#								my ($repeated_res_score) = $motif_score{$key}{'main'};
+	#								my ($repeated_res_rel) = $motif_rel{$key}{'main'};
+	#								my ($repeated_motif_ids) = $motif_ids{$repeated_varname}{$key};
+	#								$repeated_motif_ids =~ s/\n*//g;									
+	#								$repeated_motifs->{$varname}->{$repeated_residue} = {
+	#																				'motif'	=> $repeated_motif,
+	#																				'freq'	=> $repeated_res_freq,
+	#																				'score'	=> $repeated_res_score,
+	#																				'rel'	=> $repeated_res_rel,
+	#																				'ids'	=> $repeated_motif_ids,
+	#								};
 									# BEGIN: DEPRECATED
 									#if ( $motif_score{$key}{'main'} == 6 )
 									#{
@@ -414,25 +414,25 @@ sub main()
 									#}
 									# END: DEPRECATED
 									# count new motifs
-									$motif_count{$key} += 1;
-									$res_count{$varname}{'total'} += 1;
-									
-									$logger->debug("ok2\n");									
-									$logger->debug(Dumper($repeated_motifs->{$varname}->{$repeated_residue}));
-								}
-							}
-						}
-					}					
-					$index += 1;
-					
-					$logger->debug("\n");					
-				}							
-			}
-		}
-	}
-	$logger->debug("-- motif count\n".Dumper(%motif_count)."\n---------------\n");
-	$logger->debug("-- residues count 2\n".Dumper(%res_count)."\n---------------\n");
-	$logger->debug("-- repeated motifs\n".Dumper($repeated_motifs)."\n---------------\n");
+	#								$motif_count{$key} += 1;
+	#								$res_count{$varname}{'total'} += 1;
+	#								
+	#								$logger->debug("ok2\n");									
+	#								$logger->debug(Dumper($repeated_motifs->{$varname}->{$repeated_residue}));
+	#							}
+	#						}
+	#					}
+	#				}					
+	#				$index += 1;
+	#				
+	#				$logger->debug("\n");					
+	#			}							
+	#		}
+	#	}
+	#}
+	#$logger->debug("-- motif count\n".Dumper(%motif_count)."\n---------------\n");
+	#$logger->debug("-- residues count 2\n".Dumper(%res_count)."\n---------------\n");
+	#$logger->debug("-- repeated motifs\n".Dumper($repeated_motifs)."\n---------------\n");
 		
 
 	
