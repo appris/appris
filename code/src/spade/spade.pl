@@ -343,8 +343,8 @@ sub _get_best_domain($$$)
 						}
 						else {
 							# different alignment region
-							if ( ! _domain_overlaps_existing($sequence_id, $hmm_index, $hmm_name, $best_domains) &&
-									! _domain_overlaps_existing($sequence_id, $hmm_index, $hmm_name, $cand_domains) ) {
+							if ( ! _domain_overlaps_existing($hmm_index, $best_domains) &&
+									! _domain_overlaps_existing($hmm_index, $cand_domains) ) {
 								$adding_domain = 1;
 							}
 						}
