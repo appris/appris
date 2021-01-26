@@ -140,7 +140,7 @@ foreach my $i (@cargador){
 		else {sleep(5);}
 	}
 	if (defined$pro_opt){`perl $cwd/firePredText_profile.pl $i >/dev/null 2>&1 &`;}
-	else {`perl $cwd/firestar.pl $i > /dev/null 2> tmp/$names[$conteur].err &`;}
+	else {`perl $cwd/firestar.pl $i > /dev/null 2> /tmp/$names[$conteur].err &`;}
 	$conteur++;
 }
 

@@ -75,7 +75,7 @@ $template_sequence =~ s/\W/-/g;
 $pdb4 = substr($pdb_code, 0, 4);
 $pdbchain = substr($pdb_code, 4, 1);
 $pdb4 =~ tr/[A-Z]/[a-z]/;
-$pdbchain =~ tr/[a-z]/[A-Z]/;
+#$pdbchain =~ tr/[a-z]/[A-Z]/;
 $pdb_code = join "", $pdb4, $pdbchain; 
 
 # ... and off we go!
