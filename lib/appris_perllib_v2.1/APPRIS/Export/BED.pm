@@ -1102,15 +1102,8 @@ sub _aux_get_firestar_annotations {
 						my ($thick_end) = $data->{'thick_end'};
 						if ( $i==0 ) {
 							if ($trans_strand eq '-') {
-								$pos_start = $cds_out->start;
-								$pos_end = $res->start;
-								# the residue falls down between two CDS
-								if ( $cds_phase eq '0') {
-									$thick_start = $thick_start;
-								}
-								elsif ( $cds_phase eq '2') {
-									$thick_start = $thick_start;
-								}
+								$pos_start = $res->start;
+								$pos_end = $cds_out->start;
 							}
 							else {
 								$pos_start = $res->start;
@@ -1120,15 +1113,8 @@ sub _aux_get_firestar_annotations {
 						}
 						elsif ( $i == scalar(@sorted_contained_cds)-1 ) {
 							if ( $trans_strand eq '-' ) {
-								$pos_start = $res->end;
-								$pos_end = $cds_out->end;
-								# the residue falls down between two CDS
-								if ( $cds_phase eq '0') {
-									$thick_start = $thick_start +1;
-								}
-								elsif ( $cds_phase eq '2') {
-									$thick_start = $thick_start +1;
-								}
+								$pos_start = $cds_out->end;
+								$pos_end = $res->end;
 							}
 							else {
 								$pos_start = $cds_out->start;
