@@ -330,10 +330,23 @@ sub run_pipeline($;$)
 
 	}
 
-## TODO: Step 5 Upload all data files to the server
+	# Step 5: generate checksum files for dataset.
+	if ( $steps =~ /5/ )
+	{
+		info("calculating checksums...");
+		eval {
+			my ($params) = param_checksum_dataset($conf_data);
+			my ($cmd) = "$exp_env appris_checksum_dataset $params";
+			info($cmd);
+			system ($cmd);
+		};
+		throw("calculating checksums") if($@);
+	}
+
+## TODO: Step 6 Upload all data files to the server
 #
-#	# Step 5: Upload data files to the server
-#	if ( $steps =~ /5/ )
+#	# Step 6: Upload data files to the server
+#	if ( $steps =~ /6/ )
 #	{		
 #
 ## TODO: Check if something is bad.
@@ -436,6 +449,16 @@ sub param_retrieve_method($;$)
 	
 	return $params;	
 }
+sub param_checksum_dataset($)
+{
+	my ($conf_data) = @_;
+	my ($params) = '';
+
+	if ( defined $conf_data ) { $params .= " -c $conf_data " }
+	else { throw("configuration is not provided") }
+
+	return $params;
+}
 
 
 main();
@@ -462,6 +485,7 @@ Executes all APPRIS 'steps
 	* 2 - Retrieves the list of principal isoforms and Compare stats between versions -\n
 	* 3 - Inserts the annotations into database -\n
 	* 4 - Retrieves the data files of methods -\n
+	* 5 - Calculates checksums of dataset files -\n
 		
   -c, --conf     {file} <Config file for all gene datatasets (JSON format)>
   	or  

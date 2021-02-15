@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+
+# -----------------------------------------------------------------------------
+# Local variables
+VER=0.1
+VERDATE="15-Feb-2021"
+
+FILENAME=`basename $0`
+FILENAME="${FILENAME%.*}"
+DIRNAME=`dirname $0`
+
+CONF_SPECIES=""
+DATASET_DIR=""
+LOG_LEVEL=""
+
+# -----------------------------------------------------------------------------
+# Load external functions
+source ${DIRNAME}/appris_env
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS data checksum script.\n
+\n
+ Name:\n
+\t appris_checksum_dataset\n
+\n
+ Description:\n
+\t Calculate checksums for APPRIS data files.\n
+\n
+ Required arguments:\n
+\t -c [-conf]\n
+\t\t Source file with env variables for the input dataset\n
+\n
+ Optional arguments:\n
+\t -d [-dir]\n
+\t\t Path of APPRIS dataset directory for\n
+\t\t which checksums are being calculated.\n
+\t\t (e.g. 'data/2021_02.v39/homo_sapiens/e102v39')\n
+\n
+\t -l, -loglevel\n
+\t\t info\n
+\t\t debug\n
+\n
+\t -v [-version]\n
+\t -h [-help]\n
+\n
+\n
+ Author: Thomas Walsh (CNIO), adapted from APPRIS bash script code that\n
+\t was originally written by Jose Manuel Rodriguez Carrasco.\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			CONF_SPECIES=$2
+			shift
+			;;
+		-d | -dir )
+			DATASET_DIR=$2
+			shift
+			;;
+		-l | -loglevel )
+			case "$2" in
+				info | debug )
+					LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2"
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;
+		-h | -help )
+			echo -e $USAGE
+			exit
+			;;
+		-v | -version )
+			echo "$VER", "$VERDATE"
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${CONF_SPECIES}" == "" ]; then
+	echo "You must specify at least one config file for SPECIES!"
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${DATASET_DIR}" != "" ]; then
+	APPRIS_DATA_DIR="${DATASET_DIR}"
+fi
+
+if [ "${APPRIS_DATA_DIR}" == "" ]; then
+	echo "You must specify a dataset directory!"
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ ! -d $APPRIS_DATA_DIR ]; then
+	echo "Dataset directory not found: $APPRIS_DATA_DIR"
+	exit 1
+fi 
+
+# -----------------------------------------------------------------------------
+# Prepare Environment from config file for SPECIES
+load_appris_specie_env "${CONF_SPECIES}" "verbose"
+
+# -----------------------------------------------------------------------------
+# Var declarations
+SPECIES_ID=$(echo ${APPRIS_SPECIES} | tr "[:upper:]" "[:lower:]" | sed 's/ /_/')
+
+# -----------------------------------------------------------------------------
+# local parameters
+LOG_PARAMETERS=""
+if [ "$LOG_LEVEL" != "" ]; then
+	prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
+	LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/${FILENAME}.${SPECIES_ID}.log"
+	LOG_PARAMETERS="--loglevel=${LOG_LEVEL} --logappend --logfile=${LOG_FILENAME}"
+fi
+
+# -----------------------------------------------------------------------------
+# Run method
+SCRIPT="${APPRIS_SCRIPTS_DIR}/checksum_dataset.pl"
+
+echo "================="
+
+echo "perl ${SCRIPT} \ "
+echo "	--data-dir=${APPRIS_DATA_DIR} \ "
+echo "	${LOG_PARAMETERS}"
+
+perl "${SCRIPT}" \
+	--data-dir="${APPRIS_DATA_DIR}" \
+	${LOG_PARAMETERS}
+
+echo "================="
+
