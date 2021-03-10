@@ -1,0 +1,662 @@
+{
+    "Homo": [
+        {
+            "name": "Homo sapiens",
+            "common": "Human",
+            "tax_id": 9606,
+            "proteome_id": "UP000005640",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Gorilla": [
+        {
+            "name": "Gorilla gorilla gorilla",
+            "common": "Gorilla",
+            "tax_id": 9595,
+            "proteome_id": "UP000001519",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Pan": [
+        {
+            "name": "Pan troglodytes",
+            "common": "Chimpanzee",
+            "tax_id": 9598,
+            "proteome_id": "UP000002277",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Pongo": [
+        {
+            "name": "Pongo abelii",
+            "common": "Orangutan",
+            "tax_id": 9601,
+            "proteome_id": "UP000001595",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Nomascus": [
+        {
+            "name": "Nomascus leucogenys",
+            "common": "Gibbon",
+            "tax_id": 61853,
+            "proteome_id": "UP000001073",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Macaca": [
+        {
+            "name": "Macaca mulatta",
+            "common": "Macaque",
+            "tax_id": 9544,
+            "proteome_id": "UP000006718",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Papio": [
+        {
+            "name": "Papio anubis",
+            "common": "Olive baboon",
+            "tax_id": 9555,
+            "proteome_id": "UP000028761",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Chlorocebus": [
+        {
+            "name": "Chlorocebus sabaeus",
+            "common": "Vervet-AGM",
+            "tax_id": 60711,
+            "proteome_id": "UP000029965",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Callithrix": [
+        {
+            "name": "Callithrix jacchus",
+            "common": "Marmoset",
+            "tax_id": 9483,
+            "proteome_id": "UP000008225",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Tarsius": [
+        {
+            "name": "Tarsius syrichta",
+            "common": "Tarsier",
+            "tax_id": 1868482,
+            "proteome_id": "UP000189704",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Microcebus": [
+        {
+            "name": "Microcebus murinus",
+            "common": "Mouse Lemur",
+            "tax_id": 30608,
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Otolemur": [
+        {
+            "name": "Otolemur garnettii",
+            "common": "Bushbaby",
+            "tax_id": 30611,
+            "proteome_id": "UP000005225",
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Mus": [
+        {
+            "name": "Mus musculus",
+            "common": "Mouse",
+            "tax_id": 10090,
+            "proteome_id": "UP000000589",
+            "age": 21,
+            "norm": 0
+        },
+        {
+            "name": "Mus spretus",
+            "common": "Mouse SPRETEiJ",
+            "tax_id": 10096,
+            "age": 21,
+            "norm": 0
+        }
+    ],
+    "Rattus": [
+        {
+            "name": "Rattus norvegicus",
+            "common": "Rat",
+            "tax_id": 10116,
+            "proteome_id": "UP000002494",
+            "age": 0,
+            "norm": 0
+        }
+    ],
+    "Dipodomys": [
+        {
+            "name": "Dipodomys ordii",
+            "common": "Kangaroo rat",
+            "tax_id": 10020,
+            "proteome_id": "UP000081671",
+            "age": 70,
+            "norm": 0
+        }
+    ],
+    "Ictidomys": [
+        {
+            "name": "Ictidomys tridecemlineatus",
+            "common": "Squirrel",
+            "tax_id": 43179,
+            "proteome_id": "UP000005215",
+            "age": 71,
+            "norm": 0
+        }
+    ],
+    "Cavia": [
+        {
+            "name": "Cavia porcellus",
+            "common": "Guinea Pig",
+            "tax_id": 10141,
+            "proteome_id": "UP000005447",
+            "age": 73,
+            "norm": 0
+        }
+    ],
+    "Ochotona": [
+        {
+            "name": "Ochotona princeps",
+            "common": "Pika",
+            "tax_id": 9978,
+            "age": 82,
+            "norm": 0
+        }
+    ],
+    "Oryctolagus": [
+        {
+            "name": "Oryctolagus cuniculus",
+            "common": "Rabbit",
+            "tax_id": 9986,
+            "proteome_id": "UP000001811",
+            "age": 82,
+            "norm": 0
+        }
+    ],
+    "Tupaia": [
+        {
+            "name": "Tupaia belangeri",
+            "common": "Tree Shrew",
+            "tax_id": 37347,
+            "age": 88,
+            "norm": 0.1297935
+        }
+    ],
+    "Erinaceus": [
+        {
+            "name": "Erinaceus europaeus",
+            "common": "Hedgehog",
+            "tax_id": 9365,
+            "proteome_id": "UP000079721",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Sorex": [
+        {
+            "name": "Sorex araneus",
+            "common": "Shrew",
+            "tax_id": 42254,
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Myotis": [
+        {
+            "name": "Myotis lucifugus",
+            "common": "Microbat",
+            "tax_id": 59463,
+            "proteome_id": "UP000001074",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Pteropus": [
+        {
+            "name": "Pteropus vampyrus",
+            "common": "Megabat",
+            "tax_id": 2035815,
+            "proteome_id": "UP000154973",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Equus": [
+        {
+            "name": "Equus caballus",
+            "common": "Horse",
+            "tax_id": 9796,
+            "proteome_id": "UP000002281",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Felis": [
+        {
+            "name": "Felis catus",
+            "common": "Cat",
+            "tax_id": 9685,
+            "proteome_id": "UP000011712",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Canis": [
+        {
+            "name": "Canis lupus familiaris",
+            "common": "Dog",
+            "tax_id": 9615,
+            "proteome_id": "UP000002254",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Ailuropoda": [
+        {
+            "name": "Ailuropoda melanoleuca",
+            "common": "Panda",
+            "tax_id": 9646,
+            "proteome_id": "UP000008912",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Mustela": [
+        {
+            "name": "Mustela putorius furo",
+            "common": "Ferret",
+            "tax_id": 9669,
+            "proteome_id": "UP000000715",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Tursiops": [
+        {
+            "name": "Tursiops truncatus",
+            "common": "Dolphin",
+            "tax_id": 9739,
+            "proteome_id": "UP000245320",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Sus": [
+        {
+            "name": "Sus scrofa",
+            "common": "Pig",
+            "tax_id": 9823,
+            "proteome_id": "UP000008227",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Bos": [
+        {
+            "name": "Bos taurus",
+            "common": "Cow",
+            "tax_id": 9913,
+            "proteome_id": "UP000009136",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Ovis": [
+        {
+            "name": "Ovis aries",
+            "common": "Sheep",
+            "tax_id": 9940,
+            "proteome_id": "UP000002356",
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Vicugna": [
+        {
+            "name": "Vicugna pacos",
+            "common": "Alpaca",
+            "tax_id": 30538,
+            "age": 94,
+            "norm": 0.1386431
+        }
+    ],
+    "Choloepus": [
+        {
+            "name": "Choloepus hoffmanni",
+            "common": "Sloth",
+            "tax_id": 9358,
+            "age": 102,
+            "norm": 0.1504425
+        }
+    ],
+    "Dasypus": [
+        {
+            "name": "Dasypus novemcinctus",
+            "common": "Armadillo",
+            "tax_id": 9361,
+            "age": 102,
+            "norm": 0.1504425
+        }
+    ],
+    "Echinops": [
+        {
+            "name": "Echinops telfairi",
+            "common": "Lesser hedgehog tenrec",
+            "tax_id": 9371,
+            "age": 102,
+            "norm": 0.1504425
+        }
+    ],
+    "Loxodonta": [
+        {
+            "name": "Loxodonta africana",
+            "common": "Elephant",
+            "tax_id": 9785,
+            "proteome_id": "UP000007646",
+            "age": 102,
+            "norm": 0.1504425
+        }
+    ],
+    "Procavia": [
+        {
+            "name": "Procavia capensis",
+            "common": "Hyrax",
+            "tax_id": 9813,
+            "age": 102,
+            "norm": 0.1504425
+        }
+    ],
+    "Sarcophilus": [
+        {
+            "name": "Sarcophilus harrisii",
+            "common": "Tasmanian devil",
+            "tax_id": 9305,
+            "proteome_id": "UP000007648",
+            "age": 160,
+            "norm": 0.2359882
+        }
+    ],
+    "Macropus": [
+        {
+            "name": "Macropus eugenii",
+            "common": "Wallaby",
+            "tax_id": 9315,
+            "age": 160,
+            "norm": 0.2359882
+        }
+    ],
+    "Monodelphis": [
+        {
+            "name": "Monodelphis domestica",
+            "common": "Opossum",
+            "tax_id": 13616,
+            "proteome_id": "UP000002280",
+            "age": 160,
+            "norm": 0.2359882
+        }
+    ],
+    "Ornithorhynchus": [
+        {
+            "name": "Ornithorhynchus anatinus",
+            "common": "Platypus",
+            "tax_id": 9258,
+            "proteome_id": "UP000002279",
+            "age": 169,
+            "norm": 0.2492625
+        }
+    ],
+    "Anolis": [
+        {
+            "name": "Anolis carolinensis",
+            "common": "Anole lizard",
+            "tax_id": 28377,
+            "proteome_id": "UP000001646",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Taeniopygia": [
+        {
+            "name": "Taeniopygia guttata",
+            "common": "Zebra Finch",
+            "tax_id": 59729,
+            "proteome_id": "UP000007754",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Ficedula": [
+        {
+            "name": "Ficedula albicollis",
+            "common": "Flycatcher",
+            "tax_id": 59894,
+            "proteome_id": "UP000016665",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Anas": [
+        {
+            "name": "Anas platyrhynchos",
+            "common": "Duck",
+            "tax_id": 8839,
+            "proteome_id": "UP000016666",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Gallus": [
+        {
+            "name": "Gallus gallus",
+            "common": "Chicken",
+            "tax_id": 9031,
+            "proteome_id": "UP000000539",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Meleagris": [
+        {
+            "name": "Meleagris gallopavo",
+            "common": "Turkey",
+            "tax_id": 9103,
+            "proteome_id": "UP000001645",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Pelodiscus": [
+        {
+            "name": "Pelodiscus sinensis",
+            "common": "Chinese softshell turtle",
+            "tax_id": 13735,
+            "proteome_id": "UP000007267",
+            "age": 320,
+            "norm": 0.4719764
+        }
+    ],
+    "Xenopus": [
+        {
+            "name": "Xenopus tropicalis",
+            "common": "Xenopus",
+            "tax_id": 8364,
+            "proteome_id": "UP000008143",
+            "age": 353,
+            "norm": 0.520649
+        },
+        {
+            "name": "Xenopus (Silurana) tropicalis",
+            "common": "Xenopus",
+            "tax_id": 8364,
+            "age": 353,
+            "norm": 0.520649
+        }
+    ],
+    "Latimeria": [
+        {
+            "name": "Latimeria chalumnae",
+            "common": "Coelacanth",
+            "tax_id": 7897,
+            "proteome_id": "UP000008672",
+            "age": 414,
+            "norm": 0.6106195
+        }
+    ],
+    "Danio": [
+        {
+            "name": "Danio rerio",
+            "common": "Zebrafish",
+            "tax_id": 7955,
+            "proteome_id": "UP000000437",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Astyanax": [
+        {
+            "name": "Astyanax mexicanus",
+            "common": "Cave fish",
+            "tax_id": 7994,
+            "proteome_id": "UP000018467",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Gadus": [
+        {
+            "name": "Gadus morhua",
+            "common": "Cod",
+            "tax_id": 8049,
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Oreochromis": [
+        {
+            "name": "Oreochromis niloticus",
+            "common": "Tilapia",
+            "tax_id": 8128,
+            "proteome_id": "UP000005207",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Oryzias": [
+        {
+            "name": "Oryzias latipes",
+            "common": "Medaka",
+            "tax_id": 8090,
+            "proteome_id": "UP000001038",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Xiphophorus": [
+        {
+            "name": "Xiphophorus maculatus",
+            "common": "Platyfish",
+            "tax_id": 8083,
+            "proteome_id": "UP000002852",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Poecilia": [
+        {
+            "name": "Poecilia formosa",
+            "common": "Amazon molly",
+            "tax_id": 48698,
+            "proteome_id": "UP000028760",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Takifugu": [
+        {
+            "name": "Takifugu rubripes",
+            "common": "Fugu",
+            "tax_id": 31033,
+            "proteome_id": "UP000005226",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Tetraodon": [
+        {
+            "name": "Tetraodon nigroviridis",
+            "common": "Tetraodon",
+            "tax_id": 99883,
+            "proteome_id": "UP000007303",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Gasterosteus": [
+        {
+            "name": "Gasterosteus aculeatus",
+            "common": "Stickleback",
+            "tax_id": 69293,
+            "proteome_id": "UP000007635",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Lepisosteus": [
+        {
+            "name": "Lepisosteus oculatus",
+            "common": "Spotted gar",
+            "tax_id": 7918,
+            "proteome_id": "UP000018468",
+            "age": 432,
+            "norm": 0.6371681
+        }
+    ],
+    "Petromyzon": [
+        {
+            "name": "Petromyzon marinus",
+            "common": "Lamprey",
+            "tax_id": 7757,
+            "age": 601,
+            "norm": 0.8864307
+        }
+    ],
+    "Ciona": [
+        {
+            "name": "Ciona intestinalis",
+            "common": "C.intestinalis",
+            "tax_id": 7719,
+            "proteome_id": "UP000008144",
+            "age": 678,
+            "norm": 1
+        },
+        {
+            "name": "Ciona savignyi",
+            "common": "C.savignyi",
+            "tax_id": 51511,
+            "proteome_id": "UP000007875",
+            "age": 678,
+            "norm": 1
+        }
+    ]
+}
