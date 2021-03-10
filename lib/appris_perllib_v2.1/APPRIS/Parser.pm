@@ -4310,8 +4310,13 @@ sub _parse_inseq_transl($)
 				my ($id1) = $1;
 				my ($id2) = $2;
 				$sequence_id = $id1;
-				if ( $id2 =~ /^ENSTR?[\d*]/ or $id2 =~ /^ENSMUST[\d*]/ ) { # From GENCODE (human and mouse), the second id is Ensembl Transcript id
+				if ( $id2 =~ /^ENSTR?[0-9]+(?:\.[0-9]+)?$/ or      # GENCODE Human inc. PAR Y ID format used until release 24
+					 $id2 =~ /^ENST[0-9]+(?:\.[0-9]+)?_PAR_Y$/ or  # GENCODE Human PAR Y ID format from release 25
+					 $id2 =~ /^ENSMUST[0-9]+(?:\.[0-9]+)?$/ ) {    # GENCODE Mouse
+					# From GENCODE (human and mouse), the second id is Ensembl Transcript id
 					$sequence_id = $id2;
+				} else {
+					throw("Failed to parse translation sequence ID: '".$seq->id."'");
 				}
 			}
 			elsif ( $seq->desc =~ / transcript:([^\s]+)\s*/ ) { # Ensembl sequences
