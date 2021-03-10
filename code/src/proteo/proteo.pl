@@ -80,7 +80,7 @@ sub main()
 	eval
 	{
 		$logger->info("-- obtain gene_id\n");
-		my ($cmd) = "awk -F\"\\t\" '{if (\$3 == \"gene\") {print \$9}}' $data_file | grep -o -m1 'gene_id \"[^\"]*\";' | sed 's/^gene_id \"\\|\";\$//g' | sed 's/\\.[0-9]*\$//'";
+		my ($cmd) = "awk -F \"\\t\" '{if (\$3 == \"gene\") {print \$9}}' $data_file | grep -o -m1 'gene_id \"[^\"]*\";' | sed 's/^gene_id \"\\|\";\$//g' | sed 's/\\.[0-9]*\$//'";
 		$logger->debug("$cmd\n");						
 		my (@gene_id_out) = `$cmd`;
 		if ( scalar(@gene_id_out) == 0 ) {
@@ -96,8 +96,8 @@ sub main()
 	# retrieve peptides from text file
 	if ( defined $gene_id and ($gene_id ne '') ) {
 		$logger->info("-- retrieve peptides from a gene\n");
-		my ($cmd) = "awk -F ',' '\$2 ~ /$gene_id/ || \$2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with commas
-		#my ($cmd) = "awk '\$2 ~ /$gene_id/ || \$2 ~ /$gene_id\.[0-9]+/ {print \$0}' $PROG_DB"; # version with tabs
+		my ($cmd) = "awk -F ',' '\$2 ~ /^$gene_id(\\.[0-9]+)?\$/ {print \$0}' $PROG_DB"; # version with commas
+		#my ($cmd) = "awk -F \"\\t\" '\$2 ~ /^$gene_id(\\.[0-9]+)?\$/ {print \$0}' $PROG_DB"; # version with tabs
 		$logger->debug("$cmd\n");						
 		my (@proteo_txt_out) = `$cmd`;
 		if ( scalar(@proteo_txt_out) == 0 ) {
