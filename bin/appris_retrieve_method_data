@@ -299,9 +299,8 @@ for M in ${METHODS_ARR};do
 	
 	if [ "${FORMAT}" == "bed12" ]; then
 		# Sort the the tracks
-		echo "sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2 && sed -i -- 's/chrMT/chrM/g;s/chrdmel_mitochondrion_genome/chrM/g;s/chrMtDNA/chrM/g' ${OUTPUT_METHOD}.2 && mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}"
+		echo "sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2 && mv ${OUTPUT_METHOD}.2 ${OUTPUT_METHOD}"
 		sort -k1,1 -k2,2n ${OUTPUT_METHOD} > ${OUTPUT_METHOD}.2
-		sed -i -- 's/chrMT/chrM/g;s/chrdmel_mitochondrion_genome/chrM/g;s/chrMtDNA/chrM/g' ${OUTPUT_METHOD}.2 
 		mv ${OUTPUT_METHOD}.2  ${OUTPUT_METHOD}
 
 		M2=$( echo $M | sed 's/\-[^\-]*//g')

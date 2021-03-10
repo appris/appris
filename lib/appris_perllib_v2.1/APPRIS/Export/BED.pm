@@ -191,6 +191,15 @@ sub get_annotations {
 		else {
 			$pos =~ s/\.([0-9]*)/\-$1/g;
 		}
+
+		# For BED12, convert the mitochondrial genome ID
+		if ( $typebed eq 'bed12' ) {
+			if ( $pos eq 'chrMT' || $pos eq 'chrMtDNA' ||
+				 $pos =~ /chr(?:dmel)?mitochondrion_genome/ ) {
+				$pos = 'chrM';
+			}
+		}
+
 		$position = "$pos:$start\-$end";
     }        
 
@@ -483,9 +492,17 @@ sub print_track {
 	else {
 		$pos =~ s/\.([0-9]*)/\-$1/g;
 	}
-    
-    # for BED12: Change the Notes for Names
+
+    # Make specific changes for BED12
     if ( $typebed eq 'bed12' ) {
+
+		# Convert the mitochondrial genome ID
+		if ( $pos eq 'chrMT' || $pos eq 'chrMtDNA' ||
+			 $pos =~ /chr(?:dmel)?mitochondrion_genome/ ) {
+			$pos = 'chrM';
+		}
+
+		#  Change the Notes for Names
 		if ( defined $note and defined $name ) {
 			my ($na) = $name;
 			my ($no) = $note;
