@@ -457,6 +457,8 @@ sub param_checksum_dataset($)
 	if ( defined $conf_data ) { $params .= " -c $conf_data " }
 	else { throw("configuration is not provided") }
 
+	if ( defined $loglevel ) { $params .= " -l $loglevel " }
+
 	return $params;
 }
 
