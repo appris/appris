@@ -24,19 +24,33 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Danio rerio"
+export APPRIS_SPECIES="Caenorhabditis elegans"
 
-export APPRIS_CHR_LIST=""
+export APPRIS_ASSEMBLY="WBcel235"
+
+export APPRIS_CHR_LIST="I,II,III,IV,MtDNA,V,X"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/appris_seqs.transl.fa"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/caenorhabditis_elegans.annot.gtf"
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/caenorhabditis_elegans.transc.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/caenorhabditis_elegans.transl.fa"
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/ce11.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=101
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=invertebrates
 
 # --------------------------------#
 # Setting up the vars for cluster #

@@ -2,15 +2,16 @@
 # SETTING UP ENVIRONMENT VARIABLES AND PERL LIBRARY PATH #
 ##########################################################
 
-# ------------------------------------------#
+# -----------------------------------------#
 # Setting up vars of workspaces directories #
-# ------------------------------------------#
+# -----------------------------------------#
 
-export APPRIS_WORKSPACE="$APPRIS_HOME"
+export APPRIS_WORKSPACE="${APPRIS_HOME}"
 
-# ------------------------------------------#
+# -----------------------------------------#
 # Setting up vars of workspaces directories #
-# ------------------------------------------#
+# -----------------------------------------#
+
 
 export APPRIS_FEATURES_DIR="${APPRIS_WORKSPACE}/features/${APPRIS_WS_NAME}"
 
@@ -24,19 +25,33 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Danio rerio"
+export APPRIS_SPECIES="Mus musculus"
 
-export APPRIS_CHR_LIST=""
+export APPRIS_ASSEMBLY="GRCm39"
+
+export APPRIS_CHR_LIST="NC_000067.7,NC_000068.8,NC_000069.7,NC_000070.7,NC_000071.7,NC_000072.7,NC_000073.7,NC_000074.7,NC_000075.7,NC_000076.7,NC_000077.7,NC_000078.7,NC_000079.7,NC_000080.7,NC_000081.7,NC_000082.7,NC_000083.7,NC_000084.7,NC_000085.7,NC_000086.8,NC_000087.8,NC_005089.1"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/appris_seqs.transl.fa"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.annot.gtf"
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.transc.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/mus_musculus.transl.fa"
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/mm39.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_E_VERSION=103
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
 # --------------------------------#
 # Setting up the vars for cluster #

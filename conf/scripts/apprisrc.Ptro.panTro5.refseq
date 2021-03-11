@@ -24,19 +24,31 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Danio rerio"
+export APPRIS_SPECIES="Pan troglodytes"
 
-export APPRIS_CHR_LIST=""
+export APPRIS_ASSEMBLY="Pan_tro_3.0"
+
+export APPRIS_CHR_LIST="NC_006468.4 NC_006469.4 NC_006470.4 NC_006490.4 NC_006471.4 NC_006472.4 NC_006473.4 NC_006474.4 NC_006475.4 NC_006476.4 NC_006477.4 NC_006478.4 NC_006479.4 NC_006480.4 NC_006481.4 NC_006482.4 NC_006483.4 NC_006484.4 NC_006485.4 NC_006486.4 NC_006487.4 NC_006488.4 NC_006489.4 NC_006491.4 NC_006492.4 NC_001643.1"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/appris_seqs.transl.fa"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.annot.gtf"
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/danRer10.chrom.sizes"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transc.fa"
+
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/pan_troglodytes.transl.fa"
+
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/panTro5.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
+
+#export APPRIS_GENE_LIST=""
+
+#export APPRIS_TYPE_ALIGN=compara
+
+#export APPRIS_TYPE_ALIGN_SPECIES_NAME=mammals
 
 # --------------------------------#
 # Setting up the vars for cluster #
