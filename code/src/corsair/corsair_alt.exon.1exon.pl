@@ -397,6 +397,7 @@ sub parse_blast($$)				# reads headers for each alignment in the blast output
 	my ($species_found);
 	my ($aln_report);
 
+	# TODO: use BioPerl BLAST parser
 	open (BLASTFILE, $blast_file) or die "on the spot";
 
 	my $string = "";
@@ -499,76 +500,39 @@ sub check_alignment($$$\$$) #parses BLAST alignments
 	my @candidate = ();
 	my @startc = ();
 	my @endc = ();
-	my $longestgap = 0;
-	my $longestunmatches = 0;
 	my ($aln_score) = 0;
 	my ($aln_sms) = '';
 	my ($specie_point) = 1;
 	
-	my $longest_elem = sub {
-	    my $max = -1;
-	    for (@_) {
-	        if (length > $max) {  # no temp variable, length() twice is faster
-	            $max = length;
-	        }
-	    }
-	    return $max;
-	};
-	
 	while (<BLASTFILE>)
 		{
 		chomp;
-		if (/^Query:/) {  					# read in query line
-			my @query = split " ";
-			push @target, $query[2];
-			push @startq, $query[1];
-			push @endq, $query[3];
-			# get the longest gap (in Query or Subject)
-			my $aln = join "", @target;
- 			my @unmatches = $aln =~ /[\-]{4,}/g; # number GAPS (-) together (more than 4 gaps)
-			if (scalar(@unmatches) > 0) {
-				my $unmatches = $longest_elem->(@unmatches);
-				if ( defined $unmatches and $unmatches > $longestgap )
-				  { $longestgap = $unmatches } 
-			}
+		if (/^Query:\s+([0-9]+)\s+(\S+)\s+([0-9]+)/) {		# read in query line
+			push @target, $2;
+			push @startq, $1;
+			push @endq, $3;
 		}
-		if (/^Sbjct:/) { 					# read in subject line
-			my @subject = split " ";
-			push @candidate, $subject[2];
-			push @startc, $subject[1];
-			push @endc, $subject[3];
-			# get the longest gap (in Query or Subject)
-			my $aln = join "", @candidate;
- 			my @unmatches = $aln =~ /[\-]{4,}/g; # number GAPS (-) together (more than 4 gaps)
-			if (scalar(@unmatches) > 0) {
-				my $unmatches = $longest_elem->(@unmatches);
-				if ( defined $unmatches and $unmatches > $longestgap )
-				  { $longestgap = $unmatches } 
-			}
+		elsif (/^Sbjct:\s+([0-9]+)\s+(\S+)\s+([0-9]+)/) {	# read in subject line
+			push @candidate, $2;
+			push @startc, $1;
+			push @endc, $3;
 		}
-		if (/^\s+/) {						# read in match line
-			my $aln = $_;
-			$aln =~ s/^\s+//g;
-			my @unmatches = $aln =~ /[\s\+]{4,}/g; # number unmatches (blanks) in total) together (more than 4 gaps)
-			if (scalar(@unmatches) > 0) {
-				my $unmatches = $longest_elem->(@unmatches);
-				if ( defined $unmatches and $unmatches > $longestunmatches )
-				  { $longestunmatches = $unmatches } 
-			}
-		}
-		if ($_ eq $oldinput)					# two carriage returns in a row mean alignment has ended
+		elsif ($_ eq '' && $oldinput eq '')			# two carriage returns in a row mean alignment has ended
 			{last}
 		$oldinput = $_;
 		}
 		
 	# process alignment ...
+
+	my $target = join "", @target;
+	my $candidate = join "", @candidate;
+
 	my $targstart = $startq[0];
 	my $targend = $endq[$#endq];
 	my $candstart = $startc[0];
 	my $candend = $endc[$#endc];	
 
 # print STDERR "TARGET_LENGTH: $targlength - $targend\n";
-# print STDERR "LONGEST_GAP: $longestgap\n";
 
 	if ($targstart > 4)		# reject if different N-terminal, only for the Query
 		{return (0,"It has different N-terminal")}
@@ -576,9 +540,15 @@ sub check_alignment($$$\$$) #parses BLAST alignments
 	if ( (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal, only for the Query
 		{return (0,"Subject has longer C-terminal")}
 
-	if ( $longestgap >= 4 ) # reject if query/subject have longer gaps
-		{return (0,"Query/Subject have longer gaps")}
-
+	# find overly long gaps (in Query or Subject)
+	while ($target =~ /(-{4,})/g) {
+		if ( length($1) >= 4 )
+		  {return (0,"Query has longer gaps")}
+	}
+	while ($candidate =~ /(-{4,})/g) {
+		if ( length($1) >= 4 )
+		  {return (0,"Subject has longer gaps")}
+	}
 
 	# score of global align
 	$aln_score = $specie_point;
