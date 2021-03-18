@@ -4316,7 +4316,7 @@ sub _parse_inseq_transl($)
 					# From GENCODE (human and mouse), the second id is Ensembl Transcript id
 					$sequence_id = $id2;
 				} else {
-					throw("Failed to parse translation sequence ID: '".$seq->id."'");
+					warning("Failed to identify translation sequence ID, taking first part of FASTA header: '$sequence_id'");
 				}
 			}
 			elsif ( $seq->desc =~ / transcript:([^\s]+)\s*/ ) { # Ensembl sequences
