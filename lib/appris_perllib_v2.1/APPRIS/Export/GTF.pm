@@ -1477,7 +1477,6 @@ sub get_trifid_annotations {
 				$optional->{'gene_id'}			= $gene_id;
 				$optional->{'transcript_id'}	= $transcript_id;
 				$optional->{'transcript_name'}	= $external_id;
-				$optional->{'annotation'} = $trifid_score;
 				if (defined $common and defined $optional) {
 					$output .= print_annotations($common,$optional);
 				}

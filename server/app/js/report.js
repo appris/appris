@@ -354,7 +354,7 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
         var selected = [];
         var titleSize = 40;
         angular.forEach(input, function(item) {
-            if ( angular.isDefined(item.annotation) ) {
+            if ( angular.isDefined(item.annotation) || item.type == "functional_importance" ) {
                 var iTrans = item.transcript_id;
                 var iTrans_lbl = deleteSrcNamesFilter(iTrans);
                 var sLabel = item.type;
