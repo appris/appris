@@ -414,17 +414,10 @@ sub _get_ccds_disagreement($)
 			'proteo'	=> 0,
 			'appris'	=> 0,
 		};		
-		my ($num_ccds);
 		
 		if ( exists $gene_report->{'ccds_id'} and defined $gene_report->{'ccds_id'} ) {
 			my ($ccds_report) = $gene_report->{'ccds_id'};
-			$num_ccds = scalar(keys(%{$ccds_report}));
 		}
-		unless ( defined $num_ccds and ($num_ccds == 1) ) {
-			print STDERR "MORE THAN ONE: $gene_id\n";
-			next;
-		}
-		
 		foreach my $transcript_id (keys %{$gene_report->{'transcripts'}}) {
 			my ($trans_report) = $gene_report->{'transcripts'}->{$transcript_id};
 			my ($ccds_annot);
