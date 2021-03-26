@@ -267,12 +267,15 @@ sub resulttypes_appris {
 	else { # exporter mode
 		$run_mode = 'gencode';
 		$run_methods = $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE};
-		# Add proteo and trifid methods in the case of human
+		# Add proteo and trifid methods if appropriate
 		if ( defined $params ) {
 			if ( exists $params->{'species'} ) {
 				my ($species) = _create_param_species($params->{'species'});
-				$run_methods .= ',proteo,trifid' if ( $species eq 'Homo sapiens' );
-			}			
+				$run_methods .= ',proteo' if ( $species eq 'Homo sapiens' );
+				$run_methods .= ',trifid' if ( $species eq 'Homo sapiens' ||
+											   $species eq 'Mus musculus' ||
+											   $species eq 'Rattus norvegicus' );
+			}
 		}
 	}
 	# Retrieve type of results
