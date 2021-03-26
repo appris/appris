@@ -521,7 +521,7 @@ apprisFilters.filter('activeTrifidClass', function() {
     return function(input){
         var filtered = '';
         if ( angular.isDefined(input['functional_importance']) ) {
-            if ( input['functional_importance'] > 0.5 ) {
+            if ( input['functional_importance'] > 0.6 ) {
 
                 var has_decay_biotype = false;
                 if ( angular.isDefined(input['biotype']) ) {

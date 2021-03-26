@@ -2,7 +2,9 @@
 
 use strict;
 use Bio::SeqIO;
+use Digest::SHA1 qw( sha1_hex );
 use Getopt::Long;
+use List::Util qw( all any );
 
 use APPRIS::Utils::Logger;
 use APPRIS::Utils::File qw( printStringIntoFile );
@@ -56,56 +58,101 @@ sub main()
 		-format => 'Fasta'
 	);
 
-	# obtain the gene id and a hash mapping transcript IDs to their translated sequence
-	my ($gene_id);
-	my (%transc_to_seq);
+	# Obtain the query gene ID and a hash mapping each
+	# transcript ID to its relevant sequence metadata.
+	my ($query_gene_id);
+	my (%seq_meta);
 	while ( my $seq = $fasta_object->next_seq() )
 	{
-		if( $seq->id=~/^([^|]+)\|([^|]+)\|([^|]+)/ )
-		{
-			my ($transc_id) = $2;
-			my ($seq_gene_id) = $3;
-			if ( $transc_id =~ /^ENS/ ) { $transc_id =~ s/\.\d*$// }
-			if ( $seq_gene_id =~ /^ENS/ ) { $seq_gene_id =~ s/\.\d*$// }
-			$transc_to_seq{$transc_id} = $seq->seq;
+		my (@match) = ( $seq->id =~ /^([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([0-9]+)/ );
 
-			if ( ! defined($gene_id) ) {
-				$gene_id = $seq_gene_id;
-			} elsif ( $seq_gene_id ne $gene_id ) {
-				$logger->error("gene ID mismatch: $seq_gene_id vs $gene_id\n");
+		if(@match)
+		{
+			my ($transl_id, $transc_id, $gene_id, $gene_name, $ccds_id, $length_aa) = @match;
+
+			my ($gene_ver);  # TODO: check consistent gene version.
+			if ( $gene_id =~ /^(ENS[^.]+)\.([0-9]+)$/ ) {
+				($gene_id, $gene_ver) = ($1, $2);
+			}
+
+			my ($transc_ver);
+			if ( $transc_id =~ /^(ENS[^.]+)\.([0-9]+)$/ ) {
+				($transc_id, $transc_ver) = ($1, $2);
+			}
+
+			my ($transl_ver);
+			if ( $transl_id =~ /^(ENS[^.]+)\.([0-9]+)$/ ) {
+				($transl_id, $transl_ver) = ($1, $2);
+			}
+
+			$seq_meta{$transc_id} = {
+				'transcript_id' => $transc_id,
+				'translation_id' => $transl_id,
+				'translation_seq_sha1' => sha1_hex($seq->seq),
+				'length' => $length_aa
+			};
+			$seq_meta{$transc_id}{'transcript_version'} = $transc_ver if defined($transc_ver);
+			$seq_meta{$transc_id}{'translation_version'} = $transl_ver if defined($transl_ver);
+
+			if ( ! defined($query_gene_id) ) {
+				$query_gene_id = $gene_id;
+			} elsif ( $gene_id ne $query_gene_id ) {
+				$logger->error("gene ID mismatch: $gene_id vs $query_gene_id\n");
 			}
 		}
 	}
 
 	# retrieve relevant Trifid predictions from tabix-indexed tab file
-	if ( defined($gene_id) ) {
-		$logger->info("-- retrieve Trifid predictions for gene $gene_id\n");
-		my ($cmd) = "tabix -h $trifid_pred_file $gene_id";
+	if ( defined($query_gene_id) ) {
+		$logger->info("-- retrieve Trifid predictions for gene $query_gene_id\n");
+		my ($cmd) = "tabix -h $trifid_pred_file $query_gene_id";
 		$logger->debug("$cmd\n");
 
-		my ($header, @input_lines) = `$cmd`;
+		my ($header, @input_lines) = split(/\R/, `$cmd`);
 		if (@input_lines) {
 
 			$header =~ s/^#//;
 			my @col_names = split(/\t/, $header);
-			my ($transc_col) = grep { $col_names[$_] eq "transcript_id" } (0 .. $#col_names);
-			my ($seq_col) = grep { $col_names[$_] eq "sequence" } (0 .. $#col_names);
+			my (%col_name_set) = map { $_ => 1 } @col_names;
 
-			if ( defined($transc_col) && defined($seq_col) ) {
-				# match transcripts by identifier and sequence
+			my (@req_col_names) = ('gene_id', 'gene_name', 'transcript_index', 'transcript_id',
+								   'translation_id', 'flags', 'ccdsid', 'appris', 'ann_type',
+								   'length', 'trifid_score', 'norm_trifid_score');
+			my ($all_req_cols_found) = all { exists($col_name_set{$_}) } @req_col_names;
+
+			my ($seq_attr_col);
+			if ( exists($col_name_set{'translation_seq_sha1'}) ) {  # TRIFID
+				$seq_attr_col = 'translation_seq_sha1';
+			} elsif ( exists($col_name_set{'sequence'}) ) {  # legacy TRIFID
+				$seq_attr_col = 'sequence';
+			}
+
+			# Output any matching transcripts.
+			if ( $all_req_cols_found && defined($seq_attr_col) ) {
+
+				my (@exp_cmp_col_names) = ('transcript_id', 'translation_id', 'translation_seq_sha1',
+										   'length', 'transcript_version', 'translation_version');
+				my (@cmp_col_names) = grep { exists($col_name_set{$_}) } @exp_cmp_col_names;
+
 				my (@output_lines);
 				foreach my $line (@input_lines) {
-					my ($transc_id, $trifid_seq) = (split(/\t/, $line))[$transc_col, $seq_col];
-					if ( exists($transc_to_seq{$transc_id}) &&
-							$trifid_seq eq $transc_to_seq{$transc_id} ) {
+					my (%rec);
+					@rec{@col_names} = split(/\t/, $line);
+					my ($transc_id) = $rec{'transcript_id'};
+
+					if ( $seq_attr_col eq 'sequence' ) {
+						$rec{'translation_seq_sha1'} = sha1_hex($rec{'sequence'})
+					}
+
+					if ( all { ! exists($seq_meta{$transc_id}{$_}) ||
+							$rec{$_} eq $seq_meta{$transc_id}{$_} } @cmp_col_names ) {
 						push(@output_lines, $line);
 					}
 				}
 
 				if (@output_lines) {
 					$header =~ s/^/#/;
-					unshift(@output_lines, $header);
-					$output_content = join("", @output_lines);
+					$output_content = join("\n", ($header, @output_lines)) . "\n";
 				}
 			}
 		}

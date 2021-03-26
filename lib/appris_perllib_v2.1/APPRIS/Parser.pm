@@ -42,8 +42,11 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Bio::SeqIO;
+use Digest::SHA1 qw(sha1_hex);
 use IO::String;
+use List::Util qw(all any);
 use Scalar::Util qw(reftype);
+
 
 use APPRIS::Gene;
 use APPRIS::Transcript;
@@ -2650,23 +2653,48 @@ sub parse_trifid_rst($)
 	my ($cutoffs);
 
 	my ($header, @lines) = split(/\R/, $result);
-	#	#gene_id	gene_name	transcript_id	translation_id	...
-	#	ENSG00000254647	INS	ENST00000421783	ENSP00000408400	...
-	#	ENSG00000254647	INS	ENST00000250971	ENSP00000250971	...
-	#	ENSG00000254647	INS	ENST00000397262	ENSP00000380432	...
+	#	#gene_id	gene_version	gene_name	transcript_index	transcript_id	...
+	#	ENSG00000254647	6	INS	1	ENST00000421783	...
+	#	ENSG00000254647	6	INS	2	ENST00000250971	...
+	#	ENSG00000254647	6	INS	3	ENST00000397262	...
 
 	$header =~ s/^#//;
-	my @col_names = split(/\t/, $header);
-	my ($transc_col) = grep { $col_names[$_] eq 'transcript_id' } (0 .. $#col_names);
-	my ($score_col) = grep { $col_names[$_] eq 'trifid_score' } (0 .. $#col_names);
-	my ($seq_col) = grep { $col_names[$_] eq 'sequence' } (0 .. $#col_names);
+	my (@col_names) = split(/\t/, $header);
+	my (%col_name_set) = map { $_ => 1 } @col_names;
 
-	if ( defined($transc_col) && defined($score_col) && defined($seq_col) ) {
+	my (@req_col_names) = ('gene_id', 'gene_name', 'transcript_index', 'transcript_id',
+						   'translation_id', 'flags', 'ccdsid', 'appris', 'ann_type',
+						   'length', 'trifid_score', 'norm_trifid_score');
+	my $all_req_cols_found = all { exists($col_name_set{$_}) } @req_col_names;
+
+	my ($seq_attr_col);
+	if ( exists($col_name_set{'translation_seq_sha1'}) ) {  # TRIFID
+		$seq_attr_col = 'translation_seq_sha1';
+	} elsif ( exists($col_name_set{'sequence'}) ) {  # legacy TRIFID
+		$seq_attr_col = 'sequence';
+	}
+
+	if ( $all_req_cols_found && defined($seq_attr_col) ) {
+
+		my (@exp_opt_col_names) = ('gene_version', 'transcript_version', 'translation_version');
+		my (@opt_col_names) = grep { exists($col_name_set{$_}) } @exp_opt_col_names;
+
 		foreach my $line (@lines) {
-			my (@fields) = split(/\t/, $line);
-			my ($transc_id) = $fields[$transc_col];
-			$cutoffs->{$transc_id}{'trifid_score'} = $fields[$score_col];
-			$cutoffs->{$transc_id}{'transl_seq'} = $fields[$seq_col];
+			my (%rec);
+			@rec{@col_names} = split(/\t/, $line);
+			my ($transc_id) = $rec{'transcript_id'};
+
+			foreach my $col_name (@req_col_names, @opt_col_names) {
+				$cutoffs->{$transc_id}{$col_name} = $rec{$col_name};
+			}
+
+			my ($seq_sha1);
+			if ( $seq_attr_col eq 'translation_seq_sha1' ) {
+				$seq_sha1 = $rec{'translation_seq_sha1'};
+			} else {  # i.e. $seq_attr_col eq 'sequence'
+				$seq_sha1 = sha1_hex($rec{'sequence'});
+			}
+			$cutoffs->{$transc_id}{'translation_seq_sha1'} = $seq_sha1;
 		}
 	}
 
@@ -2691,6 +2719,7 @@ sub parse_trifid($$)
 {
 	my ($gene, $result) = @_;
 
+	# TODO: check consistent gene version.
 	my ($gene_id) = $gene->stable_id;
 	my ($transc_reports);
 	my ($index_transcripts);
@@ -2704,7 +2733,9 @@ sub parse_trifid($$)
 		next unless( $input_transc->translate and $input_transc->translate->sequence );
 
 		my ($transc_id) = $input_transc->stable_id;
+		my ($transl_id) = $input_transc->translate->stable_id;
 		my ($transl_seq) = $input_transc->translate->sequence;
+		my ($transl_seq_sha1) = sha1_hex($transl_seq);
 
 		my ($transc_ver);
 		if ( $input_transc->version ) {
@@ -2712,14 +2743,20 @@ sub parse_trifid($$)
 		}
 
 		my ($analysis);
-		# create method object
-		if ( exists $cutoffs->{$transc_id} and
-				$transl_seq eq $cutoffs->{$transc_id}->{'transl_seq'} ) {
-			my ($trifid_score) = $cutoffs->{$transc_id}->{'trifid_score'};
+		# if transcript identifier and relevant metadata match, create method object
+		if ( exists $cutoffs->{$transc_id} &&
+				( ! defined($transc_ver) || ! exists($cutoffs->{$transc_id}{'transcript_version'}) ||
+					$cutoffs->{$transc_id}{'transcript_version'} == $transc_ver ) &&
+				( ! defined($transl_id) || ! exists($cutoffs->{$transc_id}{'translation_id'}) ||
+					$cutoffs->{$transc_id}{'translation_id'} eq $transl_id ) &&
+				$cutoffs->{$transc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
+				$cutoffs->{$transc_id}{'length'} == length($transl_seq) ) {
+			my ($report) = $cutoffs->{$transc_id};
 
 			# create Analysis object (for transcript)
 			my ($method) = APPRIS::Analysis::TRIFID->new(
-				-trifid_score => $trifid_score
+				-trifid_score => $report->{'trifid_score'},
+				-norm_trifid_score => $report->{'norm_trifid_score'}
 			);
 
 			$analysis = APPRIS::Analysis->new();

@@ -119,9 +119,9 @@
         "order":        9,
         "id":           "functional_importance",
         "name":         "trifid",
-        "label":        "Functional Importance",
-        "shortLabel":   "Func. Import.",
-        "desc":         "TRIFID functional importance",
+        "label":        "Normalized Functional Importance",
+        "shortLabel":   "Norm. Func. Import.",
+        "desc":         "Normalized TRIFID functional importance",
         "description":  "TRIFID predicts functionally important isoforms",
         "class":        "d",
         "control":      "exporter"

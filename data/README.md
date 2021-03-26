@@ -106,8 +106,8 @@ while the 'Classic' selection process is used for all other datasets.
 
 + __PRINCIPAL:2__
  Given two or more principal transcript candidates identified by the APPRIS core modules, APPRIS
- can tag a candidate transcript as PRINCIPAL:2 if it has the best TRIFID score and its TRIFID score
- is greater than any other candidate by a sufficiently wide margin. TRIFID is a machine learning
+ can tag a candidate transcript as PRINCIPAL:2 if it has the best raw TRIFID score and its raw TRIFID
+ score is greater than any other candidate by a sufficiently wide margin. TRIFID is a machine learning
  classifier based on APPRIS and external database input which we have found to be a reliable
  indicator of isoform functionality. For more information about TRIFID, please consult the [TRIFID
  GitLab repository](https://gitlab.com/bu_cnio/trifid).
@@ -120,7 +120,7 @@ while the 'Classic' selection process is used for all other datasets.
 + __PRINCIPAL:4__
  Where the APPRIS core modules are unable to choose a clear principal variant and no single isoform
  from among the remaining candidates has strong proteomics evidence support or a dominant TRIFID
- score, APPRIS selects the remaining candidate with the best TRIFID score.
+ score, APPRIS selects the remaining candidate with the best raw TRIFID score.
 
 + __PRINCIPAL:5__
  Where the APPRIS core modules are unable to choose a clear principal variant and none of the

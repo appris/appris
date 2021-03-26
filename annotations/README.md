@@ -280,13 +280,35 @@ found to be a reliable indicator of isoform functionality. For more information 
 please consult the [TRIFID GitLab repository](https://gitlab.com/bu_cnio/trifid).
 
 ### In detail (for each isoform)
-- gene_id
-- transcript_index (assigned by decreasing TRIFID score, then by transcript ID)
-- transcript_id
-- trifid_score
+- `gene_id`
+- `gene_version`
+- `gene_name`
+- `transcript_index`
+- `transcript_id`
+- `transcript_version`
+- `translation_id`
+- `translation_version`
+- `translation_seq_sha1`
+- `flags`
+- `ccdsid`
+- `appris`
+- `ann_type`
+- `length`
+- `trifid_score`
+- `norm_trifid_score`
 
-> __Note:__ Optional output. It is currently generated only for datasets with TRIFID prediction
-data (e.g. Gencode34/Ensembl100 human annotation).
+The columns `gene_version`, `transcript_version`, `translation_version`
+and `translation_seq_sha1` are added to the standard TRIFID prediction
+file to help APPRIS confirm isoform identity. The `transcript_index`
+column is used when creating a tabix index of the TRIFID prediction file;
+transcript indices are assigned by decreasing TRIFID score, then by
+transcript ID.
+
+All other columns are taken from the original TRIFID prediction file.
+For information on those, please consult the TRIFID documentation.
+
+> __Note:__ Optional output. It is currently generated only for datasets
+with TRIFID prediction data (e.g. Gencode33/Ensembl99 human annotation).
 
 appris
 ------

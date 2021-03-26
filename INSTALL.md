@@ -147,6 +147,7 @@ The following Perl packages are required:
 - Data::Dumper
 - Data::OptList
 - Data::Printer
+- Digest::SHA1
 - Email::Valid
 - File::Basename
 - File::Temp

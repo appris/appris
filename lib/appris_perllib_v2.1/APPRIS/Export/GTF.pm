@@ -1448,7 +1448,8 @@ sub get_trifid_annotations {
 	if ( $feature->analysis ) {
 		my ($analysis) = $feature->analysis;
 		if ( $analysis->trifid ) {
-			if ( defined($analysis->trifid->trifid_score) ) {
+			if ( defined($analysis->trifid->norm_trifid_score) ) {
+				my ($norm_trifid_score) = $analysis->trifid->norm_trifid_score;
 				my ($trifid_score) = $analysis->trifid->trifid_score;
 
 				my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
@@ -1456,7 +1457,7 @@ sub get_trifid_annotations {
 				my ($method_type) = $GTF_CONSTANTS->{'trifid'}->{'type'};
 				my ($method_start) = $feature->start;
 				my ($method_end) = $feature->end;
-				my ($method_score) = $trifid_score;
+				my ($method_score) = $norm_trifid_score;
 				my ($method_strand) = $feature->strand;
 				my ($method_phase) = '.';
 
@@ -1477,6 +1478,7 @@ sub get_trifid_annotations {
 				$optional->{'gene_id'}			= $gene_id;
 				$optional->{'transcript_id'}	= $transcript_id;
 				$optional->{'transcript_name'}	= $external_id;
+				$optional->{'note'}				= "trifid_score:$trifid_score";
 				if (defined $common and defined $optional) {
 					$output .= print_annotations($common,$optional);
 				}
