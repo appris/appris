@@ -1,4 +1,41 @@
 ___
+## 2021_03.v41
+```
+SERVER-RELEASE:   2021_03.v41
+CODE-RELEASE:     4.11.2.26
+```
+
+### Highlights
+
++ New release of GENCODE Human (version 37) and Mouse (version M26).
++ Annotation of Ensembl (e103 version) for Rattus norvegicus.
+
+### Server (4.11)
++ No changes
+
+### Code (2.26)
+
++ APPRIS:
+	- Standardised conversion of mitochondrial genome ID. Known mitochondrial
+	  genome IDs are converted to 'chrM' for all BED12/bigBed output.
+	- Updated GENCODE transcript ID regexes to reflect changes
+	  to the format of PAR-Y gene and transcript IDs.
+	- Fixed awk delimiter issue affecting
+	  retrieval of principal isoform data.
+
++ CORSAIR:
+	- Integration of Alt-CORSAIR method for rat.
+
++ PROTEO:
+	- Fixed overly broad PROTEO gene ID regex.
+
++ TRIFID:
+	- Updated TRIFID prediction file format. Within the TRIFID module, transcripts
+	  are now identified by ID, translation sequence SHA1 and other attributes.
+	- Changed gene report to show normalised TRIFID score.
+	- Added WebServices support for TRIFID mouse and rat.
+
+___
 ## 2021_02.v39
 ```
 SERVER-RELEASE:   2021_02.v39
