@@ -18,13 +18,15 @@ CODE-RELEASE:     4.11.2.26
 + APPRIS:
 	- Standardised conversion of mitochondrial genome ID. Known mitochondrial
 	  genome IDs are converted to 'chrM' for all BED12/bigBed output.
+	- Updated pipeline environment and chrom.sizes files.
 	- Updated GENCODE transcript ID regexes to reflect changes
 	  to the format of PAR-Y gene and transcript IDs.
-	- Fixed awk delimiter issue affecting
-	  retrieval of principal isoform data.
+	- Fixed bug that affected logging of checksum calculation step.
+	- Fixed awk delimiter issue affecting retrieval of principal isoform data.
 
 + CORSAIR:
 	- Integration of Alt-CORSAIR method for rat.
+	- Fixed issue with extraction of BLAST alignment line.
 
 + PROTEO:
 	- Fixed overly broad PROTEO gene ID regex.
