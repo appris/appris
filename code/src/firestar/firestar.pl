@@ -176,7 +176,7 @@ sub main()
 			$cont =~ s/$old/$new/g;		
 			return $cont;		
 		};
--
+
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__CACHE__WORKSPACE', $ws_cache);
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__HOME', $APPRIS_HOME);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
