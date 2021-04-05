@@ -170,7 +170,7 @@ sub main()
 		prepare_workspace($ws_tmp);		
 		
 		# Setup configure file of firestar
-		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
+		my ($firestar_config_cont) = getStringFromFile($DEFAULT_FIRESTAR_CONFIG_FILE);
 		my $subs_template = sub {
 			my ($cont, $old, $new) = @_;	
 			$cont =~ s/$old/$new/g;		
