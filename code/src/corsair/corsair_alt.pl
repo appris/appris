@@ -596,10 +596,10 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 	my $candstart = $startc[0];
 	my $candend = $endc[$#endc];	
 		
-	if ($targstart >= $UNMATCHES_THRESHOLD or $candstart >= $UNMATCHES_THRESHOLD)		# reject if different N-terminal
+	if ($targstart > 4 or $candstart > 4)		# reject if different N-terminal
 		{return (0,"It has different N-terminal")}
 	
-	if ( (abs($candlength - $candend) >= $UNMATCHES_THRESHOLD) or (abs($targlength - $targend) >= $UNMATCHES_THRESHOLD) ) # reject if subject has longer C-terminal
+	if ( (abs($candlength - $candend) > 4) or (abs($targlength - $targend) > 4) ) # reject if subject has longer C-terminal
 		{return (0,"Subject has longer C-terminal")}
 
 	my $aln = join "", @aln_lines;
