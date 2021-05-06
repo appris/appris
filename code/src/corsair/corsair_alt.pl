@@ -44,6 +44,7 @@ use vars qw(
 	$META_CONFIG
 	$DIVERGE_TIME
 	$NONSCORING_CLADE
+	$UNMATCHES_THRESHOLD
 );
 		
 # Input parameters
@@ -95,6 +96,7 @@ $PROG_CUTOFF		= $cfg->val('CORSAIR_ALT_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
 $UNKNOWN_LABEL		= 'UNKNOWN';
 $NO_LABEL			= 'NO';
+$UNMATCHES_THRESHOLD	= 10;
 
 my ($meta_config_file) = $CODE_CONF_DIR.'/corsair_alt.meta.json';
 $META_CONFIG = JSON->new()->decode( getStringFromFile($meta_config_file) );
@@ -601,10 +603,8 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 		{return (0,"Subject has longer C-terminal")}
 
 	my $aln = join "", @aln_lines;
-	while ($aln =~ /([+\s]{4,})/g) {
-		if ( length($1) > 4 )  # reject if subject has longer unmatches
-		  {return (0,"Subject has longer unmatches")}
-	}
+	if ($aln =~ /([+\s]{$UNMATCHES_THRESHOLD,})/)  # reject if subject has longer unmatches
+		{return (0,"Subject has longer unmatches")}
 
 	@target = split "", $target;
 	@candidate = split "", $candidate;
@@ -640,14 +640,14 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 						$gapres++;$j--;$gapconttarg = 'true';
 						if ( $gapconttarg eq 'true' ) {
 							$gapresconttarg++;
-							if ( $gapresconttarg > 4 ) { return (0,"Long gap in target") }			
+							if ( $gapresconttarg >= $UNMATCHES_THRESHOLD ) { return (0,"Long gap in target") }
 						}
 					}
 					if ($candidate[$res] eq "-") {
 						$gapres++; $gapcontcand = 'true';
 						if ( $gapcontcand eq 'true' ) {
 							$gaprescontcand++;
-							if ( $gaprescontcand > 4 ) { return (0,"Long gap in candidate") }			
+							if ( $gaprescontcand >= $UNMATCHES_THRESHOLD ) { return (0,"Long gap in candidate") }
 						}
 					}
 					if ($target[$res] ne "-") {$gapconttarg = 'false';$gapresconttarg=0}
@@ -669,7 +669,7 @@ sub check_alignment($$$$\$$) #parses BLAST alignments exon by exon
 			$aln_flag = 0;
 		}
 		#if ($gaps > 33) { # reject if exons have substantial gaps
-		if ($gapres > 4) { # reject if exons have substantial gaps
+		if ($gapres >= $UNMATCHES_THRESHOLD) { # reject if exons have substantial gaps
 			$aln_sms = "Exons have substantial gaps";
 			$cds_flag = 0;
 			$aln_flag = 0;

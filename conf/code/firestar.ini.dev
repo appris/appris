@@ -9,7 +9,7 @@ dbName=FireDB
 user=firedb
 pass=
 [DATABASES]
-release=22Aug2013
+release=16Nov2020
 nrdb=sprot_clean_trembl_clean_70
 hhbdb=hhblits_
 hhprof=nr20_12Aug11
