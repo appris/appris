@@ -17,7 +17,7 @@ use APPRIS::Utils::File qw( printStringIntoFile getStringFromFile prepare_worksp
 use vars qw(
 	$LOCAL_PWD	
 	$DEFAULT_CONFIG_FILE
-	$DEFALULT_FIRESTAR_CONFIG_FILE
+	$DEFAULT_FIRESTAR_CONFIG_FILE
 	$APPRIS_HOME
 	$WSPACE_TMP
 	$WSPACE_CACHE
@@ -61,7 +61,7 @@ unless ( defined $config_file and defined $input_file and defined $output_file )
 # Get conf vars
 my ($cfg) 				= new Config::IniFiles( -file =>  $config_file );
 $LOCAL_PWD				= $FindBin::Bin;
-$DEFALULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
+$DEFAULT_FIRESTAR_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/firestar.ini';
 $APPRIS_HOME			= $ENV{APPRIS_HOME};
 $WSPACE_TMP				= $ENV{APPRIS_TMP_DIR};
 $WSPACE_CACHE			= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
@@ -170,7 +170,7 @@ sub main()
 		prepare_workspace($ws_tmp);		
 		
 		# Setup configure file of firestar
-		my ($firestar_config_cont) = getStringFromFile($DEFALULT_FIRESTAR_CONFIG_FILE);
+		my ($firestar_config_cont) = getStringFromFile($DEFAULT_FIRESTAR_CONFIG_FILE);
 		my $subs_template = sub {
 			my ($cont, $old, $new) = @_;	
 			$cont =~ s/$old/$new/g;		
@@ -181,20 +181,23 @@ sub main()
 		$firestar_config_cont = $subs_template->($firestar_config_cont, 'APPRIS__HOME', $APPRIS_HOME);
 		my ($firestar_config_file) = $ws_tmp.'/firestar.ini';		
 		my ($firePredText_log) = $ws_tmp.'/'.'firestar.log';
-		my ($firePredText_file) = $ws_cache.'/'.'seq.firestar';				
-		
+
+		my ($firestar_config) = new Config::IniFiles( -file => \$firestar_config_cont );
+		my ($PROG_DB_UID) = $firestar_config->val('DATABASES', 'release');
+		my ($firePredText_file_path) = $ws_cache.'/'."seq.firestar_$PROG_DB_UID";
+
 		my ($print_log) = printStringIntoFile($firestar_config_cont, $firestar_config_file);
 		$logger->error("-- printing firestar config annot") unless ( defined $print_log );
-		
+
 		# If output is not cached
-		unless ( -e $firePredText_file and (-s $firePredText_file > 0) and ($CACHE_FLAG eq 'yes') ) {
-			my ($cmd) = "perl $LOCAL_PWD/source/perl/firestar.pl -opt appris -q seq -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file -conf $firestar_config_file 2> $firePredText_log";
+		unless ( -e $firePredText_file_path and (-s $firePredText_file_path > 0) and ($CACHE_FLAG eq 'yes') ) {
+			my ($cmd) = "perl $LOCAL_PWD/source/perl/firestar.pl -opt appris -q seq -e $PROG_EVALUE -cut $PROG_CUTOFF -csa $PROG_CSA -cog $PROG_COG -s $seq -o $firePredText_file_path -conf $firestar_config_file 2> $firePredText_log";
 			$logger->debug("\n** script: $cmd\n");			
 			my (@firePredText_out) = `$cmd`;
-			$logger->error("Empty output of firestar: $varname") unless (-e $firePredText_file and (-s $firePredText_file > 0) );			
+			$logger->error("Empty output of firestar: $varname") unless ( -e $firePredText_file_path && -s $firePredText_file_path > 0 );
 		}
 			
-		my ($firePredText_cont) = getStringFromFile($firePredText_file);
+		my ($firePredText_cont) = getStringFromFile($firePredText_file_path);
 		$firePredText_cont =~ s/^>>>Query/>>>$varname/mg; # changet the 'Query' identifier from firestar to the current identifier 
 		my (@firePredText_cont2) = split(/\n/,$firePredText_cont);
 		foreach my $line (@firePredText_cont2)
