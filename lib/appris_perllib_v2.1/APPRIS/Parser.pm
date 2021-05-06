@@ -2415,12 +2415,12 @@ sub parse_thump($$)
 
   Arg [1]    : string $result
                Parse proteo result
-  Example    : use APPRIS::Parser qw(parse_proteo);
-               parse_proteo($result);
+  Example    : use APPRIS::Parser qw(parse_proteo_rst);
+               parse_proteo_rst($result);
   Description: Parse output of proteo.
-  Returntype : APPRIS::Gene or undef
+  Returntype : Hashref of parsed result or undef
   Exceptions : return undef
-  Caller     : generally on error
+  Caller     : general
 
 =cut
 
@@ -2510,69 +2510,51 @@ sub parse_proteo($$)
 	# Create hash object from result
 	my ($cutoffs) = parse_proteo_rst($result);
 
-	# Create APPRIS object
-	my (%transc_results);
+	# Get PROTEO results
+	my (%transc_to_ver);
+	my (%transc_pep_info);
+	my (%seq_to_transcs);
 	my (%confirmed_results);
 	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		my ($transcript_ver);
+
 		my ($transc_eid) = $transcript_id;
 		if ( $transcript->version ) {
 			$transcript_ver = $transcript->version;
 			$transc_eid = $transcript_id.'.'.$transcript_ver;
+			$transc_to_ver{$transcript_id} = $transcript_ver;
 		}
-		my ($analysis);
 
-		# create method object
-		if ( exists $cutoffs->{$transcript_id} and exists $cutoffs->{$transcript_id}->{'peptides'} ) {
-			my ($report) = $cutoffs->{$transcript_id};
-			my ($regions);
-			if ( $transcript->translate and $transcript->translate->sequence ) {
+		if ( $transcript->translate && $transcript->translate->sequence ) {
+			my ($protein_sequence) = $transcript->translate->sequence;
+			push(@{$seq_to_transcs{$protein_sequence}}, $transcript_id);
+
+			if ( exists $cutoffs->{$transcript_id} && exists $cutoffs->{$transcript_id}->{'peptides'} ) {
+				my (@regions);
+				my (%transc_results);
 				my ($num_peptides) = 0;
 				my ($num_experiments) = 0;
 				my ($strand) = $transcript->strand;
+				my ($report) = $cutoffs->{$transcript_id};
 				foreach my $region_info (@{$report->{'peptides'}}) {
-					my ($protein_sequence) = $transcript->translate->sequence;
 					my ($mapped_pep_sequence) = $region_info->{'sequence'};
 					my ($mapped_pep_pattern) = $mapped_pep_sequence;
-					my ($peptide_mapped) = 0;
 					# treat I (isoleucine) and L (leucine) as equivalent
 					$mapped_pep_pattern =~ s/[IL]/\[IL\]/g;
+
+					my ($peptide_mapped) = 0;
 					while ( $protein_sequence =~ m/$mapped_pep_pattern/gi ) {
 						my ($index_peptide_position) = $-[0];
 						my ($start_peptide_position) = $index_peptide_position + 1;
 						my ($stop_peptide_position) = $start_peptide_position + length($mapped_pep_sequence)-1;
-						my ($region);
-						if ( $transcript->translate->cds ) { # with CDS coords from GTF file
-							my ($pro_coord_start) = get_coords_from_residue($transcript, $start_peptide_position);
-							my ($pro_coord_end) = get_coords_from_residue($transcript, $stop_peptide_position);
-							$region_info->{'trans_strand'} = $strand;
-							if ( $strand eq '-' ) {
-								$region_info->{'trans_end'} = $pro_coord_start->{'start'};
-								$region_info->{'trans_start'} = $pro_coord_end->{'end'};
-							}
-							else {
-								$region_info->{'trans_start'} = $pro_coord_start->{'start'};
-								$region_info->{'trans_end'} = $pro_coord_end->{'end'};
-							}
-							$region = APPRIS::Analysis::PROTEORegion->new (
-									-start				=> $region_info->{'trans_start'},
-									-end				=> $region_info->{'trans_end'},
-									-strand				=> $region_info->{'trans_strand'},
-									-pstart				=> $start_peptide_position,
-									-pend				=> $stop_peptide_position,
-									-sequence			=> $region_info->{'sequence'},
-									-num_experiments	=> $region_info->{'num_experiments'},
-							);
-						} else {
-							$region = APPRIS::Analysis::PROTEORegion->new (
-									-pstart				=> $start_peptide_position,
-									-pend				=> $stop_peptide_position,
-									-sequence			=> $region_info->{'sequence'},
-									-num_experiments	=> $region_info->{'num_experiments'},
-							);
-						}
-						push(@{$regions}, $region);
+						my ($region) = {
+							'pstart' => $start_peptide_position,
+							'pend' => $stop_peptide_position,
+							'sequence' => $region_info->{'sequence'},
+							'num_experiments' => $region_info->{'num_experiments'}
+						};
+						push(@regions, $region);
 						$peptide_mapped = 1;
 					}
 
@@ -2585,31 +2567,115 @@ sub parse_proteo($$)
 				}
 
 				if ( $num_peptides > 0 ) {
-
 					my ($transc_result) = join("\n", @{$transc_results{$transcript_id}}) . "\n";
 					my ($peptide_evidence) = $APPRIS::Utils::Constant::OK_LABEL;
-
-					# create Analysis object (for trans) Note: we only create an analysis object when trans has got translation
-					my ($method) = APPRIS::Analysis::PROTEO->new (
-									-result							=> $transc_result,
-									-peptide_evidence				=> $peptide_evidence,
-									-num_peptides					=> $num_peptides,
-									-num_experiments				=> $num_experiments
-					);
-					$method->peptides($regions) if (defined $regions and (scalar(@{$regions}) > 0) );
-
-					$analysis = APPRIS::Analysis->new();
-					if (defined $method) {
-						$analysis->proteo($method);
-						$analysis->number($analysis->number+1);
-					}
+					$transc_pep_info{$transcript_id} = {
+						'result' => $transc_result,
+						'peptide_evidence' => $peptide_evidence,
+						'num_peptides' => $num_peptides,
+						'num_experiments' => $num_experiments,
+						'regions' => \@regions
+					};
 				}
 			}
+		}
+	}
+
+	# Create a PROTEO analysis object for each scoring transcript
+	foreach my $transcript (@{$gene->transcripts}) {
+		my ($transcript_id) = $transcript->stable_id;
+
+		my ($report);
+		if ( exists $transc_pep_info{$transcript_id} ) {
+			$report = $transc_pep_info{$transcript_id};
+
+		} elsif ( $transcript->translate && $transcript->translate->sequence &&
+				  $transcript->tag !~ /(^|,)readthrough_transcript(,|$)/ &&
+				  $transcript->biotype ne 'nonsense_mediated_decay' &&
+				  $transcript->biotype ne 'non_stop_decay' ) {
+
+			my ($protein_sequence) = $transcript->translate->sequence;
+
+			my (@cand_transc_ids) = grep {
+				exists $transc_pep_info{$_} && $_ ne $transcript_id
+			} @{$seq_to_transcs{$protein_sequence}};
+
+			my ($donor_transc_id);
+			my ($max_num_peptides) = 0;
+			foreach my $cand_transc_id (@cand_transc_ids) {
+				my ($num_peptides) = $transc_pep_info{$cand_transc_id}{'num_peptides'};
+				if ( $num_peptides > $max_num_peptides ) {
+					$donor_transc_id = $cand_transc_id;
+					$max_num_peptides = $num_peptides;
+				}
+			}
+
+			if ( defined $donor_transc_id ) {
+				$report = $transc_pep_info{$donor_transc_id};
+			}
+		}
+
+		my ($analysis);
+		if ( defined $report ) {
+			my ($strand) = $transcript->strand;
+
+			my ($regions);
+			foreach my $region_info (@{$report->{'regions'}}) {
+				my ($start_peptide_position) = $region_info->{'pstart'};
+				my ($stop_peptide_position) = $region_info->{'pend'};
+
+				my ($region);
+				if ( $transcript->translate->cds ) { # with CDS coords from GTF file
+					my ($pro_coord_start) = get_coords_from_residue($transcript, $start_peptide_position);
+					my ($pro_coord_end) = get_coords_from_residue($transcript, $stop_peptide_position);
+
+					my ($trans_start);
+					my ($trans_end);
+					if ( $strand eq '-' ) {
+						$trans_end = $pro_coord_start->{'start'};
+						$trans_start = $pro_coord_end->{'end'};
+					}
+					else {
+						$trans_start = $pro_coord_start->{'start'};
+						$trans_end = $pro_coord_end->{'end'};
+					}
+
+					$region = APPRIS::Analysis::PROTEORegion->new (
+						-start				=> $trans_start,
+						-end				=> $trans_end,
+						-strand				=> $strand,
+						-pstart				=> $start_peptide_position,
+						-pend				=> $stop_peptide_position,
+						-sequence			=> $region_info->{'sequence'},
+						-num_experiments	=> $region_info->{'num_experiments'}
+					);
+				} else {
+					$region = APPRIS::Analysis::PROTEORegion->new (
+						-pstart				=> $start_peptide_position,
+						-pend				=> $stop_peptide_position,
+						-sequence			=> $region_info->{'sequence'},
+						-num_experiments	=> $region_info->{'num_experiments'}
+					);
+				}
+				push(@{$regions}, $region);
+			}
+
+			my ($method) = APPRIS::Analysis::PROTEO->new (
+				-result				=> $report->{'result'},
+				-peptide_evidence	=> $report->{'peptide_evidence'},
+				-num_peptides		=> $report->{'num_peptides'},
+				-num_experiments	=> $report->{'num_experiments'}
+			);
+			$method->peptides($regions);
+
+			$analysis = APPRIS::Analysis->new();
+			$analysis->proteo($method);
+			$analysis->number($analysis->number+1);
 		}
 
 		# create Transcript object
 		my ($transcript) = APPRIS::Transcript->new( -stable_id	=> $transcript_id );
-		$transcript->version($transcript_ver) if (defined $transcript_ver);
+		$transcript->version($transc_to_ver{$transcript_id}) if (exists $transc_to_ver{$transcript_id});
 		$transcript->analysis($analysis) if (defined $analysis);
 		push(@{$transcripts}, $transcript);
 		$index_transcripts->{$transcript_id} = $index; $index++; # Index the list of transcripts
