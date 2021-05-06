@@ -2794,31 +2794,81 @@ sub parse_trifid($$)
 	# Create hash object from result
 	my ($cutoffs) = parse_trifid_rst($result);
 
-	# Create APPRIS object
-	foreach my $input_transc (@{$gene->transcripts}) {
-		next unless( $input_transc->translate and $input_transc->translate->sequence );
+	my (@input_transcripts) = grep {
+		$_->translate && $_->translate->sequence
+	} @{$gene->transcripts};
+
+	# Get TRIFID results
+	my (%transc_to_ver);
+	my (%transc_trifid_info);
+	my (%seq_to_transcs);
+	my (@unscored_transcripts);
+	foreach my $input_transc (@input_transcripts) {
 
 		my ($transc_id) = $input_transc->stable_id;
 		my ($transl_id) = $input_transc->translate->stable_id;
 		my ($transl_seq) = $input_transc->translate->sequence;
 		my ($transl_seq_sha1) = sha1_hex($transl_seq);
 
-		my ($transc_ver);
 		if ( $input_transc->version ) {
-			$transc_ver = $input_transc->version;
+			$transc_to_ver{$transc_id} = $input_transc->version;
+		}
+
+		push(@{$seq_to_transcs{$transl_seq}}, $transc_id);
+
+		if ( exists $cutoffs->{$transc_id} ) {
+
+			# if relevant transcript metadata match, store TRIFID scores
+			if (	( ! defined($input_transc->version) || ! exists($cutoffs->{$transc_id}{'transcript_version'}) ||
+						$cutoffs->{$transc_id}{'transcript_version'} == $input_transc->version ) &&
+					( ! defined($transl_id) || ! exists($cutoffs->{$transc_id}{'translation_id'}) ||
+						$cutoffs->{$transc_id}{'translation_id'} eq $transl_id ) &&
+					$cutoffs->{$transc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
+					$cutoffs->{$transc_id}{'length'} == length($transl_seq) ) {
+				$transc_trifid_info{$transc_id} = {
+					'trifid_score' => $cutoffs->{$transc_id}->{'trifid_score'},
+					'norm_trifid_score' => $cutoffs->{$transc_id}->{'norm_trifid_score'}
+				};
+			}
+
+		} else {
+			push(@unscored_transcripts, $transc_id);
+		}
+	}
+
+	# Create a TRIFID analysis object for each relevant transcript
+	foreach my $input_transc (@input_transcripts) {
+		my ($transc_id) = $input_transc->stable_id;
+
+		my ($report);
+		if ( exists $transc_trifid_info{$transc_id} ) {
+			$report = $transc_trifid_info{$transc_id};
+
+		} elsif ( grep { $_ eq $transc_id } @unscored_transcripts &&
+					$cutoffs->{$transc_id}{'flags'} !~ /(^|,)(nonsense_mediated_decay|non_stop_decay|RT)(,|$)/ ) {
+			my ($transl_seq) = $input_transc->translate->sequence;
+
+			my (@cand_transc_ids) = grep {
+				exists $transc_trifid_info{$_} && $_ ne $transc_id
+			} @{$seq_to_transcs{$transl_seq}};
+
+			my ($donor_transc_id);
+			my ($max_trifid_score) = 0.0;
+			foreach my $cand_transc_id (@cand_transc_ids) {
+				my ($trifid_score) = $transc_trifid_info{$cand_transc_id}{'trifid_score'};
+				if ( $trifid_score > $max_trifid_score ) {
+					$donor_transc_id = $cand_transc_id;
+					$max_trifid_score = $trifid_score;
+				}
+			}
+
+			if ( defined $donor_transc_id ) {
+				$report = $transc_trifid_info{$donor_transc_id};
+			}
 		}
 
 		my ($analysis);
-		# if transcript identifier and relevant metadata match, create method object
-		if ( exists $cutoffs->{$transc_id} &&
-				( ! defined($transc_ver) || ! exists($cutoffs->{$transc_id}{'transcript_version'}) ||
-					$cutoffs->{$transc_id}{'transcript_version'} == $transc_ver ) &&
-				( ! defined($transl_id) || ! exists($cutoffs->{$transc_id}{'translation_id'}) ||
-					$cutoffs->{$transc_id}{'translation_id'} eq $transl_id ) &&
-				$cutoffs->{$transc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
-				$cutoffs->{$transc_id}{'length'} == length($transl_seq) ) {
-			my ($report) = $cutoffs->{$transc_id};
-
+		if ( defined $report ) {
 			# create Analysis object (for transcript)
 			my ($method) = APPRIS::Analysis::TRIFID->new(
 				-trifid_score => $report->{'trifid_score'},
@@ -2834,7 +2884,7 @@ sub parse_trifid($$)
 
 		# create Transcript object
 		my ($transc_report) = APPRIS::Transcript->new( -stable_id => $transc_id );
-		$transc_report->version($transc_ver) if (defined $transc_ver);
+		$transc_report->version($transc_to_ver{$transc_id}) if (exists $transc_to_ver{$transc_id});
 		$transc_report->analysis($analysis) if (defined $analysis);
 		push(@{$transc_reports}, $transc_report);
 		$index_transcripts->{$transc_id} = $index; $index++; # Index the list of transcripts
