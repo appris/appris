@@ -88,6 +88,7 @@ use vars qw(@ISA @EXPORT);
 @ISA = qw(Exporter);
 @EXPORT = qw(
 	parse_infiles
+        _parse_dataline
 	parse_transl_data
 	parse_firestar_rst
 	parse_firestar
