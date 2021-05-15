@@ -34,11 +34,11 @@ export APPRIS_CHR_LIST="NC_000001.10,NC_000002.11,NC_000003.11,NC_000004.11,NC_0
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/ref_GRCh37.p13_top_level.extra.gff3"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/rna.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/protein.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transl.fa"
 
 export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg19.chrom.sizes"
 
