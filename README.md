@@ -72,7 +72,4 @@ This APPRIS website is powered by the Structural Computational Biology Group at
 
 If you have questions or comments, please write to:
     APPRIS mail, appris.cnio@gmail.com
-	Thomas Walsh, twalsh@cnio.es
 	Michael Tress, mtress@cnio.es
-
-		
