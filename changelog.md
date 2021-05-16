@@ -1,4 +1,50 @@
 ___
+## 2021_05.v44
+```
+SERVER-RELEASE:   2021_05.v44
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ New release of GENCODE Human (version 38) and Mouse (version M27).
++ Rerelease of Human RefSeq 105.
+
+### Server (4.12)
+
++ Updated introductory text on downloads page.
++ Updated information on contact page.
+
+### Code (2.27)
+
++ APPRIS:
+	- Added a utility script to handle PAR features, including a
+	  function to tag PAR features in a RefSeq annotation file.
+	- Changed PAR filter to remove features that have the PAR tag.
+	- Miscellaneous species config bugfixes and updates: updated feature
+	  files for RefSeq 105, removed Y from Rnor_5.0 chromosomes, added MT
+	  to GRCm39 chromosomes, and used comma to delimit all chromosome lists.
+	- Fixed bug in mitochondrion name regex.
+
++ CORSAIR:
+	- Changed BLAST alignment check to allow runs of up to 9 consecutive
+	  nonmatching nucleotides within the alignment.
+	- Fixed issue in Alt-CORSAIR with comparison of BLAST query lengths
+	  that contain commas.
+	- The corsair_alt database table is queried only if it exists.
+
++ MATADOR3D:
+	- Updated BLAST database to PDBsum.
+
++ PROTEO:
+	- Isoforms that lack a PROTEO score are assigned the best available
+	  score from the set of isoforms with the same translation sequence.
+
++ TRIFID:
+	- Isoforms that lack a TRIFID score are assigned the best available
+	  score from the set of isoforms with the same translation sequence.
+
+___
 ## 2021_03.v41
 ```
 SERVER-RELEASE:   2021_03.v41
