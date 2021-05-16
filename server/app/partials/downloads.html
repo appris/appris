@@ -1,6 +1,6 @@
 <div data-ng-controller="DownloadsController">
 <h2>Downloads</h2>
-    <p>The annotations of the following species are available.</p>
+    <p>The following annotations are available in the current APPRIS release. Annotation and mysqldump files from current and past releases may be downloaded from <a data-ng-href="{{urlDOWNLOAD}}" target="_blank">our HTTP server</a>. If you need help finding the data you need, or would like us to include a new species, please do not hesitate to <a href="#/contact">contact us</a>.</p>
 Filter by Species:
 <select data-ng-model="elemSpecie">
     <option value="" selected>All</option>
@@ -46,7 +46,7 @@ Gene Dataset:
         <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>
     </div>
 </div>
-<p><strong>All annotation files and mysqldump files also be downloaded from <a data-ng-href="{{urlDOWNLOAD}}" target="_blank">our HTTP server</a></strong>.<br>The following <a data-ng-href="{{urlREADME}}" target="_blank">README file</a> describes more in detail the annotation files.</p>
+<p>The following <a data-ng-href="{{urlREADME}}" target="_blank">README file</a> describes the annotation files in more detail.</p>
 
 <license></license>
 
