@@ -2176,7 +2176,8 @@ sub fetch_analysis_by_stable_id {
 		}	
 
 		# Get CORSAIR_ALT analysis -----------------
-		if (defined $source and ($source eq 'corsair_alt' or $source eq 'all')) {
+		if (defined $source && ($source eq 'corsair_alt' || $source eq 'all') &&
+				$self->dbadaptor->query_table_exists('corsair_alt') ) {
 			my ($method);
 			my ($regions);		
 			eval {	

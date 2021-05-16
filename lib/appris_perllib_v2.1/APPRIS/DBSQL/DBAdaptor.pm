@@ -2365,6 +2365,26 @@ sub query_appris {
 	return $final;
 }
 
+sub query_table_exists {
+	my ($self, $table_name) = @_;
+	my $dbname = $self->dbname;
+	my $dbh = $self->dbh;
+
+	my $statement = "select count(*)
+	from information_schema.tables
+	where table_schema = '$dbname'
+	and table_name = '$table_name';";
+
+	my $result = _do_query($dbh, $statement);
+	my $table_count = $result->[0]{'count(*)'};
+
+	if ($table_count != 0) {
+		return 1;
+	} else {
+		return;
+	}
+}
+
 ##################
 # INSERT methods #
 ##################
