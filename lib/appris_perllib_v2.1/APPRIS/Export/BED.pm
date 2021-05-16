@@ -498,7 +498,7 @@ sub print_track {
 
 		# Convert the mitochondrial genome ID
 		if ( $pos eq 'chrMT' || $pos eq 'chrMtDNA' ||
-			 $pos =~ /chr(?:dmel)?mitochondrion_genome/ ) {
+			 $pos =~ /chr(?:dmel_)?mitochondrion_genome/ ) {
 			$pos = 'chrM';
 		}
 
