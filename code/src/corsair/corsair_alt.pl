@@ -403,7 +403,7 @@ sub parse_blast($$$)				# reads headers for each alignment in the blast output
 		{
 			my @temp = split " ";
 			$faalen = $temp[0];
-			$faalen =~ s/\(//;
+			$faalen =~ s/(^\(|,)//g;
 			if ($faalen != $sequence_length)
 				{ $logger->warning("Length of Blast's query is different than input sequence\n"); }
 		}
