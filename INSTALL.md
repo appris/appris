@@ -44,7 +44,7 @@ Download the database files that the code needs into the **working directory**
 
 ```
 $ cd ${working_dir} && \
-  wget http://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
+  wget https://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
   tar -xf appris_db_archives.${appris_version}.tar.gz
 ```
 
@@ -180,11 +180,11 @@ but are needed by some auxiliary scripts:
 
 ### Other dependencies
 
-- [MySQL Client](http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
+- [MySQL Client](https://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
 
-- [BioPerl](http://bioperl.org/) (at least, 1.2.3)
+- [BioPerl](https://bioperl.org/) (at least, 1.2.3)
 
-- [Ensembl API](http://www.ensembl.org/info/docs/api/api_installation.html)
+- [Ensembl API](https://www.ensembl.org/info/docs/api/api_installation.html)
 
 
 Further Dependencies
@@ -219,7 +219,7 @@ Steps you have to do to acquire APPRIS system
 
 3. Download databases for APPRIS code:
 	```
-    wget http://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
+    wget https://apprisws.bioinfo.cnio.es/archives/db/appris_db_archives.${appris_version}.tar.gz && \
     tar -xf appris_db_archives.${appris_version}.tar.gz
 
 	wget
@@ -310,7 +310,7 @@ We have to ways to obtain the data files:
 
 1. Download the data files from external repository
 ```
-$ wget http://apprisws.bioinfo.cnio.es/archives/data/appris_data_archives.${appris_version}.tar.gz && \
+$ wget https://apprisws.bioinfo.cnio.es/archives/data/appris_data_archives.${appris_version}.tar.gz && \
   tar -xf appris_data_archives.${appris_version}.tar.gz
 ```
 > __WARNING__: The data file is quite big (around 7Gb). Take care!

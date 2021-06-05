@@ -31,10 +31,10 @@ For further information see:
 =over
 
 =item *
-L<http://www.ebi.ac.uk/Tools/webservices/services/msa/muscle_rest>
+L<https://www.ebi.ac.uk/Tools/webservices/services/msa/muscle_rest>
 
 =item *
-L<http://www.ebi.ac.uk/Tools/webservices/tutorials/perl>
+L<https://www.ebi.ac.uk/Tools/webservices/tutorials/perl>
 
 =back
 
@@ -46,7 +46,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -1028,18 +1028,18 @@ Asynchronous job:
 
 Further information:
 
-  http://www.ebi.ac.uk/Tools/webservices/services/msa/muscle_rest
-  http://www.ebi.ac.uk/Tools/webservices/tutorials/perl
+  https://www.ebi.ac.uk/Tools/webservices/services/msa/muscle_rest
+  https://www.ebi.ac.uk/Tools/webservices/tutorials/perl
 
 Support/Feedback:
 
-  http://www.ebi.ac.uk/support/
+  https://www.ebi.ac.uk/support/
 EOF
 }
 
 =head1 FEEDBACK/SUPPORT
 
-Please contact us at L<http://www.ebi.ac.uk/support/> if you have any 
+Please contact us at L<https://www.ebi.ac.uk/support/> if you have any
 feedback, suggestions or issues with the service or this client.
 
 =cut

@@ -253,7 +253,7 @@ sub print_result($$)
 				$list .= $gene_id.":".$t_list.";";		
 			}
 			$list =~ s/\;$//;
-			$result .= $init."\t".$type."\t"."http://pfam.xfam.org/family/$annot_id"."\t".$list."\n";
+			$result .= $init."\t".$type."\t"."https://pfam.xfam.org/family/$annot_id"."\t".$list."\n";
 		}
 	}
 	# domain damaged
@@ -271,7 +271,7 @@ sub print_result($$)
 				$list .= $gene_id.":".$t_list.";";		
 			}
 			$list =~ s/\;$//;
-			$result .= $init."\t".$type."\t"."http://pfam.xfam.org/family/$annot_id"."\t".$list."\n";
+			$result .= $init."\t".$type."\t"."https://pfam.xfam.org/family/$annot_id"."\t".$list."\n";
 		}
 	}	
 	# func residue section

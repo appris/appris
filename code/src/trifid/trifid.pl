@@ -221,6 +221,6 @@ perl trifid.pl
 Original APPRIS method script by Jose Manuel Rodriguez Carrasco,
 adapted for TRIFID by Thomas Walsh.
 
-For contact details see the L<APPRIS website|http://appris-tools.org>.
+For contact details see the L<APPRIS website|https://appris.bioinfo.cnio.es/>.
 
 =cut

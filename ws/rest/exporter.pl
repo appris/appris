@@ -20,7 +20,7 @@ use vars qw(
 	$METHODS
 	$TYPE_BED
 	$ENCODING
-	$TRIFID_BASE_DIR
+	$TRIFID_URL
 );
 
 $CONFIG_DB_FILE 	= $ENV{APPRIS_WSERVER_CONF_DB_FILE};
@@ -29,7 +29,7 @@ $METHODS			= $ENV{APPRIS_WSERVER_PIPELINE_STRUCTURE};
 $FORMAT				= $ENV{APPRIS_WSERVER_OUTPUT_FORMAT};
 $TYPE_BED			= $ENV{APPRIS_WSERVER_TYPEBED}; # NOT EXISTS
 $ENCODING			= $ENV{APPRIS_WSERVER_OUTPUT_ENCODING};
-$TRIFID_BASE_DIR	= $ENV{APPRIS_WSERVER_TRIFID_BASE_DIR};
+$TRIFID_URL			= $ENV{APPRIS_WSERVER_TRIFID_URL};
 
 #####################
 # Method prototypes #
@@ -146,7 +146,7 @@ sub main()
 								-dataset	=> $ds,
 								-type   	=> $type,
 								-input		=> $inputs,
-								-trifid_base_dir => $TRIFID_BASE_DIR
+								-trifid_url => $TRIFID_URL
 	);
 		
 	# Export features (db) from format	

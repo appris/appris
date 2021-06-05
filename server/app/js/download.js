@@ -70,7 +70,7 @@ module.directive('downloadResponse', [ '$parse', function ($parse) {
     function saveMethod3(attrs) {
         if (attrs.downloadBackupUrl && attrs.downloadBackupUrl != '') {
             console.log('opening ' + attrs.downloadBackupUrl);
-            window.open('http://' + document.domain + attrs.downloadBackupUrl, '_blank');
+            window.open('https://' + document.domain + attrs.downloadBackupUrl, '_blank');
         } else {
             throw 'Could not download a file using any of the available methods. Also you did not provide a backup download link. No more bullets left...';
         }

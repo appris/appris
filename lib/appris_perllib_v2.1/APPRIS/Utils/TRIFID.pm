@@ -1,6 +1,6 @@
 =head1 CONTACT
 
-For contact details see the L<APPRIS website|http://appris-tools.org>.
+For contact details see the L<APPRIS website|https://appris.bioinfo.cnio.es/>.
 
 =cut
 
@@ -90,7 +90,7 @@ sub get_trifid_pred_file_path($$$) {
                 the specified TRIFID release
   Arg[3]      : String $trifid_release
                 TRIFID release ID
-  Example     : get_trifid_pred_file_url('http://example.com/trifid',
+  Example     : get_trifid_pred_file_url('https://example.com/trifid',
                                          'homo_sapiens',
                                          'trifid_GRCh38_g33_20200710');
   Description : Get the URL of a TRIFID prediction file,

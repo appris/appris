@@ -611,43 +611,43 @@ INSERT INTO datasource SET
   datasource_id='1',
   name='External_Id',
   description='HGNC name',
-  url='http://www.ensembl.org/index.html';
+  url='https://www.ensembl.org/index.html';
 
 INSERT INTO datasource SET
   datasource_id='2',
   name='Gene_Id',
   description='Gene Identifier',
-  url='http://appris.bioinfo.cnio.es';
+  url='https://appris.bioinfo.cnio.es/';
 
 INSERT INTO datasource SET
   datasource_id='3',
   name='Transcript_Id',
   description='Transcript Identifier',
-  url='http://appris.bioinfo.cnio.es';
+  url='https://appris.bioinfo.cnio.es/';
 
 INSERT INTO datasource SET
   datasource_id='4',
   name='Protein_Id',
   description='Protein Identifier',
-  url='http://appris.bioinfo.cnio.es';
+  url='https://appris.bioinfo.cnio.es/';
 
 INSERT INTO datasource SET
   datasource_id='5',
   name='UniProtKB_SwissProt',
   description='UniProtKB/Swiss-Prot Accession',
-  url='http://www.uniprot.org';
+  url='https://www.uniprot.org/';
 
 INSERT INTO datasource SET
   datasource_id='6',
   name='CCDS',
   description='Consensus CDS',
-  url='http://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';
+  url='https://www.ncbi.nlm.nih.gov/projects/CCDS/CcdsBrowse.cgi';
 
 INSERT INTO datasource SET
   datasource_id='7',
   name='Ensembl_Gene_Id',
   description='Ensembl Gene Identifier',
-  url='http://www.ensembl.org';
+  url='https://www.ensembl.org/';
 
 INSERT INTO datasource SET
   datasource_id='8',
@@ -659,13 +659,13 @@ INSERT INTO datasource SET
   datasource_id='9',
   name='Uniprot_Gene_Id',
   description='UniProt Gene Identifier',
-  url='http://www.uniprot.org';
+  url='https://www.uniprot.org/';
 
 INSERT INTO datasource SET
   datasource_id='10',
   name='Ensembl_Transcript_Id',
   description='Ensembl Transcript Identifier',
-  url='http://www.ensembl.org';
+  url='https://www.ensembl.org/';
 
 INSERT INTO datasource SET
   datasource_id='11',
@@ -677,7 +677,7 @@ INSERT INTO datasource SET
   datasource_id='12',
   name='Uniprot_Transcript_Id',
   description='UniProt Transcript Identifier',
-  url='http://www.uniprot.org';
+  url='https://www.uniprot.org/';
 
 --
 -- Insert default value into type table

@@ -357,7 +357,7 @@ sub get_cds_sequences($$)
 			$logger->debug("ENTRA_1 ---------------\n");
 	
 			# Patron de las lineas con las secuencias en el formato Maf. 
-			# Para mas informacion en http://genome.ucsc.edu/FAQ/FAQformat#format5
+			# Para mas informacion en https://genome.ucsc.edu/FAQ/FAQformat#format5
 			my ($organism) = $1;
 			my ($maf_start) = $2;
 			my ($maf_length) = $3;

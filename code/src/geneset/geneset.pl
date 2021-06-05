@@ -147,7 +147,7 @@ sub export_xref_biomart($)
 	        </Dataset>
 	</Query>';
 	
-	my $path="http://www.ensembl.org/biomart/martservice?";
+	my $path="https://www.ensembl.org/biomart/martservice?";
 	my $request = HTTP::Request->new("POST",$path,HTTP::Headers->new(),'query='.$xml."\n");
 	my $ua = LWP::UserAgent->new;
 	

@@ -1745,7 +1745,7 @@ sub get_gen_features {
 		if ( defined $ids ) { $optional_params .= '%26'.'ids='.$ids }
 		if ( defined $source ) { $optional_params .= '%26'.'sc='.$source }
 		if ( defined $dataset ) { $optional_params .= '%26'.'ds='.$dataset }
-		my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
+		my ($query) = 'https://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
 		
 		# make a request to render tracks of UCSC
 		my ($params) = 'db=' . $assembly;
@@ -1945,7 +1945,7 @@ sub get_xml_report($)
 	my ($xml_doc) = XML::LibXML::Document->new('1.0','UTF-8');
 	
 	my ($e_query) = $xml_doc->createElement('query');
-	$e_query->setNamespace("http://appris-tools.org", "appris", 0);
+	$e_query->setNamespace("https://appris.bioinfo.cnio.es", "appris", 0);
 	$xml_doc->setDocumentElement($e_query);
 	my ($a_query) = $xml_doc->createAttribute('query', $report->{'query'});
 	$e_query->setAttributeNode($a_query);

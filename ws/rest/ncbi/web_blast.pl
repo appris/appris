@@ -28,7 +28,7 @@
 #
 # This code is for example purposes only.
 #
-# Please refer to http://www.ncbi.nlm.nih.gov/blast/Doc/urlapi.html
+# Please refer to https://www.ncbi.nlm.nih.gov/blast/Doc/urlapi.html
 # for a complete list of allowed parameters.
 #
 # Please do not submit or retrieve more than one request every two seconds.
@@ -95,7 +95,7 @@ die ("query is not defined") unless ( defined $encoded_query );
 
 # build the request
 my $args = "CMD=Put&PROGRAM=$program&DATABASE=$database&QUERY=" . $encoded_query;
-my $req = new HTTP::Request POST => 'http://www.ncbi.nlm.nih.gov/blast/Blast.cgi';
+my $req = new HTTP::Request POST => 'https://www.ncbi.nlm.nih.gov/blast/Blast.cgi';
 $req->content_type('application/x-www-form-urlencoded');
 $req->content($args);
 
@@ -126,7 +126,7 @@ sleep $rtoe;
 while (1) {
 	sleep 5;
         
-	my $req = new HTTP::Request GET => "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_OBJECT=SearchInfo&RID=$rid";
+	my $req = new HTTP::Request GET => "https://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_OBJECT=SearchInfo&RID=$rid";
     my $res = $ua->request($req);
 
 	if ($res->content =~ /\s+Status=WAITING/m) {
@@ -156,7 +156,7 @@ while (1) {
 } # end poll loop
 
 # retrieve and display results
-my $f_request = new HTTP::Request GET => "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_TYPE=Text&RID=$rid";
+my $f_request = new HTTP::Request GET => "https://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_TYPE=Text&RID=$rid";
 my $f_response = $ua->request($f_request);
 print $f_response->content;
 

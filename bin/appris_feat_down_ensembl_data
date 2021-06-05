@@ -72,8 +72,7 @@ USAGE="
 \n
 \n
 Example:\n
-appris_feat_down_ensembl_data -u http://ftp.ensembl.org/pub/   -s 'homo_sapiens' -e 90 -o ~/projects/APPRIS/features/\n
-appris_feat_down_ensembl_data -u http://www.ebi.ac.uk/~maurel/ -s 'homo_sapiens' -e 88 -o /tmp/
+appris_feat_down_ensembl_data -u https://ftp.ensembl.org/pub/   -s 'homo_sapiens' -e 90 -o ~/projects/APPRIS/features/\n
 \n
 \n
  Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n

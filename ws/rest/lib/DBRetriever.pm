@@ -972,7 +972,7 @@ sub seek_features
 #	my ($xml_doc) = XML::LibXML::Document->new('1.0','UTF-8');
 #	
 #	my ($e_query) = $xml_doc->createElement('query');
-#	$e_query->setNamespace("http://appris-tools.org", "appris", 0);
+#	$e_query->setNamespace("https://appris-tools.org", "appris", 0);
 #	$xml_doc->setDocumentElement($e_query);
 #	my ($a_query) = $xml_doc->createAttribute('query', $report->{'query'});
 #	$e_query->setAttributeNode($a_query);
@@ -1070,11 +1070,11 @@ sub seek_features
 #		my ($cmd_stdout) = $cmd_stdout_list[0];
 #		if ( defined $cmd_stdout and $cmd_stdout =~ /NCBI:([^\n]*)/ ) { # ncbi blast
 #			my ($job_id) = $1;
-#			$result = "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&RID=$job_id";
+#			$result = "https://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&RID=$job_id";
 #		}
 #		elsif ( defined $cmd_stdout and $cmd_stdout =~ /($type\-[^\n]*)/ ) { # ebi tools
 #			my ($job_id) = $1;
-#			$result = "http://www.ebi.ac.uk/Tools/services/web/toolresult.ebi?jobId=$job_id"
+#			$result = "https://www.ebi.ac.uk/Tools/services/web/toolresult.ebi?jobId=$job_id"
 #		}
 #	};
 #	$seq_tmpfile->unlink_on_destroy(1);

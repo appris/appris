@@ -38,15 +38,16 @@ export APPRIS_WSERVER_OUTPUT_FORMAT="json"
 
 export APPRIS_WSERVER_OUTPUT_FORMAT_SEQ="fasta"
 
-export APPRIS_WSERVER_UCSC_URL="http://genome-euro.ucsc.edu/cgi-bin/hgTracks"
+export APPRIS_WSERVER_UCSC_URL="https://genome-euro.ucsc.edu/cgi-bin/hgTracks"
 
-export APPRIS_WSERVER_UCSC_RENDER_URL="http://genome.ucsc.edu/cgi-bin/hgRenderTracks"
+export APPRIS_WSERVER_UCSC_RENDER_URL="https://genome.ucsc.edu/cgi-bin/hgRenderTracks"
 
 export APPRIS_WSERVER_OUTPUT_ENCODING="text/plain"
 
-#export APPRIS_WSERVER_REST_URL="http://apprisws.bioinfo.cnio.es/rest"
+#export APPRIS_WSERVER_REST_URL="https://apprisws.bioinfo.cnio.es/rest"
 
-#export APPRIS_WSERVER_REPORT_URL="http://appris.bioinfo.cnio.es/#/server/result"
-export APPRIS_WSERVER_REPORT_URL="http://appris-tools.org/#/server/result"
+export APPRIS_WSERVER_REPORT_URL="https://appris.bioinfo.cnio.es/#/server/result"
+#export APPRIS_WSERVER_REPORT_URL="https://appris-tools.org/#/server/result"
 
 export APPRIS_WSERVER_TRIFID_BASE_DIR="${APPRIS_WSERVER_HOME}/pub/trifid"
+

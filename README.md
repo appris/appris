@@ -1,10 +1,10 @@
 Welcome to APPRIS - A system for annotating alternative splice isoforms
 =======================================================================
-[APPRIS](http://appris.bioinfo.cnio.es) [1,2] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
+[APPRIS](https://appris.bioinfo.cnio.es/) [1,2] is a system that deploys a range of computational methods to provide value to the annotations of the human genome. APPRIS also selects one of the CDS for each gene as the principal isoform.
 
 APPRIS defines the principal variant by combining protein structural and functional information and information from the conservation of related species.
 
-The server has been used in the context of the scale up of the [GENCODE](http://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
+The server has been used in the context of the scale up of the [GENCODE](https://www.gencodegenes.org/), a sub-project of the ENCODE project to annotate the Human genome but APPRIS is being used for other species:
   * Vertebrate genomes:
 	  * Human
 	  * Mouse
@@ -42,10 +42,10 @@ Data access
 The APPRIS websites offer an export option, suitable for small amounts of data. This is the ideal option if you want a protein sequence as a FASTA file, or a JSON/GTF file of a few features of a gene or transcript. Furthermore, you can get annotation tracks of gene/transcripts in the BED format. Simply click on one of the "Export" links in the right menu, and select the output options. If you wish to extract multiple features, we recommend the following alternatives.
 
   * Downloads, APPRIS data text files.
-  http://appris.bioinfo.cnio.es/#/downloads
+  https://appris.bioinfo.cnio.es/#/downloads
 
   * Web Services, APPRIS data can be returned remotely using web services.
-  http://apprisws.bioinfo.cnio.es/
+  https://apprisws.bioinfo.cnio.es/
 
 
 References
@@ -66,9 +66,9 @@ PUBMED:23161672 DOI:10.1093/nar/gks1058
 Contact
 =======
 This APPRIS website is powered by the Structural Computational Biology Group at
-	Centro Nacional de Investigaciones Oncologicas, ([CNIO](http://www.cnio.es))
+	Centro Nacional de Investigaciones Oncologicas, ([CNIO](https://www.cnio.es/))
 		and
-	Instituto Nacional de Bioinformatica, ([INB](http://www.inab.org))
+	Instituto Nacional de Bioinformatica, ([INB](https://inb-elixir.es/))
 
 If you have questions or comments, please write to:
     APPRIS mail, appris.cnio@gmail.com

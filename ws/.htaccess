@@ -5,10 +5,10 @@
 <IfModule mod_rewrite.c>
     Options +FollowSymlinks
     RewriteEngine On
-    RewriteRule ^/tools$ http://appris.cnio.es:3000/#/tools [R=301,NC,L]
-    RewriteRule ^/downloads$ http://appris.cnio.es:3000/#/downloads [R=301,NC,L]
-    RewriteRule ^/about$ http://appris.cnio.es:3000/#/about [R=301,NC,L]
-    RewriteRule ^/help http://appris.cnio.es:3000/#/help [R=301,NC,L]
+    RewriteRule ^/tools$ https://appris.cnio.es:3000/#/tools [R=301,NC,L]
+    RewriteRule ^/downloads$ https://appris.cnio.es:3000/#/downloads [R=301,NC,L]
+    RewriteRule ^/about$ https://appris.cnio.es:3000/#/about [R=301,NC,L]
+    RewriteRule ^/help https://appris.cnio.es:3000/#/help [R=301,NC,L]
     Redirect 301 /archives/db/appris_db_archives.2017_08.v24.tar.gz https://www.dropbox.com/s/6e0nx07nqv3qbyw/appris_db_archives.2017_08.v24.tar.gz?dl=0
     Redirect 301 /archives/data/appris_data_archives.2017_08.v24.tar.gz https://www.dropbox.com/s/t33g2wbsv9afybs/appris_data_archives.2017_08.v24.tar.gz?dl=0
 </IfModule>

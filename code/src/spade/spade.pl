@@ -720,7 +720,7 @@ sub _get_record_annotations($)
 	$output_content .= " *   predicts the presence of protein domains thanks to Pfamscan tool\n";
 	$output_content .= " *   ftp://ftp.sanger.ac.uk/pub/databases/Pfam/Tools/README .\n";
 	$output_content .= " * \n";
-	$output_content .= " * The Pfam database (http://pfam.sanger.ac.uk) is a large collection of protein families,\n"; 
+	$output_content .= " * The Pfam database (https://pfam.xfam.org/) is a large collection of protein families,\n";
 	$output_content .= " * each represented by multiple sequence alignments and hidden Markov models (HMMs).\n";	
 	$output_content .= " * \n";
 	$output_content .= " */\n";

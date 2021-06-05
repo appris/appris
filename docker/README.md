@@ -2,8 +2,7 @@ Installation from the Docker repository
 ---------------------------------------
 
 > __Note:__ For more detail, read the section *__Installation from the Docker repository__* in the text file [INSTALL
-.md](http://apprisws.bioinfo.cnio
-.es/pub/docs/INSTALL.md).
+.md](https://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md).
 
 Run the APPRIS/core container
 -------------------------------
@@ -16,7 +15,7 @@ $ docker run -itd \
     appris/code
 ```
 
-> __Note:__ For more detail of the *__{database_dir}__* and *__{working_dir}__*, read the section in the text file [INSTALL.md](http://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
+> __Note:__ For more detail of the *__{database_dir}__* and *__{working_dir}__*, read the section in the text file [INSTALL.md](https://apprisws.bioinfo.cnio.es/pub/docs/INSTALL.md)
 
 Now, we will be ablle to run APPRIS commands in a running container with _appris_ user.
 ```

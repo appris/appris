@@ -64,22 +64,22 @@ app.get('/download/data/:species/:file', function(req, res){
 //    console.log("REQUEST: " + util.inspect(req, false, null));
 //    console.log("SPECIE: "+req.params.species);
 //    console.log("FILE: "+req.params.file);
-    res.redirect('http://apprisws.bioinfo.cnio.es/download/data/' + req.params.species + '/'+req.params.file);
+    res.redirect('https://apprisws.bioinfo.cnio.es/download/data/' + req.params.species + '/'+req.params.file);
 });
 app.get('/download/README.txt', function(req, res){
-    res.redirect('http://apprisws.bioinfo.cnio.es/download/README.txt');
+    res.redirect('https://apprisws.bioinfo.cnio.es/download/README.txt');
 });
 
 // if we don't the specie
 //app.get(/^\/download\/data\//, function(req, res){
 app.get('/download/*', function(req, res){
     console.log("REQUEST_PATH: " + req.path);
-    res.redirect('http://apprisws.bioinfo.cnio.es' + req.path);
+    res.redirect('https://apprisws.bioinfo.cnio.es' + req.path);
 });
 
 // redirect from old report site to new one.
 app.get('/report.html', function(req, res){
 //    res.status(500).json({ error: 'message' })
 //    console.log("PARAMS: " + util.inspect(req.params, false, null));
-    res.redirect('http://appris.bioinfo.cnio.es/#/database' + '/id' + '/'+req.query.specie+ '/'+req.query.id +"?sc=ensembl" );
+    res.redirect('https://appris.bioinfo.cnio.es/#/database' + '/id' + '/'+req.query.specie+ '/'+req.query.id +"?sc=ensembl" );
 });

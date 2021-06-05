@@ -1028,7 +1028,7 @@ run_appris
 
 =head2 Required arguments (inputs):
 
-=head3 DATAFILE choice: executes appris from datafile data (http://www.gencodegenes.org/data.html)
+=head3 DATAFILE choice: executes appris from datafile data (https://www.gencodegenes.org/pages/data_access.html)
 	
 =head4 Required arguments:
 

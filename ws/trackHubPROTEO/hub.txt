@@ -1,6 +1,6 @@
 hub ProteomicEvidenceCNIO
 shortLabel Peptide evidences CNIO
 longLabel Peptides detected from a re-analysis of multiple experiments and databases
-descriptionUrl http://apprisws.bioinfo.cnio.es/trackHubPROTEO/docs/PROTEO.html
+descriptionUrl https://apprisws.bioinfo.cnio.es/trackHubPROTEO/docs/PROTEO.html
 genomesFile genomes.txt
 email  jmrodriguez@cnio.es
