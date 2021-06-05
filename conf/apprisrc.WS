@@ -49,4 +49,4 @@ export APPRIS_WSERVER_OUTPUT_ENCODING="text/plain"
 #export APPRIS_WSERVER_REPORT_URL="http://appris.bioinfo.cnio.es/#/server/result"
 export APPRIS_WSERVER_REPORT_URL="http://appris-tools.org/#/server/result"
 
-export APPRIS_WSERVER_TRIFID_URL="http://apprisws.bioinfo.cnio.es/pub/trifid"
+export APPRIS_WSERVER_TRIFID_BASE_DIR="${APPRIS_WSERVER_HOME}/pub/trifid"
