@@ -62,6 +62,11 @@ Database files of Code's APPRIS
 ### For PROTEO: [FMI](#proteo)
   + proteo_20200604.csv
 
+### For TRIFID: [FMI](#trifid)
+  There are typically multiple TRIFID data files, with each one containing data
+  for a specific species, assembly, feature set, and TRIFID prediction set. For
+  example, the TRIFID file created on 12th May 2021 for GENCODE v37 annotations
+  of human assembly `GRCh38` would be named `trifid_GRCh38_g37_20210512.tsv.gz`.
 
 
 Creation of the Code's Databases
@@ -84,40 +89,31 @@ http://firedb.bioinfo.cnio.es/Php/Help.php)
 
 Matador3D
 ---------
-1. Download wwwPDB. Check the web: https://www.wwpdb.org/download/downloads. As of today, the way to download the files is:
-```
-    $ rsync -rlpt -v -z --delete --port=33444 rsync.rcsb.org::ftp_data/structures/divided/pdb/ ./wwwPDB
-```
-2. Download the 'monomers components' from wwwPDB:
-```
-	$ wget ftp://ftp.wwpdb.org/pub/pdb/data/monomers/components.cif
-```
-3. Execute the script (the script needs Java 1.8) (created by *__José María Fernández__*):
-```
-	$ touch ficherovacio.txt && touch ficherovacio2.txt
-	
-	$ java -jar scripts/matador3d/GOPHERPrepare.jar \
-	    -s ficherovacio.txt \
-	    ficherovacio2.txt \
-	    wwwPDB pdb_{DATE_VERSION}.fasta \
-	    components.cif \
-	    /tmp/matador3d_update_wwwPDB >& /tmp/matador3d_update_wwwPDB.log
-```
-4. Then, discard empty sequence
-```
-	$ perl scripts/matador3d/discardEmptySeqsPDB.pl pdb_{DATE_VERSION}.fasta 1> pdb_{DATE_VERSION}.emptySeqs.fa
-	
-	$ ln -s pdb_{DATE_VERSION}.emptySeqs.fa pdb_{DATE_VERSION}
-```
-5. Index database
-```
-	$ formatdb -i pdb_{DATE_VERSION} -p T
-```
-6. Delete tmp files
-```
-	$ rm -rf /tmp/matador3d_update_wwwPDB && rm /tmp/matador3d_update_wwwPDB.log && rm ficherovacio.txt && rm ficherovacio2.txt && rm formatdb.log
-```
 
+1. Generate Matador3D BLAST database
+
+To generate a new Matador3D BLAST database,
+execute a command such as the following:
+```shell
+python appris/scripts/prep_pdbsum_blastdb.py --output-dir appris/db
+```
+This downloads PDB sequence data from [PDBsum](https://www.ebi.ac.uk/pdbsum/),
+processes it, and creates a BLAST database in the specified output directory.
+
+2. Configure Matador3D BLAST database
+
+In section `[MATADOR3D_VARS]` of the config file `appris/conf/code/pipeline.ini`,
+set `db` to the name of the new database. For example, given a BLAST database in
+`appris/db` whose filenames start with `pdbsum_20210427`, the Matador3D config
+section might look like this:
+```ini
+[MATADOR3D_VARS]
+  name=matador3d
+  program=blastpgp
+  db=pdbsum_20210427
+  evalue=0.01
+  cache=yes
+```
 
 Matador3D2
 ----------
@@ -135,7 +131,7 @@ The URL from the PfamScan code is in ftp://ftp.ebi.ac.uk/pub/databases/Pfam/Tool
 
 1. Create directory with date version. Eg. Pfam_201706
 ```
-	$ mkdir Pfam_201706 && cd Pfam_201706 
+	$ mkdir Pfam_201706 && cd Pfam_201706
 ```
 2. Download release note file:
 ```
@@ -271,9 +267,65 @@ developed by *__José María Fernández__*
 
 PROTEO
 ------
-Developed by *__Iakes Ezcurdia Garmendia__* and *__Michael Tress__*
+Developed by *__Iakes Ezcurdia Garmendia__* and *__Michael Tress__*.
 
+1. Generate PROTEO data file
 
+Given a file `peptide_results.tsv` of data output from a proteomics peptide
+search workflow, the following command will generate a PROTEO data file:
+```shell
+python prep_proteo_data.py -i peptide_results.tsv -o proteo_20210604.csv
+```
+
+2. Configure PROTEO data file
+
+In section `[PROTEO_VARS]` of the config file `appris/conf/code/pipeline.ini`,
+set `db` to the name of the new PROTEO data file. For example, with PROTEO data
+file `appris/db/proteo_20200604.csv`, the PROTEO config section might look like
+this:
+```ini
+[PROTEO_VARS]
+  name=proteo
+  db=proteo_20200604.csv
+```
+
+TRIFID
+------
+
+In typical use, TRIFID predictions are downloaded from the
+[TRIFID GitLab repository](https://gitlab.com/bu_cnio/trifid).
+When preparing TRIFID data in this way, it is only necessary to
+provide the key details for the TRIFID prediction set (i.e. its
+genome assembly, and the source name and version number of its
+genome annotation).
+
+First, it is necessary to download the relevant annotation data
+and translation sequence files. For example, the following
+commands would download these files for GENCODE v35:
+```shell
+curl http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_35/gencode.v35.annotation.gtf.gz \
+  --output gencode.v35.annotation.gtf.gz
+
+curl http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_35/gencode.v35.pc_translations.fa.gz \
+   --output gencode.v35.pc_translations.fa.gz
+```
+
+Then, the Python script `prep_trifid_data.py` may be
+used to prepare a TRIFID data file for input to APPRIS.
+Again, using GENCODE v35 as an example:
+```shell
+python prep_trifid_data.py \
+  --assembly GRCh38 --source-name gencode --source-version 35 \
+  --transl-file gencode.v35.pc_translations.fa.gz \
+  --annot-file gencode.v35.annotation.gtf.gz \
+  --output-dir appris/db/trifid/homo_sapiens/GRCh38/g35
+```
+
+A TRIFID data file must be configured for each dataset. This may
+be done, for example, by specifying an individual TRIFID file with
+the `-trifid` parameter of `appris_run_appris`, or by setting the
+TRIFID release for a given dataset in the global JSON config file
+used by `appristools`.
 
 
 Create database for APPRIS-Docker
