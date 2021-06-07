@@ -274,10 +274,40 @@ and without gaps (_CORSAIR_).
 
     Proteomic evidence *__only for the human genome (GENCODE gene set)__*.
 
-    We have collected peptides from seven separate MS sources. Two came from large-scale proteomics databases, [PeptideAtlas](http://www.peptideatlas.org/) and [NIST](https://peptide.nist.gov/). Another four datasets that were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as *__CNIO__* in house from an [X!Tandem](https://pubmed.ncbi.nlm.nih.gov/14558131/) search against spectra from the [GPM](https://pubmed.ncbi.nlm.nih.gov/1559573/) and PeptideAtlas databases, following the protocol set out in [Ezkurdia et al](https://pubmed.ncbi.nlm.nih.gov/22446687/) with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.
+    This proteomic evidence has been collected from various mass
+    spectrometry (MS) sources, covering a range of tissues and cell types.
 
-    In order to improve reliability the peptides from each of these studies were filtered,
-    eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.
+    Prior to GENCODE v33, peptides were collected from 8 sources
+    ([Ezkurdia et al. 2015](https://doi.org/10.1021/pr501286b);
+    [Farrah et al. 2013](https://doi.org/10.1021/pr301012j);
+    [Ezkurdia et al. 2012](https://doi.org/10.1093/molbev/mss100);
+    [Munoz et al. 2011](https://doi.org/10.1038/msb.2011.84);
+    [Nagaraj et al. 2011](https://doi.org/10.1038/msb.2011.81);
+    [Geiger et al. 2012](https://doi.org/10.1074/mcp.m111.014050);
+    [Kim et al. 2014](https://doi.org/10.1038/nature13302);
+    [Wilhelm et al. 2014](https://doi.org/10.1038/nature13319)).
+    To improve reliability, peptides from each of these sources were filtered,
+    eliminating non-tryptic and semi-tryptic peptides and peptides containing
+    missed cleavages, and where possible only considering peptides identified
+    by multiple search engines.
+
+    APPRIS releases from GENCODE v33 onwards have
+    used peptide evidence from 2 proteomics studies
+    ([Kim et al. 2014](https://doi.org/10.1038/nature13302);
+    [Wang et al. 2019](https://doi.org/10.15252/msb.20188503)),
+    and from GENCODE v38, these have been supplemented by peptides from a further 5 studies
+    ([Zhang et al. 2014](https://doi.org/10.1038/nature13438);
+    [Bekker-Jensen et al. 2017](https://doi.org/10.1016/j.cels.2017.05.009);
+    [Carlyle et al. 2017](https://doi.org/10.1038/s41593-017-0011-2);
+    [Schiza et al. 2019](https://doi.org/10.1074/mcp.RA118.001170);
+    [Jiang et al. 2020](https://doi.org/10.1016/j.cell.2020.08.036)).
+    For these studies, the Comet ([Eng et al. 2012](https://doi.org/10.1002/pmic.201200439))
+    search engine was used with default parameters, then post-processed with Percolator
+    ([Käll et al. 2007](https://doi.org/10.1038/nmeth1113);
+    [The et al. 2016](https://pubmed.ncbi.nlm.nih.gov/27572102/)).
+    Peptide-spectrum matches (PSMs) that had a Posterior Error Probability (PEP)
+    of lower than 0.001 were allowed as long as they were fully tryptic peptides
+    and had no more than 2 missed cleavages.
 
 + __Reliability labels__ of APPRIS
 

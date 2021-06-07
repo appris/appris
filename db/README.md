@@ -60,7 +60,7 @@ Database files of Code's APPRIS
   + sprot_clean_trembl_clean_90.pal
 
 ### For PROTEO: [FMI](#proteo)
-  + proteo_20200604.csv
+  + proteo_20210604.csv
 
 ### For TRIFID: [FMI](#trifid)
   There are typically multiple TRIFID data files, with each one containing data
@@ -281,12 +281,12 @@ python prep_proteo_data.py -i peptide_results.tsv -o proteo_20210604.csv
 
 In section `[PROTEO_VARS]` of the config file `appris/conf/code/pipeline.ini`,
 set `db` to the name of the new PROTEO data file. For example, with PROTEO data
-file `appris/db/proteo_20200604.csv`, the PROTEO config section might look like
+file `appris/db/proteo_20210604.csv`, the PROTEO config section might look like
 this:
 ```ini
 [PROTEO_VARS]
   name=proteo
-  db=proteo_20200604.csv
+  db=proteo_20210604.csv
 ```
 
 TRIFID
