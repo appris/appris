@@ -411,6 +411,12 @@ The bigBed format stores annotation items that can be either a simple or a linke
 https://genome.ucsc.edu/goldenPath/help/bigBed.html
 https://genome.ucsc.edu/goldenpath/help/hgTrackHubHelp.html
 
+Checksum files
+==============
+
+More recent APPRIS datasets contain a file `md5checksums.txt`,
+which lists MD5 message digests for each file in the dataset.
+
 
 Directory structure running the pipeline
 ========================================
