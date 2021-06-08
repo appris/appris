@@ -307,7 +307,8 @@ and without gaps (_CORSAIR_).
     [The et al. 2016](https://pubmed.ncbi.nlm.nih.gov/27572102/)).
     Peptide-spectrum matches (PSMs) that had a Posterior Error Probability (PEP)
     of lower than 0.001 were allowed as long as they were fully tryptic peptides
-    and had no more than 2 missed cleavages.
+    and had no more than 2 missed cleavages. Only peptides with at least 2 valid
+    PSMs across the 7 studies are considered by PROTEO.
 
 + __Reliability labels__ of APPRIS
 
