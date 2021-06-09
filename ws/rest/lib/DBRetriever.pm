@@ -163,6 +163,8 @@ use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_path);
         string - type of input (id, name, position)
   Arg [-input]:
         string - input identifier/name/genomic region
+  Arg [-trifid_base_dir]:
+        string - TRIFID base directory
   Example    : $features = DBRetriever->new(...);
   Description: Creates a new retrieve object
   Returntype : DBRetriever
