@@ -1745,7 +1745,7 @@ sub get_gen_features {
 		if ( defined $ids ) { $optional_params .= '%26'.'ids='.$ids }
 		if ( defined $source ) { $optional_params .= '%26'.'sc='.$source }
 		if ( defined $dataset ) { $optional_params .= '%26'.'ds='.$dataset }
-		my ($query) = 'https://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
+		my ($query) = 'http://' . CGI->new()->server_name() . '/rest/' . $query_id . '?' . $required_params . $optional_params ;
 		
 		# make a request to render tracks of UCSC
 		my ($params) = 'db=' . $assembly;
