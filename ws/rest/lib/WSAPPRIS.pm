@@ -272,9 +272,7 @@ sub resulttypes_appris {
 			if ( exists $params->{'species'} ) {
 				my ($species) = _create_param_species($params->{'species'});
 				$run_methods .= ',proteo' if ( $species eq 'Homo sapiens' );
-				$run_methods .= ',trifid' if ( $species eq 'Homo sapiens' ||
-											   $species eq 'Mus musculus' ||
-											   $species eq 'Rattus norvegicus' );
+				$run_methods .= ',trifid';
 			}
 		}
 	}

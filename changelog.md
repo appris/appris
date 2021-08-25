@@ -1,4 +1,67 @@
 ___
+## 2021_08.v45
+```
+SERVER-RELEASE:   2021_08.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ New release of Human (GENCODE v38 / Ensembl 105) and Mouse (GENCODE vM27 / Ensembl 105).
++ New release for the new assembly of Rattus norvegicus (mRatBN7.2 / Rn7) using Ensembl 105.
++ Updated scores for CORDSAIR. It has been applied for all local species.
++ The method Alt-CORSAIR is executed for all species.
++ TRIFID scores for all species.
++ The Matador3D includes the AlphaFold models.
+
+### Server (4.12)
+
++ No changes.
+
+### Code (2.27)
+
++ No changes.
+
+___
+## 2021_07.v45
+```
+SERVER-RELEASE:   2021_07.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ New release of Danio (Ensembl 98) with TRIFID annotations.
+
+### Server (4.12)
+
++ No changes.
+
+### Code (2.27)
+
++ No changes.
+
+___
+## 2021_06.v45
+```
+SERVER-RELEASE:   2021_06.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ Update the annotations of GENCODE Human (version 38) and GENCODE Human (version 37).
+
+### Server (4.12)
+
++ Lack of awareness.
+
+### Code (2.27)
+
++ Lack of awareness.
+
+
+___
 ## 2021_05.v44
 ```
 SERVER-RELEASE:   2021_05.v44

@@ -1,0 +1,132 @@
+{
+"Danio":[
+	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"0","age":0,"norm":0}
+],
+"Carassius":[
+	{"name":"Carassius auratus","common":"Goldfish","tax_id":7957,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
+],
+"Sinocyclocheilus":[
+	{"name":"Sinocyclocheilus rhinocerous","common":"S. rhinocerous","tax_id":307959,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
+],
+"Pygocentrus":[
+	{"name":"Pygocentrus nattereri","common":"Red piranha","tax_id":42514,"proteome_id":"UP000018467","weight":"2","age":153,"norm":0.22566}
+],
+"Astyanax":[
+	{"name":"Astyanax mexicanus","common":"Cave fish","tax_id":7994,"proteome_id":"UP000018467","weight":"2","age":153,"norm":0.22566}
+],
+"Seriola":[
+	{"name":"Seriola dumerili","common":"Greater Amberjack","tax_id":41447,"weight":"3","age":230,"norm":0.33923}
+],
+"Lates":[
+	{"name":"Lates calcarifer","common":"Barramundi","tax_id":8187,"weight":"3","age":230,"norm":0.33923}
+],
+"Perca":[
+	{"name":"Perca fluviatilis","common":"European perch","tax_id":8168,"weight":"3","age":230,"norm":0.33923}
+],
+"Amphiprion":[
+	{"name":"Amphiprion ocellaris","common":"Ocellaris clownfish","tax_id":80972,"weight":"3","age":230,"norm":0.33923}
+],
+"Gymnodraco":[
+	{"name":"Gymnodraco acuticeps","common":"Ploughfish","tax_id":8218,"weight":"3","age":230,"norm":0.33923}
+],
+"Oncorhynchus":[
+	{"name":"Oncorhynchus mykiss","common":"Rainbow trout","tax_id":8022,"weight":"3","age":230,"norm":0.33923}
+],
+"Coregonus":[
+	{"name":"Coregonus clupeaformis","common":"Lake whitefish","tax_id":59861,"weight":"3","age":230,"norm":0.33923}
+],
+"Oreochromis":[
+	{"name":"Oreochromis niloticus","common":"Tilapia","tax_id":8128,"proteome_id":"UP000005207","weight":"3","age":230,"norm":0.33923}
+],
+"Oryzias":[
+	{"name":"Oryzias latipes","common":"Medaka","tax_id":8090,"proteome_id":"UP000001038","weight":"3","age":230,"norm":0.33923}
+],
+"Xiphophorus":[
+	{"name":"Xiphophorus maculatus","common":"Platyfish","tax_id":8083,"proteome_id":"UP000002852","weight":"3","age":230,"norm":0.33923}
+],
+"Poecilia":[
+	{"name":"Poecilia formosa","common":"Amazon molly","tax_id":48698,"proteome_id":"UP000028760","weight":"3","age":230,"norm":0.33923}
+],
+"Takifugu":[
+	{"name":"Takifugu rubripes","common":"Fugu","tax_id":31033,"proteome_id":"UP000005226","weight":"3","age":230,"norm":0.33923}
+],
+"Tetraodon":[
+	{"name":"Tetraodon nigroviridis","common":"Tetraodon","tax_id":99883,"proteome_id":"UP000007303","weight":"3","age":230,"norm":0.33923}
+],
+"Gasterosteus":[
+	{"name":"Gasterosteus aculeatus","common":"Stickleback","tax_id":69293,"proteome_id":"UP000007635","weight":"3","age":230,"norm":0.33923}
+],
+"Lepisosteus":[
+	{"name":"Lepisosteus oculatus","common":"Spotted gar","tax_id":7918,"proteome_id":"UP000018468","weight":"3","age":230,"norm":0.33923}
+],
+"Salmo":[
+	{"name":"Salmo salar","common":"Salmon","tax_id":8030,"weight":"3","age":230,"norm":0.33923}
+],
+"Paramormyrops":[
+	{"name":"Paramormyrops kingsleyae","common":"Old Calabar mormyrid","tax_id":1676925,"weight":"4","age":267,"norm":0.3938}
+],
+"Scleropages":[
+	{"name":"Scleropages formosus","common":"Asian arowana","tax_id":113540,"weight":"4","age":267,"norm":0.3938}
+],
+"Anguilla":[
+	{"name":"Anguilla Anguilla","common":"European eel","tax_id":7936,"weight":"5","age":274,"norm":0.4041}
+],
+"Acipenser":[
+	{"name":"Acipenser ruthenus","common":"Sterlet","tax_id":7906,"weight":"7","age":344,"norm":0.50737}
+],
+"Homo":[
+	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":8,"age":435,"norm":0.64159}
+],
+"Callithrix":[
+	{"name":"Callithrix jacchus","common":"Marmoset","tax_id":9483,"proteome_id":"UP000008225","weight":8,"age":435,"norm":0.64159}
+],
+"Mus":[
+	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"8","age":435,"norm":0.64159}
+],
+"Myotis":[
+	{"name":"Myotis lucifugus","common":"Microbat","tax_id":59463,"proteome_id":"UP000001074","weight":"8","age":435,"norm":0.64159}
+],
+"Canis":[
+	{"name":"Canis lupus familiaris","common":"Dog","tax_id":9615,"proteome_id":"UP000002254","weight":"8","age":435,"norm":0.64159}
+],
+"Bos":[
+	{"name":"Bos taurus","common":"Cow","tax_id":9913,"proteome_id":"UP000009136","weight":"8","age":435,"norm":0.64159}
+],
+"Loxodonta":[
+	{"name":"Loxodonta africana","common":"Elephant","tax_id":9785,"proteome_id":"UP000007646","weight":"8","age":435,"norm":0.64159}
+],
+"Monodelphis":[
+	{"name":"Monodelphis domestica","common":"Opossum","tax_id":13616,"proteome_id":"UP000002280","weight":"8","age":435,"norm":0.64159}
+],
+"Anolis":[
+	{"name":"Anolis carolinensis","common":"Anole lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"8","age":435,"norm":0.64159}
+],
+"Taeniopygia":[
+	{"name":"Taeniopygia guttata","common":"Zebra Finch","tax_id":59729,"proteome_id":"UP000007754","weight":"8","age":435,"norm":0.64159}
+],
+"Gallus":[
+	{"name":"Gallus gallus","common":"Chicken","tax_id":9031,"proteome_id":"UP000000539","weight":"8","age":435,"norm":0.64159}
+],
+"Xenopus":[
+	{"name":"Xenopus tropicalis","common":"Xenopus","tax_id":8364,"proteome_id":"UP000008143","weight":"8","age":435,"norm":0.64159}
+],
+"Geotrypetes":[
+	{"name":"Geotrypetes seraphini","common":"Gaboon caecilian","tax_id":260995,"weight":"8","age":435,"norm":0.64159}
+],
+"Amblyraja":[
+	{"name":"Amblyraja radiata","common":"Thorny skate","tax_id":386614,"weight":"9","age":465,"norm":0.68584}
+],
+"Scyliorhinus":[
+	{"name":"Scyliorhinus canicula","common":"Small-spotted catshark","tax_id":7830,"weight":"9","age":465,"norm":0.68584}
+],
+"Petromyzon":[
+	{"name":"Petromyzon marinus","common":"Lamprey","tax_id":7757,"weight":"10","age":601,"norm":0.8864307}
+],
+"Styela":[
+	{"name":"Styela Clava","common":"S.Clava","tax_id":7725,"weight":"11","age":678,"norm":1}
+],
+"Ciona":[
+	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"11","age":678,"norm":1},
+	{"name":"Ciona savignyi","common":"C.savignyi","tax_id":51511,"proteome_id":"UP000007875","weight":"11","age":678,"norm":1}
+]
+}

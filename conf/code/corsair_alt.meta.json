@@ -13,5 +13,40 @@
         "animal": "vertebrates",
         "diverge_time_file": "corsair_alt.diverge_time.rat.json",
         "clade_file": "corsair_alt.glires.json"
+    },
+    "Danio rerio": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.danio.json",
+        "clade_file": "corsair_alt.fishes.json"
+    },
+    "Sus scrofa": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.pig.json",
+        "clade_file": "corsair_alt.mammals.json"
+    },
+    "Pan troglodytes": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.chimp.json",
+        "clade_file": "corsair_alt.primates.json"
+    },
+    "Gallus gallus": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.chicken.json",
+        "clade_file": "corsair_alt.birds.json"
+    },
+    "Bos taurus": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.cow.json",
+        "clade_file": "corsair_alt.mammals.json"
+    },
+    "Drosophila melanogaster": {
+        "animal": "invertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.fruitfly.json",
+        "clade_file": "corsair_alt.invert.json"
+    },
+    "Caenorhabditis elegans": {
+        "animal": "invertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.celegans.json",
+        "clade_file": "corsair_alt.invert.json"
     }
 }

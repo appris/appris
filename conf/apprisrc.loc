@@ -9,7 +9,8 @@
 export APPRIS_CODE_DIR="${APPRIS_HOME}/code"
 
 if [[ -z $APPRIS_PROGRAMS_CACHE_DIR ]]
-then export APPRIS_PROGRAMS_CACHE_DIR="${APPRIS_HOME}/cache/md5";
+#then export APPRIS_PROGRAMS_CACHE_DIR="${APPRIS_HOME}/cache/md5";
+then export APPRIS_PROGRAMS_CACHE_DIR="/mnt/lacie/appriscache/md5";
 fi
 
 export APPRIS_PROGRAMS_DB_DIR="${APPRIS_HOME}/db"

@@ -1,0 +1,26 @@
+{
+    "Danio": [
+        {
+            "name": "Danio rerio",
+            "desc": "Zebrafish"
+        }
+    ],
+    "Takifugu": [
+        {
+            "name": "Takifugu rubripes",
+            "desc": "Fugu"
+        }
+    ],
+    "Gasterosteus": [
+        {
+            "name": "Gasterosteus aculeatus",
+            "desc": "Stickleback"
+        }
+    ],
+    "Oryzias": [
+        {
+            "name": "Oryzias latipes",
+            "desc": "Medaka"
+        }
+    ]
+}

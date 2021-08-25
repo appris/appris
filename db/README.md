@@ -100,7 +100,17 @@ python appris/scripts/prep_pdbsum_blastdb.py --output-dir appris/db
 This downloads PDB sequence data from [PDBsum](https://www.ebi.ac.uk/pdbsum/),
 processes it, and creates a BLAST database in the specified output directory.
 
-2. Configure Matador3D BLAST database
+2. Concatenate the PDB structures with the AlphaFold models:
+```shell
+cat pdbsum_20210427.fasta AlphaFold/AlphaFold_hsap_mmus_rnor_drer_dmel_cele.faa > pdbsum_20210427_AF_20210816.fasta
+```
+
+3. Formatdb
+```shell
+formatdb -i pdbsum_20210427_AF_20210816.fasta -p T -t pdbsum_20210427_AF_20210816 -l pdbsum_20210427_AF_20210816.log -n pdbsum_20210427_AF_20210816
+```
+
+4. Configure Matador3D BLAST database
 
 In section `[MATADOR3D_VARS]` of the config file `appris/conf/code/pipeline.ini`,
 set `db` to the name of the new database. For example, given a BLAST database in
@@ -110,7 +120,7 @@ section might look like this:
 [MATADOR3D_VARS]
   name=matador3d
   program=blastpgp
-  db=pdbsum_20210427
+  db=pdbsum_20210427_AF_20210816
   evalue=0.01
   cache=yes
 ```

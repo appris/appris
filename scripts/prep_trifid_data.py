@@ -33,7 +33,7 @@ from tempfile import TemporaryDirectory
 
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 from dateutil import parser
-from gitlab import Gitlab
+#from gitlab import Gitlab
 from gtfparse import read_gtf
 from pytz import timezone
 
@@ -331,7 +331,7 @@ ensembl_transl_hdr_regex = re.compile(
     ' gene_biotype:(?P<gene_biotype>\S+)'
     ' transcript_biotype:(?P<transc_biotype>\S+)'
     '(?: gene_symbol:(?P<gene_name>\S+))?'
-    '(?: description:(?P<desc>.+))?$'
+    '(?: description:(?P<desc>.+))?'
 )
 
 gencode_transl_hdr_regex = re.compile(
