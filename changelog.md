@@ -1,7 +1,7 @@
 ___
-## 2021_08.v45
+## 2021_09.v45
 ```
-SERVER-RELEASE:   2021_08.v45
+SERVER-RELEASE:   2021_09.v45
 CODE-RELEASE:     4.12.2.27
 ```
 
@@ -12,7 +12,7 @@ CODE-RELEASE:     4.12.2.27
 + Updated scores for CORDSAIR. It has been applied for all local species.
 + The method Alt-CORSAIR is executed for all species.
 + TRIFID scores for all species.
-+ The Matador3D includes the AlphaFold models.
++ The Matador3D includes the AlphaFold models. AlpahFold is for human and mouse at the moment.
 
 ### Server (4.12)
 
