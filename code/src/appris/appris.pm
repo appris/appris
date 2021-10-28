@@ -1139,7 +1139,7 @@ sub step_trifid($$$$$)
 					next unless( defined($transc_report->analysis) &&
 								 defined($transc_report->analysis->trifid) );
 
-					my ($score) = $transc_report->analysis->trifid->trifid_score;
+					my ($score) = $transc_report->analysis->trifid->norm_trifid_score;
 					my ($seq) = $transc_to_seq{$transc_id};
 					if ( ! exists($seq_to_score{$seq}) ||
 							$score > $seq_to_score{$seq} ) {
@@ -1157,11 +1157,9 @@ sub step_trifid($$$$$)
 				if ( $num_dec_scores == 1 || ($num_dec_scores >= 2 &&
 						($dec_scores[0] - $dec_scores[1]) >= $min_lead) ) {
 					my (@best_seqs) = @{$score_to_seqs{$dec_scores[0]}};
-					if ( scalar(@best_seqs) == 1 ) {
-						foreach my $transc_id (@scoring_principals) {
-							if ( $transc_to_seq{$transc_id} eq $best_seqs[0] ) {
-								$report->{$transc_id} = 1;
-							}
+					foreach my $transc_id (@scoring_principals) {
+						if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+							$report->{$transc_id} = 1;
 						}
 					}
 				}
