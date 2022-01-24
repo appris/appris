@@ -826,11 +826,11 @@ sub get_appris_scores($$\$\$\$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'corsair' ) {
-					if    ( $max >= 13 ) { $weight = 4; }
-					elsif ( $max >= 9 )  { $weight = 3; }
-					elsif ( $max >= 6 )  { $weight = 2; }
-					elsif ( $max >= 3 )  { $weight = 1; }
-					else                 { $weight = 0; }
+					if    ( $max >= 13  )  { $weight = 4; }
+					elsif ( $max >= 8   )  { $weight = 3; }
+					elsif ( $max >= 4   )  { $weight = 2; }
+					elsif ( $max >= 1   )  { $weight = 1; }
+					else                   { $weight = 0; }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
 					$weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
