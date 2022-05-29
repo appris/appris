@@ -27,6 +27,7 @@ lost+found
 .wgetrc
 perl5/
 var/
+__pycache__/
 
 
 # 'server' dir
