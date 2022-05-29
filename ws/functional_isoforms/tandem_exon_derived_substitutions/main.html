@@ -36,7 +36,7 @@
 
         // get the text data in tabular format
         let textData = $.ajax({
-            url: "data/FunctionalTableLong.tsv",
+            url: "data/HES_APPRIS_functional.tsv",
             // async: false,
             success: function(textData){
               // convert text to object (array of arraya)
@@ -91,8 +91,12 @@
                 <li>
                     <a href="http://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a>
                 </li>
-                <li>
-                    <a href="http://apprisws.bioinfo.cnio.es/functional_isoforms/">Important Isoforms</a>
+                <li class="dropdown" dropdown is-open="status.isopen">
+                    <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                       <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
+                       <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="http://appris-tools.org/#/help/intro">Help & Docs</a>
@@ -105,17 +109,17 @@
     </nav>
 </div>
   <header>
-    <h1>Important Alternative Isoforms in Human</h1>
+    <h1>Tandem Exon Derived Substitutions</h1>
   </header>
   <section>
     <div class="main-desc">
-      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_27.html" target="_blank">GENCODE v27</a> (maybe they are not valid for any other annotation).</p>
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_33.html" target="_blank">GENCODE v33</a> (maybe they are not valid for any other annotation).</p>
       <br/>
       <p>For more information about these Functional Isoforms, read the following publication:<p>
       <address>
-        <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
-        Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>
-        DOI:<a href="https://doi.org/10.1371/journal.pcbi.1008287" target="_blank">10.1371/journal.pcbi.1008287</a>
+        <strong>The clinical importance of tandem exon duplication-derived substitutions.</strong>Nucleic Acids Res. 2021 49:8232–46.<br>
+        Martinez Gomez L, Pozo F, Walsh TA, Abascal F, Tress ML.<br>
+        DOI:<a href="https://doi.org/10.1093/nar/gkab623" target="_blank">10.1093/nar/gkab623</a>
       </address>
     </div>
     <hr/>
