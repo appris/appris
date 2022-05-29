@@ -319,7 +319,7 @@ module.directive('browserSeqTpl', ['$compile', '$filter', function($compile, $fi
                 }
                 else {
                     scope.browser.refresh = true;
-                    element.html($compile('<div class="browser loading">Loading...</div>')(scope));
+                    element.html($compile('<div class="browser loading">Loading... If sequences fail to appear, please click on \'refresh browsers\'.</div>')(scope));
                 }
             }
             scope.$watch('error', function(newValue, oldValue, scope) {
@@ -524,7 +524,15 @@ function createAnnotReferences($filter, query, residues, urlExporter, urlRunnerR
                             var acc = match[1];
                             var eval = match[2];
                             var id = acc.replace(/_[A-Z0-9]{1,4}(?:_pdb_seq)?$/i,'');
-                            annot = "<a href='"+urlPDB+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+
+                            const userKeyRegExp = /^AFM:/;
+                            if ( userKeyRegExp.test(id) == true ) {
+                                id_clean = id.slice(4)
+                                annot = "<a href='"+ "https://alphafold.ebi.ac.uk/search/text/" + id_clean + "?suggested=true" +"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                            }
+                            else {
+                                annot = "<a href='"+urlPDB+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                            }
                         }
                     }
                     else if ( (mid === "functional_domain") && angular.isDefined(mres.annot.match(pattern)) ) {
