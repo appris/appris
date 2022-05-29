@@ -28,6 +28,16 @@ lost+found
 perl5/
 var/
 __pycache__/
+.ICEauthority
+.bash_profile
+.conda/
+.dmrc
+.gconf/
+.local/
+.nano_history
+.pip/
+.python_history
+.xsession-errors
 
 
 # 'server' dir
