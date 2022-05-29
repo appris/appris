@@ -787,7 +787,7 @@ appris
 
 =head2 Required arguments (inputs):
 
-=head3 GENCODE choice: executes appris from gencode data (http://www.gencodegenes.org/data.html)
+=head3 GENCODE choice: executes appris from gencode data (https://www.gencodegenes.org/pages/data_access.html)
 	
 =head4 Required arguments:
 
