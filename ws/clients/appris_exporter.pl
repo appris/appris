@@ -11,7 +11,7 @@ use Data::Dumper;
 ###################
 
 my ($SCRIPTNAME) = basename( $0, () ); # Get the script filename for use in usage messages
-my ($BASE_URL) = 'http://apprisws.bioinfo.cnio.es'; # Base URL
+my ($BASE_URL) = 'https://apprisws.bioinfo.cnio.es'; # Base URL
 my ($BASE_REST_URL) = $BASE_URL.'/rest'; # REST URL for service
 my ($APPRIS_HEAD) = <<APPRIS_HEAD_DESC;
 # ================================================================================= #
@@ -20,7 +20,7 @@ my ($APPRIS_HEAD) = <<APPRIS_HEAD_DESC;
 # APPRIS can be accessed through RESTful web services. Services can retrieve useful #
 # information about genes/transcripts, or the results of individual APPRIS methods. #
 #                                                                                   #
-# APPRIS (http://appris-tools.org) is a web server for annotating alternative #
+# APPRIS (https://appris.bioinfo.cnio.es/) is a web server for annotating alternative #
 # splice isoforms in vertebrate genomes.                                            #
 #                                                                                   #
 #                                                                                   #
