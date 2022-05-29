@@ -2732,7 +2732,6 @@ sub parse_trifid_rst($)
 	my (@req_col_names) = ('gene_id', 'gene_name', 'transcript_index', 'transcript_id',
 						   'translation_id', 'flags', 'ccdsid', 'appris', 'ann_type',
 						   'length', 'trifid_score', 'norm_trifid_score');
-	my $all_req_cols_found = all { exists($col_name_set{$_}) } @req_col_names;
 
 	my ($seq_attr_col);
 	if ( exists($col_name_set{'translation_seq_sha1'}) ) {  # TRIFID
@@ -2741,9 +2740,9 @@ sub parse_trifid_rst($)
 		$seq_attr_col = 'sequence';
 	}
 
-	if ( $all_req_cols_found && defined($seq_attr_col) ) {
+	if ( defined($seq_attr_col) ) {
 
-		my (@exp_opt_col_names) = ('gene_version', 'transcript_version', 'translation_version');
+		my (@exp_opt_col_names) = ('transcript_version', 'translation_version');
 		my (@opt_col_names) = grep { exists($col_name_set{$_}) } @exp_opt_col_names;
 
 		foreach my $line (@lines) {
@@ -2810,6 +2809,14 @@ sub parse_trifid($$)
 		my ($transl_id) = $input_transc->translate->stable_id;
 		my ($transl_seq) = $input_transc->translate->sequence;
 		my ($transl_seq_sha1) = sha1_hex($transl_seq);
+		
+		# By default, we discard the versions of identifiers. Except in C.elegans
+		my $tc_id = $transc_id;
+		my $tl_id = $transl_id;
+		if ($gene_id !~ /^WBGene/) {
+			( $tc_id = $transc_id) =~ s/\.[0-9]*$//g;
+			( $tl_id = $transl_id) =~ s/\.[0-9]*$//g;
+		}
 
 		if ( $input_transc->version ) {
 			$transc_to_ver{$transc_id} = $input_transc->version;
@@ -2817,18 +2824,15 @@ sub parse_trifid($$)
 
 		push(@{$seq_to_transcs{$transl_seq}}, $transc_id);
 
-		if ( exists $cutoffs->{$transc_id} ) {
+		if ( exists $cutoffs->{$tc_id} ) {
 
 			# if relevant transcript metadata match, store TRIFID scores
-			if (	( ! defined($input_transc->version) || ! exists($cutoffs->{$transc_id}{'transcript_version'}) ||
-						$cutoffs->{$transc_id}{'transcript_version'} == $input_transc->version ) &&
-					( ! defined($transl_id) || ! exists($cutoffs->{$transc_id}{'translation_id'}) ||
-						$cutoffs->{$transc_id}{'translation_id'} eq $transl_id ) &&
-					$cutoffs->{$transc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
-					$cutoffs->{$transc_id}{'length'} == length($transl_seq) ) {
+			if ( 	exists($cutoffs->{$tc_id}{'translation_id'})       && $cutoffs->{$tc_id}{'translation_id'} eq $tl_id &&
+				exists($cutoffs->{$tc_id}{'translation_seq_sha1'}) && $cutoffs->{$tc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
+				exists($cutoffs->{$tc_id}{'length'})              && $cutoffs->{$tc_id}{'length'} == length($transl_seq) ) {
 				$transc_trifid_info{$transc_id} = {
-					'trifid_score' => $cutoffs->{$transc_id}->{'trifid_score'},
-					'norm_trifid_score' => $cutoffs->{$transc_id}->{'norm_trifid_score'}
+					'trifid_score' => $cutoffs->{$tc_id}->{'trifid_score'},
+					'norm_trifid_score' => $cutoffs->{$tc_id}->{'norm_trifid_score'}
 				};
 			}
 
