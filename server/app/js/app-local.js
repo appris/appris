@@ -37,8 +37,8 @@ apprisApp.config(['$provide', function ($provide) {
     // ALPHA server - development in local
     $provide.value("serverName", '{APPRISloc}');
     $provide.value("serverType", 'alpha');
-    $provide.value("serverHost", 'http://apprisws.local:3000');
-    $provide.value("serverHostWS", 'http://apprisws.local');
+    $provide.value("serverHost", 'https://apprisws.local:3000');
+    $provide.value("serverHostWS", 'https://apprisws.local');
 
     // CONSTANTS
     $provide.value("consUrlEnsembl", 'https://www.ensembl.org');

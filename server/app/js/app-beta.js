@@ -36,8 +36,8 @@ apprisApp.config(['$provide', function ($provide) {
     // BETA server - development
     $provide.value("serverName", '{APPRISdev}');
     $provide.value("serverType", 'beta');
-    $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
-    $provide.value("serverHostWS", 'http://apprisws-dev.bioinfo.cnio.es');
+    $provide.value("serverHost", 'https://appris-dev.bioinfo.cnio.es');
+    $provide.value("serverHostWS", 'https://apprisws-dev.bioinfo.cnio.es');
 
     // CONSTANTS
     $provide.value("consUrlEnsembl", 'https://www.ensembl.org');
