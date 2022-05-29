@@ -18,5 +18,5 @@ Navigate your browser to ``http://local.es:3000/ to see the app running in your 
 
 Contact
 -------
-For more information on APPRIS please check out http://appris.bioinfo.cnio.es
+For more information on APPRIS please check out https://appris.bioinfo.cnio.es/
 
