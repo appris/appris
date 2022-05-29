@@ -18,7 +18,7 @@
                 <ul class="dropdown-menu">
                     <li><a ng-href="#/seeker">Database</a></li>
                     <li><a ng-href="#/server">WebServer</a></li>
-                    <li><a ng-href="{{serverConf.hostWS}}/apidoc">WebServices</a></li>
+                    <li><a ng-href="{{serverConf.hostWS}}/apidoc/">WebServices</a></li>
                     <!--<li class="divider"></li>-->
                     <!--<li><a href="#">Separated link</a></li>-->
                     <!--<li class="divider"></li>-->
@@ -28,11 +28,14 @@
                 <a href="#/downloads">Downloads</a>
             </li>
             <li>
-                <a data-ng-href="{{serverConf.hostWS}}/apidoc">WebServices</a>
+                <a data-ng-href="{{serverConf.hostWS}}/apidoc/">WebServices</a>
             </li>
-            <li>
-                <!-- <a href="#/impt/intro">Important Isoforms</a> -->
-                <a ng-href="{{serverConf.hostWS}}/functional_isoforms">Important Isoforms</a></li>
+            <li class="dropdown" dropdown is-open="status.isopen">
+                <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a ng-href="{{serverConf.hostWS}}/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
+                    <li><a ng-href="{{serverConf.hostWS}}/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
+                </ul>
             </li>
             <li>
                 <a href="#/help/intro">Help & Docs</a>
