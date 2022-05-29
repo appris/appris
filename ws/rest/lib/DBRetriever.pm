@@ -57,7 +57,7 @@ use APPRIS::Utils::File qw(getStringFromFile);
 
 use APPRIS::Analysis;
 use APPRIS::Parser qw(parse_trifid);
-use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_url);
+use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_path);
 #use WSRetriever;
 
 {
@@ -73,7 +73,7 @@ use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_url);
 
 			type			=>  undef,
 			input			=>  undef,
-			trifid_url		=>  undef,
+			trifid_base_dir	=>  undef,
 		);
 
 	#_____________________________________________________________
@@ -138,10 +138,10 @@ use APPRIS::Utils::TRIFID qw(get_trifid_pred_file_url);
 		return $self->{'input'};
 	}
 
-	sub trifid_url {
+	sub trifid_base_dir {
 		my ($self, $arg) = @_;
-		$self->{'trifid_url'} = $arg if defined $arg;
-		return $self->{'trifid_url'};
+		$self->{'trifid_base_dir'} = $arg if defined $arg;
+		return $self->{'trifid_base_dir'};
 	}
 }
 
@@ -193,7 +193,7 @@ sub new {
 		$dataset,
 		$type,
 		$input,
-		$trifid_url
+		$trifid_base_dir
 	)
 	= rearrange( [
 		'dbconf',
@@ -204,7 +204,7 @@ sub new {
 		'dataset',
 		'type',
 		'input',
-		'trifid_url'
+		'trifid_base_dir'
 	],
 	@_
 	);
@@ -222,7 +222,7 @@ sub new {
 	if ( defined $dataset ) { $self->dataset($dataset); }
 	if ( defined $type ) { $self->type($type); }
 	if ( defined $input ) { $self->input($input); }
-	if ( defined $trifid_url ) { $self->trifid_url($trifid_url); }
+	if ( defined $trifid_base_dir ) { $self->trifid_base_dir($trifid_base_dir); }
 	
 	return $self;
 }
@@ -419,10 +419,10 @@ sub get_features
 				foreach my $feature (@registry_features) {
 					my ($trifid_release) = $registry->{'trifid_release'};
 					if ( defined($trifid_release) ) {
-						my ($pred_file_url) = get_trifid_pred_file_url($self->trifid_url,
-						                                               $registry->{'species'},
-						                                               $trifid_release);
-						my ($trifid_report) = _fetch_trifid_report($feature, $pred_file_url);
+						my ($pred_file_path) = get_trifid_pred_file_path($self->trifid_base_dir,
+						                                                 $registry->{'species'},
+						                                                 $trifid_release);
+						my ($trifid_report) = _fetch_trifid_report($feature, $pred_file_path);
 						if ( defined($trifid_report) ) {
 							_add_trifid_analyses($feature, $trifid_report);
 						}
@@ -972,7 +972,7 @@ sub seek_features
 #	my ($xml_doc) = XML::LibXML::Document->new('1.0','UTF-8');
 #	
 #	my ($e_query) = $xml_doc->createElement('query');
-#	$e_query->setNamespace("http://appris-tools.org", "appris", 0);
+#	$e_query->setNamespace("https://appris-tools.org", "appris", 0);
 #	$xml_doc->setDocumentElement($e_query);
 #	my ($a_query) = $xml_doc->createAttribute('query', $report->{'query'});
 #	$e_query->setAttributeNode($a_query);
@@ -1070,11 +1070,11 @@ sub seek_features
 #		my ($cmd_stdout) = $cmd_stdout_list[0];
 #		if ( defined $cmd_stdout and $cmd_stdout =~ /NCBI:([^\n]*)/ ) { # ncbi blast
 #			my ($job_id) = $1;
-#			$result = "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&RID=$job_id";
+#			$result = "https://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&RID=$job_id";
 #		}
 #		elsif ( defined $cmd_stdout and $cmd_stdout =~ /($type\-[^\n]*)/ ) { # ebi tools
 #			my ($job_id) = $1;
-#			$result = "http://www.ebi.ac.uk/Tools/services/web/toolresult.ebi?jobId=$job_id"
+#			$result = "https://www.ebi.ac.uk/Tools/services/web/toolresult.ebi?jobId=$job_id"
 #		}
 #	};
 #	$seq_tmpfile->unlink_on_destroy(1);
@@ -1100,11 +1100,11 @@ sub _add_trifid_analyses($$) {
 }
 
 sub _fetch_trifid_report($$) {
-	my ($gene, $pred_file_url) = @_;
+	my ($gene, $pred_file_path) = @_;
 	my ($report);
 
 	my ($gene_id) = $gene->stable_id;
-	my ($cmd) = "tabix -Dh $pred_file_url $gene_id";
+	my ($cmd) = "tabix -Dh $pred_file_path $gene_id";
 	my (@lines) = `$cmd`;
 	if ( scalar(@lines) > 1 ) {  # first line is header
 		my $result = join('', @lines);
