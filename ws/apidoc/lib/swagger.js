@@ -146,7 +146,7 @@
           if (_this.url.substring(0, 4) !== 'http') {
             return _this.fail('Please specify the protocol for ' + _this.url);
           } else if (response.status === 0) {
-            return _this.fail('Can\'t read from server.  It may not have the appropriate access-control-origin settings.');
+            return _this.fail('To try the APPRIS REST API, please <a href="https://apprisws.bioinfo.cnio.es/apidoc/">click here</a>.');
           } else if (response.status === 404) {
             return _this.fail('Can\'t read swagger JSON from ' + _this.url);
           } else {
