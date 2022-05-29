@@ -23,9 +23,9 @@ Files that execute the APPRIS pipeline (appristools*)
     4. Retrieves the data files of methods
 
 ```
-appristools -p 1234 -c ws/config.json -m fmsctrpa -e 'example@appris-tools.org' -f gtf
+appristools -p 1234 -c ws/config.json -m fmsctrpa -e 'example@appris.bioinfo.cnio.es' -f gtf
 
-appristools -p 1234 -d conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'example@appris-tools.org' -f 'gtf,bed,bed12'
+appristools -p 1234 -d conf/scripts/apprisrc.Hsap -m fmsctrpa -e 'example@appri.bioinfo.cnio.es' -f 'gtf,bed,bed12'
 
 ```
 
