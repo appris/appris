@@ -135,7 +135,7 @@ checksum_dataset
 Adapted by Thomas Walsh (CNIO) from APPRIS script code that
 was originally written by Jose Manuel Rodriguez Carrasco.
 
-For contact details see the L<APPRIS website|http://appris-tools.org>.
+For contact details see the L<APPRIS website|https://appris.bioinfo.cnio.es/>.
 
 =cut
 
