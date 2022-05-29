@@ -34,7 +34,7 @@ use vars qw(
 $LOCAL_PWD				= $FindBin::Bin;
 $ENSEMBL_CONFIG_FILE	= $ENV{APPRIS_CODE_CONF_DIR}.'/ensembl.ini';
 
-# http://www.ensembl.org/info/genome/compara/analyses.html
+# https://www.ensembl.org/info/genome/compara/analyses.html
 $ORGANISMS = {
 # 39 eutherian mammals EPO_LOW_COVERAGE
 'homo_sapiens' => undef,
