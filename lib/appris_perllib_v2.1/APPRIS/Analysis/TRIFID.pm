@@ -1,6 +1,6 @@
 =head1 CONTACT
 
-  For contact details see the L<APPRIS website|http://appris-tools.org>.
+  For contact details see the L<APPRIS website|https://appris.bioinfo.cnio.es/>.
 
 =cut
 
