@@ -231,7 +231,7 @@ Tabular file that prints the scores of APPRIS methods. The description of the co
 		- single-exon transcript (will be included in a future version)
 
 	For more information:
-	http://www.ensembl.org/Help/Glossary?id=492
+	https://www.ensembl.org/Help/Glossary?id=492
 
 + The absolute numbers of __functional residues__ detected (_firestar_)
 
@@ -274,7 +274,7 @@ and without gaps (_CORSAIR_).
 
     Proteomic evidence *__only for the human genome (GENCODE gene set)__*.
 
-    We have collected peptides from seven separate MS sources. Two came from large-scale proteomics databases, [PeptideAtlas](http://www.peptideatlas.org/) and [NIST](http://peptide.nist.gov/). Another four datasets that were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as *__CNIO__* in house from an [X!Tandem](http://www.ncbi.nlm.nih.gov/pubmed/14558131) search against spectra from the [GPM](http://www.ncbi.nlm.nih.gov/pubmed/15595733) and PeptideAtlas databases, following the protocol set out in [Ezkurdia et al](http://www.ncbi.nlm.nih.gov/pubmed/22446687) with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.
+    We have collected peptides from seven separate MS sources. Two came from large-scale proteomics databases, [PeptideAtlas](http://www.peptideatlas.org/) and [NIST](https://peptide.nist.gov/). Another four datasets that were recently published large-scale MS experiments. For all six datasets the starting point was the list of peptides provided by the authors or databases. We generated the final set of peptides (referred to as *__CNIO__* in house from an [X!Tandem](https://pubmed.ncbi.nlm.nih.gov/14558131/) search against spectra from the [GPM](https://pubmed.ncbi.nlm.nih.gov/1559573/) and PeptideAtlas databases, following the protocol set out in [Ezkurdia et al](https://pubmed.ncbi.nlm.nih.gov/22446687/) with a false discovery rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell types.
 
     In order to improve reliability the peptides from each of these studies were filtered,
     eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.
