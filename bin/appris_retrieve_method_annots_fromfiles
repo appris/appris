@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# Local variables
+VER=0.1b
+VERDATE="1-Apr-2013"
+
+FILENAME=`basename $0`
+FILENAME="${FILENAME%.*}"
+DIRNAME=`dirname $0`
+
+CONF_SPECIES=""
+METHODS=""
+OUTPUT_DIR=""
+LOG_LEVEL=""
+
+# -----------------------------------------------------------------------------
+# Load external functions
+source ${DIRNAME}/appris_env
+
+# -----------------------------------------------------------------------------
+# Usage
+
+USAGE="
+\n
+ APPRIS's binary package.\n
+\n
+ Name:\n
+\t appris_retrieve_method_annots_fromfile\n
+\n
+ Description:\n
+\t Retrieve annotations from the result files specially for TRIFID\n
+\t\t* TODO!! TODO: firestar: list of ligands/compounds.\n
+\t\t* TODO!! Matador3D: list of pdb's, and coordinate alignments (at the moment, it's reported cds coordinates).\n	
+\t\t* SPADE: list of domains, and alignment coordinates.\n
+\t\t* CORSAIR: list of transcripts with the score.\n
+\t\t* CORSAI_ALT: list of transcripts with the score.\n
+\n
+ Required arguments:\n
+\t -c [-conf]\n
+\t\t Source file with env variables for the input dataset\n
+\n
+\t -m [-method]\n
+\t\t Methods which will execute:\n
+\t\t firestar,matador3d,spade,corsair,corsair_alt,thump,crash,proteo,appris\n
+\n
+\t -o [-out]\n
+\t\t Output path\n
+\t\t data/g15.v3.15Jul2013/\n
+\n
+\t -l, -loglevel\n
+\t\t info\n
+\t\t debug\n
+\n
+\t -v [-version]\n
+\t -h [-help]\n
+\n
+\n
+ Author: Jose Manuel Rodriguez Carrasco -jmrodriguez@cnio.es- (INB-GN2,CNIO)\n
+\n
+"
+
+# -----------------------------------------------------------------------------
+# Get input parameters
+
+while expr "//$1" : //- >/dev/null
+do
+	case "$1" in
+		-c | -conf )
+			CONF_SPECIES=$2
+			shift
+			;;
+		-m | -methods )
+			METHODS=$2
+			shift
+			;;
+		-o | -out )
+        	OUTPUT_DIR=$2
+			shift
+			;;
+		-l | -loglevel )
+			case "$2" in
+				info | debug )
+		        	LOG_LEVEL=$2
+					;;
+				* )
+					echo Unknown loglevel: "$2" 
+					echo -e $USAGE
+					exit 1
+					;;
+			esac
+			shift
+			;;			
+		-h | -help )
+			echo -e $USAGE		
+			exit
+			;;
+		-v | -version )
+			echo "$VER", "$VERDATE"
+			exit
+			;;
+		* )
+			echo Unknown option: "$1"
+			echo -e $USAGE
+			exit 1
+			;;
+	esac
+	shift
+done
+
+if [ "${CONF_SPECIES}" == "" ]; then
+	echo You must specify at least one config file for SPECIES!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${METHODS}" == "" ]; then
+	echo You must specify at least one method!
+	echo -e $USAGE
+	exit 1
+fi
+
+if [ "${OUTPUT_DIR}" != "" ]; then
+	APPRIS_DATA_DIR="${OUTPUT_DIR}"
+fi
+
+# -----------------------------------------------------------------------------
+# Prepare Environment from config file for SPECIES
+load_appris_specie_env "${CONF_SPECIES}" "verbose"
+
+prepare_workspace "${APPRIS_DATA_DIR}"
+
+# -----------------------------------------------------------------------------
+# Get method script name
+METHOD_SCRIPT="retrieve_method_annots_fromfile"
+
+# -----------------------------------------------------------------------------
+# Required var declarations
+
+prepare_workspace "${APPRIS_WORKSPACE_LOG_DIR}"
+
+# -----------------------------------------------------------------------------
+# Log declarations
+LOG_PARAMETERS=""
+if [ "$LOG_LEVEL" != "" ]; then
+	LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/${FILENAME}.log"
+	LOG_PARAMETERS="--loglevel=${LOG_LEVEL} --logappend --logfile=${LOG_FILENAME}"
+fi
+
+# -----------------------------------------------------------------------------
+# Run method
+SCRIPT="${APPRIS_SCRIPTS_DIR}/${METHOD_SCRIPT}.pl"
+
+# for the whole genome chromsome by chromosome
+# print trace
+echo "================="
+echo "perl ${SCRIPT}"
+echo " --inpath=${APPRIS_ANNOT_DIR}"
+echo " --method=${METHODS}"
+echo " --outpath=${APPRIS_DATA_DIR}"
+echo " ${LOG_PARAMETERS}"
+
+# run method
+perl ${SCRIPT} \
+	--inpath=${APPRIS_ANNOT_DIR} \
+	--method=${METHODS} \
+	--outpath=${APPRIS_DATA_DIR} \
+	${LOG_PARAMETERS}
+echo "================="

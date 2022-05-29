@@ -1,12 +1,12 @@
 {
 "Homo":[
-	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":0,"norm":0}
+	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":6.4,"norm":0}
 ],
 "Gorilla":[
 	{"name":"Gorilla gorilla gorilla","common":"Gorilla","tax_id":9595,"proteome_id":"UP000001519","weight":0,"age":8.6,"norm":0}
 ],
 "Pan":[
-	{"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","weight":0,"age":6.4,"norm":0}
+	{"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","weight":0,"age":0,"norm":0}
 ],
 "Pongo":[
 	{"name":"Pongo abelii","common":"Orangutan","tax_id":9601,"proteome_id":"UP000001595","weight":0,"age":0,"norm":0}

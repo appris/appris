@@ -1,0 +1,26 @@
+{
+    "Sus": [
+        {
+            "name": "Sus scrofa",
+            "desc": "Pig"
+        }
+    ],
+    "Bos": [
+        {
+            "name": "Bos taurus",
+            "desc": "Cow"
+        }
+    ],
+    "Canis": [
+        {
+            "name": "Canis familiaris",
+            "desc": "Dog"
+        }
+    ],
+    "Felis": [
+        {
+            "name": "Felis catus",
+            "desc": "Cat"
+        }
+    ]
+}

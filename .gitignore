@@ -27,6 +27,22 @@ lost+found
 .wgetrc
 perl5/
 var/
+__pycache__/
+.ICEauthority
+.bash_profile
+.conda/
+.dmrc
+.gconf/
+.local/
+.nano_history
+.pip/
+.python_history
+.xsession-errors
+.my.cnf
+.vscode-server/
+anaconda3/
+snap/
+ws/.well-known/
 
 
 # 'server' dir

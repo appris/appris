@@ -34,21 +34,41 @@
 
     <h4>No. Mapping Peptides</h4>
     <p>Proteomic evidence only for the human genome (GENCODE gene set).</p>
-    <p>PROTEO collects peptides from seven separate MS sources. Two came from large-scale proteomics
-        databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and
-        <a href="https://peptide.nist.gov/">NIST</a>. Another four datasets were recently published
-        large-scale MS experiments. For all six datasets the starting point was the list of peptides
-        provided by the authors or databases. We generated the final set of peptides (referred to as
-        “CNIO") in house from an <a href="https://www.ncbi.nlm.nih.gov/pubmed/14558131">X!Tandem</a>
-        search against spectra from the <a
-        href="https://www.ncbi.nlm.nih.gov/pubmed/15595733">GPM</a> and PeptideAtlas databases,
-        following the protocol set out in <a
-        href="https://pubmed.ncbi.nlm.nih.gov/22446687">Ezkurdia et al</a> with a false discovery
-        rate of 0.1%. These seven studies cover a wide range of search engines, tissues and cell
-        types.
+    <p>PROTEO incorporates proteomic evidence from various mass spectrometry
+       (MS) sources, covering a range of tissues and cell types.</p>
+    <p>Prior to GENCODE v33, peptides were collected from 8 sources
+       (<a href="https://doi.org/10.1021/pr501286b" target="_blank">Ezkurdia et al. 2015</a>;
+       <a href="https://doi.org/10.1021/pr301012j" target="_blank">Farrah et al. 2013</a>;
+       <a href="https://doi.org/10.1093/molbev/mss100" target="_blank">Ezkurdia et al. 2012</a>;
+       <a href="https://doi.org/10.1038/msb.2011.84" target="_blank">Munoz et al. 2011</a>;
+       <a href="https://doi.org/10.1038/msb.2011.81" target="_blank">Nagaraj et al. 2011</a>;
+       <a href="https://doi.org/10.1074/mcp.m111.014050" target="_blank">Geiger et al. 2012</a>;
+       <a href="https://doi.org/10.1038/nature13302" target="_blank">Kim et al. 2014</a>;
+       <a href="https://doi.org/10.1038/nature13319" target="_blank">Wilhelm et al. 2014</a>).
+       To improve reliability, peptides from each of these sources were filtered, eliminating
+       non-tryptic and semi-tryptic peptides and peptides containing missed cleavages, and
+       where possible only considering peptides identified by multiple search engines.
     </p>
-    <p>In order to improve reliability the peptides from each of these studies were filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.</p>
-
+    <p>APPRIS releases from GENCODE v33 onwards have used peptide evidence from 2 proteomics studies
+       (<a href="https://doi.org/10.1038/nature13302" target="_blank">Kim et al. 2014</a>;
+       <a href="https://doi.org/10.15252/msb.20188503" target="_blank">Wang et al. 2019</a>),
+       and from GENCODE v38, these were supplemented by peptides from a further 5 studies
+       (<a href="https://doi.org/10.1038/nature13438" target="_blank">Zhang et al. 2014</a>;
+       <a href="https://doi.org/10.1016/j.cels.2017.05.009" target="_blank">Bekker-Jensen et al. 2017</a>;
+       <a href="https://doi.org/10.1038/s41593-017-0011-2" target="_blank">Carlyle et al. 2017</a>;
+       <a href="https://doi.org/10.1074/mcp.RA118.001170" target="_blank">Schiza et al. 2019</a>;
+       <a href="https://doi.org/10.1016/j.cell.2020.08.036" target="_blank">Jiang et al. 2020</a>).
+       For these studies, the Comet search engine
+       (<a href="https://doi.org/10.1002/pmic.201200439" target="_blank">Eng et al. 2012</a>)
+       was used with default parameters, then post-processed with Percolator
+       (<a href="https://doi.org/10.1038/nmeth1113" target="_blank">Käll et al. 2007</a>;
+       <a href="https://pubmed.ncbi.nlm.nih.gov/27572102/" target="_blank">The et al. 2016</a>).
+       Peptide-spectrum matches (PSMs) that had a Posterior Error
+       Probability (PEP) of lower than 0.001 were allowed as long
+       as they were fully tryptic peptides and had no more than 2
+       missed cleavages. Only peptides with at least 2 valid
+       PSMs across the 7 studies are considered by PROTEO.
+    </p>
     <h4>Normalized Functional Importance</h4>
     <p>TRIFID is a machine learning classifier based on APPRIS and external database input which we have found to be a reliable indicator of isoform functional importance.</p>
     <p>The normalized TRIFID score is shown if TRIFID predictions are available for the given isoform.</p>

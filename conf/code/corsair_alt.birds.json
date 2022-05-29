@@ -1,0 +1,14 @@
+{
+    "Gallus": [
+        {
+            "name": "Gallus gallus",
+            "desc": "The red junglefowl"
+        }
+    ],
+    "Taeniopygia": [
+        {
+            "name": "Taeniopygia guttata",
+            "desc": "Zebra Finch"
+        }
+    ]
+}

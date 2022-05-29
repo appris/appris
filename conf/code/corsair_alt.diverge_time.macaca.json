@@ -1,12 +1,12 @@
 {
 "Homo":[
-	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":0,"norm":0}
+	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":6.4,"norm":0}
 ],
 "Gorilla":[
 	{"name":"Gorilla gorilla gorilla","common":"Gorilla","tax_id":9595,"proteome_id":"UP000001519","weight":0,"age":8.6,"norm":0}
 ],
 "Pan":[
-	{"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","weight":0,"age":6.4,"norm":0}
+	{"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","weight":0,"age":0,"norm":0}
 ],
 "Pongo":[
 	{"name":"Pongo abelii","common":"Orangutan","tax_id":9601,"proteome_id":"UP000001595","weight":0,"age":0,"norm":0}
@@ -15,7 +15,7 @@
 	{"name":"Nomascus leucogenys","common":"Gibbon","tax_id":61853,"proteome_id":"UP000001073","weight":0,"age":0,"norm":0}
 ],
 "Macaca":[
-	{"name":"Macaca mulatta","common":"Macaque","tax_id":9544,"proteome_id":"UP000006718","weight":0,"age":28.1,"norm":0}
+	{"name":"Macaca fascicularis","common":"Macaque","tax_id":9544,"proteome_id":"UP000006718","weight":0,"age":3,"norm":0}
 ],
 "Papio":[
 	{"name":"Papio anubis","common":"Olive baboon","tax_id":9555,"proteome_id":"UP000028761","weight":0,"age":0,"norm":0}

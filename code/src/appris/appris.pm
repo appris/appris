@@ -227,7 +227,7 @@ sub appris_decider_trifid($$$$$$$$$)
 	# 2. from preserved transcripts, we keep the dominant TRIFID transcript, if available
 	my $min_lead = $main::EXP_CFG->val('appris', 'trifid_min_lead', $main::TRIFID_MIN_LEAD);
 	$princ_list = step_trifid($princ_list, $scores, $gene, $trifid_report, $min_lead);
-#	warning("TRIFID_PRINC_LIST_2: \n".Dumper($princ_list)."\n");
+#	warning("TRIFID_PRINC_LIST_2 ".$main::TRIFID_MIN_LEAD.": \n".Dumper($princ_list)."\n");
 	if ( is_unique($princ_list, $isof_report) ) {
 		$tag = 2;
 		step_tags($tag, $scores, $princ_list, $isof_report, \$annots);
@@ -810,6 +810,7 @@ sub get_appris_scores($$\$\$\$)
 	foreach my $transcript (@{$gene->transcripts}) {
 		my ($transcript_id) = $transcript->stable_id;
 		if ( $transcript->translate and $transcript->translate->sequence ) {
+			my $is_x = index($transcript->translate->sequence, "X");
 			my ($appris_score) = 0;
 			foreach my $metric ( split(',', $involved_metrics) ) {
 				my ($n_sc) = $$ref_n_scores->{$transcript_id}->{$metric};
@@ -826,11 +827,11 @@ sub get_appris_scores($$\$\$\$)
 					elsif ( $max >= $METRIC_WEIGHTED->{$metric}->[0]->{'max'} ) { $weight = $METRIC_WEIGHTED->{$metric}->[0]->{'weight'} }
 				}
 				elsif ( $metric eq 'corsair' ) {
-					if    ( $max >= 12 ) { $weight = 4; }
-					elsif ( $max >= 7 )  { $weight = 3; }
-					elsif ( $max >= 5 )  { $weight = 2; }
-					elsif ( $max >= 3 )  { $weight = 1; }
-					else                 { $weight = 0; }
+					if    ( $max >= 13  )  { $weight = 4; }
+					elsif ( $max >= 8   )  { $weight = 3; }
+					elsif ( $max >= 4   )  { $weight = 2; }
+					elsif ( $max >= 1   )  { $weight = 1; }
+					else                   { $weight = 0; }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {
 					$weight = $main::EXP_CFG->val( 'spade_integrity', 'score_weight', $METRIC_WEIGHTED->{'spade_integrity'} );
@@ -840,6 +841,11 @@ sub get_appris_scores($$\$\$\$)
 				}
 				$appris_score += $weight*$n_sc;
 			}
+			
+			# Penalize X
+			if ( $is_x != -1 ) {
+				$appris_score = -1;
+			}			
 
 			# filter by biotype
 			if ( $transcript->biotype and ( ($transcript->biotype eq 'nonsense_mediated_decay') or ($transcript->biotype eq 'polymorphic_pseudogene') ) ) {
@@ -1139,7 +1145,7 @@ sub step_trifid($$$$$)
 					next unless( defined($transc_report->analysis) &&
 								 defined($transc_report->analysis->trifid) );
 
-					my ($score) = $transc_report->analysis->trifid->trifid_score;
+					my ($score) = $transc_report->analysis->trifid->norm_trifid_score;
 					my ($seq) = $transc_to_seq{$transc_id};
 					if ( ! exists($seq_to_score{$seq}) ||
 							$score > $seq_to_score{$seq} ) {
@@ -1152,15 +1158,26 @@ sub step_trifid($$$$$)
 					push(@{$score_to_seqs{$score}}, $seq);
 				}
 				my @dec_scores = sort { $b <=> $a } keys(%score_to_seqs);
-
+				# get the best transcripts comparing with the best score
 				my $num_dec_scores = scalar(@dec_scores);
+				my $best_score = $dec_scores[0];
 				if ( $num_dec_scores == 1 || ($num_dec_scores >= 2 &&
-						($dec_scores[0] - $dec_scores[1]) >= $min_lead) ) {
-					my (@best_seqs) = @{$score_to_seqs{$dec_scores[0]}};
-					if ( scalar(@best_seqs) == 1 ) {
-						foreach my $transc_id (@scoring_principals) {
-							if ( $transc_to_seq{$transc_id} eq $best_seqs[0] ) {
-								$report->{$transc_id} = 1;
+						($best_score - $dec_scores[1]) >= $min_lead) ) {
+					# save the transc with the best score
+					my (@best_seqs) = @{$score_to_seqs{$best_score}};
+					foreach my $transc_id (@scoring_principals) {
+						if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+							$report->{$transc_id} = 1;
+						}
+					}
+					# save the rest of transcripts that pass the threshold comparing with the best
+					for ( my $i=1; $i < scalar(@dec_scores); $i++ ) {
+						if ($best_score - $dec_scores[$i] <= $min_lead) {
+							my (@best_seqs) = @{$score_to_seqs{$dec_scores[$i]}};
+							foreach my $transc_id (@scoring_principals) {
+								if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+									$report->{$transc_id} = 1;
+								}
 							}
 						}
 					}
@@ -1182,23 +1199,42 @@ sub step_proteo($$)
 	my ($i_princ_list, $s_scores) = @_;
 	my ($report);
 
-	my ($min_score) = $s_scores->{'max'} - $main::PROTEO_CUTOFF;
-	$min_score = $min_score >= 2 ? $min_score : 2 ;
+	# the minumum of scores is 2
+	if ( $s_scores->{'max'} >= 2) {
 
-	my (@dec_scores) = sort { $b <=> $a } grep { $_ > $min_score } keys(%{$s_scores->{'scores'}});
-
-	foreach my $score (@dec_scores) {
-		my (@best_transc_ids) = grep {
-			exists $i_princ_list->{$_}
-		} @{$s_scores->{'scores'}->{$score}};
-
-		if ( scalar(@best_transc_ids) > 0 ) {
-			$report->{$_} = 1 foreach @best_transc_ids;
-			last;
+		# get the list of transcrips and peptides (min peptides 2)
+		my ($t_scores);
+		while ( my ($score, $trans) = each(%{$s_scores->{'scores'}}) ) {
+			foreach my $transc_id (@$trans) {
+				if ( exists $i_princ_list->{$transc_id} ) {
+					push(@{$t_scores->{$score}}, $transc_id);
+				}	
+			}
+		}
+		if ( defined($t_scores) ) { 
+			# get the biggest score (num. peptides)
+			my @dec_scores = sort { $b <=> $a } keys(%$t_scores);
+			my $num_dec_scores = scalar(@dec_scores);
+			# get the principal with the biggest num. peptides
+			if ( $num_dec_scores >= 1) {
+				# save the best proteins
+				my $best_score = $dec_scores[0];
+				foreach my $transc_id (@{$t_scores->{$best_score}}) {
+					$report->{$transc_id} = 1;
+				}
+				# save the rest of transc that pass the threshold
+				if ( $num_dec_scores >= 2 && ($best_score - $dec_scores[1] < $main::PROTEO_CUTOFF) ) {
+					foreach my $transc_id (@{$t_scores->{$dec_scores[1]}}) {
+						$report->{$transc_id} = 1;
+					}
+				}
+			}
+		}
+		else {
+			$report = $i_princ_list;
 		}
 	}
-
-	if ( ! defined($report) ) {
+	else {
 		$report = $i_princ_list;
 	}
 

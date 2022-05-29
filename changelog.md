@@ -1,3 +1,143 @@
+  GNU nano 2.2.6                                                      File: changelog.md                                                                                                                   
+
+___
+## 2022_02.v47
+```
+SERVER-RELEASE:   2022_01.v47
+CODE-RELEASE:     4.12.2.28
+```
+
+### Highlights
+
++ Upload the annotations for Drosophila melanogaster e104
++ Upload the annotations for Homo sapiens  G40
++ Upload the annotations for Mus musculus M29
++ Upload the annotations for Macaca mulatta e105
+
+### Server (4.12)
+
+
+### Code (2.28)
+
++ CORSAIR: New scores.
++ Penalize sequences with unknow amino acids
++ Include Mane results for Homo sapiens G40
+___
+## 2022_01.v46
+```
+SERVER-RELEASE:   2022_01.v46
+CODE-RELEASE:     4.12.2.28
+```
+
+### Highlights
+
++ Upload the annotations for GENCODE v39
++ Upload the annotations for Rattus norvegicus e105 and e104
++ Upload the annotations for Bos taurus e104 and Caenorhabditis elegans e104
++ Upload the annotations for Pan troglodytes e104, Danio rerio e104 and Drosophila melanogaster e104
++ Upload the annotations for Gallus gallus e104 and Sus scrofa e104
++ Upload the annotations for Mus musculus e104 and e105
++ Upload the annotations for Homo sapiens GENCODE v38, GENCODE v19, refseq105 and refseq109
+
+### Server (4.12)
+
++ Added the possibility to get Trifid predictions in Downloads.
+
+### Code (2.28)
+
++ CORSAIR: New scores.
+
++ APPRIS:
+  - New cutoffs for the CORSAIR scores.
+  - Fixing a bug in the APPRIS decision. For cases that the decision is for PRINCIPAL:5, it does not remove the discarded transcripts. See the MIER3 gene (e104v45).
+  - Parser TRIFID correctly for RefSeq info
+
+___
+## 2021_10.v46
+```
+SERVER-RELEASE:   2021_10.v46
+CODE-RELEASE:     4.12.2.28
+```
+
+### Highlights
+
+
+### Server (4.12)
+
++ No changes.
+
+### Code (2.28)
+
++ CORSAIR: New scores.
+
++ APPRIS:
+  - New cutoffs for the CORSAIR scores.
+  - Fixing a bug in the APPRIS decision. For cases that the decision is for PRINCIPAL:5, it does not remove the discarded transcripts. See the MIER3 gene (e104v45).
+  - Parser TRIFID correctly for RefSeq info
+
+___
+## 2021_09.v45
+```
+SERVER-RELEASE:   2021_09.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ New release of Human (GENCODE v38 / Ensembl 105) and Mouse (GENCODE vM27 / Ensembl 105).
++ New release for the new assembly of Rattus norvegicus (mRatBN7.2 / Rn7) using Ensembl 105.
++ Updated scores for CORDSAIR. It has been applied for all local species.
++ The method Alt-CORSAIR is executed for all species.
++ TRIFID scores for all species.
++ The Matador3D includes the AlphaFold models. AlpahFold is for human and mouse at the moment.
+
+### Server (4.12)
+
++ No changes.
+
+### Code (2.27)
+
++ No changes.
+
+___
+## 2021_07.v45
+```
+SERVER-RELEASE:   2021_07.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ New release of Danio (Ensembl 98) with TRIFID annotations.
+
+### Server (4.12)
+
++ No changes.
+
+### Code (2.27)
+
++ No changes.
+
+___
+## 2021_06.v45
+```
+SERVER-RELEASE:   2021_06.v45
+CODE-RELEASE:     4.12.2.27
+```
+
+### Highlights
+
++ Update the annotations of GENCODE Human (version 38) and GENCODE Human (version 37).
+
+### Server (4.12)
+
++ Lack of awareness.
+
+### Code (2.27)
+
++ Lack of awareness.
+
+
 ___
 ## 2021_05.v44
 ```

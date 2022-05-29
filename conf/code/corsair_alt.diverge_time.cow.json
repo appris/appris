@@ -1,106 +1,106 @@
 {
     "Homo": [
-        { "name": "Homo sapiens", "common": "Human", "tax_id": 9606, "proteome_id": "UP000005640", "age": 88, "norm": 0.1297935 }
+        { "name": "Homo sapiens", "common": "Human", "tax_id": 9606, "proteome_id": "UP000005640", "age": 94, "norm": 0.1386431 }
     ],
     "Gorilla": [
-        { "name": "Gorilla gorilla gorilla", "common": "Gorilla", "tax_id": 9595, "proteome_id": "UP000001519", "age": 88, "norm": 0.1297935 }
+        { "name": "Gorilla gorilla gorilla", "common": "Gorilla", "tax_id": 9595, "proteome_id": "UP000001519", "age": 94, "norm": 0.1386431 }
     ],
     "Pan": [
-        { "name": "Pan troglodytes", "common": "Chimpanzee", "tax_id": 9598, "proteome_id": "UP000002277", "age": 88, "norm": 0.1297935 }
+        { "name": "Pan troglodytes", "common": "Chimpanzee", "tax_id": 9598, "proteome_id": "UP000002277", "age": 94, "norm": 0.1386431 }
     ],
     "Pongo": [
-        { "name": "Pongo abelii", "common": "Orangutan", "tax_id": 9601, "proteome_id": "UP000001595", "age": 88, "norm": 0.1297935 }
+        { "name": "Pongo abelii", "common": "Orangutan", "tax_id": 9601, "proteome_id": "UP000001595", "age": 94, "norm": 0.1386431 }
     ],
     "Nomascus": [
-        { "name": "Nomascus leucogenys", "common": "Gibbon", "tax_id": 61853, "proteome_id": "UP000001073", "age": 88, "norm": 0.1297935 }
+        { "name": "Nomascus leucogenys", "common": "Gibbon", "tax_id": 61853, "proteome_id": "UP000001073", "age": 94, "norm": 0.1386431 }
     ],
     "Macaca": [
-        { "name": "Macaca mulatta", "common": "Macaque", "tax_id": 9544, "proteome_id": "UP000006718", "age": 88, "norm": 0.1297935 }
+        { "name": "Macaca mulatta", "common": "Macaque", "tax_id": 9544, "proteome_id": "UP000006718", "age": 94, "norm": 0.1386431 }
     ],
     "Papio": [
-        { "name": "Papio anubis", "common": "Olive baboon", "tax_id": 9555, "proteome_id": "UP000028761", "age": 88, "norm": 0.1297935 }
+        { "name": "Papio anubis", "common": "Olive baboon", "tax_id": 9555, "proteome_id": "UP000028761", "age": 94, "norm": 0.1386431 }
     ],
     "Chlorocebus": [
-        { "name": "Chlorocebus sabaeus", "common": "Vervet-AGM", "tax_id": 60711, "proteome_id": "UP000029965", "age": 88, "norm": 0.1297935 }
+        { "name": "Chlorocebus sabaeus", "common": "Vervet-AGM", "tax_id": 60711, "proteome_id": "UP000029965", "age": 94, "norm": 0.1386431 }
     ],
     "Callithrix": [
-        { "name": "Callithrix jacchus", "common": "Marmoset", "tax_id": 9483, "proteome_id": "UP000008225", "age": 88, "norm": 0.1297935 }
+        { "name": "Callithrix jacchus", "common": "Marmoset", "tax_id": 9483, "proteome_id": "UP000008225", "age": 94, "norm": 0.1386431 }
     ],
     "Tarsius": [
-        { "name": "Tarsius syrichta", "common": "Tarsier", "tax_id": 1868482, "proteome_id": "UP000189704", "age": 88, "norm": 0.1297935 }
+        { "name": "Tarsius syrichta", "common": "Tarsier", "tax_id": 1868482, "proteome_id": "UP000189704", "age": 94, "norm": 0.1386431 }
     ],
     "Microcebus": [
-        { "name": "Microcebus murinus", "common": "Mouse Lemur", "tax_id": 30608, "age": 88, "norm": 0.1297935 }
+        { "name": "Microcebus murinus", "common": "Mouse Lemur", "tax_id": 30608, "age": 94, "norm": 0.1386431 }
     ],
     "Otolemur": [
-        { "name": "Otolemur garnettii", "common": "Bushbaby", "tax_id": 30611, "proteome_id": "UP000005225", "age": 88, "norm": 0.1297935 }
+        { "name": "Otolemur garnettii", "common": "Bushbaby", "tax_id": 30611, "proteome_id": "UP000005225", "age": 94, "norm": 0.1386431 }
     ],
     "Mus": [
-        { "name": "Mus musculus", "common": "Mouse", "tax_id": 10090, "proteome_id": "UP000000589", "age": 0, "norm": 0 },
-        { "name": "Mus spretus", "common": "Mouse SPRETEiJ", "tax_id": 10096, "age": 3, "norm": 0 }
+        { "name": "Mus musculus", "common": "Mouse", "tax_id": 10090, "proteome_id": "UP000000589", "age": 94, "norm": 0.1386431 },
+        { "name": "Mus spretus", "common": "Mouse SPRETEiJ", "tax_id": 10096, "age": 94, "norm": 0.1386431 }
     ],
     "Rattus": [
-        { "name": "Rattus norvegicus", "common": "Rat", "tax_id": 10116, "proteome_id": "UP000002494", "age": 21, "norm": 0 }
+        { "name": "Rattus norvegicus", "common": "Rat", "tax_id": 10116, "proteome_id": "UP000002494", "age": 94, "norm": 0.1386431 }
     ],
     "Dipodomys": [
-        { "name": "Dipodomys ordii", "common": "Kangaroo rat", "tax_id": 10020, "proteome_id": "UP000081671", "age": 70, "norm": 0.104478 }
+        { "name": "Dipodomys ordii", "common": "Kangaroo rat", "tax_id": 10020, "proteome_id": "UP000081671", "age": 94, "norm": 0.1386431 }
     ],
     "Ictidomys": [
-        { "name": "Ictidomys tridecemlineatus", "common": "Squirrel", "tax_id": 43179, "proteome_id": "UP000005215", "age": 71, "norm": 0.10472 }
+        { "name": "Ictidomys tridecemlineatus", "common": "Squirrel", "tax_id": 43179, "proteome_id": "UP000005215", "age": 94, "norm": 0.1386431 }
     ],
     "Cavia": [
-        { "name": "Cavia porcellus", "common": "Guinea Pig", "tax_id": 10141, "proteome_id": "UP000005447", "age": 73, "norm": 0.10767 }
+        { "name": "Cavia porcellus", "common": "Guinea Pig", "tax_id": 10141, "proteome_id": "UP000005447", "age": 94, "norm": 0.1386431 }
     ],
     "Ochotona": [
-        { "name": "Ochotona princeps", "common": "Pika", "tax_id": 9978, "age": 82, "norm": 0.12094 }
+        { "name": "Ochotona princeps", "common": "Pika", "tax_id": 9978, "age": 94, "norm": 0.12094 }
     ],
     "Oryctolagus": [
-        { "name": "Oryctolagus cuniculus", "common": "Rabbit", "tax_id": 9986, "proteome_id": "UP000001811", "age": 82, "norm": 0.12094 }
+        { "name": "Oryctolagus cuniculus", "common": "Rabbit", "tax_id": 9986, "proteome_id": "UP000001811", "age": 94, "norm": 0.12094 }
     ],
     "Tupaia": [
-        { "name": "Tupaia belangeri", "common": "Tree Shrew", "tax_id": 37347, "age": 88, "norm": 0.1297935 }
+        { "name": "Tupaia belangeri", "common": "Tree Shrew", "tax_id": 37347, "age": 94, "norm": 0.1297935 }
     ],
     "Erinaceus": [
-        { "name": "Erinaceus europaeus", "common": "Hedgehog", "tax_id": 9365, "proteome_id": "UP000079721", "age": 94, "norm": 0.1386431 }
+        { "name": "Erinaceus europaeus", "common": "Hedgehog", "tax_id": 9365, "proteome_id": "UP000079721", "age": 86, "norm": 0.12684 }
     ],
     "Sorex": [
-        { "name": "Sorex araneus", "common": "Shrew", "tax_id": 42254, "age": 94, "norm": 0.1386431 }
+        { "name": "Sorex araneus", "common": "Shrew", "tax_id": 42254, "age": 86, "norm": 0.12684 }
     ],
     "Myotis": [
-        { "name": "Myotis lucifugus", "common": "Microbat", "tax_id": 59463, "proteome_id": "UP000001074", "age": 94, "norm": 0.1386431 }
+        { "name": "Myotis lucifugus", "common": "Microbat", "tax_id": 59463, "proteome_id": "UP000001074", "age": 81, "norm": 0.11945 }
     ],
     "Pteropus": [
-        { "name": "Pteropus vampyrus", "common": "Megabat", "tax_id": 2035815, "proteome_id": "UP000154973", "age": 94, "norm": 0.1386431 }
+        { "name": "Pteropus vampyrus", "common": "Megabat", "tax_id": 2035815, "proteome_id": "UP000154973", "age": 81, "norm": 0.11945 }
     ],
     "Equus": [
-        { "name": "Equus caballus", "common": "Horse", "tax_id": 9796, "proteome_id": "UP000002281", "age": 94, "norm": 0.1386431 }
+        { "name": "Equus caballus", "common": "Horse", "tax_id": 9796, "proteome_id": "UP000002281", "age": 81, "norm": 0.11945 }
     ],
     "Felis": [
-        { "name": "Felis catus", "common": "Cat", "tax_id": 9685, "proteome_id": "UP000011712", "age": 94, "norm": 0.1386431 }
+        { "name": "Felis catus", "common": "Cat", "tax_id": 9685, "proteome_id": "UP000011712", "age": 81, "norm": 0.11945 }
     ],
     "Canis": [
-        { "name": "Canis lupus familiaris", "common": "Dog", "tax_id": 9615, "proteome_id": "UP000002254", "age": 94, "norm": 0.1386431 }
+        { "name": "Canis lupus familiaris", "common": "Dog", "tax_id": 9615, "proteome_id": "UP000002254", "age": 81, "norm": 0.11945 }
     ],
     "Ailuropoda": [
-        { "name": "Ailuropoda melanoleuca", "common": "Panda", "tax_id": 9646, "proteome_id": "UP000008912", "age": 94, "norm": 0.1386431 }
+        { "name": "Ailuropoda melanoleuca", "common": "Panda", "tax_id": 9646, "proteome_id": "UP000008912", "age": 81, "norm": 0.11945 }
     ],
     "Mustela": [
-        { "name": "Mustela putorius furo", "common": "Ferret", "tax_id": 9669, "proteome_id": "UP000000715", "age": 94, "norm": 0.1386431 }
+        { "name": "Mustela putorius furo", "common": "Ferret", "tax_id": 9669, "proteome_id": "UP000000715", "age": 81, "norm": 0.11945 }
     ],
     "Tursiops": [
-        { "name": "Tursiops truncatus", "common": "Dolphin", "tax_id": 9739, "proteome_id": "UP000245320", "age": 94, "norm": 0.1386431 }
+        { "name": "Tursiops truncatus", "common": "Dolphin", "tax_id": 9739, "proteome_id": "UP000245320", "age": 58, "norm": 0 }
     ],
     "Sus": [
-        { "name": "Sus scrofa", "common": "Pig", "tax_id": 9823, "proteome_id": "UP000008227", "age": 94, "norm": 0.1386431 }
+        { "name": "Sus scrofa", "common": "Pig", "tax_id": 9823, "proteome_id": "UP000008227", "age": 64, "norm": 0 }
     ],
     "Bos": [
-        { "name": "Bos taurus", "common": "Cow", "tax_id": 9913, "proteome_id": "UP000009136", "age": 94, "norm": 0.1386431 }
+        { "name": "Bos taurus", "common": "Cow", "tax_id": 9913, "proteome_id": "UP000009136", "age": 0, "norm": 0 }
     ],
     "Ovis": [
-        { "name": "Ovis aries", "common": "Sheep", "tax_id": 9940, "proteome_id": "UP000002356", "age": 94, "norm": 0.1386431 }
+        { "name": "Ovis aries", "common": "Sheep", "tax_id": 9940, "proteome_id": "UP000002356", "age": 24, "norm": 0 }
     ],
     "Vicugna": [
-        { "name": "Vicugna pacos", "common": "Alpaca", "tax_id": 30538, "age": 94, "norm": 0.1386431 }
+        { "name": "Vicugna pacos", "common": "Alpaca", "tax_id": 30538, "age": 65, "norm": 0 }
     ],
     "Choloepus": [
         { "name": "Choloepus hoffmanni", "common": "Sloth", "tax_id": 9358, "age": 102, "norm": 0.1504425 }

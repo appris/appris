@@ -1,0 +1,14 @@
+{
+    "Drosophila": [
+        {
+            "name": "Drosophila melanogaster",
+            "desc": "Fruit fly"
+        }
+    ],
+    "Caenorhabditis": [
+        {
+            "name": "Caenorhabditis elegans",
+            "desc": "C elegans"
+        }
+    ]
+}

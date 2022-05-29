@@ -185,9 +185,9 @@ sub _calc_domain_integrity_score($$$$) {
 
 	my $domain_integrity_score;
 	if ($recal_integrity_score) {
-		$domain_integrity_score = ($num_domains*1)
-			+ ($num_possibly_damaged_domains*0.667)
-			+ ($num_damaged_domains*0.333);
+		$domain_integrity_score = ($num_domains*0.75)
+			+ ($num_possibly_damaged_domains*0.5)
+			+ ($num_damaged_domains*0.25);
 	} else {
 		$domain_integrity_score = ($num_domains*1)
 			+ ($num_possibly_damaged_domains*0.75)

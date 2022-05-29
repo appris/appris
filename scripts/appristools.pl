@@ -24,8 +24,8 @@ my ($steps) = undef;
 my ($conf_file) = undef;
 my ($conf_data) = undef;
 my ($conf_db) = undef;
-my ($methods) = undef;
-my ($formats) = undef;
+my ($methods) = 'fm1m2sc1c2trpa';
+my ($formats) = 'gtf,bed,bed12';
 my ($num_process) = undef;
 my ($email) = undef;
 my ($loglevel) = undef;
@@ -272,8 +272,40 @@ sub run_pipeline($;$)
 # TODO: Send email with final decision of this step
 	}
 	
-	# Step 3: insert annotations into APPRIS database
+	# Step 3: retrieve annotations... specially for TRIFID
 	if ( $steps =~ /3/ )
+	{
+		info("retrieving method annotations...");
+		my ($forks) = 0;
+		foreach my $method ( split(',', $methods) ) {
+			my ($params) = param_retrieve_data($conf_data) . " -m $method ";
+			my ($pid) = fork();
+			if (not defined $pid) {
+				warn "Could not fork in $method";
+				next;
+			}
+			if ($pid) {
+				$forks++;
+			} else {
+			    #close STDOUT; close STDERR; # so parent can go on
+				eval {
+					my ($cmd) = "$exp_env appris_retrieve_method_annots_fromfiles $params";
+					info($cmd);
+					system ($cmd);
+				};
+				exit 1 if($@);
+			    exit 0;
+			}
+		}
+		for (1 .. $forks) {
+			my ($pid) = wait();
+		}
+
+	}
+
+
+	# Step 4: insert annotations into APPRIS database
+	if ( $steps =~ /4/ )
 	{
 		info("inserting data into db...");
 		eval {
@@ -293,9 +325,10 @@ sub run_pipeline($;$)
 	}
 
 
-	# Step 4: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
-	if ( $steps =~ /4/ )
+	# Step 5: retrieve data files for methods in GTF format and BED format (Download section of Web and TrackHUB)
+	if ( $steps =~ /5/ )
 	{
+		info("retrieving method data...");
 		my ($forks) = 0;
 		foreach my $format ( split(',', $formats) ) {
 			my ($params) = param_retrieve_method($conf_data, $conf_ds) . " -f $format ";
@@ -330,8 +363,8 @@ sub run_pipeline($;$)
 
 	}
 
-	# Step 5: generate checksum files for dataset.
-	if ( $steps =~ /5/ )
+	# Step 6: generate checksum files for dataset.
+	if ( $steps =~ /6/ )
 	{
 		info("calculating checksums...");
 		eval {
@@ -485,9 +518,10 @@ Executes all APPRIS 'steps
   -p, --steps {string} <Process steps>
 	* 1 - Executes APPRIS pipeline -\n
 	* 2 - Retrieves the list of principal isoforms and Compare stats between versions -\n
-	* 3 - Inserts the annotations into database -\n
-	* 4 - Retrieves the data files of methods -\n
-	* 5 - Calculates checksums of dataset files -\n
+	* 3 - Retrieve annotations for TRIFID -\n
+	* 4 - Inserts the annotations into database -\n
+	* 5 - Retrieves the data files of methods -\n
+	* 6 - Calculates checksums of dataset files -\n
 		
   -c, --conf     {file} <Config file for all gene datatasets (JSON format)>
   	or  
