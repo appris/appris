@@ -1,5 +1,3 @@
-  GNU nano 2.2.6                                                      File: changelog.md                                                                                                                   
-
 ___
 ## 2022_02.v47
 ```
