@@ -120,7 +120,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -140,7 +140,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...'
 
 package Bio::SearchIO::blast;
-
+$Bio::SearchIO::blast::VERSION = '1.7.8';
 use Bio::SearchIO::IteratedSearchResultEventBuilder;
 use strict;
 use vars qw(%MAPPING %MODEMAP
@@ -258,7 +258,7 @@ BEGIN {
           { 'RESULT-statistics' => 'num_successful_extensions' },
         'Statistics_length_adjustment' => { 'RESULT-statistics' => 'length_adjustment' },
         'Statistics_number_of_hsps_better_than_expect_value_cutoff_without_gapping' =>
-		  { 'RESULT-statistics' => 'number_of_hsps_better_than_expect_value_cutoff_without_gapping' },
+          { 'RESULT-statistics' => 'number_of_hsps_better_than_expect_value_cutoff_without_gapping' },
         'Statistics_number_of_hsps_gapped' => { 'RESULT-statistics' => 'number_of_hsps_gapped' },
         'Statistics_number_of_hsps_successfully_gapped' => { 'RESULT-statistics' => 'number_of_hsps_successfully_gapped' },
 
@@ -652,15 +652,15 @@ sub next_result {
                 }
             ) if $self->{'_blsdb_letters'};
         }
-		# added check for WU-BLAST -echofilter option (bug 2388)
-		elsif (/^>Unfiltered[+-]1$/) {
-        	# skip all of the lines of unfiltered sequence
-			while($_ !~ /^Database:/) {
-				$self->debug("Bypassing features line: $_");
-        		$_ = $self->_readline;
-        	}
-			$self->_pushback($_);
-		}
+        # added check for WU-BLAST -echofilter option (bug 2388)
+        elsif (/^>Unfiltered[+-]1$/) {
+            # skip all of the lines of unfiltered sequence
+            while($_ !~ /^Database:/) {
+                $self->debug("Bypassing features line: $_");
+                $_ = $self->_readline;
+            }
+            $self->_pushback($_);
+        }
         elsif (/Sequences producing significant alignments:/) {
             $self->debug("blast.pm: Processing NCBI-BLAST descriptions\n");
             $flavor = 'ncbi';
@@ -804,7 +804,7 @@ sub next_result {
         }
 
         # move inside of a hit
-        elsif (/^>\s*(\S+)\s*(.*)?/) {
+        elsif (/^(?:Subject=|>)\s*(\S+)\s*(.*)?/) {
             chomp;
 
             $self->debug("blast.pm: Hit: $1\n");
@@ -874,7 +874,9 @@ sub next_result {
                     if ($restofline !~ /\s$/) { # bug #3235
                         s/^\s(?!\s)/\x01/; #new line to concatenate desc lines with <soh>
                     }
-                    $restofline .= $_;
+                    $restofline .= ($restofline =~ /\w$/ && $_ =~ /^\w/) ? " $_" : $_;
+                    $restofline =~ s/\s+/ /g; # this catches the newline as well
+                    $restofline =~ s/^ | $//g;
                 }
             }
             $restofline =~ s/\s+/ /g;
@@ -891,10 +893,10 @@ sub next_result {
         elsif (
             ( $self->in_element('hit') || $self->in_element('hsp') )
             &&    # paracel genewise BTK
-            m/Score\s*=\s*(\S+)\s*bits\s* # Bit score
-                (?:\((\d+)\))?,                 # Raw score
-		\s+Log\-Length\sScore\s*=\s*(\d+) # Log-Length score
-                /ox
+            m/Score\s*=\s*(\S+)\s*bits\s*       # Bit score
+              (?:\((\d+)\))?,                   # Raw score
+              \s+Log\-Length\sScore\s*=\s*(\d+) # Log-Length score
+              /ox
           )
         {
             $self->in_element('hsp')
@@ -928,10 +930,10 @@ sub next_result {
         elsif (
             ( $self->in_element('hit') || $self->in_element('hsp') )
             &&    # paracel hframe BTK
-            m/Score\s*=\s*([^,\s]+),     # Raw score
-		\s*Expect\s*=\s*([^,\s]+),  # E-value
-                \s*P(?:\(\S+\))?\s*=\s*([^,\s]+) # P-value
-                /ox
+            m/Score\s*=\s*([^,\s]+),           # Raw score
+              \s*Expect\s*=\s*([^,\s]+),       # E-value
+              \s*P(?:\(\S+\))?\s*=\s*([^,\s]+) # P-value
+              /ox
           )
         {
             $self->in_element('hsp')
@@ -1174,29 +1176,60 @@ sub next_result {
         elsif ( $self->in_element('hsp')
             && /Frame\s*=\s*([\+\-][1-3])\s*(\/\s*([\+\-][1-3]))?/ )
         {
-
+            my $frame1 = $1 || 0;
+            my $frame2 = $2 || 0;
             # this is for bl2seq only
-            unless ( defined $reporttype ) {
+            if ( not defined $reporttype ) {
                 $bl2seq_fix = 1;
-                if ( $1 && $2 ) { $reporttype = 'TBLASTX' }
+                if ( $frame1 && $frame2 ) {
+                    $reporttype = 'TBLASTX'
+                }
                 else {
-                    $reporttype = 'BLASTX';
+                    # We can distinguish between BLASTX and TBLASTN from the report
+                    # (and assign $frame1 properly) by using the start/end from query.
+                    # If the report is BLASTX, the coordinates distance from query
+                    # will be 3 times the length of the alignment shown (coordinates in nt,
+                    # alignment in aa); if not then subject is the nucleotide sequence (TBLASTN).
+                    # Will have to fast-forward to query alignment line and then go back.
+                    my $fh = $self->_fh;
+                    my $file_pos = tell $fh;
 
-    # we can't distinguish between BLASTX and TBLASTN straight from the report }
+                    my $a_position = '';
+                    my $ali_length = '';
+                    my $b_position = '';
+                    while (my $line = <$fh>) {
+                        if ($line =~ m/^(?:Query|Sbjct):?\s+(\-?\d+)?\s*(\S+)\s+(\-?\d+)?/) {
+                            $a_position   = $1;
+                            my $alignment = $2;
+                            $b_position   = $3;
+
+                            use Bio::LocatableSeq;
+                            my $gap_symbols = $Bio::LocatableSeq::GAP_SYMBOLS;
+                            $alignment =~ s/[$gap_symbols]//g;
+                            $ali_length = length($alignment);
+                            last;
+                        }
+                    }
+                    my $coord_length = ($a_position < $b_position) ? ($b_position - $a_position + 1)
+                                     : ($a_position - $b_position + 1);
+                    ($coord_length == ($ali_length * 3)) ? ($reporttype = 'BLASTX') : ($reporttype = 'TBLASTN');
+
+                    # Rewind filehandle to its original position to continue parsing
+                    seek $fh, $file_pos, 0;
                 }
                 $self->{'_reporttype'} = $reporttype;
             }
 
             my ( $queryframe, $hitframe );
             if ( $reporttype eq 'TBLASTX' ) {
-                ( $queryframe, $hitframe ) = ( $1, $2 );
+                ( $queryframe, $hitframe ) = ( $frame1, $frame2 );
                 $hitframe =~ s/\/\s*//g;
             }
             elsif ( $reporttype eq 'TBLASTN' || $reporttype eq 'PSITBLASTN') {
-                ( $hitframe, $queryframe ) = ( $1, 0 );
+                ( $hitframe, $queryframe ) = ( $frame1, 0 );
             }
             elsif ( $reporttype eq 'BLASTX' || $reporttype eq 'RPS-BLAST(BLASTP)') {
-                ( $queryframe, $hitframe ) = ( $1, 0 );
+                ( $queryframe, $hitframe ) = ( $frame1, 0 );
                 # though NCBI doesn't report it, this is a special BLASTX-like
                 # RPS-BLAST; should be handled differently
                 if ($reporttype eq 'RPS-BLAST(BLASTP)') {
@@ -1261,7 +1294,14 @@ sub next_result {
                 }
             );
             while ( defined( $_ = $self->_readline ) ) {
-                if (
+                # If Lambda/Kappa/Entropy numbers appear first at this point,
+                # pushback and add the header line to process it correctly
+                if (/^\s+[\d+\.]+\s+[\d+\.]+\s+[\d+\.]/ and $last eq '') {
+                    $self->_pushback($_);
+                    $self->_pushback("Lambda     K      H\n");
+                    next;
+                }
+                elsif (
                     /^((?:\S+)?BLAST[NPX]?)\s+(.+)$/i  # NCBI BLAST, PSIBLAST
                                                       # RPSBLAST, MEGABLAST
                     || /^(P?GENEWISE|HFRAME|SWN|TSWN)\s+(.+)/i    #Paracel BTK
@@ -1307,7 +1347,7 @@ sub next_result {
                 }
                 elsif ( $blast eq 'wublast' ) {
 
-                    #		   warn($_);
+                    # warn($_);
                     if (/E=(\S+)/) {
                         $self->element(
                             {
@@ -1520,7 +1560,7 @@ sub next_result {
                     }
                     elsif (
                         m/^\s+Time to generate neighborhood:\s+
-			    (\S+\s+\S+\s+\S+)/x
+                          (\S+\s+\S+\s+\S+)/x
                       )
                     {
                         $self->element(
@@ -1539,9 +1579,9 @@ sub next_result {
                         );
                     }
                     elsif (
-                        m/^\s+(\S+)\s+cpu\s+time:\s+# cputype
-			    (\S+\s+\S+\s+\S+)           # cputime
-			    \s+Elapsed:\s+(\S+)/x
+                        m/^\s+(\S+)\s+cpu\s+time:\s+ # cputype
+                          (\S+\s+\S+\s+\S+)          # cputime
+                          \s+Elapsed:\s+(\S+)/x
                       )
                     {
                         my $cputype = lc($1);
@@ -1672,7 +1712,7 @@ sub next_result {
                     }
                     elsif (
                         m/Gap\s+Penalties:\s+Existence:\s+(\d+)\,
-			    \s+Extension:\s+(\d+)/ox
+                          \s+Extension:\s+(\d+)/ox
                       )
                     {
                         $self->element(
@@ -1771,7 +1811,7 @@ sub next_result {
                     }
                     elsif (
                         m/frameshift\s+window\,
-			    \s+decay\s+const:\s+(\d+)\,\s+([\.\d]+)/x
+                          \s+decay\s+const:\s+(\d+)\,\s+([\.\d]+)/x
                       )
                     {
                         $self->element(
@@ -1805,7 +1845,7 @@ sub next_result {
                     }
                     elsif (
                         m/^Number\s+of\s+successful\s+extensions:\s+
-			    (\S+)/ox
+                          (\S+)/ox
                       )
                     {
                         $self->element(
@@ -1817,7 +1857,7 @@ sub next_result {
                     }
                     elsif (
                         m/^Number\s+of\s+sequences\s+better\s+than\s+
-			    (\S+):\s+(\d+)/ox
+                          (\S+):\s+(\d+)/ox
                       )
                     {
                         $self->element(
@@ -1863,8 +1903,8 @@ sub next_result {
             for ( my $i = 0 ; defined($_) && $i < 3 ; $i++ ) {
                 # $self->debug("$i: $_") if $v;
                 if ( ( $i == 0 && /^\s+$/) ||
-		     /^\s*(?:Lambda|Minus|Plus|Score)/i )
-                {
+                     /^\s*(?:Lambda|Minus|Plus|Score)/i
+                    ) {
                     $self->_pushback($_) if defined $_;
                     $self->end_element( { 'Name' => 'Hsp' } );
                     last;
@@ -2146,7 +2186,7 @@ sub end_element {
     $self->{'_last_data'} = '';    # remove read data if we are at
                                    # end of an element
     $self->{'_result'} = $rc if ( defined $type && $type eq 'result' );
-	$self->{'_seen_hsp_features'} = 0;
+    $self->{'_seen_hsp_features'} = 0;
     return $rc;
 }
 

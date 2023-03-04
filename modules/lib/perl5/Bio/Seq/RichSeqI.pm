@@ -61,7 +61,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -79,6 +79,7 @@ methods are usually preceded with a _
 
 
 package Bio::Seq::RichSeqI;
+$Bio::Seq::RichSeqI::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::SeqI);
@@ -113,7 +114,7 @@ sub get_secondary_accessions{
 
  Title   : division
  Usage   :
- Function: Get (and set, depending on the implementation) the divison for
+ Function: Get (and set, depending on the implementation) the division for
            a sequence.
 
            Examples from GenBank are PLN (plants), PRI (primates), etc.

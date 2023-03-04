@@ -59,7 +59,11 @@ notations cannot be altered in any way.
 
 B<Not In DOM Spec>: See XML::DOM::ignoreReadOnly to edit the DocumentType etc.
 
+=back
+
 =head2 Additional methods not in the DOM Spec
+
+=over 4
 
 =item Creating and setting the DocumentType
 

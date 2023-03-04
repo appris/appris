@@ -92,7 +92,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS - Dave Messina
 
@@ -111,7 +111,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::seqxml;
-
+$Bio::SeqIO::seqxml::VERSION = '1.7.8';
 use strict;
 
 use Bio::Seq;
@@ -906,7 +906,7 @@ sub element_property {
         push @{ $data->{'properties'} }, $annotation_obj;
     }
     else {
-        $self->throw("malformated property!");
+        $self->throw("malformatted property!");
     }
 }
 

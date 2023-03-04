@@ -47,7 +47,7 @@ would need to cache some data or otherwise behave differently during a
 sequential read.
 
 The main method in the system is get_field(). This method relies on the
-existance of a private hash reference accessible to it with the method
+existence of a private hash reference accessible to it with the method
 _fields(). That hash ref should have as keys all the sorts of data you will want
 to parse (eg. 'score'), and prior to parsing the values would be undefined. A
 user of your module can then call either $module-E<gt>get_field('score') or
@@ -110,7 +110,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Sendu Bala
 
@@ -130,7 +130,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::PullParserI;
-
+$Bio::PullParserI::VERSION = '1.7.8';
 use vars qw($AUTOLOAD $FORCE_TEMP_FILE);
 use strict;
 
@@ -293,7 +293,7 @@ sub chunk {
             else {
                 unless ($FORCE_TEMP_FILE) {
                     # treat a string as a filehandle
-                    open(my $fake_fh, "+<", \$thing); # requires perl 5.8
+                    open my $fake_fh, "+<", \$thing or $self->throw("Could not open file '$thing': $!"); # requires perl 5.8
                     $self->{_chunk} = Bio::Root::IO->new(-fh => $fake_fh);
                 }
                 else {

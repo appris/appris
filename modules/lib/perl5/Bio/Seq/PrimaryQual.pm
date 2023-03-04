@@ -53,7 +53,7 @@ Bio::Seq::PrimaryQual - Bioperl lightweight Quality Object
 
 This module provides a mechanism for storing quality
 values. Much more useful as part of
-Bio::Seq::SeqWithQuality where these quality values
+Bio::Seq::Quality where these quality values
 are associated with the sequence information.
 
 =head1 FEEDBACK
@@ -84,7 +84,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Chad Matsalla
 
@@ -98,7 +98,7 @@ The rest of the documentation details each of the object methods. Internal metho
 
 
 package Bio::Seq::PrimaryQual;
-
+$Bio::Seq::PrimaryQual::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Root::Root Bio::Seq::QualI);
@@ -327,7 +327,7 @@ sub header {
         called the accession_number. For sequences from established
         databases, the implementors should try to use the correct
         accession number. Notice that primary_id() provides the unique id
-        for the implemetation, allowing multiple objects to have the same
+        for the implementation, allowing multiple objects to have the same
         accession number in a particular implementation. For sequences
         with no accession number, this method should return "unknown".
  Returns : A string
@@ -354,7 +354,7 @@ sub accession_number {
  Usage   : $unique_implementation_key = $obj->primary_id();
  Function: Returns the unique id for this object in this implementation.
         This allows implementations to manage their own object ids in a
-        way the implementaiton can control clients can expect one id to
+        way the implementation can control clients can expect one id to
         map to one object. For sequences with no accession number, this
         method should return a stringified memory location.
  Returns : A string

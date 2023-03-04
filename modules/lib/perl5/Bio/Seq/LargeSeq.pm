@@ -61,7 +61,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -79,6 +79,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Seq::LargeSeq;
+$Bio::Seq::LargeSeq::VERSION = '1.7.8';
 use vars qw($AUTOLOAD);
 use strict;
 

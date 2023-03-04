@@ -80,7 +80,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -104,6 +104,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Tree::Tree;
+$Bio::Tree::Tree::VERSION = '1.7.8';
 use strict;
 
 # Object preamble - inherits from Bio::Root::Root
@@ -389,7 +390,7 @@ sub as_text {
     $self->_load_module($iomod);
 
     my $string = '';
-    open my $fh, '>', \$string or die "Couldn't open $string as file: $!\n";
+    open my $fh, '>', \$string or $self->throw("Could not write '$string' as file: $!");
     my $test = $iomod->new( -format => $format, -fh => $fh );
 
     # Get the default params for the given IO module.

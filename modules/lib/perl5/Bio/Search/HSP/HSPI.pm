@@ -93,7 +93,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Steve Chervitz, Jason Stajich
 
@@ -120,7 +120,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Search::HSP::HSPI;
-
+$Bio::Search::HSP::HSPI::VERSION = '1.7.8';
 
 use strict;
 use Carp;
@@ -454,7 +454,7 @@ These methods come from L<Bio::SeqFeature::SimilarityPair>
  Returns : +1 or -1 (0 if unknown)
  Args    : 'hit' or 'subject' or 'sbjct' to retrieve the strand of the subject
            'query' to retrieve the query strand (default)
-           'list' or 'array' to retreive both query and hit together
+           'list' or 'array' to retrieve both query and hit together
 
 =cut
 

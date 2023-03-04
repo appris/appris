@@ -88,7 +88,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 APPENDIX
 
@@ -100,6 +100,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::LocatableSeq;
+$Bio::LocatableSeq::VERSION = '1.7.8';
 use strict;
 
 use Bio::Location::Simple;
@@ -655,7 +656,7 @@ sub trunc {
 sub validate_seq {
     my ($self, $seqstr, $throw) = @_;
     $seqstr = '' if not defined $seqstr;
-    $throw  = 0  if not defined $throw ; # 0 for backward compatiblity
+    $throw  = 0  if not defined $throw ; # 0 for backward compatibility
     if ( (CORE::length $seqstr > 0         ) &&
          ($seqstr !~ /^([$MATCHPATTERN]+)$/) ) {
         if ($throw) {
@@ -666,55 +667,6 @@ sub validate_seq {
         return 0;
     }
     return 1;
-}
-
-
-################## DEPRECATED METHODS ##################
-
-
-=head2 no_gap
-
- Title     : no_gaps
- Usage     : $self->no_gaps('.')
- Function  : Gets number of gaps in the sequence. The count excludes
-             leading or trailing gap characters.
-
-             Valid bioperl sequence characters are [A-Za-z\-\.\*]. Of
-             these, '.' and '-' are counted as gap characters unless an
-             optional argument specifies one of them.
-
- Returns   : number of internal gaps in the sequence.
- Args      : a gap character (optional)
- Status    : Deprecated (in favor of num_gaps()) 
-
-=cut
-
-sub no_gaps {
-    my $self = shift;
-    $self->deprecated( -warn_version  => 1.0069,
-                       -throw_version => 1.0075,
-                       -message => 'Use of method no_gaps() is deprecated, use num_gaps() instead' );
-    return $self->num_gaps(@_);
-}
-
-
-=head2 no_sequences
-
- Title     : no_sequences
- Usage     : $gaps = $seq->no_sequences
- Function  : number of sequence in the sequence alignment
- Returns   : integer
- Argument  :
- Status    : Deprecated (in favor of num_sequences())
-
-=cut
-
-sub no_sequences {
-    my $self = shift;
-    $self->deprecated( -warn_version  => 1.0069,
-                       -throw_version => 1.0075,
-                       -message => 'Use of method no_sequences() is deprecated, use num_sequences() instead' );
-    return $self->num_sequences(@_);
 }
 
 1;

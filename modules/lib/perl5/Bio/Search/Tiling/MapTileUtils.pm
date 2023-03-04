@@ -1,5 +1,7 @@
 #$Id$
 package Bio::Search::Tiling::MapTileUtils;
+$Bio::Search::Tiling::MapTileUtils::VERSION = '1.7.8';
+
 use strict;
 use warnings;
 use Exporter;
@@ -518,6 +520,8 @@ sub covering_groups {
 # need our own subsequencer for hsps. 
 
 package Bio::Search::HSP::HSPI;
+$Bio::Search::HSP::HSPI::VERSION = '1.7.8';
+
 
 use strict;
 use warnings;
@@ -539,6 +543,7 @@ use warnings;
 =cut
 
 sub matches_MT {
+    use integer;
     my( $self, @args ) = @_;
     my($type, $action, $beg, $end) = $self->_rearrange( [qw(TYPE ACTION START END)], @args);
     my @actions = qw( identities conserved searchutils );
@@ -635,6 +640,8 @@ sub matches_MT {
 1;
 
 package Bio::LocatableSeq;
+$Bio::LocatableSeq::VERSION = '1.7.8';
+
 use strict;
 use warnings;
 

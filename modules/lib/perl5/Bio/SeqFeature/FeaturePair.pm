@@ -90,6 +90,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::SeqFeature::FeaturePair;
+$Bio::SeqFeature::FeaturePair::VERSION = '1.7.8';
 use vars qw($AUTOLOAD);
 use strict;
 

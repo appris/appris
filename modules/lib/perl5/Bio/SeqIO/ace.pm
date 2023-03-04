@@ -24,7 +24,7 @@ from ace file format.  It only parses a DNA or
 Peptide objects contained in the ace file,
 producing PrimarySeq objects from them.  All
 other objects in the files will be ignored.  It
-doesn't attempt to parse any annotation attatched
+doesn't attempt to parse any annotation attached
 to the containing Sequence or Protein objects,
 which would probably be impossible, since
 everyone's ACeDB schema can be different.
@@ -61,7 +61,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.
 Bug reports can be submitted via the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS - James Gilbert
 
@@ -78,6 +78,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::ace;
+$Bio::SeqIO::ace::VERSION = '1.7.8';
 use strict;
 
 use Bio::Seq;

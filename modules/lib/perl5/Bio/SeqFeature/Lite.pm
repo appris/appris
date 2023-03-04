@@ -1,5 +1,5 @@
 package Bio::SeqFeature::Lite;
-
+$Bio::SeqFeature::Lite::VERSION = '1.7.8';
 =head1 NAME
 
 Bio::SeqFeature::Lite - Lightweight Bio::SeqFeatureI class
@@ -196,9 +196,9 @@ sub new {
 
   $arg{-strand} ||= 0;
   if ($arg{-strand} =~ /^[\+\-\.]$/){
-	$arg{-strand} = "+" && $self->{strand} ='1';
-	$arg{-strand} = "-" && $self->{strand} = '-1';
-	$arg{-strand} = "." && $self->{strand} = '0';
+	($arg{-strand} eq "+") && ($self->{strand} = '1');
+	($arg{-strand} eq "-") && ($self->{strand} = '-1');
+	($arg{-strand} eq ".") && ($self->{strand} = '0');
   } else {
 	  $self->{strand}  = $arg{-strand} ? ($arg{-strand} >= 0 ? +1 : -1) : 0;
   }
@@ -445,7 +445,7 @@ sub display_name { shift->name(@_) }
            called the accession_number. For sequences from established
            databases, the implementors should try to use the correct
            accession number. Notice that primary_id() provides the
-           unique id for the implemetation, allowing multiple objects
+           unique id for the implementation, allowing multiple objects
            to have the same accession number in a particular implementation.
 
            For sequences with no accession number, this method should return

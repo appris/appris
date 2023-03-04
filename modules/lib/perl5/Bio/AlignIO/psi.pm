@@ -51,7 +51,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -69,6 +69,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::AlignIO::psi;
+$Bio::AlignIO::psi::VERSION = '1.7.8';
 use vars qw($BlockLen $IdLength);
 use strict;
 
@@ -129,7 +130,7 @@ sub next_aln {
 	$aln->add_seq($seq);
     }
     return $aln if defined $aln && $aln->num_sequences;
-	return $aln;
+	return;
 }
 
 =head2 write_aln

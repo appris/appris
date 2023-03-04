@@ -1,6 +1,6 @@
 # BioPerl module for Bio::SeqIO
 #
-# Please direct questions and support issues to <bioperl-l@bioperl.org> 
+# Please direct questions and support issues to <bioperl-l@bioperl.org>
 #
 # Cared for by Ewan Birney <birney@ebi.ac.uk>
 #       and Lincoln Stein  <lstein@cshl.org>
@@ -127,13 +127,14 @@ This makes the simplest ever reformatter
 
 =head2 Bio::SeqIO-E<gt>new()
 
-   $seqIO = Bio::SeqIO->new(-file => 'filename',   -format=>$format);
-   $seqIO = Bio::SeqIO->new(-fh   => \*FILEHANDLE, -format=>$format);
+   $seqIO = Bio::SeqIO->new(-file   => 'seqs.fasta', -format => $format);
+   $seqIO = Bio::SeqIO->new(-fh     => \*FILEHANDLE, -format => $format);
+   $seqIO = Bio::SeqIO->new(-string => $string     , -format => $format);
    $seqIO = Bio::SeqIO->new(-format => $format);
 
-The new() class method constructs a new Bio::SeqIO object. The
-returned object can be used to retrieve or print Seq objects. new()
-accepts the following parameters:
+The new() class method constructs a new Bio::SeqIO object. The returned object
+can be used to retrieve or print Seq objects. new() accepts the following
+parameters:
 
 =over 5
 
@@ -146,21 +147,16 @@ conventions apply:
    '>file'      # open file for writing
    '>>file'     # open file for appending
    '+<file'     # open file read/write
-   'command |'  # open a pipe from the command
-   '| command'  # open a pipe to the command
+
+To read from or write to a piped command, open a filehandle and use the -fh
+option.
 
 =item -fh
 
-You may provide new() with a previously-opened filehandle.  For
+You may use new() with a opened filehandle, provided as a glob reference. For
 example, to read from STDIN:
 
-   $seqIO = Bio::SeqIO->new(-fh => \*STDIN);
-
-Note that you must pass filehandles as references to globs.
-
-If neither a filehandle nor a filename is specified, then the module
-will read from the @ARGV array or STDIN, using the familiar E<lt>E<gt>
-semantics.
+   my $seqIO = Bio::SeqIO->new(-fh => \*STDIN);
 
 A string filehandle is handy if you want to modify the output in the
 memory, before printing it out. The following program reads in EMBL
@@ -169,8 +165,8 @@ some HTML tags:
 
   use Bio::SeqIO;
   use IO::String;
-  my $in  = Bio::SeqIO->new(-file => "emblfile",
-                            -format => 'EMBL');
+  my $in = Bio::SeqIO->new(-file => "emblfile",
+                           -format => 'EMBL');
   while ( my $seq = $in->next_seq() ) {
       # the output handle is reset for every file
       my $stringio = IO::String->new($string);
@@ -184,26 +180,41 @@ some HTML tags:
       print $string;
   }
 
+Filehandles can also be used to read from or write to a piped command:
+
+  use Bio::SeqIO;
+  #convert .fastq.gz to .fasta
+  open my $zcat, 'zcat seq.fastq.gz |' or die $!;
+  my $in=Bio::SeqIO->new(-fh=>$zcat,
+                         -format=>'fastq');
+  my $out=Bio::SeqIO->new(-file=>'>seq.fasta',
+                          -format=>'fasta');
+  while (my $seq=$in->next_seq) {
+      $out->write_seq($seq)
+  }
+
+=item -string
+
+A string to read the sequences from. For example:
+
+   my $string = ">seq1\nACGCTAGCTAGC\n";
+   my $seqIO = Bio::SeqIO->new(-string => $string);
+
 =item -format
 
 Specify the format of the file.  Supported formats include fasta,
 genbank, embl, swiss (SwissProt), Entrez Gene and tracefile formats
 such as abi (ABI) and scf. There are many more, for a complete listing
-see the SeqIO HOWTO (L<http://bioperl.open-bio.org/wiki/HOWTO:SeqIO>).
+see the SeqIO HOWTO (L<http://bioperl.org/howtos/SeqIO_HOWTO.html>).
 
 If no format is specified and a filename is given then the module will
 attempt to deduce the format from the filename suffix. If there is no
 suffix that Bioperl understands then it will attempt to guess the
-format based on file content. If this is unsuccessful then SeqIO will 
+format based on file content. If this is unsuccessful then SeqIO will
 throw a fatal error.
 
 The format name is case-insensitive: 'FASTA', 'Fasta' and 'fasta' are
 all valid.
-
-Currently, the tracefile formats (except for SCF) require installation
-of the external Staden "io_lib" package, as well as the
-Bio::SeqIO::staden::read package available from the bioperl-ext
-repository.
 
 =item -alphabet
 
@@ -287,15 +298,15 @@ Your participation is much appreciated.
   bioperl-l@bioperl.org                  - General discussion
   http://bioperl.org/wiki/Mailing_lists  - About the mailing lists
 
-=head2 Support 
+=head2 Support
 
 Please direct usage questions or support issues to the mailing list:
 
  bioperl-l@bioperl.org
 
-rather than to the module maintainer directly. Many experienced and 
-responsive experts will be able look at the problem and quickly 
-address it. Please include a thorough description of the problem 
+rather than to the module maintainer directly. Many experienced and
+responsive experts will be able look at the problem and quickly
+address it. Please include a thorough description of the problem
 with code and data examples if at all possible.
 
 =head2 Reporting Bugs
@@ -304,7 +315,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney, Lincoln Stein
 
@@ -321,7 +332,7 @@ methods. Internal methods are usually preceded with a _
 #' Let the code begin...
 
 package Bio::SeqIO;
-
+$Bio::SeqIO::VERSION = '1.7.8';
 use strict;
 use warnings;
 
@@ -342,15 +353,16 @@ my %valid_alphabet_cache;
                                      -format => 'fasta');
  Function: Returns a new sequence stream
  Returns : A Bio::SeqIO stream initialised with the appropriate format
- Args    : Named parameters:
-             -file   => filename
-             -fh     => filehandle to attach to
-             -format => format
+ Args    : Named parameters indicating where to read the sequences from or to
+           write them to:
+             -file   => filename, OR
+             -fh     => filehandle to attach to, OR
+             -string => string
 
-           Additional arguments may be used. They all have reasonable defaults
-           and are thus optional.
+           Additional arguments, all with reasonable defaults:
+             -format     => format of the sequences, usually auto-detected
              -alphabet   => 'dna', 'rna', or 'protein'
-             -flush      => 0 or 1 (default, flush filehandles after each write)
+             -flush      => 0 or 1 (default: flush filehandles after each write)
              -seqfactory => sequence factory
              -locfactory => location factory
              -objbuilder => object builder
@@ -362,7 +374,7 @@ See L<Bio::SeqIO::Handler>
 my $entry = 0;
 
 sub new {
-    my ($caller,@args) = @_;
+    my ($caller, @args) = @_;
     my $class = ref($caller) || $caller;
 
     # or do we want to call SUPER on an object if $caller is an
@@ -372,45 +384,50 @@ sub new {
         $self->_initialize(@args);
         return $self;
     } else {
+        my %params = @args;
+        @params{ map { lc $_ } keys %params } = values %params; # lowercase keys
 
-        my %param = @args;
-        @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
-
-        unless( defined $param{-file} ||
-                defined $param{-fh}   ||
-                defined $param{-string} ) {
-            $class->throw("file argument provided, but with an undefined value") 
-                if exists $param{'-file'};
-            $class->throw("fh argument provided, but with an undefined value") 
-                if exists $param{'-fh'};
-            $class->throw("string argument provided, but with an undefined value") 
-                if exists($param{'-string'});
+        unless( defined $params{-file} ||
+                defined $params{-fh}   ||
+                defined $params{-string} ) {
+            $class->throw("file argument provided, but with an undefined value")
+                if exists $params{'-file'};
+            $class->throw("fh argument provided, but with an undefined value")
+                if exists $params{'-fh'};
+            $class->throw("string argument provided, but with an undefined value")
+                if exists($params{'-string'});
             # $class->throw("No file, fh, or string argument provided"); # neither defined
         }
 
-        my $format = $param{'-format'} ||
-            $class->_guess_format( $param{-file} || $ARGV[0] );
-        
-        if( ! $format ) {
-            if ($param{-file}) {
-                $format = Bio::Tools::GuessSeqFormat->new(-file => $param{-file}||$ARGV[0] )->guess;
-            } elsif ($param{-fh}) {
-                $format = Bio::Tools::GuessSeqFormat->new(-fh => $param{-fh}||$ARGV[0] )->guess;
+        # Determine or guess sequence format and variant
+        my $format = $params{'-format'};
+        if (! $format ) {
+            if ($params{-file}) {
+                # Guess from filename extension, and then from file content
+                $format = $class->_guess_format( $params{-file} ) ||
+                          Bio::Tools::GuessSeqFormat->new(-file => $params{-file}  )->guess;
+            } elsif ($params{-fh}) {
+                # Guess from filehandle content
+                $format = Bio::Tools::GuessSeqFormat->new(-fh   => $params{-fh}    )->guess;
+            } elsif ($params{-string}) {
+                # Guess from string content
+                $format = Bio::Tools::GuessSeqFormat->new(-text => $params{-string})->guess;
             }
         }
+
         # changed 1-3-11; no need to print out an empty string (only way this
         # exception is triggered) - cjfields
-        $class->throw("Could not guess format from file/fh") unless $format;
+        $class->throw("Could not guess format from file, filehandle or string")
+            if not $format;
         $format = "\L$format";  # normalize capitalization to lower case
 
         if ($format =~ /-/) {
             ($format, my $variant) = split('-', $format, 2);
-            push @args, (-variant => $variant);
+            $params{-variant} = $variant;
         }
 
-
         return unless( $class->_load_format_module($format) );
-        return "Bio::SeqIO::$format"->new(@args);
+        return "Bio::SeqIO::$format"->new(%params);
     }
 }
 
@@ -483,7 +500,7 @@ sub _initialize {
     # note that this should come last because it propagates the sequence
     # factory to the sequence builder
     $seqfact && $self->sequence_factory($seqfact);
-        
+
     #bug 2160
     $alphabet && $self->alphabet($alphabet);
 
@@ -576,8 +593,8 @@ sub alphabet {
             # creating a dummy sequence object
             eval {
                 require Bio::PrimarySeq;
-                my $seq = Bio::PrimarySeq->new('-verbose' => $self->verbose,
-                                                         '-alphabet' => $value);
+                my $seq = Bio::PrimarySeq->new( -verbose  => $self->verbose,
+                                                -alphabet => $value          );
             };
             if ($@) {
                 $self->throw("Invalid alphabet: $value\n. See Bio::PrimarySeq for allowed values.");
@@ -678,6 +695,7 @@ sub _filehandle {
 sub _guess_format {
    my $class = shift;
    return unless $_ = shift;
+
    return 'abi'        if /\.ab[i1]$/i;
    return 'ace'        if /\.ace$/i;
    return 'alf'        if /\.alf$/i;
@@ -696,13 +714,11 @@ sub _guess_format {
    return 'qual'       if /\.qual$/i;
    return 'raw'        if /\.txt$/i;
    return 'scf'        if /\.scf$/i;
-   return 'swiss'      if /\.(swiss|sp)$/i;
-
    # from Strider 1.4 Release Notes: The file name extensions used by
    # Strider 1.4 are ".xdna", ".xdgn", ".xrna" and ".xprt" for DNA,
    # DNA Degenerate, RNA and Protein Sequence Files, respectively
    return 'strider'    if /\.(xdna|xdgn|xrna|xprt)$/i;
-
+   return 'swiss'      if /\.(swiss|sp)$/i;
    return 'ztr'        if /\.ztr$/i;
 }
 
@@ -721,7 +737,7 @@ sub TIEHANDLE {
 
 sub READLINE {
     my $self = shift;
-    return $self->{'seqio'}->next_seq() unless wantarray;
+    return $self->{'seqio'}->next_seq() || undef unless wantarray;
     my (@list, $obj);
     push @list, $obj while $obj = $self->{'seqio'}->next_seq();
     return @list;

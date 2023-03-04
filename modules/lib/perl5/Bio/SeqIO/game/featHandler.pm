@@ -55,7 +55,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Sheldon McKay
 
@@ -69,7 +69,7 @@ methods. Internal methods are usually preceded with a _
 =cut
 
 package Bio::SeqIO::game::featHandler;
-
+$Bio::SeqIO::game::featHandler::VERSION = '1.7.8';
 use Bio::SeqFeature::Generic;
 use Bio::Location::Split;
 use Data::Dumper;

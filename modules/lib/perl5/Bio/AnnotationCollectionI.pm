@@ -47,7 +47,7 @@ The Bioperl approach is that the "interesting facts" are represented by
 Bio::AnnotationI objects. The interface Bio::AnnotationI guarantees
 two methods
 
-   $obj->as_text(); # string formated to display to users
+   $obj->as_text(); # string formatted to display to users
 
 and
 
@@ -112,7 +112,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -129,6 +129,7 @@ are usually preceded with a _
 # Let the code begin...
 
 package Bio::AnnotationCollectionI;
+$Bio::AnnotationCollectionI::VERSION = '1.7.8';
 use strict;
 
 # Interface preamble - inherits from Bio::Root::RootI

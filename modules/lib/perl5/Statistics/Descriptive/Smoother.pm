@@ -1,47 +1,56 @@
 package Statistics::Descriptive::Smoother;
-
+$Statistics::Descriptive::Smoother::VERSION = '3.0800';
 use strict;
 use warnings;
 
-use Carp;
+use Carp qw/ carp /;
 
-our $VERSION = '3.0605';
+## no critic (ProhibitExplicitReturnUndef)
 
-sub instantiate {
-    my ($class, $args) = @_;
+sub instantiate
+{
+    my ( $class, $args ) = @_;
 
     my $method     = delete $args->{method};
     my $coeff      = delete $args->{coeff} || 0;
     my $ra_samples = delete $args->{samples};
     my $ra_data    = delete $args->{data};
 
-    if ($coeff < 0 || $coeff > 1) {
+    if ( $coeff < 0 || $coeff > 1 )
+    {
         carp("Invalid smoothing coefficient C $coeff\n");
         return;
     }
-    if (@$ra_data < 2) {
+    if ( @$ra_data < 2 )
+    {
         carp("Need at least 2 samples to smooth the data\n");
         return;
     }
-    $method = ucfirst(lc($method));
-    my $sub_class = __PACKAGE__."::$method";
+    $method = ucfirst( lc($method) );
+    my $sub_class = __PACKAGE__ . "::$method";
+    ## no critic
     eval "require $sub_class";
+    ## use critic
     die "No such class $sub_class: $@" if $@;
 
-    return $sub_class->_new({
-        data       => $ra_data,
-        samples    => $ra_samples,
-        count      => scalar @$ra_data,
-        coeff      => $coeff,
-    });
+    return $sub_class->_new(
+        {
+            data    => $ra_data,
+            samples => $ra_samples,
+            count   => scalar @$ra_data,
+            coeff   => $coeff,
+        }
+    );
 }
 
 sub get_smoothing_coeff { $_[0]->{coeff} }
 
-sub set_smoothing_coeff {
-    my ($self, $coeff) = @_;
+sub set_smoothing_coeff
+{
+    my ( $self, $coeff ) = @_;
 
-    if ($coeff < 0 || $coeff > 1) {
+    if ( $coeff < 0 || $coeff > 1 )
+    {
         carp("Invalid smoothing coefficient C $coeff\n");
         return;
     }
@@ -54,9 +63,17 @@ sub set_smoothing_coeff {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Statistics::Descriptive::Smoother - Base module for smoothing statistical data
+
+=head1 VERSION
+
+version 3.0800
 
 =head1 SYNOPSIS
 
@@ -152,5 +169,102 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+=for :stopwords cpan testmatrix url bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
+
+=head1 SUPPORT
+
+=head2 Websites
+
+The following websites have more information about this module, and may be of help to you. As always,
+in addition to those websites please use your favorite search engine to discover more resources.
+
+=over 4
+
+=item *
+
+MetaCPAN
+
+A modern, open-source CPAN search engine, useful to view POD in HTML format.
+
+L<https://metacpan.org/release/Statistics-Descriptive>
+
+=item *
+
+RT: CPAN's Bug Tracker
+
+The RT ( Request Tracker ) website is the default bug/issue tracking system for CPAN.
+
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=Statistics-Descriptive>
+
+=item *
+
+CPANTS
+
+The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
+
+L<http://cpants.cpanauthors.org/dist/Statistics-Descriptive>
+
+=item *
+
+CPAN Testers
+
+The CPAN Testers is a network of smoke testers who run automated tests on uploaded CPAN distributions.
+
+L<http://www.cpantesters.org/distro/S/Statistics-Descriptive>
+
+=item *
+
+CPAN Testers Matrix
+
+The CPAN Testers Matrix is a website that provides a visual overview of the test results for a distribution on various Perls/platforms.
+
+L<http://matrix.cpantesters.org/?dist=Statistics-Descriptive>
+
+=item *
+
+CPAN Testers Dependencies
+
+The CPAN Testers Dependencies is a website that shows a chart of the test results of all dependencies for a distribution.
+
+L<http://deps.cpantesters.org/?module=Statistics::Descriptive>
+
+=back
+
+=head2 Bugs / Feature Requests
+
+Please report any bugs or feature requests by email to C<bug-statistics-descriptive at rt.cpan.org>, or through
+the web interface at L<https://rt.cpan.org/Public/Bug/Report.html?Queue=Statistics-Descriptive>. You will be automatically notified of any
+progress on the request by the system.
+
+=head2 Source Code
+
+The code is open to the world, and available for you to hack on. Please feel free to browse it and play
+with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
+from your repository :)
+
+L<https://github.com/shlomif/perl-Statistics-Descriptive>
+
+  git clone git://github.com/shlomif/perl-Statistics-Descriptive.git
+
+=head1 AUTHOR
+
+Shlomi Fish <shlomif@cpan.org>
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website
+L<https://github.com/shlomif/perl-Statistics-Descriptive/issues>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 1997 by Jason Kastner, Andrea Spinelli, Colin Kuskie, and others.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

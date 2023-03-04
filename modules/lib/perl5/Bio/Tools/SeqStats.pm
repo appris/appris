@@ -196,7 +196,7 @@ with code and data examples if at all possible.
 Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Peter Schattner
 
@@ -215,6 +215,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Tools::SeqStats;
+$Bio::Tools::SeqStats::VERSION = '1.7.8';
 use strict;
 use vars qw(%Alphabets %Alphabets_strict $amino_weights
 	    $rna_weights $dna_weights %Weights $amino_hydropathicity);

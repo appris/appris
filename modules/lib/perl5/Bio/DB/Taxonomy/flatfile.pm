@@ -60,7 +60,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -80,7 +80,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::DB::Taxonomy::flatfile;
-
+$Bio::DB::Taxonomy::flatfile::VERSION = '1.7.8';
 use vars qw($DEFAULT_INDEX_DIR $DEFAULT_NODE_INDEX $DEFAULT_NAME2ID_INDEX
             $DEFAULT_ID2NAME_INDEX $DEFAULT_PARENT_INDEX @DIVISIONS);
 
@@ -98,6 +98,9 @@ $DEFAULT_ID2NAME_INDEX = 'id2names';
 $DEFAULT_PARENT_INDEX  = 'parents';
 
 $DB_BTREE->{'flags'} = R_DUP; # allow duplicate values in DB_File BTREEs
+
+# 8192 bytes; this seems to work to keep OS X from complaining
+$DB_HASH->{'bsize'} = 0x2000;
 
 @DIVISIONS =   ([qw(BCT Bacteria)],
                 [qw(INV Invertebrates)],
@@ -362,8 +365,8 @@ sub _build_index {
     
     if (! -e $nodeindex || $force) {
         my (%parent2children,@nodes);
-        open(NODES,$nodesfile) || 
-            $self->throw("Cannot open node file '$nodesfile' for reading");
+        open my $NODES, '<', $nodesfile
+            or $self->throw("Could not read node file '$nodesfile': $!");
         
         unlink $nodeindex;
         unlink $parent2childindex;
@@ -372,7 +375,7 @@ sub _build_index {
         my $btree = tie( %parent2children, 'DB_File', $parent2childindex, O_RDWR|O_CREAT, 0644, $DB_BTREE) || 
             $self->throw("Cannot tie to file '$parent2childindex': $!");
         
-        while (<NODES>) {
+        while (<$NODES>) {
             next if /^$/;
             chomp;
             my ($taxid,$parent,$rank,$code,$divid,undef,$gen_code,undef,$mito) = split(/\t\|\t/,$_);
@@ -386,7 +389,7 @@ sub _build_index {
             $nodes[$taxid] = join(SEPARATOR, ($taxid,$parent,$rank,$code,$divid,$gen_code,$mito));
             $btree->put($parent,$taxid);
         }
-        close(NODES);
+        close $NODES;
         
         $nh = $btree = undef;
         untie @nodes ;
@@ -394,8 +397,8 @@ sub _build_index {
     }
     
     if ((! -e $name2idindex || -z $name2idindex) || (! -e $id2nameindex || -z $id2nameindex) || $force) { 
-        open(NAMES,$namesfile) || 
-            $self->throw("Cannot open names file '$namesfile' for reading");
+        open my $NAMES, '<', $namesfile
+            or $self->throw("Could not read names file '$namesfile': $!");
         
         unlink $name2idindex;
         unlink $id2nameindex;
@@ -405,7 +408,7 @@ sub _build_index {
         my $nameh = tie ( %name2id, 'DB_File', $name2idindex, O_RDWR|O_CREAT, 0644, $DB_HASH) || 
             $self->throw("Cannot tie to file '$name2idindex': $!");
         
-        while (<NAMES>) {
+        while (<$NAMES>) {
             next if /^$/;
             chomp; 
             my ($taxid, $name, $unique_name, $class) = split(/\t\|\t/,$_);
@@ -455,7 +458,7 @@ sub _build_index {
             }
             $id2name[$taxid] = join(SEPARATOR, @names);
         }
-        close(NAMES);
+        close $NAMES;
         
         $idh = $nameh = undef;
         untie( %name2id);
@@ -485,16 +488,16 @@ sub _db_connect {
         $self->warn("Index files have not been created");
         return 0;
     }
-    tie ( @{$self->{'_nodes'}}, 'DB_File', $nodeindex, O_RDWR,undef, $DB_RECNO) 
+    tie ( @{$self->{'_nodes'}}, 'DB_File', $nodeindex, O_RDONLY,undef, $DB_RECNO) 
         || $self->throw("$! $nodeindex");
-    tie (@{$self->{'_id2name'}}, 'DB_File', $id2nameindex,O_RDWR, undef, 
+    tie (@{$self->{'_id2name'}}, 'DB_File', $id2nameindex,O_RDONLY, undef, 
         $DB_RECNO) || $self->throw("$! $id2nameindex");
     
-    tie ( %{$self->{'_name2id'}}, 'DB_File', $name2idindex, O_RDWR,undef, 
+    tie ( %{$self->{'_name2id'}}, 'DB_File', $name2idindex, O_RDONLY,undef, 
         $DB_HASH) || $self->throw("$! $name2idindex");
     $self->{'_parentbtree'} = tie( %{$self->{'_parent2children'}},
                                    'DB_File', $parent2childindex, 
-                                   O_RDWR, 0644, $DB_BTREE);
+                                   O_RDONLY, 0644, $DB_BTREE);
 
     $self->{'_initialized'} = 1;
 }
@@ -503,7 +506,7 @@ sub _db_connect {
 =head2 index_directory
 
  Title   : index_directory
- Funtion : Get/set the location that index files are stored. (this module
+ Function : Get/set the location that index files are stored. (this module
            will index the supplied database)
  Usage   : $obj->index_directory($newval)
  Returns : value of index_directory (a scalar)
@@ -518,5 +521,28 @@ sub index_directory {
     return $self->{'index_directory'};
 }
 
+
+sub DESTROY {
+    my $self = shift;
+    # Destroy all filehandle references
+    # to be able to remove temporary files
+    undef $self->{_id2name};
+    undef $self->{_name2id};
+    undef $self->{_nodes};
+    undef $self->{_parent2children};
+    undef $self->{_parentbtree};
+
+    # Treat index files as temporary and delete them now if
+    # 'index_directory' match $DEFAULT_INDEX_DIR (which means
+    # that no "-directory" was specified or is an explicit
+    # temporary file)
+    my $default_temp = quotemeta $DEFAULT_INDEX_DIR;
+    if ($self->{index_directory} =~ m/^$default_temp/) {
+        unlink catfile($self->{index_directory},'id2names');
+        unlink catfile($self->{index_directory},'names2id');
+        unlink catfile($self->{index_directory},'nodes');
+        unlink catfile($self->{index_directory},'parents');
+    }
+}
 
 1;

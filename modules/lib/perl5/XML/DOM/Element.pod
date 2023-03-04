@@ -159,6 +159,8 @@ Raised if oldAttr is not an attribute of the element.
 
 =back
 
+=back
+
 =head2 Additional methods not in the DOM Spec
 
 =over 4

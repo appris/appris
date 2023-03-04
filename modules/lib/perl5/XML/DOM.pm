@@ -39,7 +39,7 @@ use XML::RegExp;
 BEGIN
 {
     require XML::Parser;
-    $VERSION = '1.44';
+    $VERSION = '1.46';
 
     my $needVersion = '2.28';
     die "need at least XML::Parser version $needVersion (current=${XML::Parser::VERSION})"
@@ -1218,7 +1218,8 @@ sub to_sax
 sub printToFile
 {
     my ($self, $fileName) = @_;
-    my $fh = new FileHandle ($fileName, "w") || 
+    my $encoding = $self->getXMLDecl()->getEncoding();
+    my $fh = new FileHandle ($fileName, ">:encoding($encoding)") ||
 	croak "printToFile - can't open output file $fileName";
     
     $self->print ($fh);

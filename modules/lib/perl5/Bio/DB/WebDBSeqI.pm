@@ -26,7 +26,7 @@ for retrieving sequences
 =head1 DESCRIPTION
 
 Provides core set of functionality for connecting to a web based
-database for retriving sequences.
+database for retrieving sequences.
 
 Users wishing to add another Web Based Sequence Dabatase will need to
 extend this class (see L<Bio::DB::SwissProt> or L<Bio::DB::NCBIHelper> for
@@ -64,7 +64,7 @@ Report bugs to the Bioperl bug tracking system to
 help us keep track the bugs and their resolution.
 Bug reports can be submitted via the web.
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -81,7 +81,11 @@ preceded with a _
 # Let the code begin...
 
 package Bio::DB::WebDBSeqI;
+$Bio::DB::WebDBSeqI::VERSION = '1.7.8';
 use strict;
+
+use Carp;
+
 use vars qw($MODVERSION %RETRIEVAL_TYPES $DEFAULT_RETRIEVAL_TYPE
 	    $DEFAULTFORMAT $LAST_INVOCATION_TIME @ATTRIBUTES);
 
@@ -101,9 +105,9 @@ use base qw(Bio::DB::RandomAccessI);
 BEGIN {
 	$MODVERSION = '0.8';
 	%RETRIEVAL_TYPES = ('io_string' => 1,
-								 'tempfile'  => 1,
-								 'pipeline'  => 1,
-							 );
+			    'tempfile'  => 1,
+			    'pipeline'  => 1,
+			  );
 	$DEFAULT_RETRIEVAL_TYPE = 'pipeline';
 	$DEFAULTFORMAT = 'fasta';
 	$LAST_INVOCATION_TIME = 0;
@@ -164,6 +168,11 @@ sub get_Seq_by_id {
     }
     my @seqs;
     while( my $seq = $seqio->next_seq() ) { push @seqs, $seq; }
+
+    # Since $seqio will not be used anymore, explicitly close its filehandle
+    # or it will cause trouble later on cleanup
+    $seqio->close;
+
     $self->throw("id '$seqid' does not exist") unless @seqs;
     if( wantarray ) { return @seqs } else { return shift @seqs }
 }
@@ -291,7 +300,7 @@ sub get_Stream_by_id {
 
 *get_Stream_by_batch = sub {
   my $self = shift;
-  $self->deprecated('get_Stream_by_batch() is deprecated; use get_Stream_by_id() instead');
+  Carp::carp('get_Stream_by_batch() is deprecated; use get_Stream_by_id() instead');
   $self->get_Stream_by_id(@_)
 };
 
@@ -339,7 +348,7 @@ sub get_Stream_by_gi {
   Returns : a Bio::SeqIO stream object
   Args    : $ref : a reference to an array of accession.version strings for
                    the desired sequence entries
-  Note    : For GenBank, this is implemeted in NCBIHelper
+  Note    : For GenBank, this is implemented in NCBIHelper
 
 =cut
 
@@ -444,7 +453,7 @@ sub get_seq_stream {
 	}
 	my $request = $self->get_request(%qualifiers);
 	$request->proxy_authorization_basic($self->authentication)
-	  if ( $self->authentication);
+	    if ( $self->authentication);
 	$self->debug("request is ". $request->as_string(). "\n");
 
 	# workaround for MSWin systems
@@ -462,15 +471,15 @@ sub get_seq_stream {
 		my ($result,$stream) = $self->_open_pipe();
 
 		if (defined $result) {
-			$DB::fork_TTY = File::Spec->devnull; # prevents complaints from debugge
+			$DB::fork_TTY = File::Spec->devnull; # prevents complaints from debugger
 			if (!$result) { # in child process
-			        $self->_stream_request($request,$stream);
-			        POSIX::_exit(0); #prevent END blocks from executing in this forked child
+			    $self->_stream_request($request,$stream);
+			    POSIX::_exit(0); #prevent END blocks from executing in this forked child
 			}
 			else {
 				return Bio::SeqIO->new('-verbose' => $self->verbose,
-											  '-format'  => $ioformat,
-											  '-fh'      => $stream);
+						       '-format'  => $ioformat,
+						       '-fh'      => $stream);
 			}
 		}
 		else {
@@ -487,12 +496,13 @@ sub get_seq_stream {
 			$self->throw("WebDBSeqI Error - check query sequences!\n");
 		}
 		$self->postprocess_data('type' => 'file',
-								'location' => $tmpfile);
+				        'location' => $tmpfile);
 		# this may get reset when requesting batch mode
 		($rformat,$ioformat) = $self->request_format();
 		if( $self->verbose > 0 ) {
-			open(my $ERR, "<", $tmpfile);
+			open my $ERR, '<', $tmpfile or $self->throw("Could not read file '$tmpfile': $!");
 			while(<$ERR>) { $self->debug($_);}
+			close $ERR;
 		}
 
 		return Bio::SeqIO->new('-verbose' => $self->verbose,
@@ -509,11 +519,11 @@ sub get_seq_stream {
 		}
 		($rformat,$ioformat) = $self->request_format();
 		$self->postprocess_data('type'=> 'string',
-										'location' => $content);
+				        'location' => $content);
 		$self->debug( "str is $$content\n");
 		return Bio::SeqIO->new('-verbose' => $self->verbose,
-									  '-format' => $ioformat,
-									  '-fh'   => new IO::String($$content));
+				       '-format' => $ioformat,
+				       '-fh'   => new IO::String($$content));
 	}
 
 	# if we got here, we don't know how to handle the retrieval type

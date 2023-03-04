@@ -134,7 +134,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Aaron Mackey
 
@@ -150,7 +150,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Seq::EncodedSeq;
-
+$Bio::Seq::EncodedSeq::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::LocatableSeq);
@@ -175,7 +175,7 @@ use base qw(Bio::LocatableSeq);
                       gap ('G') or backward frameshift ('B') should
                       have one or more gap characters; if the encoding
                       specifies G or B, but no (or not enough) gap
-                      characters exist, *they'll be added*; similary,
+                      characters exist, *they'll be added*; similarly,
                       if there are gap characters without a
                       corresponding G or B encoding, G's will be
                       inserted into the encoding.  This allows some

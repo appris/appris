@@ -24,8 +24,7 @@ Sendu Bala, bix@sendu.me.uk
 =cut
 
 package Bio::Search::SearchUtils;
-use Bio::Root::Version;
-
+$Bio::Search::SearchUtils::VERSION = '1.7.8';
 use strict;
 
 =head2 tile_hsps
@@ -703,7 +702,7 @@ sub collapse_nums {
            : be a standard, the structure of the HTML-formatted version
            : is even less so. Therefore, the use of this method to
            : reconstitute parsable Blast reports from HTML-format versions
-           : should be considered a temorary solution.
+           : should be considered a temporary solution.
 
 =cut
 
