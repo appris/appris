@@ -24,27 +24,27 @@ export APPRIS_WORKSPACE_LOG_DIR="${APPRIS_LOG_DIR}/${APPRIS_WS_DATE}"
 # Setting up the vars for specie workspace #
 # -----------------------------------------#
 
-export APPRIS_SPECIES="Homo sapiens"
+export APPRIS_SPECIES="Macaca mulatta"
 
-export APPRIS_ASSEMBLY="GRCh37"
+export APPRIS_ASSEMBLY="Mmul_10"
 
-export APPRIS_CHR_LIST="NC_000001.10,NC_000002.11,NC_000003.11,NC_000004.11,NC_000005.9,NC_000006.11,NC_000007.13,NC_000008.10,NC_000009.11,NC_000010.10,NC_000011.9,NC_000012.11,NC_000013.10,NC_000014.8,NC_000015.9,NC_000016.9,NC_000017.10,NC_000018.9,NC_000019.9,NC_000020.10,NC_000021.8,NC_000022.10,NC_000023.10,NC_000024.9,NC_012920.1"
+export APPRIS_CHR_LIST="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,X,Y,MT"
 
 # --------------------------------------#
 # Setting up vars of origin of data set #
 # --------------------------------------#
 
-export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.annot.gtf"
+export GENCODE_ANNOTATION_FILE="${APPRIS_FEATURES_DIR}/macaca_mulatta.annot.gtf"
 
-export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transc.fa"
+export GENCODE_TRANSCRIPT_FILE="${APPRIS_FEATURES_DIR}/macaca_mulatta.transc.fa"
 
-export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/homo_sapiens.transl.fa"
+export GENCODE_TRANSLATION_FILE="${APPRIS_FEATURES_DIR}/macaca_mulatta.transl.fa"
 
-export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/hg19.chrom.sizes"
+export UCSC_CHROM_SIZE_FILE="${APPRIS_CONF_DIR}/ucsc/rheMac10.chrom.sizes"
 
 export UCSC_BED_AS_FILE="${APPRIS_CONF_DIR}/ucsc/bedAs"
 
-#export APPRIS_E_VERSION=74
+#export APPRIS_E_VERSION=102
 
 #export APPRIS_GENE_LIST=""
 
