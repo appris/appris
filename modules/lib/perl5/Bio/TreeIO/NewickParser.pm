@@ -2,16 +2,7 @@
 
 =head1 NAME
 
-Module which implements a newick string parser as a finite state
-machine which enables it to parse the full Newick specification.
-
-Taken largely from the Ensembl Compara file with the same name
-(Bio::EnsEMBL::Compara::Graph::NewickParser), this module adapts the
-parser to work with BioPerl's event handler-based parsing scheme.
-
-This module is used by nhx.pm and newick.pm, and is NOT called
-directly. Instead, both of those parsing modules extend this module in
-order to gain access to the main parsing method.
+Bio::TreeIO::NewickParser - newick string parser
 
 =head1 SYNOPSIS
 
@@ -26,6 +17,17 @@ order to gain access to the main parsing method.
 This module correctly parses the Newick and NHX formats, sending calls
 to the BioPerl TreeEventHandler when appropriate in order to build and
 populate the node objects.
+
+Module which implements a newick string parser as a finite state
+machine which enables it to parse the full Newick specification.
+
+Taken largely from the Ensembl Compara file with the same name
+(Bio::EnsEMBL::Compara::Graph::NewickParser), this module adapts the
+parser to work with BioPerl's event handler-based parsing scheme.
+
+This module is used by nhx.pm and newick.pm, and is NOT called
+directly. Instead, both of those parsing modules extend this module in
+order to gain access to the main parsing method.
 
 =head1 FEEDBACK
 
@@ -55,14 +57,14 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jessica Severin (EnsEMBL implementation), Greg Jordan (BioPerl adaptation)
 
 =cut
 
 package Bio::TreeIO::NewickParser;
-
+$Bio::TreeIO::NewickParser::VERSION = '1.7.8';
 use strict;
 use base qw(Bio::Root::Root);
 
@@ -154,7 +156,14 @@ sub parse_newick {
             $self->_end('nhx_tag');
 
             $token = next_token(\$newick, ",);"); #move to , or )
-        }
+        } elsif ($token =~ /\[/) {
+            # This is a hack to make AMPHORA2 work
+            if ($token =~ /\[(\S+)\]/) {
+                $self->_start('bootstrap');
+                $self->_chars($1);
+                $self->_end('bootstrap');
+             }
+            $token = next_token(\$newick, ",);");        }
         $state = 5;
       } elsif ($state == 5) { # end node
         if($token eq ')') {

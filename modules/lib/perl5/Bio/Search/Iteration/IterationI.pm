@@ -154,7 +154,7 @@ are still not below threshold in the current iteration.
 
 =item * oldhits()  [subset C]
 
-All hits that occured in a previous iteration, whether below or above
+All hits that occurred in a previous iteration, whether below or above
 threshold in the current iteration. Union of oldhits_below_threshold()
 + oldhits_newly_below_threshold() + oldhits_not_below_threshold()
 [subset H + subset I + subset G]. (Not applicable to the first
@@ -217,7 +217,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR 
 
@@ -245,7 +245,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Search::Iteration::IterationI;
-
+$Bio::Search::Iteration::IterationI::VERSION = '1.7.8';
 use strict;
 
 

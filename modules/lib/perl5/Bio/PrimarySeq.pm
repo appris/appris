@@ -108,7 +108,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -124,7 +124,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::PrimarySeq;
-
+$Bio::PrimarySeq::VERSION = '1.7.8';
 use strict;
 
 our $MATCHPATTERN = 'A-Za-z\-\.\*\?=~';
@@ -232,13 +232,15 @@ sub new {
         }
     }
 
-    $desc         && $self->desc($desc);
-    $description  && $self->description($description);
-    $is_circular  && $self->is_circular($is_circular);
-    $ns           && $self->namespace($ns);
-    $auth         && $self->authority($auth);
-    defined($v)   && $self->version($v);
-    defined($oid) && $self->object_id($oid);
+    $desc                  && $self->desc($desc);
+    $description           && $self->description($description);
+    $ns                    && $self->namespace($ns);
+    $auth                  && $self->authority($auth);
+    # Any variable that can have a value "0" must be tested with defined
+    # or it will fail to be added to the new object
+    defined($v)            && $self->version($v);
+    defined($oid)          && $self->object_id($oid);
+    defined($is_circular)  && $self->is_circular($is_circular);
 
     return $self;
 }
@@ -383,13 +385,31 @@ sub subseq {
     if( ref($start) && $start->isa('Bio::LocationI') ) {
         my $loc = $start;
         my $seq = '';
-        foreach my $subloc ($loc->each_Location()) {
+
+        # For Split objects if Guide Strand is negative,
+        # pass the sublocations in reverse
+        my $order = 0;
+        if ($loc->isa('Bio::Location::SplitLocationI')) {
+            # guide_strand can return undef, so don't compare directly
+            # to avoid 'uninitialized value' warning
+            my $guide_strand = defined ($loc->guide_strand) ? ($loc->guide_strand) : 0;
+            $order = ($guide_strand == -1) ? -1 : 0;
+        }
+        # Reversing order using ->each_Location(-1) does not work well for
+        # cut by origin-splits (like "complement(join(1900..END,START..50))"),
+        # so use "reverse" instead
+        my @sublocs = ($order == -1) ? reverse $loc->each_Location(): $loc->each_Location;
+        foreach my $subloc (@sublocs) {
             my $piece = $self->subseq(-start        => $subloc->start(),
                                       -end          => $subloc->end(),
                                       -replace_with => $replace,
                                       -nogap        => $nogap);
             $piece =~ s/[$GAP_SYMBOLS]//g if $nogap;
-            if ($subloc->strand() < 0) {
+
+            # strand can return undef, so don't compare directly
+            # to avoid 'uninitialized value' warning
+            my $strand = defined ($subloc->strand) ? ($subloc->strand) : 0;
+            if ($strand < 0) {
                 $piece = $self->_revcom_from_string($piece, $self->alphabet);
             }
             $seq .= $piece;
@@ -450,13 +470,12 @@ sub subseq {
  Title   : length
  Usage   : $len = $seqobj->length();
  Function: Get the stored length of the sequence in number of symbols (bases
-           or amino acids).
+           or amino acids). In some circumstances, you can also set this attribute:
 
-           In some circumstances, you can also set this attribute:
-           1/ For empty sequences, you can set the length to anything you want:
+           1. For empty sequences, you can set the length to anything you want:
               my $seqobj = Bio::PrimarySeq->new( -length => 123 );
               my $len = $seqobj->len; # 123
-           2/ To save memory when using very long sequences, you can set the
+           2. To save memory when using very long sequences, you can set the
               length of the sequence to the length of the sequence (and nothing
               else):
               my $seqobj = Bio::PrimarySeq->new( -seq => 'ACGT...' ); # 1 Mbp sequence
@@ -477,8 +496,7 @@ sub length {
     if (defined $val) {
         my $len = $self->{'length'};
         if ($len && ($len != $val)) {
-            $self->throw("You're trying to lie about the length: ".
-                "is $len but you say ".$val);
+            $self->throw("Can not set the length to $val, current length value is $len");
         }
         $self->{'length'} = $val;
         $self->{'_freeze_length'} = undef;
@@ -528,7 +546,7 @@ sub display_id {
            called the accession_number. For sequences from established
            databases, the implementors should try to use the correct
            accession number. Notice that primary_id() provides the
-           unique id for the implemetation, allowing multiple objects
+           unique id for the implementation, allowing multiple objects
            to have the same accession number in a particular implementation.
 
            For sequences with no accession number, this method should
@@ -561,7 +579,7 @@ sub accession_number {
  Usage   : $unique_key = $seqobj->primary_id;
  Function: Returns the unique id for this object in this
            implementation. This allows implementations to manage their
-           own object ids in a way the implementaiton can control
+           own object ids in a way the implementation can control
            clients can expect one id to map to one object.
 
            For sequences with no natural primary id, this method
@@ -783,7 +801,7 @@ This comprises of display_name and description.
  Usage   : $string = $seqobj->display_name();
  Function: Get or set a string which is what should be displayed to the user.
            The string should have no spaces (ideally, though a cautious
-           user of this interface would not assumme this) and should be
+           user of this interface would not assume this) and should be
            less than thirty characters (though again, double checking
            this is a good idea).
 
@@ -834,8 +852,8 @@ actually implemented on Bio::PrimarySeqI
            sequences this throws an exception of
            "Sequence is a protein. Cannot revcom".
 
-           The id is the same id as the orginal sequence, and the
-           accession number is also indentical. If someone wants to
+           The id is the same id as the original sequence, and the
+           accession number is also identical. If someone wants to
            track that this sequence has be reversed, it needs to
            define its own extensions.
 

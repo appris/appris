@@ -44,10 +44,10 @@ Bio::Index::SwissPfam - Interface for indexing swisspfam files
 SwissPfam is one of the flat files released with Pfam. This modules
 provides a way of indexing this module.
 
-Inherits functions for managing dbm files from Bio::Index::Abstract.pm, and 
-provides the basic funtionallity for indexing SwissPfam files.  Only 
-retrieves FileStreams at the moment. Once we have something better 
-(ie, an object!), will use that. Heavily snaffled from Index::Fasta system of 
+Inherits functions for managing dbm files from Bio::Index::Abstract.pm, and
+provides the basic funtionality for indexing SwissPfam files.  Only
+retrieves FileStreams at the moment. Once we have something better
+(ie, an object!), will use that. Heavily snaffled from Index::Fasta system of
 James Gilbert. Note: for best results 'use strict'.
 
 =head1 FEED_BACK
@@ -78,7 +78,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/project/bioperl
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -91,7 +91,7 @@ The rest of the documentation details each of the object methods. Internal metho
 # Let's begin the code...
 
 package Bio::Index::SwissPfam;
-
+$Bio::Index::SwissPfam::VERSION = '1.7.8';
 use strict;
 use Bio::Seq;
 
@@ -136,14 +136,24 @@ sub _index_file {
     $begin = 0;
     $end   = 0;
 
-    open my $SP, '<', $file or $self->throw("Can't open file for read : $file");
+    open my $SP, '<', $file or $self->throw("Could not read file '$file': $!");
+
+    # In Windows, text files have '\r\n' as line separator, but when reading in
+    # text mode Perl will only show the '\n'. This means that for a line "ABC\r\n",
+    # "length $_" will report 4 although the line is 5 bytes in length.
+    # We assume that all lines have the same line separator and only read current line.
+    my $init_pos   = tell($SP);
+    my $curr_line  = <$SP>;
+    my $pos_diff   = tell($SP) - $init_pos;
+    my $correction = $pos_diff - length $curr_line;
+    seek $SP, $init_pos, 0; # Rewind position to proceed to read the file
 
     # Main indexing loop
     while (<$SP>) {
         if (/^>(\S+)\s+\|=*\|\s+(\S+)/) {
 	    $nid = $1;
 	    $nacc = $2;
-            my $new_begin = tell($SP) - length( $_ );
+            my $new_begin = tell($SP) - length( $_ ) - $correction;
             $end = $new_begin - 1;
 
 	    if( $id ) {

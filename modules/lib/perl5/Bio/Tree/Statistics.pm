@@ -55,7 +55,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -77,6 +77,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Tree::Statistics;
+$Bio::Tree::Statistics::VERSION = '1.7.8';
 use strict;
 
 
@@ -93,16 +94,26 @@ use base qw(Bio::Root::Root);
 =head2 assess_bootstrap
 
  Title   : assess_bootstrap
- Usage   : my $tree_with_bs = $stats->assess_bootstrap(\@bs_trees);
- Function: Calculates the bootstrap for internal nodes based on
+ Usage   : my $tree_with_bs = $stats->assess_bootstrap(\@bs_trees,$guide_tree);
+ Function: Calculates the bootstrap for internal nodes based on the percentage
+           of times \@bs_trees agree with each internal node
  Returns : L<Bio::Tree::TreeI>
  Args    : Arrayref of L<Bio::Tree::TreeI>s
+           Guide tree, L<Bio::Tree::TreeI>s
 
 =cut
 
 sub assess_bootstrap{
    my ($self,$bs_trees,$guide_tree) = @_;
    my @consensus;
+
+   if(!defined($bs_trees) || ref($bs_trees) ne 'ARRAY'){
+     die "ERROR: second parameter in assess_bootstrap() must be a list";
+   }
+   my $num_bs_trees = scalar(@$bs_trees);
+   if($num_bs_trees < 1){
+     die "ERROR: no bootstrap trees were passed to assess_bootstrap()";
+   }
 
    # internal nodes are defined by their children
 
@@ -127,14 +138,135 @@ sub assess_bootstrap{
        }
        $i++;
    }
-   my @save;
+   #my @save; # unsure why this variable is needed
    for my $l ( keys %lookup ) {
        if( defined $internal{$l} ) {#&& $lookup{$l} > $min_seen ) {
            my $intnode = $guide_tree->find_node(-internal_id => $internal{$l});
-           $intnode->bootstrap(sprintf("%d",100 * $lookup{$l} / $i));
+           $intnode->bootstrap(sprintf("%d",100 * $lookup{$l} / $num_bs_trees));
        }
    }
    return $guide_tree;
+}
+
+=head2 transfer_bootstrap_expectation
+
+ Title   : transfer_bootstrap_expectation
+ Usage   : my $tree_with_bs = $stats->transfer_bootstrap_expectation(\@bs_trees,$guide_tree);
+ Function: Calculates the Transfer Bootstrap Expectation (TBE) for internal nodes based on 
+           the methods outlined in Lemoine et al, Nature, 2018.
+           Currently experimental.
+ Returns : L<Bio::Tree::TreeI>
+ Args    : Arrayref of L<Bio::Tree::TreeI>s
+           Guide tree, L<Bio::Tree::TreeI>s
+
+=cut
+
+sub transfer_bootstrap_expectation{
+  my ($self,$bs_trees,$guide_tree) = @_;
+
+  if(!defined($bs_trees) || ref($bs_trees) ne 'ARRAY'){
+    die "ERROR: second parameter in assess_bootstrap() must be a list";
+  }
+  my $num_bs_trees = scalar(@$bs_trees);
+  if($num_bs_trees < 1){
+    die "ERROR: no bootstrap trees were passed to ".(caller(0))[3];
+  }
+
+  # internal nodes are defined by their children
+  my %internal = ();
+  my %leafNameId = ();
+  my @idLookup = ();
+  my @internalLookup = ();
+  my @tree = ($guide_tree, @$bs_trees);
+  my $numTrees = scalar(@tree);
+  for(my $i = 0; $i < $numTrees; $i++){ # guide tree's index is $i==0
+    # Do this as a top down approach, can probably be
+    # improved by caching internal node states, but not going
+    # to worry about it right now.
+
+    my @allnodes = $tree[$i]->get_nodes;
+    my @internalnodes = grep { ! $_->is_Leaf } @allnodes;
+    for my $node ( @internalnodes ) {
+      my @tips = sort map { $_->id } 
+                      grep { $_->is_Leaf() } $node->get_all_Descendents;
+      my $id = join(",", @tips);
+      # Map the concatenated-leaf ID to the internal ID on the guide tree
+      if( $i == 0 ) {
+        $internal{$id} = $node->internal_id;
+        $leafNameId{$node->internal_id} = $id;
+      }
+
+      # Record the tips for each tree's internal node
+      # ID lookup (concatenated string of leaf names)
+      $idLookup[$i]{$id} = \@tips;
+      # Internal ID lookup
+      $internalLookup[$i]{$internal{$id}} = \@tips;
+    }
+  }
+
+  # Find the average distance from branch b to all
+  # bootstrap trees' branches b*
+  my @id = sort keys %internal;
+  my $numIds = @id;
+  # Loop through all internal nodes of the guide tree
+  for(my $j=0; $j<$numIds; $j++){
+    my $refNode = $guide_tree->find_node(-internal_id => $internal{$id[$j]});
+    my $refNodeId = $refNode->internal_id;
+    my $refJoinId = $leafNameId{$refNodeId};
+    my $refLeaves = $idLookup[0]{$refJoinId};
+    my %refLeafIndex = map{$_=>1} @$refLeaves;
+    #next if(!defined($refLeaves));
+
+    # For each internal node, start calculating for
+    # an average TBE distance.
+    my $nodeTbeTotal = 0;
+  
+    # Loop through all bootstrap trees, skipping the 0th
+    # tree which is the guide tree.
+    for(my $i=1;$i<$numTrees;$i++){
+
+      # Find the right branch to bootstrap with. The right
+      # branch will be the one that has the smallest
+      # TBE distance.
+      my @bsNode   = grep {!$_->is_Leaf} $tree[$i]->get_nodes;
+      my $numBsIds = scalar(@bsNode);
+      my $minDistance = ~0; # large int
+      for(my $k=0;$k<$numBsIds;$k++){
+        my @queryLeaves = sort map { $_->id }
+                      grep { $_->is_Leaf() } $bsNode[$k]->get_all_Descendents;
+
+        my %queryLeafIndex = map{$_=>1} @queryLeaves;
+
+        # How many moves does it take to go from query to ref?
+        my $dist=0;
+        for my $queryLeaf(@queryLeaves){
+          if(!$refLeafIndex{$queryLeaf}){
+            $dist++;
+          }
+        }
+        for my $refLeaf(@$refLeaves){
+          if(!$queryLeafIndex{$refLeaf}){
+            $dist++;
+          }
+        }
+
+        if($dist < $minDistance){
+          $minDistance = $dist;
+        }
+      }
+      $nodeTbeTotal += $minDistance;
+    }
+    my $avgTbe = $nodeTbeTotal / $numTrees;
+    
+    # Calculate the average of all b to b* distances
+    # But it is also 1 - average.
+    my $numRefLeaves = scalar(@$refLeaves);
+    my $nodeTbe = 1 - $avgTbe/$numRefLeaves;
+    # Round to an integer
+    $refNode->bootstrap(sprintf("%0.0f",100 * $nodeTbe));
+  }
+   
+  return $guide_tree;
 }
 
 
@@ -541,7 +673,7 @@ sub count_leaves {
 
   Example    : phylotype_length($tree, $node);
   Description: Sums up the branch lengths within phylotype
-               exluding the subclusters where the trait values
+               excluding the subclusters where the trait values
                are different
   Returns    : float, length
   Exceptions : all the  nodes need to have the trait defined
@@ -591,7 +723,7 @@ sub phylotype_length {
 
   Example    : sum_of_leaf_distances($tree, $node);
   Description: Sums up the branch lengths from root to leaf
-               exluding the subclusters where the trait values
+               excluding the subclusters where the trait values
                are different
   Returns    : float, length
   Exceptions : all the  nodes need to have the trait defined

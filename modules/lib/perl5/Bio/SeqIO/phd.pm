@@ -51,7 +51,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.
 Bug reports can be submitted via the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR Chad Matsalla
 
@@ -74,6 +74,7 @@ methods. Internal methods are usually preceded with a _
 #
 
 package Bio::SeqIO::phd;
+$Bio::SeqIO::phd::VERSION = '1.7.8';
 use strict;
 use Bio::Seq::SeqFactory;
 use Bio::Seq::RichSeq;
@@ -163,7 +164,7 @@ sub next_seq {
         } elsif ($entry =~ /^END_SEQUENCE/) {
             # the sequence may be over, but some other info can come after
             next;
-        } elsif ($entry =~ /^WR{/) {
+        } elsif ($entry =~ /^WR\{/) {
             # Whole-Read items 
             # Programs like Consed or Autofinish add it to phd file. See doc:
             #   http://www.phrap.org/consed/distributions/README.16.0.txt

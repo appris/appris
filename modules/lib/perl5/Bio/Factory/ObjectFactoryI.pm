@@ -56,7 +56,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -74,6 +74,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Factory::ObjectFactoryI;
+$Bio::Factory::ObjectFactoryI::VERSION = '1.7.8';
 use strict;
 use Carp;
 
@@ -101,7 +102,7 @@ sub create{
  Usage   : $obj = $factory->create_object(%args)
  Function: Create a new object.
 
-           This is supposed to supercede create(). Right now it only delegates
+           This is supposed to supersede create(). Right now it only delegates
            to create().
  Returns : a new object
  Args    : hash of initialization parameters

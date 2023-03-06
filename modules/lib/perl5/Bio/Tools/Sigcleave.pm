@@ -92,7 +92,7 @@ In both cases, the "threshold" setting controls the score reporting
 level. If no value for threshold is passed in by the user, the code
 defaults to a reporting value of 3.5.
 
-In this implemntation the accessor will never return any
+In this implementation the accessor will never return any
 score/position pair which does not meet the threshold limit. This is
 the slightly different from the behaviour of the 8.1 EGCG sigcleave
 program which will report the highest of the under-threshold results
@@ -142,7 +142,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -189,7 +189,7 @@ preceded by an underscore ("_").
 #
 
 package Bio::Tools::Sigcleave;
-
+$Bio::Tools::Sigcleave::VERSION = '1.7.8';
 use Bio::PrimarySeq;
 
 use base qw(Bio::Root::Root);

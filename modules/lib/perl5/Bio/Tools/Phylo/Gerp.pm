@@ -70,7 +70,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Sendu Bala
 
@@ -86,6 +86,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::Tools::Phylo::Gerp;
+$Bio::Tools::Phylo::Gerp::VERSION = '1.7.8';
 use strict;
 
 use Bio::SeqFeature::Generic;
@@ -149,7 +150,7 @@ sub next_result {
         -end          => $end,
         -strand       => 1,
         -score        => $rs_score,
-        #-type         => 'conserved_region', ***causes 740x increase in SeqFeatureDB storage requirments!
+        #-type         => 'conserved_region', ***causes 740x increase in SeqFeatureDB storage requirements!
         -source       => 'GERP');
     
     my $sv = Bio::Annotation::SimpleValue->new(-tagname => 'predicted', -value => 1);

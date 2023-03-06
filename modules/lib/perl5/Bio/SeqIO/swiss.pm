@@ -181,7 +181,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.
 Bug reports can be submitted via the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Elia Stupka
 
@@ -197,6 +197,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::swiss;
+$Bio::SeqIO::swiss::VERSION = '1.7.8';
 use vars qw(@Unknown_names @Unknown_genus);
 use strict;
 use Bio::SeqIO::FTHelper;
@@ -478,7 +479,7 @@ sub next_seq {
          -annotation => $annotation,
         );
 
-    # The annotation doesn't get added by the contructor
+    # The annotation doesn't get added by the constructor
     $seq->annotation($annotation);
 
     return $seq;
@@ -549,7 +550,7 @@ sub write_seq {
         $self->_print( "ID   $temp_line\n");
 
         # if there, write the accession line
-        local($^W) = 0;         # supressing warnings about uninitialized fields
+        local($^W) = 0;         # suppressing warnings about uninitialized fields
 
         if ( $self->_ac_generation_func ) {
             $temp_line = &{$self->_ac_generation_func}($seq);
@@ -1288,7 +1289,7 @@ sub _read_FTHelper_swissprot {
         $desc,                  # The descriptive text
         $ftid,                  # feature Id is like a qualifier but there can be only one of them
        );
-    if ( m/^FT\s{3}(\w+)\s+([\d\?\<]+)\s+([\d\?\>]+)\s*(.*)$/ox) {
+    if ( m/^FT\s{3}(\w+)\s+([\d\?\<]+)[\s.]+([\d\?\>]+)\s*(.*)$/ox) {
         $key = $1;
         my $loc1 = $2;
         my $loc2 = $3;
@@ -1299,9 +1300,20 @@ sub _read_FTHelper_swissprot {
         } else {
             $desc = "";
         }
+    } elsif ( m/^FT\s{3}(\w+)\s+([\d\?\<]+)\s+(.*)$/ox) {
+        $key = $1;
+        my $loc1 = $2;
+        my $loc2 = $2;
+        $loc = "$loc1";
+        if ($3 && (length($3) > 0)) {
+            $desc = $3;
+            chomp($desc);
+        } else {
+            $desc = "";
+        }
     }
 
-    while ( defined($_ = $self->_readline) && /^FT\s{20,}(\S.*)$/ ) {
+    while ( defined($_ = $self->_readline) && /^FT\s{4,}(\S.*)$/ ) {
         my $continuation_line = $1;
         if ( $continuation_line =~ /.FTId=(.*)\./ ) {
             $ftid=$1;

@@ -13,7 +13,7 @@
 
 =head1 NAME
 
-Bio::TreeIO::newick
+Bio::TreeIO::newick - parsing and writing of Newick/PHYLIP/New Hampshire format
 
 =head1 SYNOPSIS
 
@@ -56,7 +56,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -72,6 +72,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::TreeIO::newick;
+$Bio::TreeIO::newick::VERSION = '1.7.8';
 use strict;
 
 use Bio::Event::EventGeneratorI;

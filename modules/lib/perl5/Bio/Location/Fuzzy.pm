@@ -63,7 +63,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -79,6 +79,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::Location::Fuzzy;
+$Bio::Location::Fuzzy::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Location::Atomic Bio::Location::FuzzyLocationI);
@@ -438,7 +439,7 @@ sub end_pos_type {
 
             The interface *does not* require implementing classes to accept
             setting of a different policy. The implementation provided here
-            does, however, allow to do so.
+            does, however, allow one to do so.
 
             Implementors of this interface are expected to initialize every
             new instance with a CoordinatePolicyI object. The implementation

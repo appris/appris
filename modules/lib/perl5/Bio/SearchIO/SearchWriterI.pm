@@ -44,7 +44,7 @@ The rest of the documentation details each of the object methods.
 =cut
 
 package Bio::SearchIO::SearchWriterI;
-
+$Bio::SearchIO::SearchWriterI::VERSION = '1.7.8';
 
 use base qw(Bio::Root::RootI);
 

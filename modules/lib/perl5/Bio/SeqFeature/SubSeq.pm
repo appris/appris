@@ -36,7 +36,7 @@ Bio::SeqFeature::SubSeq extends L<Bio::SeqFeature::Generic> features to
 represent a subsequence. When this feature is attached to a template sequence,
 the sequence of feature is the subsequence of the template at this location. The
 purpose of this class is to represent a sequence as a feature without having to
-explictly store its sequence string.
+explicitly store its sequence string.
 
 Of course, you might have reasons to explicitly set a sequence. In that case,
 note that the length of the sequence is allowed to not match the position of the
@@ -71,7 +71,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via 
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -86,7 +86,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::SeqFeature::SubSeq;
-
+$Bio::SeqFeature::SubSeq::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::SeqFeature::Generic);

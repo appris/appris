@@ -41,7 +41,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS
 
@@ -57,6 +57,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::AlignIO::fasta;
+$Bio::AlignIO::fasta::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::AlignIO);
@@ -128,7 +129,7 @@ sub next_aln {
     $seqchar =~ s/\s//g;
 
     #  Put away last name and sequence
-    if ( $name =~ /(\S+)\/(\d+)-(\d+)$/ ) {
+    if ( $name =~ /(\S+\/(\d+)-(\d+))$/ ) {
         $seqname = $1;
         $start   = $2;
         $end     = $3;
@@ -163,6 +164,7 @@ sub next_aln {
 
     # no sequences means empty alignment (possible EOF)
     return $aln if $aln->num_sequences;
+    return;
 }
 
 

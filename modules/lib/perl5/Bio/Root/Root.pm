@@ -1,11 +1,13 @@
 package Bio::Root::Root;
+$Bio::Root::Root::VERSION = '1.7.8';
 use strict;
+use Bio::Root::IO;
 use Scalar::Util qw(blessed reftype);
-
+use base qw(Bio::Root::RootI);
 
 =head1 NAME
 
-Bio::Root::Root - Hash-based implementation of Bio::Root::RootI
+Bio::Root::Root - implementation of Bio::Root::RootI interface
 
 =head1 SYNOPSIS
 
@@ -64,7 +66,7 @@ if it has also been installed.
 
 If L<Error> has been installed, L<throw>() will use it. This causes an
 Error.pm-derived object to be thrown. This can be caught within a
-C<catch{}> block, from wich you can extract useful bits of
+C<catch{}> block, from which you can extract useful bits of
 information. If L<Error> is not installed, it will use the
 L<Bio::Root::RootI>-based exception throwing facilty.
 
@@ -110,10 +112,11 @@ for Error for more details.
 Here's an example. See the L<Bio::Root::Exception> module for
 other pre-defined exception types:
 
+   my $IN;
    try {
-    open( IN, $file) || $obj->throw( -class => 'Bio::Root::FileOpenException',
-                                     -text => "Cannot open file $file for reading",
-                                     -value => $!);
+    open $IN, '<', $file or $obj->throw( -class => 'Bio::Root::FileOpenException',
+                                         -text  => "Cannot read file '$file'",
+                                         -value => $!);
    }
    catch Bio::Root::BadParameter with {
        my $err = shift;   # get the Error object
@@ -132,60 +135,13 @@ other pre-defined exception types:
    };
    # the ending semicolon is essential!
 
-=head1 FEEDBACK
+=head1 AUTHOR Steve Chervitz
 
-=head2 Mailing Lists
-
-User feedback is an integral part of the evolution of this
-and other Bioperl modules. Send your comments and suggestions preferably
-to one of the Bioperl mailing lists.
-
-Your participation is much appreciated.
-
-  bioperl-l@bioperl.org                  - General discussion
-  http://bioperl.org/wiki/Mailing_lists  - About the mailing lists
-
-=head2 Support
-
-Please direct usage questions or support issues to the mailing list:
-
-I<bioperl-l@bioperl.org>
-
-rather than to the module maintainer directly. Many experienced and
-reponsive experts will be able look at the problem and quickly
-address it. Please include a thorough description of the problem
-with code and data examples if at all possible.
-
-=head2 Reporting Bugs
-
-Report bugs to the Bioperl bug tracking system to help us keep track
-the bugs and their resolution.  Bug reports can be submitted via the
-web:
-
-  https://redmine.open-bio.org/projects/bioperl/
-
-=head1 AUTHOR
-
-Functions originally from Steve Chervitz.
-Refactored by Ewan Birney.
-Re-refactored by Lincoln Stein.
-
-=head1 APPENDIX
-
-The rest of the documentation details each of the object
-methods. Internal methods are usually preceded with a _
+Ewan Birney, Lincoln Stein
 
 =cut
 
-#'
-
-use strict;
-use Bio::Root::IO;
-
-use base qw(Bio::Root::RootI);
-
 our ($DEBUG, $ID, $VERBOSITY, $ERRORLOADED, $CLONE_CLASS);
-
 
 BEGIN {
     $ID        = 'Bio::Root::Root';
@@ -199,7 +155,7 @@ BEGIN {
     # when you don't want to use the Error module, even if it is installed.
     # Just put a INIT { $DONT_USE_ERROR = 1; } at the top of your script.
     if( not $main::DONT_USE_ERROR ) {
-        if ( eval "require Error"  ) {
+        if ( eval "require Error; 1;"  ) {
             import Error qw(:try);
             require Bio::Root::Exception;
             $ERRORLOADED = 1;
@@ -211,16 +167,19 @@ BEGIN {
     }
 
     # set up _dclone()
-    for my $class (qw(Clone::Fast Clone Storable)) {
+    for my $class (qw(Clone Storable)) {
         eval "require $class; 1;";
         if (!$@) {
             $CLONE_CLASS = $class;
-            if ($class eq 'Clone::Fast') {
-                *Bio::Root::Root::_dclone = sub {shift; return Clone::Fast::clone(shift)};
-            } elsif ($class eq 'Clone') {
+            if ($class eq 'Clone') {
                 *Bio::Root::Root::_dclone = sub {shift; return Clone::clone(shift)};
             } else {
-                *Bio::Root::Root::_dclone = sub {shift; return Storable::dclone(shift)};
+                *Bio::Root::Root::_dclone = sub {
+                    shift;
+                    local $Storable::Deparse = 1;
+                    local $Storable::Eval = 1;
+                    return Storable::dclone(shift);
+                };
             }
             last;
         }
@@ -238,7 +197,7 @@ BEGIN {
             } elsif ($reftype eq "HASH") {
                 $data = { map { $_ => $self->_dclone($orig->{$_}) } keys %$orig };
             } elsif ($reftype eq 'CODE') { # nothing, maybe shallow copy?
-                $self->throw("Code reference cloning not supported");
+                $self->throw("Code reference cloning not supported; install Clone or Storable from CPAN");
             } else { $self->throw("What type is $_?")}
             if ($class) {
                 bless $data, $class;
@@ -250,7 +209,6 @@ BEGIN {
     $main::DONT_USE_ERROR;  # so that perl -w won't warn "used only once"
 }
 
-
 =head2 new
 
  Purpose   : generic instantiation function can be overridden if
@@ -259,7 +217,7 @@ BEGIN {
 =cut
 
 sub new {
-    #my ($class, %param) = @_;
+#    my ($class, %param) = @_;
     my $class = shift;
     my $self = {};
     bless $self, ref($class) || $class;
@@ -329,7 +287,6 @@ sub clone {
     return $clone;
 }
 
-
 =head2 _dclone
 
  Title   : clone
@@ -348,7 +305,6 @@ sub clone {
            arises. At the moment, code ref cloning is not supported.
 
 =cut
-
 
 =head2 verbose
 
@@ -377,6 +333,9 @@ sub verbose {
     return $self->{'_root_verbose'};
 }
 
+=head2 _register_for_cleanup
+
+=cut
 
 sub _register_for_cleanup {
     my ($self,$method) = @_;
@@ -388,6 +347,9 @@ sub _register_for_cleanup {
     }
 }
 
+=head2 _unregister_for_cleanup
+
+=cut
 
 sub _unregister_for_cleanup {
     my ($self,$method) = @_;
@@ -395,7 +357,9 @@ sub _unregister_for_cleanup {
     $self->{'_root_cleanup_methods'} = \@methods;
 }
 
+=head2 _cleanup_methods
 
+=cut
 
 sub _cleanup_methods {
     my $self = shift;
@@ -403,7 +367,6 @@ sub _cleanup_methods {
     my $methods = $self->{'_root_cleanup_methods'} or return;
     @$methods;
 }
-
 
 =head2 throw
 
@@ -498,7 +461,6 @@ sub throw {
     }
 }
 
-
 =head2 debug
 
  Title   : debug
@@ -511,6 +473,7 @@ sub throw {
 
 sub debug {
     my ($self, @msgs) = @_;
+
     # using CORE::warn doesn't give correct backtrace information; we want the
     # line from the previous call in the call stack, not this call (similar to
     # cluck).  For now, just add a stack trace dump and simple comment under the
@@ -523,7 +486,6 @@ sub debug {
         CORE::warn @msgs;
     }
 }
-
 
 =head2 _load_module
 
@@ -563,6 +525,9 @@ sub _load_module {
     return 1;
 }
 
+=head2 DESTROY
+
+=cut
 
 sub DESTROY {
     my $self = shift;
@@ -573,4 +538,3 @@ sub DESTROY {
 }
 
 1;
-

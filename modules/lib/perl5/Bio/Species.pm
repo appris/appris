@@ -77,7 +77,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -98,6 +98,7 @@ methods. Internal methods are usually preceded with a _
 #' Let the code begin...
 
 package Bio::Species;
+$Bio::Species::VERSION = '1.7.8';
 use strict;
 use warnings;
 
@@ -188,8 +189,10 @@ sub classification {
         # (lineage may have subspecies, species, genus ...)
         my $name = $taxon->node_name;
         my ($genus, $species) = (quotemeta($vals[1]), quotemeta($vals[0]));
-        if ($name && ($name !~ m{$species}i && $name !~ m{$genus}i) && $name !~ m{$vals[1] $vals[0]}i) {
-            if ($name =~ /^$vals[1] $vals[0]\s*(.+)/) {
+        if ($name && 
+           ($name !~ m{$species}i && $name !~ m{$genus}i) && 
+            $name !~ m{$genus $species}i) {
+            if ($name =~ /^$genus $species\s*(.+)/) {
                 # just assume the problem is someone tried to make a Bio::Species starting at subspecies
                 #*** no idea if this is appropriate! just a possible fix related to bug 2092
                 $self->sub_species($1);

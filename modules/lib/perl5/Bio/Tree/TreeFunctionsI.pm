@@ -31,7 +31,7 @@ Bio::Tree::TreeFunctionsI - Decorated Interface implementing basic Tree explorat
 
 =head1 DESCRIPTION
 
-This interface provides a set of implementated Tree functions which
+This interface provides a set of implemented Tree functions which
 only use the defined methods in the TreeI or NodeI interface.
 
 =head1 FEEDBACK
@@ -62,7 +62,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich, Aaron Mackey, Justin Reese
 
@@ -90,10 +90,11 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Tree::TreeFunctionsI;
-
+$Bio::Tree::TreeFunctionsI::VERSION = '1.7.8';
 use strict;
 use base qw(Bio::Tree::TreeI);
 
+use Carp;
 
 =head2 find_node
 
@@ -129,7 +130,7 @@ sub find_node {
    }
 
    # could actually do this by testing $rootnode->can($type) but
-   # it is possible that a tree is implemeted with different node types
+   # it is possible that a tree is implemented with different node types
    # - although it is unlikely that the root node would be richer than the
    # leaf nodes.  Can't handle NHX tags right now
 
@@ -542,7 +543,7 @@ sub merge_lineage {
  Function: Splices out all nodes in the tree that have an ancestor and only one
            descendent.
  Returns : n/a
- Args    : none for normal behaviour, true to dis-regard the ancestor requirment
+ Args    : none for normal behaviour, true to dis-regard the ancestor requirement
            and re-root the tree as necessary
 
  For example, if we are the tree $tree:
@@ -1092,8 +1093,7 @@ sub reroot_at_midpoint {
 
 sub findnode_by_id {
     my $tree = shift;
-    $tree->deprecated("use of findnode_by_id() is deprecated; ".
-                      "use find_node() instead");
+    Carp::carp('use of findnode_by_id() is deprecated; use find_node()');
     my $id = shift;
     my $rootnode = $tree->get_root_node;
     if ( ($rootnode->id) and ($rootnode->id eq $id) ) {
@@ -1156,7 +1156,7 @@ sub _read_trait_file {
 
     my $trait_name;
     my $trait_values;
-    open my $TRAIT, '<', $file or $self->throw("Could not open file $file: $!\n");
+    open my $TRAIT, '<', $file or $self->throw("Could not read file '$file': $!");
 
     my $first_line = 1;
     while (<$TRAIT>) {

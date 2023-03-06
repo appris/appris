@@ -97,7 +97,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -115,6 +115,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::SearchIO::exonerate;
+$Bio::SearchIO::exonerate::VERSION = '1.7.8';
 use strict;
 use vars qw(@STATES %MAPPING %MODEMAP $DEFAULT_WRITER_CLASS $MIN_INTRON);
 
@@ -164,7 +165,7 @@ $MIN_INTRON=30; # This is the minimum intron size
  Usage   : my $obj = Bio::SearchIO::exonerate->new();
  Function: Builds a new Bio::SearchIO::exonerate object
  Returns : an instance of Bio::SearchIO::exonerate
- Args    : -min_intron => somewhat obselete option, how to determine if a
+ Args    : -min_intron => somewhat obsolete option, how to determine if a
                           an indel is an intron or a local gap.  Use VULGAR
                           rather than CIGAR to avoid this heuristic,default 30.
            -cigar       => 1   set this to 1 if you want to parse

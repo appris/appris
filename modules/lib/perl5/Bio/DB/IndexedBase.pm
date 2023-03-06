@@ -4,7 +4,6 @@
 # You may distribute this module under the same terms as perl itself
 #
 
-
 =head1 NAME
 
 Bio::DB::IndexedBase - Base class for modules using indexed sequence files
@@ -127,7 +126,7 @@ use tied(%db) to recover the Bio::DB::IndexedBase object and call its methods.
  }
 
 In addition, you may invoke the FIRSTKEY and NEXTKEY tied hash methods directly
-to retrieve the first and next ID in the database, respectively. This allows to
+to retrieve the first and next ID in the database, respectively. This allows one to
 write the following iterative loop using just the object-oriented interface:
 
  my $db = Bio::DB::IndexedBase->new('/path/to/file');
@@ -239,13 +238,15 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::DB::IndexedBase;
+$Bio::DB::IndexedBase::VERSION = '1.7.8';
 
 BEGIN {
-    @AnyDBM_File::ISA = qw(DB_File GDBM_File NDBM_File SDBM_File) 
+    @AnyDBM_File::ISA = qw(DB_File GDBM_File NDBM_File SDBM_File)
         if(!$INC{'AnyDBM_File.pm'});
 }
 
 use strict;
+use warnings;
 use IO::File;
 use AnyDBM_File;
 use Fcntl;
@@ -264,9 +265,8 @@ use constant DNA       => 1;
 use constant RNA       => 2;
 use constant PROTEIN   => 3;
 
+# You can avoid dying if you want but you may get incorrect results
 use constant DIE_ON_MISSMATCHED_LINES => 1;
-# you can avoid dying if you want but you may get incorrect results
-
 
 =head2 new
 
@@ -353,6 +353,7 @@ sub new {
         require Cwd;
         $dirname = Cwd::getcwd();
     } else {
+  $self->{index_name} ||= $self->_default_index_name($path);
         if (-d $path) {
             # because Win32 glob() is broken with respect to long file names
             # that contain whitespace.
@@ -364,7 +365,7 @@ sub new {
             $offsets = $self->index_file($path, $opts{-reindex});
             $dirname = dirname($path);
         } else {
-            $self->throw( "$path: Invalid file or dirname");
+            $self->throw( "No file or directory called '$path'");
         }
     }
     @{$self}{qw(dirname offsets)} = ($dirname, $offsets);
@@ -441,8 +442,8 @@ sub glob {
 sub index_dir {
     my ($self, $dir, $force_reindex) = @_;
     my @files = glob( File::Spec->catfile($dir, $self->{glob}) );
-    $self->throw("No suitable files found in $dir") if scalar @files == 0;
-    $self->{index_name} ||= File::Spec->catfile($dir, 'directory.index');
+    return if scalar @files == 0;
+    $self->{index_name} ||= $self->_default_index_name($dir);
     my $offsets = $self->_index_files(\@files, $force_reindex);
     return $offsets;
 }
@@ -464,7 +465,10 @@ sub get_all_primary_ids  {
     return keys %{shift->{offsets}};
 }
 
+{
+no warnings 'once';
 *ids = *get_all_ids = \&get_all_primary_ids;
+}
 
 
 =head2 index_file
@@ -480,11 +484,16 @@ sub get_all_primary_ids  {
 
 sub index_file {
     my ($self, $file, $force_reindex) = @_;
-    $self->{index_name} ||= "$file.index";
+    $self->{index_name} ||= $self->_default_index_name($file);
     my $offsets = $self->_index_files([$file], $force_reindex);
     return $offsets;
 }
 
+sub _default_index_name {
+    my ($self,$path) = @_;
+    return File::Spec->catfile($path,'directory.index') if -d $path;
+    return "$path.index";
+}
 
 =head2 index_files
 
@@ -577,7 +586,10 @@ sub get_Seq_by_id {
     return $self->{obj_class}->new($self, $id);
 }
 
+{
+no warnings 'once';
 *get_Seq_by_version = *get_Seq_by_primary_id = *get_Seq_by_acc = \&get_Seq_by_id;
+}
 
 
 =head2 _calculate_offsets
@@ -608,7 +620,13 @@ sub _index_files {
     my $index = $self->index_name;
 
     # If caller has requested reindexing, unlink the index file.
-    unlink $index if $force_reindex;
+    if ($force_reindex) {
+        # Tied-hash in Strawberry Perl creates "$file.index"
+        unlink $index if -e $index;
+        # Tied-hash in ActivePerl creates "$file.index.pag" and "$file.index.dir"
+        unlink "$index.dir" if -e "$index.dir";
+        unlink "$index.pag" if -e "$index.pag";
+    }
 
     # Get the modification time of the index
     my $indextime = (stat $index)[9] || 0;
@@ -670,6 +688,8 @@ sub _close_index {
     return 1;
 }
 
+# Compiling the below regular expression speeds up _parse_compound_id
+my $compound_id = qr/^ (.+?) (?:\:([\d_]+)(?:,|-|\.\.)([\d_]+))? (?:\/(.+))? $/x;
 
 sub _parse_compound_id {
     # Handle compound IDs:
@@ -687,7 +707,7 @@ sub _parse_compound_id {
     if ( (not defined $start ) &&
          (not defined $stop  ) &&
          (not defined $strand) &&
-         ($id =~ /^ (.+?) (?:\:([\d_]+)(?:,|-|\.\.)([\d_]+))? (?:\/(.+))? $/x) ) {
+         ($id =~ m{$compound_id}) ) {
         # Start, stop and strand not provided and ID looks like a compound ID
         ($id, $start, $stop, $strand) = ($1, $2, $3, $4);
     }
@@ -736,7 +756,7 @@ sub _check_linelength {
     my ($self, $linelength) = @_;
     return if not defined $linelength;
     $self->throw(
-        "Each line of the qual file must be less than 65,536 characters. Line ".
+        "Each line of the file must be less than 65,536 characters. Line ".
         "$. is $linelength chars."
     ) if $linelength > 65535;
 }
@@ -747,9 +767,18 @@ sub _calc_termination_length {
     # Account for crlf-terminated Windows and Mac files
     my ($self, $file) = @_;
     my $fh = IO::File->new($file) or $self->throw( "Could not open $file: $!");
-    my $line = <$fh>;
+
+    # In Windows, text files have '\r\n' as line separator, but when reading in
+    # text mode Perl will only show the '\n'. This means that for a line "ABC\r\n",
+    # "length $_" will report 4 although the line is 5 bytes in length.
+    # We assume that all lines have the same line separator and only read current line.
+    my $init_pos   = tell($fh);
+    my $curr_line  = <$fh>;
+    my $pos_diff   = tell($fh) - $init_pos;
+    my $correction = $pos_diff - length $curr_line;
     close $fh;
-    $self->{termination_length} = ($line =~ /\r\n$/) ? 2 : 1;
+
+    $self->{termination_length} = ($curr_line =~ /\r\n$/) ? 2 : 1+$correction;
     return $self->{termination_length};
 }
 
@@ -772,8 +801,9 @@ sub _fh {
     my ($self, $id) = @_;
     $self->throw('Need to provide a sequence ID') if not defined $id;
     my $file = $self->file($id) or return;
-    return $self->_fhcache( File::Spec->catfile($self->{dirname}, $file) ) or
-        $self->throw( "Can't open file $file");
+    return eval {
+      $self->_fhcache( File::Spec->catfile($self->{dirname}, $file));
+    } || $self->throw( "Can't open file $file" );
 }
 
 
@@ -1056,9 +1086,24 @@ sub NEXTKEY {
 
 sub DESTROY {
     my $self = shift;
+
+    # Close filehandles
+    while (my ($file, $fh) = each %{ $self->{fhcache} }) {
+        if (defined $fh) {
+            $fh->close;
+        }
+    }
+    $self->_close_index($self->{offsets});
+
     if ( $self->{clean} || $self->{indexing} ) {
-      # Indexing aborted or cleaning requested. Delete the index file.
-      unlink $self->{index_name};
+        # Indexing aborted or cleaning requested. Delete the index file.
+        my $index = $self->{index_name};
+
+        # Tied-hash in Strawberry Perl creates "$file.index"
+        unlink $index if -e $index;
+        # Tied-hash in ActivePerl creates "$file.index.pag" and "$file.index.dir"
+        unlink "$index.dir" if -e "$index.dir";
+        unlink "$index.pag" if -e "$index.pag";
     }
     return 1;
 }
@@ -1069,6 +1114,7 @@ sub DESTROY {
 #
 
 package Bio::DB::Indexed::Stream;
+$Bio::DB::Indexed::Stream::VERSION = '1.7.8';
 use base qw(Tie::Handle Bio::DB::SeqI);
 
 
@@ -1097,7 +1143,7 @@ sub TIEHANDLE {
 
 sub READLINE {
     my $self = shift;
-    return $self->next_seq;
+    return $self->next_seq || undef;
 }
 
 

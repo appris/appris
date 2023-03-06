@@ -41,7 +41,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Stefan Kirov
 
@@ -54,6 +54,7 @@ Email skirov@utk.edu
 
 # Let the code begin...
 package Bio::Matrix::PSM::IO::meme;
+$Bio::Matrix::PSM::IO::meme::VERSION = '1.7.8';
 use Bio::Matrix::PSM::InstanceSite;
 use Bio::Matrix::PSM::SiteMatrix;
 use Bio::Matrix::PSM::Psm;

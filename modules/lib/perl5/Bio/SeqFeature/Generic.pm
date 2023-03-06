@@ -46,7 +46,7 @@ the information for a feature on a sequence.
 For many Features, this is all you will need to use (for example, this
 is fine for Repeats in DNA sequence or Domains in protein
 sequence). For other features, which have more structure, this is a
-good base class to extend using inheritence to have new things: this
+good base class to extend using inheritance to have new things: this
 is what is done in the L<Bio::SeqFeature::Gene>,
 L<Bio::SeqFeature::Transcript> and L<Bio::SeqFeature::Exon>, which provide
 well coordinated classes to represent genes on DNA sequence (for
@@ -114,7 +114,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via 
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -140,7 +140,10 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::SeqFeature::Generic;
+$Bio::SeqFeature::Generic::VERSION = '1.7.8';
 use strict;
+
+use Carp;
 
 use Bio::Annotation::Collection;
 use Bio::Location::Simple;
@@ -180,7 +183,8 @@ sub new {
                     -phase          the phase of the feature (0..2)
                     -primary_tag    primary tag 
                     -primary        (synonym for -primary_tag)
-                    -source         source tag
+                    -source_tag     source tag
+                    -source         (synonym for -source_tag)
                     -frame          frame
                     -score          score value
                     -tag            a reference to a tag/value hash
@@ -196,7 +200,7 @@ sub set_attributes {
     my ($self,@args) = @_;
     my ($start, $end, $strand, $primary_tag, $source_tag, $primary, 
         $source, $frame, $score, $tag, $gff_string, $gff1_string,
-        $seqname, $seqid, $annot, $location,$display_name, $pid,$phase) =
+        $seqname, $seqid, $annot, $location, $display_name, $pid, $phase) =
             $self->_rearrange([qw(START
                                   END
                                   STRAND
@@ -224,29 +228,30 @@ sub set_attributes {
         $self->_from_gff_stream($gff1_string);
     };
     
-    $pid                    && $self->primary_id($pid);
-    $primary_tag            && $self->primary_tag($primary_tag);
-    $source_tag             && $self->source_tag($source_tag);
-    $primary                && $self->primary_tag($primary);
-    $source                 && $self->source_tag($source);
-    defined $start          && $self->start($start);
-    defined $end            && $self->end($end);
-    defined $strand         && $self->strand($strand);
-    defined $frame          && $self->frame($frame);
-    defined $display_name   && $self->display_name($display_name);
-    defined $score          && $self->score($score);
-    $annot                  && $self->annotation($annot);
+    $pid                  && $self->primary_id($pid);
+    $primary_tag          && $self->primary_tag($primary_tag);
+    $source_tag           && $self->source_tag($source_tag);
+    $primary              && $self->primary_tag($primary);
+    $source               && $self->source_tag($source);
+    $annot                && $self->annotation($annot);
+    defined $start        && $self->start($start);
+    defined $end          && $self->end($end);
+    defined $strand       && $self->strand($strand);
+    defined $frame        && $self->frame($frame);
+    defined $display_name && $self->display_name($display_name);
+    defined $score        && $self->score($score);
+    defined $phase        && $self->phase($phase);
+
     if($seqname) {
         $self->warn("-seqname is deprecated. Please use -seq_id instead.");
         $seqid = $seqname unless $seqid;
     }
-    $seqid          && $self->seq_id($seqid);
+    $self->seq_id($seqid) if (defined($seqid));
     $tag            && do {
         foreach my $t ( keys %$tag ) {
             $self->add_tag_value($t, UNIVERSAL::isa($tag->{$t}, "ARRAY") ? @{$tag->{$t}} : $tag->{$t});
         }
     };
-    defined $phase          && $self->phase($phase);
 }
 
 
@@ -312,8 +317,44 @@ sub location {
 =cut
 
 sub start {
-    my ($self,$value) = @_;
-    return $self->location->start($value);
+    my ($self, $value) = @_;
+    # Return soon if setting value
+    if (defined $value) {
+        return $self->location->start($value);
+    }
+
+    return $self->location->start() if not defined $self->{'_gsf_seq'};
+    # Check circular sequences cut by origin
+    my $start;
+    if (    $self->{'_gsf_seq'}->is_circular
+        and $self->location->isa('Bio::Location::SplitLocationI')
+        ) {
+        my $primary_seq_length = $self->{'_gsf_seq'}->length;
+        my @sublocs = $self->location->sub_Location;
+
+        my $cut_by_origin = 0;
+        my ($a_end,   $a_strand) = (0, 0);
+        my ($b_start, $b_strand) = (0, 0);
+        for (my $i = 1; $i < scalar @sublocs; $i++) {
+            $a_end    = $sublocs[$i-1]->end;
+            $a_strand = $sublocs[$i-1]->strand;
+            $b_start  = $sublocs[$i]->start;
+            $b_strand = $sublocs[$i]->strand;
+            # cut by origin condition
+            if (    $a_end    == $primary_seq_length
+                and $b_start  == 1
+                and $a_strand == $b_strand
+                ) {
+                $cut_by_origin = 1;
+                last;
+            }
+        }
+        $start = ($cut_by_origin == 1) ? ($sublocs[0]->start) : ($self->location->start);
+    }
+    else {
+        $start = $self->location->start;
+    }
+    return $start;
 }
 
 
@@ -329,8 +370,44 @@ sub start {
 =cut
 
 sub end {
-    my ($self,$value) = @_;
-    return $self->location->end($value);
+    my ($self, $value) = @_;
+    # Return soon if setting value
+    if (defined $value) {
+        return $self->location->end($value);
+    }
+
+    return $self->location->end() if not defined $self->{'_gsf_seq'};
+    # Check circular sequences cut by origin
+    my $end;
+    if (    $self->{'_gsf_seq'}->is_circular
+        and $self->location->isa('Bio::Location::SplitLocationI')
+        ) {
+        my $primary_seq_length = $self->{'_gsf_seq'}->length;
+        my @sublocs = $self->location->sub_Location;
+
+        my $cut_by_origin = 0;
+        my ($a_end,   $a_strand) = (0, 0);
+        my ($b_start, $b_strand) = (0, 0);
+        for (my $i = 1; $i < scalar @sublocs; $i++) {
+            $a_end    = $sublocs[$i-1]->end;
+            $a_strand = $sublocs[$i-1]->strand;
+            $b_start  = $sublocs[$i]->start;
+            $b_strand = $sublocs[$i]->strand;
+            # cut by origin condition
+            if (    $a_end    == $primary_seq_length
+                and $b_start  == 1
+                and $a_strand == $b_strand
+                ) {
+                $cut_by_origin = 1;
+                last;
+            }
+        }
+        $end = ($cut_by_origin == 1) ? ($sublocs[-1]->end) : ($self->location->end);
+    }
+    else {
+        $end = $self->location->end;
+    }
+    return $end;
 }
 
 
@@ -346,8 +423,16 @@ sub end {
 =cut
 
 sub length {
-    my $self = shift;
-    return $self->end - $self->start() + 1;
+    my $self   = shift;
+    my $length = $self->end() - $self->start() + 1;
+
+    # In circular sequences cut by origin $start > $end,
+    # e.g., join(5075..5386,1..51)), $start = 5075, $end = 51,
+    # then adjust using the primary_seq length (5386)
+    if ($length < 0 and defined $self->{'_gsf_seq'}) {
+        $length += $self->{'_gsf_seq'}->length;
+    }
+    return $length;
 }
 
 
@@ -471,7 +556,7 @@ sub source_tag {
 
  Title   : has_tag
  Usage   : my $value = $feat->has_tag('some_tag');
- Function: Tests wether a feature contaings a tag
+ Function: Tests whether a feature containings a tag
  Returns : TRUE if the SeqFeature has the tag,
            and FALSE otherwise.
  Args    : The name of a tag
@@ -603,7 +688,9 @@ sub attach_seq {
  Function: returns the truncated sequence (if there) for this
  Example :
  Returns : sub seq (a Bio::PrimarySeqI compliant object) on attached sequence
-           bounded by start & end, or undef if there is no sequence attached
+           bounded by start & end, or undef if there is no sequence attached.
+           If the strand is defined and set to -1, the returned sequence is
+           the reverse-complement of the region
  Args    : none
 
 =cut
@@ -621,17 +708,32 @@ sub seq {
 
     # assumming our seq object is sensible, it should not have to yank
     # the entire sequence out here.
+    my $seq;
+    my $start = $self->start;
+    my $end   = $self->end;
+    # Check circular sequences cut by origin (e.g. join(2006035..2007700,1..257))
+    if (    $self->{'_gsf_seq'}->is_circular
+        and $self->location->isa('Bio::Location::SplitLocationI')
+        and $start > $end
+        ) {
+        my $primary_seq_length = $self->{'_gsf_seq'}->length;
 
-    my $seq = $self->{'_gsf_seq'}->trunc($self->start(), $self->end());
+        # Get duplicate object with the first sequence piece using trunc()
+        $seq = $self->{'_gsf_seq'}->trunc($start, $primary_seq_length);
 
+        # Get post-origin sequence and build the complete sequence
+        my $post_origin  = $self->{'_gsf_seq'}->subseq(1, $end);
+        my $complete_seq = $seq->seq() . $post_origin;
 
-    if ( defined $self->strand &&
-        $self->strand == -1 ) {
+        # Add complete sequence to object
+        $seq->seq($complete_seq);
+    }
+    else {
+        $seq = $self->{'_gsf_seq'}->trunc($start, $end);
+    }
 
-        # ok. this does not work well (?)
-        #print STDERR "Before revcom", $seq->str, "\n";
+    if ( defined $self->strand && $self->strand == -1 ) {
         $seq = $seq->revcom;
-        #print STDERR "After  revcom", $seq->str, "\n";
     }
 
     return $seq;
@@ -890,23 +992,8 @@ sub gff_string {
 =cut
 
 sub slurp_gff_file {
-    my ($f) = @_;
-    my @out;
-    if ( !defined $f ) {
-        Bio::Root::Root->throw("Must have a filehandle");
-    }
-
-    Bio::Root::Root->deprecated( -message => "deprecated method slurp_gff_file() called in Bio::SeqFeature::Generic. Use Bio::Tools::GFF instead.",
-                                 -warn_version  => '1.005',
-                                 -throw_version => '1.007',
-                               );
-
-    while(<$f>) {
-        my $sf = Bio::SeqFeature::Generic->new('-gff_string' => $_);
-        push(@out, $sf);
-    }
-
-    return @out;
+    Carp::croak("Bio::SeqFeature::Generic->slurp_gff_file has been removed."
+                . " Use Bio::Tools::GFF instead.");
 }
 
 

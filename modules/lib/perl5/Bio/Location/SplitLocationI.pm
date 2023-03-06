@@ -60,7 +60,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -77,6 +77,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Location::SplitLocationI;
+$Bio::Location::SplitLocationI::VERSION = '1.7.8';
 use strict;
 
 use Carp;
@@ -223,7 +224,7 @@ Bio::LocationI inherited methods follow
 
             The interface *does not* require implementing classes to accept
             setting of a different policy. The implementation provided here
-            does, however, allow to do so.
+            does, however, allow one to do so.
 
             Implementors of this interface are expected to initialize every
             new instance with a CoordinatePolicyI object. The implementation

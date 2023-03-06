@@ -47,6 +47,7 @@ requires 'HTTP::Status'					=> '6.03';
 requires 'Email::Valid'					=> '1.202';
 requires 'MIME::Lite'					=> '3.030';
 requires 'Digest::MD5'					=> '2.52';
+requires 'Digest::SHA1'					=> 0;
 requires 'List::MoreUtils'				=> '0.33';
 requires 'Cwd'							=> '3.40';
 requires 'Scalar::Util'					=> '1.27';

@@ -65,7 +65,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Heikki Lehvaslaiho
 
@@ -82,6 +82,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::Location::Simple;
+$Bio::Location::Simple::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Location::Atomic);
@@ -109,7 +110,7 @@ sub new {
   Usage   : $start = $loc->start();
   Function: get/set the start of this range
   Returns : the start of this range
-  Args    : optionaly allows the start to be set
+  Args    : optionally allows the start to be set
             using $loc->start($start)
 
 =cut
@@ -134,7 +135,7 @@ sub start {
   Usage   : $end = $loc->end();
   Function: get/set the end of this range
   Returns : the end of this range
-  Args    : optionaly allows the end to be set
+  Args    : optionally allows the end to be set
           : using $loc->end($start)
   Note    : If start is set but end is undefined, this now assumes that start
             is the same as end but throws a warning (i.e. it assumes this is
@@ -173,7 +174,7 @@ sub end {
   Usage   : $strand = $loc->strand();
   Function: get/set the strand of this range
   Returns : the strandedness (-1, 0, +1)
-  Args    : optionaly allows the strand to be set
+  Args    : optionally allows the strand to be set
           : using $loc->strand($strand)
 
 =cut

@@ -48,7 +48,7 @@ all the Bio::SeqFeatureI interface as well).
 It is suggested that the primary_tag() method of SeqFeatureI
 return the same as the ontology_term()-E<gt>name() of the OntologyTypedI
 (ie, the "string" name of the ontology type is used as the primary
-tag), but this should not be assummed by client code as they
+tag), but this should not be assumed by client code as they
 are scenarios where one would like to maintain the difference.
 
 
@@ -80,7 +80,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -98,7 +98,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::SeqFeature::TypedSeqFeatureI;
-
+$Bio::SeqFeature::TypedSeqFeatureI::VERSION = '1.7.8';
 use strict;
 use Bio::Root::RootI;
 

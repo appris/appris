@@ -70,7 +70,7 @@ specific portion of the gi|gb|abc|xyz GenBank IDs.
 =head1 DATABASE CREATION AND INDEXING
 
 The object-oriented constructor is new(), the filehandle constructor is newFh()
-and the tied hash constructor is tie(). They all allow to index a single Fasta
+and the tied hash constructor is tie(). They all allow one to index a single Fasta
 file, several files, or a directory of files. See Bio::DB::IndexedBase.
 
 =head1 SEE ALSO
@@ -128,7 +128,7 @@ For simple access, the following methods are provided:
 
 
 package Bio::DB::Fasta;
-
+$Bio::DB::Fasta::VERSION = '1.7.8';
 use strict;
 use IO::File;
 use File::Spec;
@@ -171,8 +171,11 @@ sub _calculate_offsets {
             if ($line =~ /^>(\S+)/) {
                 print STDERR "Indexed $count sequences...\n"
                     if $self->{debug} && (++$count%1000) == 0;
-
-                $self->_check_linelength($linelen);
+                
+                # please, do not enforce arbitrary line length requirements.
+                # It's good practice but not enforced.
+                
+                #$self->_check_linelength($linelen);
                 my $pos = tell($fh);
                 if (@ids) {
                     my $strlen  = $pos - $offset - length($line);
@@ -187,7 +190,6 @@ sub _calculate_offsets {
                 @ids = $self->_makeid($line);
                 ($offset, $headerlen, $linelen, $seq_lines) = ($pos, length $line, 0, 0);
                 ($l3_len, $l2_len, $l_len, $blank_lines) = (0, 0, 0, 0);
-
             } else {
                 # Catch bad header lines, bug 3172
                 $self->throw("FASTA header doesn't match '>(\\S+)': $line");
@@ -244,7 +246,6 @@ sub _calculate_offsets {
     return \%offsets;
 }
 
-
 =head2 seq
 
  Title   : seq, sequence, subseq
@@ -290,8 +291,8 @@ sub subseq {
 
     seek($fh, $filestart,0);
     read($fh, $data, $filestop-$filestart+1);
-    $data =~ s/\n//g;
-    $data =~ s/\r//g;
+
+    $data =~ tr/\n\r//d; #strip control characters
 
     if ($strand == -1) {
         # Reverse-complement the sequence
@@ -331,7 +332,9 @@ sub header {
     my $fh = $self->_fh($id) or return;
     seek($fh, $offset, 0);
     read($fh, $data, $headerlen);
-    chomp $data;
+    # On Windows chomp remove '\n' but leaves '\r'
+    # when reading '\r\n' in binary mode
+    $data =~ tr/\n\r//d; #strip control characters
     substr($data, 0, 1) = '';
     return $data;
 }
@@ -352,6 +355,7 @@ sub header {
 # Bio::PrimarySeqI compatibility
 #
 package Bio::PrimarySeq::Fasta;
+$Bio::PrimarySeq::Fasta::VERSION = '1.7.8';
 use overload '""' => 'display_id';
 
 use base qw(Bio::Root::Root Bio::PrimarySeqI);
@@ -450,6 +454,5 @@ sub description  {
     return (split(/\s+/, $header, 2))[1];
 }
 *desc = \&description;
-
 
 1;

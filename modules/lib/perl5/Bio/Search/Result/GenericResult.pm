@@ -113,7 +113,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich and Steve Chervitz
 
@@ -136,6 +136,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Search::Result::GenericResult;
+$Bio::Search::Result::GenericResult::VERSION = '1.7.8';
 use strict;
 
 use Bio::Search::GenericStatistics;
@@ -756,8 +757,8 @@ sub program_reference { shift->algorithm_reference(@_); }
  Comments: The default implementation in ResultI returns an empty string
            rather than throwing a NotImplemented exception, since
            the RID may not always be available and is not critical.
-           See: (1) http://www.ncbi.nlm.nih.gov/Class/MLACourse/Modules/BLAST/rid.html
-                (2) http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/new/node63.html
+           See: (1) https://www.ncbi.nlm.nih.gov/Class/MLACourse/Modules/BLAST/rid.html
+                (2) https://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/new/node63.html
 =cut
 
 sub rid{

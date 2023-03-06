@@ -51,7 +51,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -69,6 +69,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Search::HSP::PSLHSP;
+$Bio::Search::HSP::PSLHSP::VERSION = '1.7.8';
 use strict;
 
 # Object preamble - inherits from Bio::Root::Root

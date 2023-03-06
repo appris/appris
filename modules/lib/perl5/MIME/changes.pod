@@ -2,6 +2,24 @@
 
 =over 4
 
+=item Version 3.033
+
+No changes since previous version, just made non-trial.
+
+=item Version 3.032
+
+Fix an error in printing to Net::SMTP (thanks, Peter Heirich)
+
+Add "use warnings" and require v5.6
+
+=item Version 3.031
+
+Add an SSL option to connect to the SMTP relay via SSL on port 465. (thanks,
+Max Maischein)
+
+Document some tips on using non-ASCII content with MIME::Lite (thanks,
+traveljury.com and Tom Hukins)
+
 =item Version 3.030
 
 Make send_by_sendmail set sender like documentation says it does (thanks,

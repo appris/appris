@@ -91,7 +91,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Chad Matsalla
 
@@ -107,7 +107,7 @@ methods. Internal methods are usually preceded with a _
 #' 
 
 package Bio::Tools::Alignment::Consed;
-
+$Bio::Tools::Alignment::Consed::VERSION = '1.7.8';
 use strict;
 
 use FileHandle;
@@ -148,7 +148,8 @@ sub new {
     # this is special to UNIX and should probably use catfile : DONE!
 #    if (!($self->{'filename'} =~ m{/})) { 
 #	$self->{'filename'} = "./".$self->{'filename'}; 
-#    } 
+#    }
+#    $self->{'filename'} =~ s#\\#\/#g if $^O =~ m/mswin/i;
 #    $self->{'filename'} =~ m/(.*\/)(.*)ace.*$/;
 #    $self->{'path'} = $1;
 
@@ -236,18 +237,27 @@ sub count_sequences_with_grep {
     # Tom Christiansen's 'tcgrep'
     # http://www.cpan.org/modules/by-authors/id/TOMC/scripts/tcgrep.gz
 
-    open(my $FILE, $self->{'filename'}) or do { $self->warn("cannot open file ".$self->{'filename'}. " for grepping"); return}; 
+    open my $FILE, '<', $self->{'filename'} or do {
+        $self->warn("Could not read file '$self->{'filename'}' for grepping: $!");
+        return
+    };
     my $counter =0;
     while(<$FILE>) { $counter++ if(/^AF/); }
-
     close $FILE;
-    opendir(my $SINGLETS,$self->{'path'});
+
+    opendir my $SINGLETS, $self->{'path'};
     foreach my $f ( readdir($SINGLETS) ) {
-	next unless ($f =~ /\.singlets$/); 
-	open(my $FILE, File::Spec->catfile($self->{'path'},$f)) or do{ $self->warn("cannot open file ".File::Spec->catfile($self->{'path'},$f)); next };
-	while(<$FILE>) { $counter++ if(/^>/) }
-	close $FILE;
+        next unless ($f =~ /\.singlets$/);
+
+        my $singlet_file = File::Spec->catfile($self->{'path'}, $f);
+        open my $S_FILE, '<', $singlet_file or do {
+            $self->warn("Could not read file '$singlet_file': $!");
+            next
+        };
+        while(<$S_FILE>) { $counter++ if(/^>/) }
+        close $S_FILE;
     }
+    closedir $SINGLETS;
     return $counter;
 }
 
@@ -383,10 +393,10 @@ sub freeze_hash {
         my %contigs = %{$self->{'contigs'}};
         my $frozen = freeze(%contigs);
         umask 0001;
-        open (my $FREEZE,">$filename") or do {
+        open my $FREEZE, '>', $filename or do {
             $self->warn( "Bio::Tools::Alignment::Consed could not ".
                          "freeze the contig hash because the file ".
-                         "($filename) could not be opened: $!\n");
+                         "($filename) could not be opened: $!");
             return 1;
         };
         print $FREEZE $frozen;
@@ -977,6 +987,7 @@ sub set_singlets {
     $self->debug("Bio::Tools::Alignment::Consed Adding singlets to the contig hash...\n"); 
     my $full_filename = $self->{'filename'};
     $self->debug("Bio::Tools::Alignment::Consed::set_singlets: \$full_filename is $full_filename\n");
+    $full_filename =~ s#\\#\/#g if $^O =~ m/mswin/i;
     $full_filename =~ m/(.*\/)(.*ace.*)$/; 			       
     my ($base_path,$filename) = ($1,$2);
     $self->debug("Bio::Tools::Alignment::Consed::set_singlets: singlets filename is $filename and \$base_path is $base_path\n");
@@ -1105,6 +1116,7 @@ sub set_quality_by_name {
 sub set_singlet_quality {
     my $self = shift;
     my $full_filename = $self->{'filename'};
+    $full_filename =~ s#\\#\/#g if $^O =~ m/mswin/i;
     $full_filename =~ m/(.*\/)(.*)ace.*$/;
     my ($base_path,$filename) = ($1,"$2"."qual");
     my $singletsfile = $base_path.$filename;
@@ -1156,6 +1168,7 @@ sub set_contig_quality {
     my $full_filename = $self->{'filename'};
     # Run_SRC3700_2000-08-01_73+74.fasta.screen.contigs.qual
     # from Consed.pm
+    $full_filename =~ s#\\#\/#g if $^O =~ m/mswin/i;
     $full_filename =~ m/(.*\/)(.*)ace.*$/;
     my ($base_path,$filename) = ($1,"$2"."contigs.qual");
     my $singletsfile = $base_path.$filename;
@@ -1328,9 +1341,9 @@ sub write_stats {
     my ($statsfilecontents) = $statistics_raw =~ s/.*\ \:\ //g;
     umask 0001;
     my $fh = Bio::Root::IO->new(-file=>"$stats_filename");
-    # open(STATSFILE,">$stats_filename") or print("Could not open the statsfile: $!\n");
+    # open my $STATSFILE, '>', $stats_filename or print "Could not write the statsfile: $!\n");
     $fh->_print("$statsfilecontents");
-    # close STATSFILE;
+    # close $STATSFILE;
     $fh->close();
 }
 
@@ -1696,7 +1709,7 @@ Recursion is kewl, but this sub should likely be _reverse_recurse.
 
 
 sub reverse_recurse($$) {
-    my ($r_source,my $r_destination) = @_;
+    my ($r_source,$r_destination) = @_;
     if (!@$r_source) {
         return $r_destination;
     }
@@ -1846,4 +1859,3 @@ sub show_missing_sequence() {
 
 
 1;
-

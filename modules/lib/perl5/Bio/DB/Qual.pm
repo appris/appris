@@ -66,7 +66,7 @@ specific portion of the gi|gb|abc|xyz GenBank IDs.
 =head1 DATABASE CREATION AND INDEXING
 
 The object-oriented constructor is new(), the filehandle constructor is newFh()
-and the tied hash constructor is tie(). They all allow to index a single Fasta
+and the tied hash constructor is tie(). They all allow one to index a single Fasta
 file, several files, or a directory of files. See Bio::DB::IndexedBase.
 
 =head1 SEE ALSO
@@ -143,7 +143,7 @@ For simple access, the following methods are provided:
 
 
 package Bio::DB::Qual;
-
+$Bio::DB::Qual::VERSION = '1.7.8';
 use strict;
 use IO::File;
 use File::Spec;
@@ -335,8 +335,7 @@ sub subqual {
     read($fh, $data, $filestop-$filestart+1);
 
     # Process quality score
-    $data =~ s/\n//g;
-    $data =~ s/\r//g;
+    $data =~ tr/\n\r//d; #strip control characters
     my $subqual = 0;
     $subqual = 1 if ( $start || $stop );
     my @data;
@@ -378,7 +377,9 @@ sub header {
     my $fh = $self->_fh($id) or return;
     seek($fh, $offset, 0);
     read($fh, $data, $headerlen);
-    chomp $data;
+    # On Windows chomp remove '\n' but leaves '\r'
+    # when reading '\r\n' in binary mode,
+    $data =~ tr/\n\r//d; #strip control characters
     substr($data, 0, 1) = '';
     return $data;
 }
@@ -399,6 +400,7 @@ sub FETCH {
 # Usage is the same as in Bio::Seq::PrimaryQual
 
 package Bio::Seq::PrimaryQual::Qual;
+$Bio::Seq::PrimaryQual::Qual::VERSION = '1.7.8';
 use overload '""' => 'display_id';
 
 use base qw(Bio::Root::Root Bio::Seq::PrimaryQual);

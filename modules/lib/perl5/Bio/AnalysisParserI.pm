@@ -108,7 +108,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Steve Chervitz, Jason Stajich, Hilmar Lapp
 
@@ -134,6 +134,7 @@ Internal methods are usually preceded with a _
 =cut
 
 package Bio::AnalysisParserI;
+$Bio::AnalysisParserI::VERSION = '1.7.8';
 use strict;
 
 

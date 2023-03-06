@@ -1,6 +1,7 @@
 package MIME::Lite;
+use 5.006;    ### for /c modifier in m/\G.../gc modifier
 use strict;
-require 5.004;    ### for /c modifier in m/\G.../gc modifier
+use warnings;
 
 =head1 NAME
 
@@ -31,7 +32,7 @@ Create and send using the default send method for your OS a single-part message:
     );
     $msg->send; # send via default
 
-Create a multipart message (i.e., one with attachments) and send it SMTP
+Create a multipart message (i.e., one with attachments) and send it via SMTP
 
     ### Create a new multipart message:
     $msg = MIME::Lite->new(
@@ -53,7 +54,7 @@ Create a multipart message (i.e., one with attachments) and send it SMTP
         Filename => 'logo.gif',
         Disposition => 'attachment'
     );
-    ### use Net:SMTP to do the sending
+    ### use Net::SMTP to do the sending
     $msg->send('smtp','some.host', Debug=>1 );
 
 Output a message:
@@ -78,6 +79,10 @@ Specify default send method:
 with authentication
 
     MIME::Lite->send('smtp','some.host', AuthUser=>$user, AuthPass=>$pass);
+
+using SSL
+
+    MIME::Lite->send('smtp','some.host', SSL => 1, Port => 465 );
 
 =head1 DESCRIPTION
 
@@ -352,7 +357,7 @@ use vars qw(
 
 
 # GLOBALS, EXTERNAL/CONFIGURATION...
-$VERSION = '3.030';
+$VERSION = '3.033';
 
 ### Automatically interpret CC/BCC for SMTP:
 $AUTO_CC = 1;
@@ -2107,7 +2112,8 @@ sub print {
 
     ### Output head, separator, and body:
     $self->verify_data if $AUTO_VERIFY;    ### prevents missing parts!
-    $out->print( $self->header_as_string, "\n" );
+    $out->print( $self->header_as_string );
+    $out->print( "\n" );
     $self->print_body($out);
 }
 
@@ -2130,7 +2136,8 @@ sub print_for_smtp {
     my $header = $self->fields_as_string( \@fields );
 
     ### Output head, separator, and body:
-    $out->print( $header, "\n" );
+    $out->print( $header );
+    $out->print( "\n" );
     $self->print_body( $out, '1' );
 }
 
@@ -2716,7 +2723,7 @@ sub send_by_sendmail {
         if ( $p{SetSender} ) {
             my $from = $p{FromSender} || ( $self->get('From') )[0];
             if ($from) {
-                my ($from_addr) = extract_full_addrs($from);
+                my ($from_addr) = extract_only_addrs($from);
                 push @cmd, "-f$from_addr" if $from_addr;
             }
         }
@@ -2839,8 +2846,9 @@ if the send was successful or not.
 
 # external opts
 my @_mail_opts     = qw( Size Return Bits Transaction Envelope );
-my @_recip_opts    = qw( SkipBad );
+my @_recip_opts    = qw( SkipBad Notify );
 my @_net_smtp_opts = qw( Hello LocalAddr LocalPort Timeout
+                         AuthUser AuthPass SSL
                          Port ExactAddresses Debug );
 # internal:  qw( NoAuth AuthUser AuthPass To From Host);
 
@@ -3282,6 +3290,81 @@ By using the Filename option (which is different from Path!):
 
 You should I<not> put path information in the Filename.
 
+=head2 Working with UTF-8 and other character sets
+
+All text that is added to your mail message should be properly encoded.
+MIME::Lite doesn't do this for you. For instance, if you want to
+send your mail in UTF-8, where C<$to>, C<$subject> and C<$text> have
+these values:
+
+=over
+
+=item *
+
+To: "RamE<oacute>n NuE<ntilde>ez E<lt>foo@bar.comE<gt>"
+
+=item *
+
+Subject: "E<iexcl>AquE<iacute> estE<aacute>!"
+
+=item *
+
+Text: "E<iquest>Quieres ganar muchos E<euro>'s?"
+
+=back
+
+
+    use MIME::Lite;
+    use Encode qw(encode encode_utf8 );
+
+    my $to      = "Ram\363n Nu\361ez <foo\@bar.com>";
+    my $subject = "\241Aqu\355 est\341!";
+    my $text    = "\277Quieres ganar muchos \x{20ac}'s?";
+
+    ### Create a new message encoded in UTF-8:
+    my $msg = MIME::Lite->new(
+        From    => 'me@myhost.com',
+        To      => encode( 'MIME-Header', $to ),
+        Subject => encode( 'MIME-Header', $subject ),
+        Data    => encode_utf8($text)
+    );
+    $msg->attr( 'content-type' => 'text/plain; charset=utf-8' );
+    $msg->send;
+
+B<Note:>
+
+=over
+
+=item *
+
+The above example assumes that the values you want to encode are in
+Perl's "internal" form, i.e. the strings contain decoded UTF-8
+characters, not the bytes that represent those characters.
+
+See L<perlunitut>, L<perluniintro>, L<perlunifaq> and L<Encode> for
+more.
+
+=item *
+
+If, for the body of the email,  you want to use a character set
+other than UTF-8, then you should encode appropriately, and set the
+correct C<content-type>, eg:
+
+    ...
+    Data => encode('iso-8859-15',$text)
+    ...
+
+    $msg->attr( 'content-type' => 'text/plain; charset=iso-8859-15' );
+
+=item *
+
+For the message headers, L<Encode::MIME::Header> only support UTF-8,
+but most modern mail clients should be able to handle this.  It is not
+a problem to have your headers in a different encoding from the message
+body.
+
+=back
+
 =head2 Benign limitations
 
 This is "lite", after all...
@@ -3653,7 +3736,7 @@ for any patches you provide.
 
 =head1 VERSION
 
-Version: 3.030
+Version: 3.033
 
 =head1 CHANGE LOG
 

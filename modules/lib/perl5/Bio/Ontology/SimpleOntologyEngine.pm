@@ -60,7 +60,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Peter Dimitrov
 
@@ -80,6 +80,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::Ontology::SimpleOntologyEngine;
+$Bio::Ontology::SimpleOntologyEngine::VERSION = '1.7.8';
 use strict;
 use Carp;
 use Bio::Ontology::RelationshipFactory;
@@ -535,7 +536,7 @@ sub get_all_relationships {
 
  Title   : get_predicate_terms
  Usage   : get_predicate_terms(): TermI
- Function: Retrives all relationship types stored in the engine
+ Function: Retrieves all relationship types stored in the engine
  Example :
  Returns : reference to an array of Bio::Ontology::RelationshipType objects
  Args    :

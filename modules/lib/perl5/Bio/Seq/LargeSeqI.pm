@@ -31,7 +31,7 @@ you do not want to inspect the sequence unless absolutely
 necessary. These sequences typically override the length() method not
 to check the sequence.
 
-The seq() method is not resetable, if you want to add to the end of the
+The seq() method is not resettable, if you want to add to the end of the
 sequence you have to use add_sequence_as_string(), for any other sequence changes you'll
 have to create a new object.
 
@@ -63,7 +63,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 email or the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Albert Vilella
 
@@ -85,6 +85,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Seq::LargeSeqI;
+$Bio::Seq::LargeSeqI::VERSION = '1.7.8';
 use strict;
 
 

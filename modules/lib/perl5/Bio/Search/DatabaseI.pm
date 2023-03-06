@@ -64,7 +64,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/           
+  https://github.com/bioperl/bioperl-live/issues           
 
 =head1 AUTHOR 
 
@@ -91,7 +91,7 @@ The rest of the documentation details each of the object methods.
 # Let the code begin...
 
 package Bio::Search::DatabaseI;
-
+$Bio::Search::DatabaseI::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Root::RootI);

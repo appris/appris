@@ -39,7 +39,7 @@ more types of score and subseqfeatures. It is compatible with the Generic
 SeqFeature object.
 
 The new way of storing score values is similar to the tag structure in the 
-Generic object. For storing sets of subseqfeatures the array containg the
+Generic object. For storing sets of subseqfeatures the array containing the
 subseqfeatures is now a hash which contains arrays of seqfeatures
 Both the score and subSeqfeature methods can be called in exactly the same
 way, the value's will be stored as a 'default' score or subseqfeature.
@@ -72,7 +72,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney, Mark Fiers
 
@@ -98,6 +98,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqFeature::Computation;
+$Bio::SeqFeature::Computation::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::SeqFeature::Generic);
@@ -133,7 +134,7 @@ sub new {
 
  Title   : has_score
  Usage   : $value = $self->has_score('some_score')
- Function: Tests wether a feature contains a score
+ Function: Tests whether a feature contains a score
  Returns : TRUE if the SeqFeature has the score,
            and FALSE otherwise.
  Args    : The name of a score
@@ -463,7 +464,7 @@ sub get_all_SeqFeature_types {
  Usage   : @feats = $feat->get_SeqFeatures();
            @feats = $feat->get_SeqFeatures('feature_type');           
  Function: Returns an array of sub Sequence Features of a specific
-           type or, if the type is ommited, all sub Sequence Features
+           type or, if the type is omitted, all sub Sequence Features
  Returns : An array
  Args    : (optional) a SeqFeature type (ie exon, pattern)
 
