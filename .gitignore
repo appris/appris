@@ -27,6 +27,23 @@ lost+found
 .wgetrc
 perl5/
 var/
+__pycache__/
+.ICEauthority
+.bash_profile
+.conda/
+.dmrc
+.gconf/
+.local/
+.nano_history
+.pip/
+.python_history
+.xsession-errors
+.my.cnf
+.vscode-server/
+anaconda3/
+snap/
+ws/.well-known/
+.nx
 
 
 # 'server' dir
@@ -67,3 +84,40 @@ modules
 
 # text editor backup files
 *~
+
+# Other stuff
+00_other_stuff
+MetalBindingChallenge
+comparaciones_tiempos_g27
+test_genes
+miniconda3
+.dotnet
+.cpan
+lib/appris_perllib_v2.1/blib
+modules/lib/perl5/Bio
+modules/man/man3
+modules-5.1.1
+modules/man/man3_bak
+.qt
+FireDB_dump.sql
+.git-credentials
+conf/code_BAK
+.condarc
+.gitignore
+conf/config_*
+db_aux
+iappris.pl.save
+trifid.pl.save
+conf/code/corsair_alt.diverge_time_OLD_antesDe202208/*
+appris.pl.bak
+appris.pl_bak
+appris.pm_bak
+pipeline.ini_OLD
+pipeline_corsair_OLD.ini
+corsair_species.old.json
+corsair_species.old2.json
+corsair_species.old3.json
+corsair_species.old4.json
+clone_to_compare
+conf/code_corsair_branch
+appris_db_archives.2023_03.v48.tar.gz
