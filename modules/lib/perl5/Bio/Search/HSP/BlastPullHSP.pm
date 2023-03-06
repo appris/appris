@@ -66,7 +66,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Sendu Bala
 
@@ -82,7 +82,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::Search::HSP::BlastPullHSP;
-
+$Bio::Search::HSP::BlastPullHSP::VERSION = '1.7.8';
 use strict;
 use base qw(Bio::Search::HSP::PullHSPI);
 
@@ -396,7 +396,7 @@ sub gaps {
  Returns : +1 or -1 (0 if unknown)
  Args    : 'hit' or 'subject' or 'sbjct' to retrieve the strand of the subject
            'query' to retrieve the query strand (default)
-           'list' or 'array' to retreive both query and hit together
+           'list' or 'array' to retrieve both query and hit together
 
 =cut
 

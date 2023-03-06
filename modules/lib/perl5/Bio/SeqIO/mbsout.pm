@@ -43,7 +43,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/  
+  https://github.com/bioperl/bioperl-live/issues  
 
 =head1 AUTHOR - Warren Kretzschmar
 
@@ -77,7 +77,7 @@ particular purpose.
 =cut
 
 package Bio::SeqIO::mbsout;
-
+$Bio::SeqIO::mbsout::VERSION = '1.7.8';
 use version;
 our $API_VERSION = qv('1.1.3');
 
@@ -653,7 +653,7 @@ Function: returns a reference to a hash.  The keys of the hash are the letters
           Bio::SeqIO::mbsout stream should be translated to.
 Returns : reference to a hash
 Args    : NONE  
-Synopsys:
+Synopsis:
 	
 	# retrieve the Bio::Seq object's sequence
 	my $haplotype = $seq->seq;

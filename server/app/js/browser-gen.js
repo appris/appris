@@ -49,7 +49,7 @@ module.directive('browserGenTpl', ['$compile', function($compile) {
             });
             // by default
             scope.browser.refresh = true;
-            element.html($compile('<div class="browser loading">Loading...</div>')(scope));
+            element.html($compile('<div class="browser loading">Loading... If genomes fail to appear, please click on \'refresh browsers\'.</div>')(scope));
             // destroy element
             element.on('$destroy', function() {
             });

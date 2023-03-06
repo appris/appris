@@ -65,7 +65,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Florent Angly
 
@@ -80,7 +80,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::DB::Taxonomy::silva;
-
+$Bio::DB::Taxonomy::silva::VERSION = '1.7.8';
 use strict;
 use Bio::SeqIO;
 
@@ -124,7 +124,7 @@ sub _build_taxonomy {
    # One could open the file using Bio::SeqIO::fasta, but it is slower and we
    # only need the sequence descriptions
 
-   open my $in, '<', $taxofile or $self->throw("Could not read file '$taxofile': $!\n");
+   open my $in, '<', $taxofile or $self->throw("Could not read file '$taxofile': $!");
 
    # Populate taxonomy with taxonomy obtained from sequence description
    while (my $line = <$in>) {

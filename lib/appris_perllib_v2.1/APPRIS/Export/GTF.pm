@@ -796,6 +796,9 @@ sub get_matador3d_annotations {
 						$optional->{'transcript_id'}	= $transcript_id;
 						$optional->{'note'}				= "pdb_id:".$region->pdb_id if ($region->pdb_id);
 						$optional->{'note'}				.= ",identity:".$region->identity if ($region->identity);
+						if ($region->pstart and $region->pend) {
+							$optional->{'note'}			.= ",pep_start:".$region->pstart.",pep_end:".$region->pend;
+						}						
 						if (defined $common and defined $optional) {
 							$output .= print_annotations($common,$optional);			
 						}													 	

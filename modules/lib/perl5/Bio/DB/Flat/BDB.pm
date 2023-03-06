@@ -59,7 +59,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via
 email or the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Lincoln Stein
 
@@ -80,7 +80,7 @@ methods are usually preceded with an "_" (underscore).
 # Let the code begin...
 
 package Bio::DB::Flat::BDB;
-
+$Bio::DB::Flat::BDB::VERSION = '1.7.8';
 use strict;
 use DB_File;
 use IO::File;
@@ -241,6 +241,7 @@ sub _index_file {
   my $fh     = $self->_fhcache($file) or $self->throw("could not open $file for indexing: $!");
   my $offset = 0;
   my $count  = 0;
+
   while (!eof($fh)) {
     my ($ids,$adjustment)  = $self->parse_one_record($fh) or next;
     $adjustment ||= 0;  # prevent uninit variable warning

@@ -76,7 +76,15 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
                                 var acc = match[1];
                                 var eval = match[2];
                                 var id = acc.replace(/_[A-Z0-9]{1,4}(?:_pdb_seq)?$/i,'');
-                                annot = "<a href='"+consUrlPDBstructure+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+
+                                const userKeyRegExp = /^AFM:/;
+                                if ( userKeyRegExp.test(id) == true ) {
+                                    id_clean = id.slice(4)
+                                    annot = "<a href='"+ "https://alphafold.ebi.ac.uk/search/text/" + id_clean + "?suggested=true" +"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                                }
+                                else {
+                                    annot = "<a href='"+consUrlPDBstructure+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                                }
                             }
                         }
                         else if ( (mid === "functional_domain") && angular.isDefined(res_value.annot.match(pattern)) ) {
@@ -155,7 +163,7 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
             });
             // by default
             scope.browser.refresh = true;
-            element.html($compile('<div class="browser loading">Loading...</div>')(scope));
+            element.html($compile('<div class="browser loading">Loading... If annotations fail to appear, please click on \'refresh browsers\'.</div>')(scope));
             // destroy element
             element.on('$destroy', function() {
             });

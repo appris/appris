@@ -58,11 +58,12 @@ Hilmar Lapp, hlapp at gmx.net
 =head2 APPENDIX
 
 The rest of the documentation details each of the object methods.
-Interal methods are usually preceded with a _
+Internal methods are usually preceded with a _
 
 =cut
 
 package Bio::OntologyIO::Handlers::InterPro_BioSQL_Handler;
+$Bio::OntologyIO::Handlers::InterPro_BioSQL_Handler::VERSION = '1.7.8';
 use strict;
 use Bio::Ontology::Ontology;
 use Bio::Ontology::Term;
@@ -323,7 +324,7 @@ sub _persist_relationship {
            relationship types.
 
  Example :
- Returns : the ontology as a peristent object with primary key
+ Returns : the ontology as a persistent object with primary key
  Args    : the ontology to persist as a Bio::Ontology::OntologyI
            compliant object
 

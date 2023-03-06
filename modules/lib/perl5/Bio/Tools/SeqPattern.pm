@@ -181,7 +181,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -206,7 +206,7 @@ modify it under the same terms as Perl itself.
 
 
 package Bio::Tools::SeqPattern;
-
+$Bio::Tools::SeqPattern::VERSION = '1.7.8';
 use base qw(Bio::Root::Root);
 use strict;
 use vars qw ($ID);

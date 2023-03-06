@@ -61,7 +61,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Peter Dimitrov
 
@@ -81,6 +81,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::OntologyIO::Handlers::InterProHandler;
+$Bio::OntologyIO::Handlers::InterProHandler::VERSION = '1.7.8';
 use strict;
 use Carp;
 use Bio::Ontology::Ontology;

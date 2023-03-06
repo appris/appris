@@ -52,7 +52,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR Chad Matsalla
 
@@ -76,6 +76,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::scf;
+$Bio::SeqIO::scf::VERSION = '1.7.8';
 use vars qw($DEFAULT_QUALITY);
 use strict;
 use Bio::Seq::SeqFactory;

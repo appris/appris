@@ -95,7 +95,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Stefan Kirov
 
@@ -108,6 +108,7 @@ Email skirov@utk.edu
 
 # Let the code begin...
 package Bio::Matrix::PSM::IO;
+$Bio::Matrix::PSM::IO::VERSION = '1.7.8';
 use vars qw(@PSMFORMATS);
 use strict;
 
@@ -147,7 +148,7 @@ sub new {
 	my $format = $param{'-format'} ||
 	    $class->_guess_format( $param{'-file'} || $ARGV[0] ) ||
 	    'scoring';
-	$class->throw("$format format unrecognized or an argument error occured\n.") if (!grep(/$format/,@Bio::Matrix::PSM::IO::PSMFORMATS));
+	$class->throw("$format format unrecognized or an argument error occurred\n.") if (!grep(/$format/,@Bio::Matrix::PSM::IO::PSMFORMATS));
 	$format = "\L$format"; # normalize capitalization to lower case
 
 	# normalize capitalization

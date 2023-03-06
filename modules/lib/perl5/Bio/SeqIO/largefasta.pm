@@ -66,7 +66,7 @@ with code and data examples if at all possible.
 Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS - Jason Stajich
 
@@ -82,6 +82,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::largefasta;
+$Bio::SeqIO::largefasta::VERSION = '1.7.8';
 use vars qw($FASTALINELEN);
 use strict;
 
@@ -163,7 +164,7 @@ sub write_seq {
      $self->_print (">",$top,"\n");
      my $end = $seq->length();
      my $start = 1;
-     while( $start < $end ) {
+     while( $start <= $end ) {
 	 my $stop = $start + $FASTALINELEN - 1;
 	 $stop = $end if( $stop > $end );
 	 $self->_print($seq->subseq($start,$stop), "\n");

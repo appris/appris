@@ -69,7 +69,7 @@ Bio::Seq - Sequence object, with features
 
     # you can get truncations, translations and reverse complements, these
     # all give back Bio::Seq objects themselves, though currently with no
-    # features transfered
+    # features transferred
 
     my $trunc = $seqobj->trunc(100,200);
     my $rev   = $seqobj->revcom();
@@ -432,7 +432,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney, inspired by Ian Korf objects
 
@@ -456,7 +456,10 @@ methods. Internal methods are usually preceded with a "_".
 
 
 package Bio::Seq;
+$Bio::Seq::VERSION = '1.7.8';
 use strict;
+
+use Carp;
 
 use Bio::Annotation::Collection;
 use Bio::PrimarySeq;
@@ -669,7 +672,7 @@ sub display_id {
            called the accession_number. For sequences from established
            databases, the implementors should try to use the correct
            accession number. Notice that primary_id() provides the
-           unique id for the implemetation, allowing multiple objects
+           unique id for the implementation, allowing multiple objects
            to have the same accession number in a particular implementation.
 
            For sequences with no accession number, this method should return
@@ -889,7 +892,7 @@ sub namespace{
  Usage   : $string    = $obj->display_name()
  Function: A string which is what should be displayed to the user
            the string should have no spaces (ideally, though a cautious
-           user of this interface would not assumme this) and should be
+           user of this interface would not assume this) and should be
            less than thirty characters (though again, double checking
            this is a good idea)
 
@@ -1043,15 +1046,16 @@ This includes methods for retrieving, adding, and removing features.
            feature object in order to traverse all features associated
            with this sequence.
 
-           Top-level features can be obtained by tag, specified in 
+           Specific features can be obtained by primary tag, specified in 
            the argument.
 
            Use get_all_SeqFeatures() if you want the feature tree
            flattened into one single array.
 
- Example :
+ Example : my @feats = $seq->get_SeqFeatures or
+           my @genefeats = $seq->get_SeqFeatures('gene')
  Returns : an array of Bio::SeqFeatureI implementing objects
- Args    : [optional] scalar string (feature tag)
+ Args    : [optional] string (feature tag)
 
 =cut
 
@@ -1132,13 +1136,9 @@ sub add_SeqFeature {
    $self->{'_as_feat'} = [] unless $self->{'_as_feat'};
 
    if (scalar @feat > 1) {
-      $self->deprecated(
-         -message => 'Providing an array of features to Bio::Seq add_SeqFeature()'.
-                     ' is deprecated and will be removed in a future version. '.
-                     'Add a single feature at a time instead.',
-         -warn_version    => 1.007,
-         -throw_version   => 1.009,
-      );
+       Carp::carp('Providing an array of features to Bio::Seq add_SeqFeature()'
+                  . ' is deprecated and will be removed in a future version.'
+                  . ' Add a single feature at a time instead.');
    }
 
    for my $feat ( @feat ) {
@@ -1163,25 +1163,31 @@ sub add_SeqFeature {
 
  Title   : remove_SeqFeatures
  Usage   : $seq->remove_SeqFeatures();
- Function: Flushes all attached SeqFeatureI objects.
-
-           To remove individual feature objects, delete those from the returned
-           array and re-add the rest.
- Example :
- Returns : The array of Bio::SeqFeatureI objects removed from this seq.
- Args    : None
+ Function: Removes all attached SeqFeatureI objects or those with the 
+           specified primary tag
+ Example : my @gene_feats = $seq->remove_seqFeatures('gene') or
+           my @feats = $seq->remove_seqFeatures()
+ Returns : The array of Bio::SeqFeatureI objects removed from the sequence
+ Args    : None, or a feature primary tag
 
 =cut
 
 sub remove_SeqFeatures {
-    my $self = shift;
-
+    my ( $self, $tag ) = @_;
     return () unless $self->{'_as_feat'};
-    my @feats = @{$self->{'_as_feat'}};
-    $self->{'_as_feat'} = [];
-    return @feats;
-}
 
+    if ( $tag ) {
+        my @selected_feats   = grep { $_->primary_tag eq $tag } @{ $self->{'_as_feat'} };
+        my @unselected_feats = grep { $_->primary_tag ne $tag } @{ $self->{'_as_feat'} };
+        $self->{'_as_feat'} = \@unselected_feats;
+        return @selected_feats;
+    }
+    else {
+        my @all_feats = @{ $self->{'_as_feat'} };
+        $self->{'_as_feat'} = [];
+        return @all_feats;
+    }
+}
 
 =head1 Methods provided in the Bio::PrimarySeqI interface
 
@@ -1191,8 +1197,8 @@ or other information as expected. See L<Bio::PrimarySeq>
 for more information.
 
 Sequence Features are B<not> transferred to the new objects.
-This is possibly a mistake. Anyone who feels the urge in
-dealing with this is welcome to give it a go.
+To reverse complement and include the features use
+L<Bio::SeqUtils::revcom_with_features>.
 
 =head2 revcom
 

@@ -2742,7 +2742,7 @@ sub parse_trifid_rst($)
 
 	if ( defined($seq_attr_col) ) {
 
-		my (@exp_opt_col_names) = ('gene_version', 'transcript_version', 'translation_version');
+		my (@exp_opt_col_names) = ('transcript_version', 'translation_version');
 		my (@opt_col_names) = grep { exists($col_name_set{$_}) } @exp_opt_col_names;
 
 		foreach my $line (@lines) {
@@ -2809,8 +2809,14 @@ sub parse_trifid($$)
 		my ($transl_id) = $input_transc->translate->stable_id;
 		my ($transl_seq) = $input_transc->translate->sequence;
 		my ($transl_seq_sha1) = sha1_hex($transl_seq);
-		( my $tc_id = $transc_id) =~ s/\.[0-9]*$//g;
-		( my $tl_id = $transl_id) =~ s/\.[0-9]*$//g;
+		
+		# By default, we discard the versions of identifiers. Except in C.elegans
+		my $tc_id = $transc_id;
+		my $tl_id = $transl_id;
+		if ($gene_id !~ /^WBGene/) {
+			( $tc_id = $transc_id) =~ s/\.[0-9]*$//g;
+			( $tl_id = $transl_id) =~ s/\.[0-9]*$//g;
+		}
 
 		if ( $input_transc->version ) {
 			$transc_to_ver{$transc_id} = $input_transc->version;
@@ -2821,7 +2827,7 @@ sub parse_trifid($$)
 		if ( exists $cutoffs->{$tc_id} ) {
 
 			# if relevant transcript metadata match, store TRIFID scores
-		if ( 	exists($cutoffs->{$tc_id}{'translation_id'})       && $cutoffs->{$tc_id}{'translation_id'} eq $tl_id &&
+			if ( 	exists($cutoffs->{$tc_id}{'translation_id'})       && $cutoffs->{$tc_id}{'translation_id'} eq $tl_id &&
 				exists($cutoffs->{$tc_id}{'translation_seq_sha1'}) && $cutoffs->{$tc_id}{'translation_seq_sha1'} eq $transl_seq_sha1 &&
 				exists($cutoffs->{$tc_id}{'length'})              && $cutoffs->{$tc_id}{'length'} == length($transl_seq) ) {
 				$transc_trifid_info{$transc_id} = {

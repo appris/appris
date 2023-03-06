@@ -60,7 +60,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -82,6 +82,7 @@ from L<Bio::Index::Abstract>
 # Let's begin the code ...
 
 package Bio::Index::AbstractSeq;
+$Bio::Index::AbstractSeq::VERSION = '1.7.8';
 use strict;
 
 use Bio::SeqIO::MultiFile;
@@ -146,7 +147,7 @@ sub fetch {
 		$seq = $seqio->next_seq();	
 	}
 
-	# we essentially assumme that the primary_id for the database
+	# we essentially assume that the primary_id for the database
 	# is the display_id
 	if (ref($seq) && $seq->isa('Bio::PrimarySeqI') &&
 		 $seq->primary_id =~ /^\D+$/) {

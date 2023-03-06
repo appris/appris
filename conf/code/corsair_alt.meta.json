@@ -39,6 +39,11 @@
         "diverge_time_file": "corsair_alt.diverge_time.cow.json",
         "clade_file": "corsair_alt.mammals.json"
     },
+    "Macaca mulatta": {
+        "animal": "vertebrates",
+        "diverge_time_file": "corsair_alt.diverge_time.macaca.json",
+        "clade_file": "corsair_alt.primates.json"
+    },
     "Drosophila melanogaster": {
         "animal": "invertebrates",
         "diverge_time_file": "corsair_alt.diverge_time.fruitfly.json",

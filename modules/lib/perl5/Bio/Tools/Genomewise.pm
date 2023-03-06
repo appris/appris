@@ -62,7 +62,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Fugu Team, Jason Stajich 
 
@@ -80,6 +80,7 @@ The rest of the documentation details each of the object methods. Internal metho
 
 
 package Bio::Tools::Genomewise;
+$Bio::Tools::Genomewise::VERSION = '1.7.8';
 use vars qw($Srctag);
 use strict;
 

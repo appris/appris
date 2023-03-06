@@ -55,7 +55,7 @@ with code and data examples if at all possible.
 Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS - Ewan Birney & Lincoln Stein
 
@@ -76,6 +76,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqIO::gcg;
+$Bio::SeqIO::gcg::VERSION = '1.7.8';
 use strict;
 
 use Bio::Seq::SeqFactory;
@@ -273,10 +274,10 @@ sub GCG_checksum {
  Function: if parsed gcg sequence contains a checksum field
          : we compare it to a value computed here on the parsed
          : sequence. A checksum mismatch would indicate some
-         : type of parsing failure occured.
+         : type of parsing failure occurred.
          :
  Returns : 1 for success, 0 for failure
- Args    : string containing parsed seq, value of parsed cheksum
+ Args    : string containing parsed seq, value of parsed checksum
 
 
 =cut

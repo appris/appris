@@ -31,6 +31,7 @@ Most of the code is based on the C implementation of these routines in
 Mike Sanderson's r8s's package.  See http://loco.biosci.arizona.edu/r8s/ for
 information on his software.
 
+=for comment
 This code tries to be fast and use available faster BigInt and GMP
 library methods when those modules are available.
 
@@ -62,7 +63,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -85,11 +86,12 @@ Internal methods are usually preceded with a _
 
 
 package Bio::Tools::RandomDistFunctions;
+$Bio::Tools::RandomDistFunctions::VERSION = '1.7.8';
 require Exporter;
 use vars qw(%LOADED @EXPORT_OK); use strict;
 
 #use Math::BigFloat lib => 'GMP,Bit::Vector';
-#use Math::BigInt lib  => 'GMP,Bit::Vector';
+#use Math::BigInt   lib => 'GMP,Bit::Vector';
 use POSIX;
 
 use base qw(Bio::Root::Root);

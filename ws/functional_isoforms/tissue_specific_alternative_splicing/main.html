@@ -91,10 +91,14 @@
                 <li>
                     <a href="https://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a>
                 </li>
-                <li>
-                    <a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/">Important Isoforms</a>
+    	        <li class="dropdown" dropdown is-open="status.isopen">
+        	    <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+	               <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
+        	       <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
+                    </ul>
                 </li>
-                <li>
+		<li>
                     <a href="https://appris.bioinfo.cnio.es/#/help/intro">Help & Docs</a>
                 </li>
                 <li>

@@ -1,6 +1,7 @@
 # POD at __END__, let the code begin...
 
 package Bio::SeqIO::fastq;
+$Bio::SeqIO::fastq::VERSION = '1.7.8';
 use strict;
 
 use Bio::Seq::SeqFactory;
@@ -433,7 +434,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHORS - Chris Fields (taken over from Tony Cox)
 
@@ -475,7 +476,7 @@ methods. Internal methods are usually preceded with a _
            quality data.
 
            Current values accepted are:
-            'sanger'   (orginal FASTQ)
+            'sanger'   (original FASTQ)
                 ASCII encoding from 33-126, PHRED quality score from 0 to 93
             'solexa'   (aka illumina1.0)
                 ASCII encoding from 59-104, SOLEXA quality score from -5 to 40

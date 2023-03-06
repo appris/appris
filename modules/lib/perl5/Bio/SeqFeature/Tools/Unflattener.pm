@@ -410,7 +410,7 @@ Occasionally a GenBank entry will have both implicit exons (from the
 mRNA location) B<and> explicit exon features.
 
 In this case, exons will still be transferred. Tag-value data from the
-explicit exon will be transfered to the implicit exon. If exons are
+explicit exon will be transferred to the implicit exon. If exons are
 shared between mRNAs these will be represented by different
 objects. Any inconsistencies between implicit and explicit will be
 reported.
@@ -604,7 +604,7 @@ report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Chris Mungall
 
@@ -621,6 +621,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqFeature::Tools::Unflattener;
+$Bio::SeqFeature::Tools::Unflattener::VERSION = '1.7.8';
 use strict;
 
 # Object preamble - inherits from Bio::Root::Root
@@ -936,13 +937,13 @@ sub problem {
     if (@sfs) {
 	foreach my $sf (@sfs) {
 	    $desc .=
-	      sprintf("\nSF [$sf]: %s\n",
+	      sprintf("\nSF [$sf]: ". $sf->location->to_FTstring . "; %s\n",
 		      join('; ',
                            $sf->primary_tag,
 			   map {
 			       $sf->has_tag($_) ?
 				 $sf->get_tag_values($_) : ()
-			     } qw(gene product label)));
+			     } qw(locus_tag gene product label)));
 	}
     }
     my $thresh = $self->error_threshold;
@@ -2401,7 +2402,7 @@ sub _resolve_container_for_sf{
 
 
        # SPECIAL CASE FOR /ribosomal_slippage
-       # See: http://www.ncbi.nlm.nih.gov/collab/FT/
+       # See: https://www.ncbi.nlm.nih.gov/collab/FT/
        if (!$inside && $sf->has_tag('ribosomal_slippage')) {
 	   if ($self->verbose > 0) {
 	       printf STDERR "    Checking for ribosomal_slippage\n";

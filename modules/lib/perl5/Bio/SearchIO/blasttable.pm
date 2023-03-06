@@ -58,7 +58,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -75,6 +75,7 @@ Internal methods are usually preceded with a _
 
 
 package Bio::SearchIO::blasttable;
+$Bio::SearchIO::blasttable::VERSION = '1.7.8';
 use vars qw(%MAPPING %MODEMAP $DEFAULT_WRITER_CLASS $DefaultProgramName);
 use strict;
 use Bio::Search::Result::ResultFactory;
@@ -270,6 +271,11 @@ sub next_result{
 			   'Data' => $evalue});
        }
        my $identical = $hsp_len - $mismatches - $gapsm;
+       # If $positives value is absent, try to recover it from $percent_pos,
+       # this is better than letting the program to assume "conserved == identical"
+       if (not defined $positives and defined $percent_pos) {
+	   $positives = sprintf "%d", ($percent_pos * $hsp_len / 100);
+       }
        $self->start_element({'Name' => 'Hsp'});
        $self->element({'Name' => 'Hsp_evalue',			   
 		       'Data' => $evalue});       

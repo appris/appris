@@ -1,3 +1,20 @@
+package Bio::Align::Utilities;
+$Bio::Align::Utilities::VERSION = '1.7.8';
+use strict;
+use warnings;
+use Carp;
+
+use Exporter 'import';
+our @EXPORT_OK = qw(
+  aa_to_dna_aln
+  bootstrap_replicates
+  cat
+  bootstrap_replicates_codons
+  dna_to_aa_aln
+  most_common_sequences
+);
+our %EXPORT_TAGS = (all => \@EXPORT_OK);
+
 #
 # BioPerl module for Bio::Align::Utilities
 #
@@ -74,7 +91,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -87,28 +104,9 @@ Internal methods are usually preceded with a _
 
 =cut
 
-#' keep my emacs happy
-# Let the code begin...
-
-package Bio::Align::Utilities;
-use vars qw(@EXPORT @EXPORT_OK $GAP $CODONGAP %EXPORT_TAGS );
-use strict;
-use Carp;
-use Bio::Root::Version;
-require Exporter;
-
-use base qw(Exporter);
-
-@EXPORT = qw();
-@EXPORT_OK =
-  qw(aa_to_dna_aln bootstrap_replicates cat bootstrap_replicates_codons dna_to_aa_aln);
-%EXPORT_TAGS = ( all => [ @EXPORT, @EXPORT_OK ] );
-
-BEGIN {
-    use constant CODONSIZE => 3;
-    $GAP       = '-';
-    $CODONGAP  = $GAP x CODONSIZE;
-}
+use constant CODONSIZE => 3;
+our $GAP       = '-';
+our $CODONGAP  = $GAP x CODONSIZE;
 
 =head2 aa_to_dna_aln
 
@@ -150,13 +148,12 @@ sub aa_to_dna_aln {
 
     foreach my $seq ( $aln->each_seq ) {
         my $aa_seqstr = $seq->seq();
-        my $id        = $seq->display_id;
-        my $dnaseq =
-          $dnaseqs->{$id} || $aln->throw( "cannot find " . $seq->display_id );
+        my $pepid     = $seq->display_id;
+        my $dnaseq    = $dnaseqs->{$pepid} || $aln->throw( "cannot find " . $seq->display_id );
         my $start_offset = ( $seq->start - 1 ) * CODONSIZE;
-
         $dnaseq = $dnaseq->seq();
-        my $dnalen = $dnaseqs->{$id}->length;
+        my $dnalen = $dnaseqs->{$pepid}->length;
+        my $dnaid = $dnaseqs->{$pepid}->display_id || $pepid; # try to use DNAseq obj ID (issue #137)
         my $nt_seqstr;
         my $j = 0;
         for ( my $i = 0 ; $i < $alnlen ; $i++ ) {
@@ -172,7 +169,7 @@ sub aa_to_dna_aln {
         $nt_seqstr .= $GAP x ( ( $alnlen * 3 ) - length($nt_seqstr) );
 
         my $newdna = Bio::LocatableSeq->new(
-            -display_id => $id,
+            -display_id => $dnaid,
             -alphabet   => 'dna',
             -start      => $start_offset + 1,
             -end        => ( $seq->end * CODONSIZE ),
@@ -501,6 +498,43 @@ sub cat {
     }
     $aln->consensus_meta($new_cons_meta) if $new_cons_meta;
     return $aln;
+}
+
+
+=head2 most_common_sequences
+
+ Title     : most_common_sequences
+ Usage     : @common = most_common_sequences ($align, $case_sensitivity)
+ Function  : Returns an array of the sequences that appear most often in the
+             alignment (although this probably makes more sense when there is
+             only a single most common sequence).  Sequences are compared after
+             removing any "-" (gap characters), and ambiguous units (e.g., R
+             for purines) are only compared to themselves.  The returned
+             sequence is also missing the "-" since they don't actually make
+             part of the sequence.
+ Returns   : Array of text strings.
+ Arguments : Optional argument defining whether the comparison between sequences
+             to find the most common should be case sensitive. Defaults to
+             false, i.e, not case sensitive.
+
+=cut
+
+sub most_common_sequences {
+    my $align = shift
+      or croak ("Must provide Bio::AlignI object to Bio::Align::Utilities::most_common_sequences");
+    my $case_sensitive = shift; # defaults to false (we get undef if nothing)
+
+    ## We keep track of the max on this loop. Saves us having to
+    ## transverse the hash table later to find the maximum value.
+    my $max = 0;
+    my %counts;
+    foreach ($align->each_seq) {
+        (my $seq = $_->seq) =~ tr/-//d;
+        $seq = uc ($seq) unless $case_sensitive;
+        $max++ if (++$counts{$seq} > $max);
+    }
+    my @common = grep ($counts{$_} == $max, keys %counts);
+    return @common;
 }
 
 1;

@@ -392,6 +392,11 @@ apprisFilters.filter('convertTransScoreObj', function(deleteSrcNamesFilter, extr
                         if ( item.tag.indexOf('readthrough_transcript') > -1 ) {
                             filtered[iTrans]['flags'] += ', '+'ReadThrough';
                         }
+                        if ( item.tag.includes("MANE_") ) {
+                            var rx = /.*(MANE_\w*)/g;
+                            var arr = rx.exec(item.tag);
+                            filtered[iTrans]['flags'] += ', '+arr[1]; 
+                        }
                     }
                     filtered[iTrans]['flags'] = filtered[iTrans]['flags'].replace(/^,\s*/g,'');
                     var id = {}

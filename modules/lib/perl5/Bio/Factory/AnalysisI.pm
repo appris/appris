@@ -54,7 +54,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -97,6 +97,7 @@ C<Bio::Tools::Run::AnalysisFactory> object instead.
 # Let the code begin...
 
 package Bio::Factory::AnalysisI;
+$Bio::Factory::AnalysisI::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Root::RootI);

@@ -1,3 +1,16 @@
+package Bio::SimpleAlign;
+$Bio::SimpleAlign::VERSION = '1.7.8';
+use strict;
+use warnings;
+
+use Carp;
+
+use Bio::LocatableSeq;  # uses Seq's as list
+use Bio::Seq;
+use Bio::SeqFeature::Generic;
+
+use parent qw(Bio::Root::Root Bio::Align::AlignI Bio::AnnotatableI Bio::FeatureHolderI);
+
 # BioPerl module for SimpleAlign
 #
 # Please direct questions and support issues to <bioperl-l@bioperl.org> 
@@ -112,7 +125,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -145,51 +158,16 @@ methods. Internal methods are usually preceded with a _
 
 =cut
 
-# 'Let the code begin...
+## This data should probably be in a more centralized module...
+## it is taken from Clustalw documentation.
+## These are all the positively scoring groups that occur in the
+## Gonnet Pam250 matrix. The strong and weak groups are
+## defined as strong score >0.5 and weak score =<0.5 respectively.
+our %CONSERVATION_GROUPS = (
+  'strong' => [qw(STA NEQK NHQK NDEQ QHRK MILV MILF HY FYW )],
+  'weak'   => [qw(CSA ATV SAG STNK STPA SGND SNDEQK NDEQHK NEQHRK FVLIM HFY)],
+);
 
-package Bio::SimpleAlign;
-use vars qw(%CONSERVATION_GROUPS);
-use strict;
-
-use Bio::LocatableSeq;  # uses Seq's as list
-
-use Bio::Seq;
-use Bio::SeqFeature::Generic;
-
-BEGIN {
-    # This data should probably be in a more centralized module...
-    # it is taken from Clustalw documentation.
-    # These are all the positively scoring groups that occur in the
-    # Gonnet Pam250 matrix. The strong and weak groups are
-    # defined as strong score >0.5 and weak score =<0.5 respectively.
-
-    %CONSERVATION_GROUPS = (
-            'strong' => [ qw(
-						 STA
-						 NEQK
-						 NHQK
-						 NDEQ
-						 QHRK
-						 MILV
-						 MILF
-						 HY
-						 FYW )],
-				'weak' => [ qw(
-                      CSA
-					       ATV
-					       SAG
-					       STNK
-					       STPA
-					       SGND
-					       SNDEQK
-					       NDEQHK
-					       NEQHRK
-					       FVLIM
-					       HFY )],);
-}
-
-use base qw(Bio::Root::Root Bio::Align::AlignI Bio::AnnotatableI 
-	    Bio::FeatureHolderI);
 
 =head2 new
 
@@ -289,7 +267,7 @@ See L<Bio::LocatableSeq> for more information
 
 sub addSeq {
     my $self = shift;
-    $self->deprecated("addSeq - deprecated method. Use add_seq() instead.");
+    Carp::carp("addSeq - deprecated method. Use add_seq() instead.");
     $self->add_seq(@_);
 }
 
@@ -366,7 +344,7 @@ sub add_seq {
 
 sub removeSeq {
     my $self = shift;
-    $self->deprecated("removeSeq - deprecated method. Use remove_seq() instead.");
+    Carp::carp("removeSeq - deprecated method. Use remove_seq() instead.");
     $self->remove_seq(@_);
 }
 
@@ -540,7 +518,7 @@ sub sort_by_list {
     }
 
     my $ct=1;
-    open(my $listfh, '<', $list) || $self->throw("can't open file for reading: $list");
+    open my $listfh, '<', $list or $self->throw("Could not read file '$list': $!");
     while (<$listfh>) {
       chomp;
       my $name=$_;
@@ -750,7 +728,7 @@ Methods returning one or more sequences objects.
 
 sub eachSeq {
     my $self = shift;
-    $self->deprecated("eachSeq - deprecated method. Use each_seq() instead.");
+    Carp::carp("eachSeq - deprecated method. Use each_seq() instead.");
     $self->each_seq();
 }
 
@@ -821,7 +799,7 @@ sub _alpha_startend {
 
 sub eachSeqWithId {
     my $self = shift;
-    $self->deprecated("eachSeqWithId - deprecated method. Use each_seq_with_id() instead.");
+    Carp::carp("eachSeqWithId - deprecated method. Use each_seq_with_id() instead.");
     $self->each_seq_with_id(@_);
 }
 
@@ -1140,11 +1118,17 @@ sub slice {
 	    my $slice_seq = $seq->subseq($start, $seq_end);
 	    $new_seq->seq( $slice_seq );
 
-	    $slice_seq =~ s/\W//g;
+        # Allowed extra characters in string
+        my $allowed_chars = '';
+        if (exists $self->{_mask_char}) {
+            $allowed_chars = $self->{_mask_char};
+            $allowed_chars = quotemeta $allowed_chars;
+        }
+        $slice_seq =~ s/[^\w$allowed_chars]//g;
 
-	    if ($start > 1) {
+        if ($start > 1) {
             my $pre_start_seq = $seq->subseq(1, $start - 1);
-            $pre_start_seq =~ s/\W//g;
+            $pre_start_seq =~ s/[^\w$allowed_chars]//g;
             if (!defined($seq->strand)) {
                 $new_seq->start( $seq->start + CORE::length($pre_start_seq) );
             } elsif ($seq->strand < 0){
@@ -2329,7 +2313,7 @@ sub is_flush {
 
 sub length_aln {
     my $self = shift;
-    $self->deprecated("length_aln - deprecated method. Use length() instead.");
+    Carp::carp("length_aln - deprecated method. Use length() instead.");
     $self->length(@_);
 }
 
@@ -2363,15 +2347,15 @@ sub length {
 
 sub maxname_length {
     my $self = shift;
-    $self->deprecated("maxname_length - deprecated method.".
-		      " Use maxdisplayname_length() instead.");
+    Carp::carp("maxname_length - deprecated method."
+               . " Use maxdisplayname_length() instead.");
     $self->maxdisplayname_length();
 }
 
 sub maxnse_length {
     my $self = shift;
-    $self->deprecated("maxnse_length - deprecated method.".
-		      " Use maxnse_length() instead.");
+    Carp::carp("maxnse_length - deprecated method."
+               . " Use maxnse_length() instead.");
     $self->maxdisplayname_length();
 }
 
@@ -2738,13 +2722,13 @@ sub displayname {
 
 sub get_displayname {
     my $self = shift;
-    $self->deprecated("get_displayname - deprecated method. Use displayname() instead.");
+    Carp::carp("get_displayname - deprecated method. Use displayname() instead.");
     $self->displayname(@_);
 }
 
 sub set_displayname {
     my $self = shift;
-    $self->deprecated("set_displayname - deprecated method. Use displayname() instead.");
+    Carp::carp("set_displayname - deprecated method. Use displayname() instead.");
     $self->displayname(@_);
 }
 
@@ -3080,13 +3064,9 @@ sub add_SeqFeature {
    $self->{'_as_feat'} = [] unless $self->{'_as_feat'};
 
    if (scalar @feat > 1) {
-      $self->deprecated(
-         -message => 'Providing an array of features to Bio::SimpleAlign add_SeqFeature()'.
-                     ' is deprecated and will be removed in a future version. '.
-                     'Add a single feature at a time instead.',
-         -warn_version    => 1.007,
-         -throw_version   => 1.009,
-      );
+      Carp::carp('Providing an array of features to Bio::SimpleAlign'
+                 . 'add_SeqFeature() is deprecated and will be removed in a'
+                 . ' future version.  Add a single feature at a time instead.');
    }
 
    for my $feat ( @feat ) {
@@ -3189,46 +3169,6 @@ sub annotation {
 
 =head1 Deprecated methods
 
-=cut
-
-=head2 no_residues
-
- Title     : no_residues
- Usage     : $no = $ali->no_residues
- Function  : number of residues in total in the alignment
- Returns   : integer
- Argument  :
- Note      : deprecated in favor of num_residues() 
-
-=cut
-
-sub no_residues {
-	my $self = shift;
-	$self->deprecated(-warn_version => 1.0069,
-					  -throw_version => 1.0075,
-                      -message => 'Use of method no_residues() is deprecated, use num_residues() instead');
-  $self->num_residues(@_);
-}
-
-=head2 no_sequences
-
- Title     : no_sequences
- Usage     : $depth = $ali->no_sequences
- Function  : number of sequence in the sequence alignment
- Returns   : integer
- Argument  :
- Note      : deprecated in favor of num_sequences()
-
-=cut
-
-sub no_sequences {
-	my $self = shift;
-	$self->deprecated(-warn_version => 1.0069,
-					  -throw_version => 1.0075,
-                      -message => 'Use of method no_sequences() is deprecated, use num_sequences() instead');
-    $self->num_sequences(@_);
-}
-
 =head2 mask_columns
 
  Title     : mask_columns
@@ -3286,6 +3226,8 @@ sub mask_columns {
         $new_seq->seq($new_dna_string);
         $aln->add_seq($new_seq);
     }
+    # Preserve chosen mask character, it may be need later (like in 'slice')
+    $aln->{_mask_char} = $mask_char;
     return $aln;
 }
 

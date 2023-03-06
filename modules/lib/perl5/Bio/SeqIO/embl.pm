@@ -100,7 +100,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Ewan Birney
 
@@ -118,6 +118,7 @@ methods. Internal methods are usually preceded with a _
 
 
 package Bio::SeqIO::embl;
+$Bio::SeqIO::embl::VERSION = '1.7.8';
 use vars qw(%FTQUAL_NO_QUOTE);
 use strict;
 use Bio::SeqIO::FTHelper;
@@ -138,14 +139,18 @@ use base qw(Bio::SeqIO);
                   'citation'=>1,
                   'codon'=>1,
                   'codon_start'=>1,
+                  'compare'=>1,
                   'cons_splice'=>1,
                   'direction'=>1,
+                  'estimated_length'=>1,
                   'evidence'=>1,
                   'label'=>1,
                   'mod_base'=> 1,
                   'number'=> 1,
                   'rpt_type'=> 1,
                   'rpt_unit'=> 1,
+                  'rpt_unit_range'=>1,
+                  'tag_peptide'=>1,
                   'transl_except'=> 1,
                   'transl_table'=> 1,
                   'usedin'=> 1,
@@ -214,7 +219,7 @@ sub next_seq {
 
         # ID   DQ299383; SV 1; linear; mRNA; STD; MAM; 431 BP.
         # This regexp comes from the new2old.pl conversion script, from EBI
-        if ($line =~ m/^ID   (\w+);\s+SV (\d+); (\w+); ([^;]+); (\w{3}); (\w{3}); (\d+) BP./) {
+        if ($line =~ m/^ID   (\S+);\s+SV (\d+); (\w+); ([^;]+); (\w{3}); (\w{3}); (\d+) BP./) {
             ($name, $sv, $topology, $mol, $div) = ($1, $2, $3, $4, $6);
         }
         if (defined $sv) {
@@ -302,13 +307,13 @@ sub next_seq {
                   my ($date, $version) = split(' ', $line, 2);
                   $date =~ tr/,//d; # remove comma if new version
                   if ($version) {
-                  if ($version =~ /\(Rel\. (\d+), Created\)/xms ) {
+                  if ($version =~ /\(Rel\. (\d+), Created\)/ms ) {
                       my $release = Bio::Annotation::SimpleValue->new(
                                                                       -tagname    => 'creation_release',
                                                                       -value      => $1
                                                                      );
                       $annotation->add_Annotation($release);
-                  } elsif ($version =~ /\(Rel\. (\d+), Last updated, Version (\d+)\)/xms ) {
+                  } elsif ($version =~ /\(Rel\. (\d+), Last updated, Version (\d+)\)/ms ) {
                       my $release = Bio::Annotation::SimpleValue->new(
                                                                       -tagname    => 'update_release',
                                                                       -value      => $1
@@ -554,8 +559,8 @@ sub _write_ID_line {
 
         $mol ||= '';            # 'unassigned'; ?
         $id_line = "ID   $name; SV $version; $topology; $mol; STD; $div; $len BP.\nXX\n";
-        $self->_print($id_line);
     }
+    $self->_print($id_line);
 }
 
 =head2 _is_valid_division
@@ -677,7 +682,7 @@ sub write_seq {
             my @dates =  $seq->get_dates();
             my $ct = 1;
             my $date_flag = 0;
-            my ($cr) = $seq->annotation->get_Annotations("creation_release");
+	    my ($cr) = $seq->annotation->get_Annotations("creation_release");
             my ($ur) = $seq->annotation->get_Annotations("update_release");
             my ($uv) = $seq->annotation->get_Annotations("update_version");
 
@@ -688,10 +693,10 @@ sub write_seq {
             foreach my $dt (@dates) {
                 if (!$date_flag) {
                     $self->_write_line_EMBL_regex("DT   ","DT   ",
-                                                  $dt." (Rel. $cr, Created)",
+                                                  $dt." (Rel. ".($cr->value()).", Created)",
                                                   '\s+|$',80) if $ct == 1;
                     $self->_write_line_EMBL_regex("DT   ","DT   ",
-                                                  $dt." (Rel. $ur, Last updated, Version $uv)",
+                                                  $dt." (Rel. ".($ur->value()).", Last updated, Version ".($uv->value()).")",
                                                   '\s+|$',80) if $ct == 2;
                 } else {        # other formats?
                     $self->_write_line_EMBL_regex("DT   ","DT   ",
@@ -926,7 +931,7 @@ sub write_seq {
  Title   : _print_EMBL_FTHelper
  Usage   :
  Function: Internal function
- Returns : 1 if writing suceeded, otherwise undef
+ Returns : 1 if writing succeeded, otherwise undef
  Args    :
 
 
@@ -953,7 +958,7 @@ sub _print_EMBL_FTHelper {
     $self->_write_line_EMBL_regex(sprintf("FT   %-15s ",$fth->key),
                                   "FT                   ",$fth->loc,
                                   '\,|$',80) || return; #'
-    foreach my $tag ( keys %{$fth->field} ) {
+    foreach my $tag (sort keys %{$fth->field} ) {
         if ( ! defined $fth->field->{$tag} ) {
             next;
         }
@@ -969,7 +974,7 @@ sub _print_EMBL_FTHelper {
             #
             # Long qualifiers, that will be line wrapped, are always quoted
             elsif (!$FTQUAL_NO_QUOTE{$tag} or length("/$tag=$value")>=60) {
-                my $pat = $value =~ /\s/ ? '\s|\-|$' : '.|\-|$';
+                my $pat = $value =~ /\s+/ ? '\s+|\-|$' : '.|\-|$';
                 $self->_write_line_EMBL_regex("FT                   ",
                                               "FT                   ",
                                               "/$tag=\"$value\"",$pat,80) || return;
@@ -1356,11 +1361,33 @@ sub _read_FTHelper_EMBL {
 
     # Now parse and add any qualifiers.  (@qual is kept
     # intact to provide informative error messages.)
-  QUAL: for (my $i = 0; $i < @qual; $i++) {
-        $_ = $qual[$i];
-        my( $qualifier, $value ) = m{^/([^=]+)(?:=(.+))?}
-            or $self->throw("Can't see new qualifier in: $_\nfrom:\n"
+    my $last_unquoted_qualifier;
+  QUAL:
+    for (my $i = 0; $i < @qual; $i++) {
+        my $data = $qual[$i];
+        my ( $qualifier, $value );
+	
+	unless (( $qualifier, $value ) = ($data =~ m{^/([^=]+)(?:=\s*(.*))?})) {
+	   if ( defined $last_unquoted_qualifier ) {
+	      # handle case of unquoted multiline - read up everything until the next qualifier
+	      do {
+                 # Protein sequence translations need to be joined without spaces,
+                 # other qualifiers need those.
+		 $value .= ' ' if $qualifier ne "translation";
+                 $value .= $data;
+	      } while defined($data = $qual[++$i]) && $data !~ m[^/];
+	      $i--;
+              $out->field->{$last_unquoted_qualifier}->[-1] .= $value;
+              $last_unquoted_qualifier = undef;
+	      next QUAL;
+	   } else {
+              $self->throw("Can't see new qualifier in: $_\nfrom:\n"
                             . join('', map "$_\n", @qual));
+	   }
+	}
+        $qualifier = '' if not defined $qualifier;
+
+        $last_unquoted_qualifier = undef;
         if (defined $value) {
             # Do we have a quoted value?
             if (substr($value, 0, 1) eq '"') {
@@ -1390,7 +1417,9 @@ sub _read_FTHelper_EMBL {
                 $value =~ s/^"|"$//g;
                 # Undouble internal quotes
                 $value =~ s/""/"/g; #"
-            }
+            } else {
+              $last_unquoted_qualifier = $qualifier;
+	    }
         } else {
             $value = '_no_value';
         }
@@ -1409,7 +1438,7 @@ sub _read_FTHelper_EMBL {
  Usage   :
  Function: internal function
  Example :
- Returns : 1 if writing suceeded, else undef
+ Returns : 1 if writing succeeded, else undef
  Args    :
 
 
@@ -1463,7 +1492,7 @@ sub _write_line_EMBL_regex {
 
   CHUNK: while($line) {
         foreach my $pat ($regex, '[,;\.\/-]\s|'.$regex, '[,;\.\/-]|'.$regex) {
-            if ($line =~ m/^(.{0,$subl})($pat)(.*)/ ) {
+            if ($line =~ m/^(.{1,$subl})($pat)(.*)/ ) {
                 my $l = $1.$2;
                 $l =~ s/#/ /g  # remove word wrap protection char '#'
                     if $pre1 eq "RA   ";

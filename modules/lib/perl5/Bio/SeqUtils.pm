@@ -51,7 +51,7 @@ Bio::SeqUtils - Additional methods for PrimarySeq objects
     my $revcomseq = Bio::SeqUtils->revcom_with_features($seq);
 
     # simulate cloning of a fragment into a vector. Cut the vector at
-    # positions 1000 and 1100 (deleting postions 1001 to 1099) and
+    # positions 1000 and 1100 (deleting positions 1001 to 1099) and
     # "ligate" a fragment into the sites. The fragment is
     # reverse-complemented in this example (option "flip"). 
     # All features of the vector and fragment are preserved and 
@@ -66,7 +66,7 @@ Bio::SeqUtils - Additional methods for PrimarySeq objects
       -flip => 1 
     );
 
-    # delete a segment of a seqence (from pos 1000 to 1100, inclusive), 
+    # delete a segment of a sequence (from pos 1000 to 1100, inclusive),
     # again preserving features and annotations
     my $new_molecule = Bio::SeqUtils->cut( $seq, 1000, 1100 );
 
@@ -165,7 +165,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Heikki Lehvaslaiho
 
@@ -186,6 +186,7 @@ methods. Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::SeqUtils;
+$Bio::SeqUtils::VERSION = '1.7.8';
 use strict;
 use warnings;
 use Scalar::Util qw(blessed);
@@ -592,6 +593,11 @@ sub trunc_with_features {
     my $trunc = $seq->trunc( $start, $end );
     my $truncrange =
       Bio::Range->new( -start => $start, -end => $end, -strand => 0 );
+
+    # make sure that there is no annotation or features in $trunc
+    # (->trunc() now clone objects except for Bio::Seq::LargePrimarySeq)
+    $trunc->annotation->remove_Annotations;
+    $trunc->remove_SeqFeatures;
 
     # move annotations
     foreach my $key ( $seq->annotation->get_all_annotation_keys() ) {
@@ -1469,6 +1475,11 @@ sub revcom_with_features {
           . '] should be a Bio::SeqI ' )
       unless $seq->isa('Bio::SeqI');
     my $revcom = $seq->revcom;
+
+    # make sure that there is no annotation or features in $trunc
+    # (->revcom() now clone objects except for Bio::Seq::LargePrimarySeq)
+    $revcom->annotation->remove_Annotations;
+    $revcom->remove_SeqFeatures;
 
     #move annotations
     foreach my $key ( $seq->annotation->get_all_annotation_keys() ) {

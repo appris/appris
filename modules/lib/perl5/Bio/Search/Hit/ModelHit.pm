@@ -74,7 +74,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via the
 web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Chris Fields
 
@@ -90,7 +90,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::Search::Hit::ModelHit;
-
+$Bio::Search::Hit::ModelHit::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Search::Hit::GenericHit);
@@ -171,7 +171,7 @@ Implementation of Bio::Search::Hit::HitI methods
  Usage   : $desc = $hit->description();
  Function: Retrieve the description for the hit
  Returns : a scalar string
- Args    : [optional] scalar string to set the descrition
+ Args    : [optional] scalar string to set the description
 
 =cut
 
@@ -548,6 +548,9 @@ sub query_length {
            if available, for the hit
  Returns : a scalar string (empty string if not set)
  Args    : none
+ Note    : As of Sept. 2016 NCBI records will no longer have a
+           GI; this attributue will remain in place for older
+           records
 
 =cut
 

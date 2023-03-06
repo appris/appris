@@ -73,7 +73,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 the bugs and their resolution.  Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR
 
@@ -100,6 +100,7 @@ methods.
 # Let the code begin...
 
 package Bio::Ontology::TermI;
+$Bio::Ontology::TermI::VERSION = '1.7.8';
 use strict;
 
 use base qw(Bio::Root::RootI);
@@ -340,7 +341,7 @@ sub get_secondary_ids {
 
 =head1  Deprecated methods
 
-Used for looking up the methods that supercedes them.
+Used for looking up the methods that supersedes them.
 
 =cut
 

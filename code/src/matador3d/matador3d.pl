@@ -88,8 +88,8 @@ $logger->init_log($str_params);
 my $EXP_CFG = new Config::IniFiles( -file => $ENV{APPRIS_EXP_CONF_FILE} );
 my $best_hsp_only = $EXP_CFG->val( 'matador3d', 'best_hsp_only', 1 );
 my $count_terminal_gaps = $EXP_CFG->val( 'matador3d', 'count_terminal_gaps', 0 );
-my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 1 );
-my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 1 );
+my $recal_identity_scores = $EXP_CFG->val( 'matador3d', 'recal_identity_scores', 0 );
+my $recal_gap_scores = $EXP_CFG->val( 'matador3d', 'recal_gap_scores', 0 );
 
 #####################
 # Method prototypes #

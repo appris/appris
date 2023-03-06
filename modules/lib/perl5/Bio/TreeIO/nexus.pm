@@ -31,7 +31,7 @@ basically is just a remapping of trees.
 
 The nexus format allows node comments that are placed inside square
 brackets. Usually the comments (implemented as tags for nodes) are
-used to give a name for an internal node or record the bootstap value,
+used to give a name for an internal node or record the bootstrap value,
 but other uses are possible.
 
 The FigTree program by Andrew Rambaut adds various rendering
@@ -66,7 +66,7 @@ Report bugs to the Bioperl bug tracking system to help us keep track
 of the bugs and their resolution. Bug reports can be submitted via
 the web:
 
-  https://redmine.open-bio.org/projects/bioperl/
+  https://github.com/bioperl/bioperl-live/issues
 
 =head1 AUTHOR - Jason Stajich
 
@@ -82,6 +82,7 @@ Internal methods are usually preceded with a _
 # Let the code begin...
 
 package Bio::TreeIO::nexus;
+$Bio::TreeIO::nexus::VERSION = '1.7.8';
 use strict;
 
 use Bio::Event::EventGeneratorI;
