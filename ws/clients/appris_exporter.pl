@@ -20,8 +20,8 @@ my ($APPRIS_HEAD) = <<APPRIS_HEAD_DESC;
 # APPRIS can be accessed through RESTful web services. Services can retrieve useful #
 # information about genes/transcripts, or the results of individual APPRIS methods. #
 #                                                                                   #
-# APPRIS (https://appris.bioinfo.cnio.es/) is a web server for annotating           #
-# alternative splice isoforms in vertebrate genomes.                                #
+# APPRIS (https://appris.bioinfo.cnio.es/) is a web server for annotating alternative #
+# splice isoforms in vertebrate genomes.                                            #
 #                                                                                   #
 #                                                                                   #
 # If you have questions or comments, please write to:                               #

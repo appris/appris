@@ -86,6 +86,37 @@
             "Danio rerio":				3
         }
 	},	
+	"Macaca mulatta": {
+        "animal": "vertebrates",
+        "scores": {
+            "Homo sapiens":				0.3,
+            "Pongo abelii":			0.3,
+            "Papio anubis":			0.2,
+            "Macaca fascicularis":			0.1,
+            "Callithrix jacchus":			0.5,
+            "Saimiri boliviensis boliviensis":		0.5,
+            "Otolemur garnettii":			0.8,
+            "Mus musculus":				1.0,
+            "Rattus norvegicus":		1.0,
+            "Sus scrofa":				1.1,
+            "Bos taurus":				1.1,
+            "Canis lupus familiaris":	1.1,
+            "Myotis lucifugus":	1.1,
+            "Panthera pardus":	1.1,
+            "Loxodonta africana":	1.2,
+            "Vombatus ursinus":	1.5,
+            "Gallus gallus":			2,
+            "Aquila chrysaetos chrysaetos":			2,
+            "Podarcis muralis":			2,
+            "Anolis carolinensis":		2,
+            "Xenopus tropicalis":		2.2,
+            "Geotrypetes seraphini":		2.2,
+            "Lepisosteus oculatus":				3,
+            "Paramormyrops kingsleyae":				3,
+            "Salmo salar":				3,
+            "Danio rerio":				3
+        }
+	},	
 	"Mus musculus": {
         "animal": "vertebrates",
         "scores": {

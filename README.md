@@ -52,12 +52,22 @@ References
 ==========
 If you find APPRIS useful, please consider citing our latest publication:
 
-[1] APPRIS WebServer and WebServices.
+[1] APPRIS: selecting functionally important isoforms.
+Rodriguez JM, Pozo F, Cerdán-Vélez D, Di Domenico T, Vázquez J, Tress ML.
+Nucleic Acids Res. 2022 50:D54-D59.
+DOI:10.1093/nar/gkab1058
+
+[2] APPRIS 2017: principal isoforms for multiple gene sets.
+Rodriguez JM, Rodriguez-Rivas J, Domenico TD, Vázquez J, Valencia A, and Tress ML.
+Nucleic Acids Res. Database issue; 2017 Oct 23.
+DOI:10.1093/nar/gkx997
+
+[3] APPRIS WebServer and WebServices.
 Rodriguez JM, Carro A, Valencia A, and Tress ML.
 Nucleic Acids Res. 2015 May 18.
 PUBMED:25990727 DOI:10.1093/nar/gkv512
 
-[2] APPRIS: annotation of principal and alternative splice isoforms.
+[4] APPRIS: annotation of principal and alternative splice isoforms.
 Rodriguez JM, Maietta P, Ezkurdia I, Pietrelli A, Wesselink JJ, Lopez G, Valencia A and Tress ML.
 Nucleic acids research 2013;41;Database issue;D110-7
 PUBMED:23161672 DOI:10.1093/nar/gks1058
