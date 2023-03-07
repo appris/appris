@@ -1,129 +1,117 @@
 {
-"Drosophila melanogaster":[
-	{"name":"Drosophila melanogaster","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":0,"norm":0}
-],
-"Drosophila simulans":[
-	{"name":"Drosophila simulans","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":5,"norm":0}
-],
 "Drosophila ficusphila":[
-	{"name":"Drosophila ficusphila","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":17,"norm":0}
-],
-"Drosophila takahashii":[
-	{"name":"Drosophila takahashii","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.0875}
+	{"name":"Drosophila ficusphila","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":17,"norm":0.0675}
 ],
 "Drosophila elegans":[
-	{"name":"Drosophila elegans","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.0875}
+	{"name":"Drosophila elegans","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.0675}
 ],
 "Drosophila ananassae":[
-	{"name":"Drosophila ananassae","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.0875}
+	{"name":"Drosophila ananassae","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.124}
 ],
 "Drosophila kikkawai":[
-	{"name":"Drosophila kikkawai","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.0875}
+	{"name":"Drosophila kikkawai","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":35,"norm":0.112}
 ],
 "Drosophila pseudoobscura":[
-	{"name":"Drosophila pseudoobscura","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.0925}
+	{"name":"Drosophila pseudoobscura","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.132}
 ],
 "Drosophila albomicans":[
-	{"name":"Drosophila albomicans","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.125}
+	{"name":"Drosophila albomicans","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.172}
 ],
 "Drosophila novamexicana":[
-	{"name":"Drosophila novamexicana","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.125}
+	{"name":"Drosophila novamexicana","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.172}
 ],
 "Drosophila miranda":[
-	{"name":"Drosophila miranda","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.125}
+	{"name":"Drosophila miranda","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.132}
 ],
 "Drosophila navajoa":[
-	{"name":"Drosophila navajoa","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.125}
+	{"name":"Drosophila navojoa","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.172}
 ],
 "Drosophila grimshawi":[
-	{"name":"Drosophila grimshawi","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.125}
+	{"name":"Drosophila grimshawi","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":50,"norm":0.172}
 ],
 "Scaptodrosophila":[
-	{"name":"Scaptodrosophila lebanonensis","common":"Dunno","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":65,"norm":0.1625}
+	{"name":"Scaptodrosophila lebanonensis","common":"Dunno","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":65,"norm":0.272}
 ],
 "Ceratitis":[
-	{"name":"Ceratitis capitata","common":"Mediterranean fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.315}
+	{"name":"Ceratitis capitata","common":"Mediterranean fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.444}
 ],
 "Teleopsis":[
-	{"name":"Teleopsis dalmanni","common":"Malaysian stalk-eyed fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.315}
+	{"name":"Teleopsis dalmanni","common":"Malaysian stalk-eyed fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.352}
 ],
 "Rhagoletis":[
-	{"name":"Rhagoletis pomonella","common":"Apple maggot","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.315}
+	{"name":"Rhagoletis pomonella","common":"Apple maggot","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.444}
 ],
 "Zeugodacus":[
-	{"name":"Zeugodacus cucurbitae","common":"Melon fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.315}
+	{"name":"Zeugodacus cucurbitae","common":"Melon fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.444}
 ],
 "Bactrocera":[
-	{"name":"Bactrocera tryoni","common":"Queensland fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.315}
+	{"name":"Bactrocera tryoni","common":"Queensland fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":126,"norm":0.444}
 ],
 "Musca":[
-	{"name":"Musca domestica","common":"Housefly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.33}
+	{"name":"Musca domestica","common":"Housefly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.272}
 ],
 "Lucilia":[
-	{"name":"Lucilia sericata","common":"Common green bottle fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.33}
+	{"name":"Lucilia sericata","common":"Common green bottle fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.272}
 ],
 "Stomoxys":[
-	{"name":"Stomoxys calcitrans","common":"Stable fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.33}
+	{"name":"Stomoxys calcitrans","common":"Stable fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.272}
 ],
 "Glossina":[
-	{"name":"Glossina fuscipes","common":"Tsetse fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.33}
+	{"name":"Glossina fuscipes","common":"Tsetse fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":132,"norm":0.272}
 ],
 "Hermetia":[
-	{"name":"Hermetia illucens","common":"Black soldier fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":217,"norm":0.5425}
+	{"name":"Hermetia illucens","common":"Black soldier fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":217,"norm":0.716}
 ],
 "Aedes aegypti":[
-	{"name":"Aedes aegypti","common":"Yellow fever mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Aedes aegypti","common":"Yellow fever mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Aedes albopictus":[
-	{"name":"Aedes albopictus","common":"Tiger mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Aedes albopictus","common":"Tiger mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
-"Anopheles darlingi":[
-	{"name":"Anopheles darlingi","common":"American malaria mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+"Anopheles albimanus":[
+	{"name":"Anopheles albimanus","common":"American malaria mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Anopheles stephensi":[
-	{"name":"Anopheles stephensi","common":"A stephensi","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Anopheles stephensi","common":"A stephensi","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Anopheles arabiensis":[
-	{"name":"Anopheles arabiensis","common":"A arabiensis","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Anopheles arabiensis","common":"A arabiensis","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Culex":[
-	{"name":"Culex quinquefasciatus","common":"Southern house mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Culex quinquefasciatus","common":"Southern house mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Bradysia":[
-	{"name":"Bradysia coprophila","common":"gnat","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Bradysia coprophila","common":"gnat","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Contarinia":[
-	{"name":"Contarinia nasturtii","common":"Swede midge","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":0.68}
+	{"name":"Contarinia nasturtii","common":"Swede midge","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":272,"norm":1}
 ],
 "Osmia":[
-	{"name":"Osmia lignaria","common":"Orchard mason bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Osmia lignaria","common":"Orchard mason bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Formica":[
-	{"name":"Formica exsecta","common":"Narrow-headed ant","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Formica exsecta","common":"Narrow-headed ant","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Bombus":[
-	{"name":"Bombus impatiens","common":"Eastern bumble bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Bombus impatiens","common":"Eastern bumble bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Harpegnathos":[
-	{"name":"Harpegnathos saltator","common":"Indian jumping ant","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Harpegnathos saltator","common":"Indian jumping ant","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Dinoponera":[
-	{"name":"Dinoponera quadriceps","common":"D. quadriceps","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Dinoponera quadriceps","common":"D. quadriceps","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Apis mellifera":[
-	{"name":"Apis mellifera","common":"Honey bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Apis mellifera","common":"Honey bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Apis dorsata":[
-	{"name":"Apis dorsata","common":"Giant honey bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":0.8125}
+	{"name":"Apis dorsata","common":"Giant honey bee","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":325,"norm":1}
 ],
 "Zootermopsis":[
-	{"name":"Zootermopsis nevadensis","common":"Nevada termite","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":358,"norm":0.895}
+	{"name":"Zootermopsis nevadensis","common":"Nevada termite","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":358,"norm":1}
 ],
 "Cryptotermes":[
-	{"name":"Cryptotermes secundus","common":"Drywood termite","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":358,"norm":0.895}
-],
-"Blatella":[
-	{"name":"Blattella germanica","common":"German cockroach","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":358,"norm":0.895}
+	{"name":"Cryptotermes secundus","common":"Drywood termite","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":358,"norm":1}
 ],
 "Daphnia":[
 	{"name":"Daphnia magna","common":"Water flea","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":530,"norm":1}
@@ -136,9 +124,6 @@
 ],
 "Penaeus":[
 	{"name":"Penaeus vannamei","common":"Whiteleg shrimp","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":530,"norm":1}
-],
-"Tigriopus":[
-	{"name":"Tigriopus californicus","common":"T. californicus","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":530,"norm":1}
 ],
 "Ixodes":[
 	{"name":"Ixodes scapularis","common":"Deer tick","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":601,"norm":1}

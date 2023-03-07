@@ -2,11 +2,18 @@
 "Danio":[
 	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"0","age":0,"norm":0}
 ],
+"Cyprinus":[
+	{"name":"Cyprinus carpio","common":"Goldfish","tax_id":7957,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
+],
+"Puntigrus":[
+	{"name":"Puntigrus tetrazona","common":"Goldfish","tax_id":7957,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
+],
 "Carassius":[
 	{"name":"Carassius auratus","common":"Goldfish","tax_id":7957,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
 ],
 "Sinocyclocheilus":[
-	{"name":"Sinocyclocheilus rhinocerous","common":"S. rhinocerous","tax_id":307959,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
+	{"name":"Sinocyclocheilus rhinocerous","common":"S. rhinocerous","tax_id":307959,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634},
+	{"name":"Sinocyclocheilus anshuiensis","common":"S. rhinocerous","tax_id":307959,"proteome_id":"UP000018467","weight":"1","age":106,"norm":0.15634}
 ],
 "Pygocentrus":[
 	{"name":"Pygocentrus nattereri","common":"Red piranha","tax_id":42514,"proteome_id":"UP000018467","weight":"2","age":153,"norm":0.22566}
@@ -50,9 +57,6 @@
 "Takifugu":[
 	{"name":"Takifugu rubripes","common":"Fugu","tax_id":31033,"proteome_id":"UP000005226","weight":"3","age":230,"norm":0.33923}
 ],
-"Tetraodon":[
-	{"name":"Tetraodon nigroviridis","common":"Tetraodon","tax_id":99883,"proteome_id":"UP000007303","weight":"3","age":230,"norm":0.33923}
-],
 "Gasterosteus":[
 	{"name":"Gasterosteus aculeatus","common":"Stickleback","tax_id":69293,"proteome_id":"UP000007635","weight":"3","age":230,"norm":0.33923}
 ],
@@ -69,7 +73,10 @@
 	{"name":"Scleropages formosus","common":"Asian arowana","tax_id":113540,"weight":"4","age":267,"norm":0.3938}
 ],
 "Anguilla":[
-	{"name":"Anguilla Anguilla","common":"European eel","tax_id":7936,"weight":"5","age":274,"norm":0.4041}
+	{"name":"Anguilla anguilla","common":"European eel","tax_id":7936,"weight":"5","age":274,"norm":0.4041}
+],
+"Lepisosteus":[
+	{"name":"Lepisosteus oculatus","common":"Spotted gar","tax_id":7918,"weight":"6","age":315,"norm":0.4646}
 ],
 "Acipenser":[
 	{"name":"Acipenser ruthenus","common":"Sterlet","tax_id":7906,"weight":"7","age":344,"norm":0.50737}
@@ -86,8 +93,8 @@
 "Myotis":[
 	{"name":"Myotis lucifugus","common":"Microbat","tax_id":59463,"proteome_id":"UP000001074","weight":"8","age":435,"norm":0.64159}
 ],
-"Canis":[
-	{"name":"Canis lupus familiaris","common":"Dog","tax_id":9615,"proteome_id":"UP000002254","weight":"8","age":435,"norm":0.64159}
+"Sus":[
+	{"name":"Sus scrofa","common":"Pig","tax_id":9615,"proteome_id":"UP000002254","weight":"8","age":435,"norm":0.64159}
 ],
 "Bos":[
 	{"name":"Bos taurus","common":"Cow","tax_id":9913,"proteome_id":"UP000009136","weight":"8","age":435,"norm":0.64159}
@@ -126,7 +133,6 @@
 	{"name":"Styela Clava","common":"S.Clava","tax_id":7725,"weight":"11","age":678,"norm":1}
 ],
 "Ciona":[
-	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"11","age":678,"norm":1},
-	{"name":"Ciona savignyi","common":"C.savignyi","tax_id":51511,"proteome_id":"UP000007875","weight":"11","age":678,"norm":1}
+	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"11","age":678,"norm":1}
 ]
 }

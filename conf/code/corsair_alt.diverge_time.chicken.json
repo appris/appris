@@ -2,35 +2,14 @@
 "Homo":[
 	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":320,"norm":0.4719764}
 ],
-"Pan":[
-	{"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","weight":0,"age":320,"norm":0.4719764}
-],
-"Macaca":[
-	{"name":"Macaca mulatta","common":"Macaque","tax_id":9544,"proteome_id":"UP000006718","weight":0,"age":320,"norm":0.4719764}
-],
 "Callithrix":[
 	{"name":"Callithrix jacchus","common":"Marmoset","tax_id":9483,"proteome_id":"UP000008225","weight":0,"age":320,"norm":0.4719764}
 ],
 "Mus":[
-	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"1","age":320,"norm":0.4719764}
-],
-"Oryctolagus":[
-	{"name":"Oryctolagus cuniculus","common":"Rabbit","tax_id":9986,"proteome_id":"UP000001811","weight":"1","age":320,"norm":0.4719764}
+	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"1","age":320,"norm":0.4719764},
 ],
 "Myotis":[
 	{"name":"Myotis lucifugus","common":"Microbat","tax_id":59463,"proteome_id":"UP000001074","weight":"2","age":320,"norm":0.4719764}
-],
-"Equus":[
-	{"name":"Equus caballus","common":"Horse","tax_id":9796,"proteome_id":"UP000002281","weight":"2","age":320,"norm":0.4719764}
-],
-"Felis":[
-	{"name":"Felis catus","common":"Cat","tax_id":9685,"proteome_id":"UP000011712","weight":"2","age":320,"norm":0.4719764}
-],
-"Canis":[
-	{"name":"Canis lupus familiaris","common":"Dog","tax_id":9615,"proteome_id":"UP000002254","weight":"2","age":320,"norm":0.4719764}
-],
-"Tursiops":[
-	{"name":"Tursiops truncatus","common":"Dolphin","tax_id":9739,"proteome_id":"UP000245320","weight":"2","age":320,"norm":0.4719764}
 ],
 "Sus":[
 	{"name":"Sus scrofa","common":"Pig","tax_id":9823,"proteome_id":"UP000008227","weight":"2","age":320,"norm":0.4719764}
@@ -38,17 +17,11 @@
 "Bos":[
 	{"name":"Bos taurus","common":"Cow","tax_id":9913,"proteome_id":"UP000009136","weight":"2","age":320,"norm":0.4719764}
 ],
-"Ovis":[
-	{"name":"Ovis aries","common":"Sheep","tax_id":9940,"proteome_id":"UP000002356","weight":"2","age":320,"norm":0.4719764}
-],
 "Loxodonta":[
 	{"name":"Loxodonta africana","common":"Elephant","tax_id":9785,"proteome_id":"UP000007646","weight":"3","age":320,"norm":0.4719764}
 ],
 "Monodelphis":[
 	{"name":"Monodelphis domestica","common":"Opossum","tax_id":13616,"proteome_id":"UP000002280","weight":"4","age":320,"norm":0.4719764}
-],
-"Ornithorhynchus":[
-	{"name":"Ornithorhynchus anatinus","common":"Platypus","tax_id":9258,"proteome_id":"UP000002279","weight":"5","age":320,"norm":0.4719764}
 ],
 "Anolis":[
 	{"name":"Anolis carolinensis","common":"Anole lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
@@ -56,97 +29,57 @@
 "Podarcis":[
 	{"name":"Podarcis muralis","common":"Wall lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
 ],
-"Zootoca":[
-	{"name":"Zootoca vivipara","common":"Common lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
-],
 "Pantherophis":[
 	{"name":"Pantherophis guttatus","common":"Corn snake","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
 ],
-"Lacerta":[
-	{"name":"Lacerta agilis","common":"Sand lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
-],
-"Crotalus":[
-	{"name":"Crotalus tigris","common":"Tiger rattlesnake","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":282,"norm":0.415979}
-],
 "Alligator":[
-	{"name":"Alligator sinensis","common":"Chinese alligator","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":245,"norm":0.361357},
+	{"name":"Alligator sinensis","common":"Chinese alligator","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":245,"norm":0.361357}
 	{"name":"Alligator mississippiensis","common":"American alligator","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":245,"norm":0.361357}
-],
-"Ficedula":[
-	{"name":"Ficedula albicollis","common":"Flycatcher","tax_id":59894,"proteome_id":"UP000016665","weight":"6","age":77,"norm":0.11357}
-],
-"Cygnus":[
-	{"name":"Cygnus olor","common":"Mute swan","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":77,"norm":0.11357}
-],
-"Oxyura":[
-	{"name":"Oxyura jamaicensis","common":"Ruddy duck","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":77,"norm":0.11357}
 ],
 "Aythya":[
 	{"name":"Aythya fuligula","common":"Tufted duck","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":77,"norm":0.11357}
 ],
-"Anser":[
-	{"name":"Anser cygnoides domesticus","common":"Swan goose","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":77,"norm":0.11357}
-],
 "Anas":[
-	{"name":"Anas platyrhynchos","common":"Duck","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+	{"name":"Anas platyrhynchos","common":"Duck","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.11357}
 ],
 "Falco":[
 	{"name":"Falco naumanni","common":"Lesser kestrel","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317},
 	{"name":"Falco peregrinus","common":"Peregrine falcon","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
-"Strigops":[
-	{"name":"Strigops habroptila","common":"Kakapo","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+"Geospiza":[
+	{"name":"Geospiza fortis","common":"Geospiza","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
-"Amazona":[
-	{"name":"Amazona aestiva","common":"Turqoise-fronted amazon","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+"Corvus":[
+	{"name":"Corvus cornix cornix","common":"Crow","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
-"Lonchura":[
-	{"name":"Lonchura striata domestica","common":"Bengalese finch","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+"Aquila":[
+	{"name":"Aquila chrysaetos chrysaetos","common":"Golden eagle","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+],
+"Catharus":[
+	{"name":"Catharus ustulatus","common":"Thrush","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+],
+"Cygnus":[
+	{"name":"Cygnus olor","common":"Swan","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
 "Taeniopygia":[
 	{"name":"Taeniopygia guttata","common":"Zebra finch","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
-"Serinus":[
-	{"name":"Serinus canaria","common":"Atlantic canary","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
-],
-"Acanthisitta":[
-	{"name":"Acanthisitta chloris","common":"Rifleman","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
+"Ficedula":[
+	{"name":"Ficedula albicollis","common":"Flycatcher","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
 "Zonotrichia":[
 	{"name":"Zonotrichia albicollis","common":"White-throated sparrow","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
 ],
-"Hirundo":[
-	{"name":"Hirundo rustica","common":"Barn swallow","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
-],
-"Aquila":[
-	{"name":"Aquila chrysaetos chrysaetos","common":"European golden eagle","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
-],
 "Haliaeetus":[
 	{"name":"Haliaeetus leucocephalus","common":"Bald eagle","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":93,"norm":0.137317}
-],
-"Gallus":[
-	{"name":"Gallus gallus","common":"Chicken","tax_id":9031,"proteome_id":"UP000000539","weight":"6","age":0,"norm":0}
-],
-"Penelope":[
-	{"name":"Penelope pileata","common":"White-crested guan","tax_id":9103,"proteome_id":"UP000001645","weight":"6","age":69,"norm":0.10177}
-],
-"Meleagris":[
-	{"name":"Meleagris gallopavo","common":"Turkey","tax_id":9103,"proteome_id":"UP000001645","weight":"6","age":32,"norm":0}
-],
-"Gopherus":[
-	{"name":"Gopherus evgoodei","common":"Goode's thornscrub tortoise","tax_id":13735,"proteome_id":"UP000007267","weight":"6","age":262,"norm":0.38643}
-],
-"Trachemus":[
-	{"name":"Trachemys scripta elegans","common":"Red-eared slider","tax_id":13735,"proteome_id":"UP000007267","weight":"6","age":262,"norm":0.38643}
-],
-"Chrysemus":[
-	{"name":"Chrysemys picta bellii","common":"Painted turtle","tax_id":13735,"proteome_id":"UP000007267","weight":"6","age":262,"norm":0.38643}
 ],
 "Pelodiscus":[
 	{"name":"Pelodiscus sinensis","common":"Chinese softshell turtle","tax_id":13735,"proteome_id":"UP000007267","weight":"6","age":262,"norm":0.38643}
 ],
+"Geotrypetes":[
+	{"name":"Geotrypetes seraphini","common":"Gaboon","tax_id":8364,"weight":"7","age":353,"norm":0.520649}
+],
 "Xenopus":[
-	{"name":"Xenopus tropicalis","common":"Xenopus","tax_id":8364,"proteome_id":"UP000008143","weight":"7","age":353,"norm":0.520649},
 	{"name":"Xenopus laevis","common":"Xenopus","tax_id":8364,"weight":"7","age":353,"norm":0.520649}
 ],
 "Latimeria":[
@@ -155,29 +88,14 @@
 "Danio":[
 	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"9","age":432,"norm":0.6371681}
 ],
-"Astyanax":[
-	{"name":"Astyanax mexicanus","common":"Cave fish","tax_id":7994,"proteome_id":"UP000018467","weight":"9","age":432,"norm":0.6371681}
-],
-"Gadus":[
-	{"name":"Gadus morhua","common":"Cod","tax_id":8049,"weight":"9","age":432,"norm":0.6371681}
-],
 "Oreochromis":[
 	{"name":"Oreochromis niloticus","common":"Tilapia","tax_id":8128,"proteome_id":"UP000005207","weight":"9","age":432,"norm":0.6371681}
 ],
 "Oryzias":[
 	{"name":"Oryzias latipes","common":"Medaka","tax_id":8090,"proteome_id":"UP000001038","weight":"9","age":432,"norm":0.6371681}
 ],
-"Xiphophorus":[
-	{"name":"Xiphophorus maculatus","common":"Platyfish","tax_id":8083,"proteome_id":"UP000002852","weight":"9","age":432,"norm":0.6371681}
-],
-"Poecilia":[
-	{"name":"Poecilia formosa","common":"Amazon molly","tax_id":48698,"proteome_id":"UP000028760","weight":"9","age":432,"norm":0.6371681}
-],
 "Takifugu":[
 	{"name":"Takifugu rubripes","common":"Fugu","tax_id":31033,"proteome_id":"UP000005226","weight":"9","age":432,"norm":0.6371681}
-],
-"Tetraodon":[
-	{"name":"Tetraodon nigroviridis","common":"Tetraodon","tax_id":99883,"proteome_id":"UP000007303","weight":"9","age":432,"norm":0.6371681}
 ],
 "Gasterosteus":[
 	{"name":"Gasterosteus aculeatus","common":"Stickleback","tax_id":69293,"proteome_id":"UP000007635","weight":"9","age":432,"norm":0.6371681}
@@ -201,7 +119,6 @@
 	{"name":"Styela clava","common":"S.Clava","tax_id":7725,"weight":"12","age":678,"norm":1}
 ],
 "Ciona":[
-	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":7719,"proteome_id":"UP000008144","weight":"12","age":678,"norm":1},
-	{"name":"Ciona savignyi","common":"C.savignyi","tax_id":51511,"proteome_id":"UP000007875","weight":"12","age":678,"norm":1}
+	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":51511,"proteome_id":"UP000007875","weight":"12","age":678,"norm":1}
 ]
 }
