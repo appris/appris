@@ -842,18 +842,19 @@ sub get_appris_scores($$\$\$\$)
 				$appris_score += $weight*$n_sc;
 			}
 			
+			# [16/01/2023] We change the penalization from -1 to -2 after we fix the appris and trifid decisions
 			# Penalize X
 			if ( $is_x != -1 ) {
-				$appris_score = -1;
+				$appris_score = -2;
 			}			
 
 			# filter by biotype
-			if ( $transcript->biotype and ( ($transcript->biotype eq 'nonsense_mediated_decay') or ($transcript->biotype eq 'polymorphic_pseudogene') ) ) {
-				$appris_score = -1;
+			if ( $transcript->biotype and ( ($transcript->biotype eq 'nonsense_mediated_decay') or ($transcript->biotype eq 'polymorphic_pseudogene') or ($transcript->biotype eq 'protein_coding_LoF') or ($transcript->biotype eq 'non_stop_decay')) ) {
+				$appris_score = -2;
 			}
 			# filter by readthrough_transcript
 			if ( $transcript->tag and $transcript->tag =~ /readthrough_transcript/ ) {
-				$appris_score = -1;
+				$appris_score = -2;
 			}
 			# filter by start/stop codon not found
 			if ( $transcript->translate->codons ) {
@@ -861,9 +862,9 @@ sub get_appris_scores($$\$\$\$)
 				foreach my $codon (@{$transcript->translate->codons}) {
 					if ( ($codon->type eq 'start') or ($codon->type eq 'stop') ) { $codons .= $codon->type.',' }
 				}
-				unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $appris_score = -1 }
+				unless ( $codons =~ /start/ and $codons =~ /stop/ ) { $appris_score = -2 }
 			} else {
-				$appris_score = -1;
+				$appris_score = -2;
 			}
 			# save appris score and normalize score
 			my ($m) = 'appris';
@@ -1100,7 +1101,10 @@ sub step_appris($$$)
 			my ($core_flag) = 1;
 			my ($unique_transc) = ( $num_distinct_scores == 1 and scalar(@score_transc_ids) >= 1 ) ? 1 : 0 ;
 			if ( $core_flag == 1 ) {
-				if ( ( ($highest_score - $ap_score) <=  $main::APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
+				### PREVIOUS VERSION
+				#if ( ( ($highest_score - $ap_score) <=  $main::APPRIS_CUTOFF) and ( ($ap_score >= 0) or ($unique_transc == 1) ) ) {
+				# I delete this limitation, so we dont need a double rejection
+				if ( ($highest_score - $ap_score) <=  $main::APPRIS_CUTOFF ) {
 					$isof_report->[$index_transcripts{$transc_id}]{'principal'} = 1;
 					$princ_list->{$transc_id} = 1;
 				}
@@ -1116,8 +1120,14 @@ sub step_trifid($$$$$)
 	my ($i_princ_list, $scores, $gene, $trifid_report, $min_lead) = @_;
 	my ($report);
 
+	### PREVIOUS VERSION
+	#my (@scoring_principals) = grep {
+	#	$scores->{$_}{'score_principal_isoform'} >= 0  # i.e. not -1
+	#} keys(%{$i_princ_list});
+
+	# I delete that limitation, so we dont need a double rejection
 	my (@scoring_principals) = grep {
-		$scores->{$_}{'score_principal_isoform'} >= 0  # i.e. not -1
+		$scores->{$_}{'score_principal_isoform'}
 	} keys(%{$i_princ_list});
 
 	if (@scoring_principals) {
@@ -1161,27 +1171,73 @@ sub step_trifid($$$$$)
 				# get the best transcripts comparing with the best score
 				my $num_dec_scores = scalar(@dec_scores);
 				my $best_score = $dec_scores[0];
-				if ( $num_dec_scores == 1 || ($num_dec_scores >= 2 &&
-						($best_score - $dec_scores[1]) >= $min_lead) ) {
-					# save the transc with the best score
+
+				if ( $num_dec_scores == 1 || $min_lead == 0 ) {
+				# If we are checking for PRINCIPAL:4 or there is only one in P2
+					# Save just seqs with the best score for PRINCIPAL:4
 					my (@best_seqs) = @{$score_to_seqs{$best_score}};
 					foreach my $transc_id (@scoring_principals) {
 						if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
 							$report->{$transc_id} = 1;
 						}
 					}
-					# save the rest of transcripts that pass the threshold comparing with the best
-					for ( my $i=1; $i < scalar(@dec_scores); $i++ ) {
-						if ($best_score - $dec_scores[$i] <= $min_lead) {
-							my (@best_seqs) = @{$score_to_seqs{$dec_scores[$i]}};
-							foreach my $transc_id (@scoring_principals) {
-								if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
-									$report->{$transc_id} = 1;
+				} else {
+				# If we are checking for PRINCIPAL:2
+					if (  ($num_dec_scores >= 2 &&
+							($best_score - $dec_scores[1]) <= $min_lead) ) {
+					# If there are sequences closer than $min_lead to best score
+						# save the transc with the best score
+						my (@best_seqs) = @{$score_to_seqs{$best_score}};
+						foreach my $transc_id (@scoring_principals) {
+							if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+								$report->{$transc_id} = 1;
+							}
+						}
+						# save the rest of transcripts that pass the threshold comparing with the best
+						for ( my $i=1; $i < scalar(@dec_scores); $i++ ) {
+							if ($best_score - $dec_scores[$i] <= $min_lead) {
+								my (@best_seqs) = @{$score_to_seqs{$dec_scores[$i]}};
+								foreach my $transc_id (@scoring_principals) {
+									if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+										$report->{$transc_id} = 1;
+									}
 								}
 							}
 						}
 					}
+					else {
+					# If there are NOT sequences closer than $min_lead to best score
+						my (@best_seqs) = @{$score_to_seqs{$best_score}};
+						foreach my $transc_id (@scoring_principals) {
+							if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+								$report->{$transc_id} = 1;
+							}
+						}
+					}
 				}
+				### PREVIOUS VERSION
+				#
+				#if ( $num_dec_scores == 1 || ($num_dec_scores >= 2 &&
+				#		($best_score - $dec_scores[1]) >= $min_lead) ) {
+				#	# save the transc with the best score
+				#	my (@best_seqs) = @{$score_to_seqs{$best_score}};
+				#	foreach my $transc_id (@scoring_principals) {
+				#		if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+				#			$report->{$transc_id} = 1;
+				#		}
+				#	}
+				#	# save the rest of transcripts that pass the threshold comparing with the best
+				#	for ( my $i=1; $i < scalar(@dec_scores); $i++ ) {
+				#		if ($best_score - $dec_scores[$i] <= $min_lead) {
+				#			my (@best_seqs) = @{$score_to_seqs{$dec_scores[$i]}};
+				#			foreach my $transc_id (@scoring_principals) {
+				#				if ( grep( /^$transc_to_seq{$transc_id}$/, @best_seqs) ) {
+				#					$report->{$transc_id} = 1;
+				#				}
+				#			}
+				#		}
+				#	}
+				#}
 			}
 		}
 	}
