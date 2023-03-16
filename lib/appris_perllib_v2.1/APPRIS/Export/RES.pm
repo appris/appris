@@ -371,13 +371,13 @@ sub parser_spade_residues {
 	if ( defined $method->result ) {
 		if ( defined $method->regions ) {
 			foreach my $region (@{$method->regions}) {	
-				if ( defined $region->alignment_start and defined $region->alignment_end and defined $region->hmm_name and defined $region->evalue and defined $region->type_domain ) {
+				if ( defined $region->alignment_start and defined $region->alignment_end and defined $region->hmm_acc and defined $region->evalue and defined $region->type_domain ) {
 					if ( !defined $inres or ( defined $inres and ($region->alignment_start <= $inres) and ($region->alignment_end >= $inres) ) ) {
 						my ($res) = {
 							'type'		=> $region->type_domain,
 							'start'		=> $region->alignment_start,
 							'end'		=> $region->alignment_end,
-							'annot'		=> $region->hmm_name . " (" . $region->evalue . ")",
+							'annot'		=> $region->hmm_acc . " (" . $region->evalue . ")",
 						};						
 					 	if ( ($region->type_domain eq 'domain_damaged') or ($region->type_domain eq 'domain_wrong') ) {
 					 		$res->{'damaged'} = 1;

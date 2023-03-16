@@ -89,7 +89,7 @@ $METHOD_HEADS = {
 	},
 	'spade'=>{
 		'tsv'=>
-			"== functional_domain: start\tend\tdomain_name\tbest_e-value\n",
+			"== functional_domain: start\tend\tdomain_acc\tdomain_name\tbest_e-value\n",
 		'raw'=>
 			"== functional_domain: text_result\n",
 	},
@@ -1041,16 +1041,18 @@ sub get_trans_spade_tsv_annot {
 						if ( defined $method->regions ) {
 							foreach my $region (@{$method->regions}) {					
 								if ( defined $region->alignment_start and defined $region->alignment_end and
-									 defined $region->hmm_name and defined $region->evalue ) {
+									 defined $region->hmm_acc and defined $region->hmm_name and defined $region->evalue ) {
 									next unless ( res_is_inside($res, $region->alignment_start, $region->alignment_end) );
 									my (%parameters) = (
 														alignment_start		=> $region->alignment_start,
 														alignment_end		=> $region->alignment_end,
+														hmm_acc			=> $region->hmm_acc,
 														hmm_name			=> $region->hmm_name,
 														evalue				=> $region->evalue,
 									);
 									$output .=	$parameters{alignment_start}."\t".
 												$parameters{alignment_end}."\t".
+												$parameters{hmm_acc}."\t".							
 												$parameters{hmm_name}."\t".							
 												$parameters{evalue}."\n";				
 								}
@@ -1106,15 +1108,17 @@ sub get_spade_tsv_result
 		if ( ($seq_id ne 'result') and (exists $seq_report->{'result'}) ) {
 			foreach my $region (@{$seq_report->{'domains'}}) {				
 				if ( defined $region->{'alignment_start'} and defined $region->{'alignment_end'} and
-					 defined $region->{'hmm_name'} and defined $region->{'e_value'} ) {
+					 defined $region->{'hmm_acc'} and defined $region->{'hmm_name'} and defined $region->{'e_value'} ) {
 					my (%parameters) = (
 										alignment_start		=> $region->{'alignment_start'},
 										alignment_end		=> $region->{'alignment_end'},
+										hmm_acc			=> $region->{'hmm_acc'},
 										hmm_name			=> $region->{'hmm_name'},
 										evalue				=> $region->{'e_value'},
 					);
 					$output .=	$parameters{alignment_start}."\t".
 								$parameters{alignment_end}."\t".
+								$parameters{hmm_acc}."\t".							
 								$parameters{hmm_name}."\t".							
 								$parameters{evalue}."\n";				
 				}

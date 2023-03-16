@@ -47,7 +47,7 @@ apprisApp.config(['$provide', function ($provide) {
     $provide.value("consUrlFirestarligand", 'http://firedb.bioinfo.cnio.es/Php/ligand/index.html?id=');
     $provide.value("consUrlPDBligand", 'https://www.rcsb.org/pdb/ligand/ligandsummary.do?hetId=');
     $provide.value("consUrlPDBstructure", 'https://www.rcsb.org/structure/');
-    $provide.value("consUrlPfamfamily", 'https://pfam.xfam.org/family/');
+    $provide.value("consUrlPfamfamily", 'https://www.ncbi.nlm.nih.gov/Structure/cdd/');
     // constant paths
     $provide.value("consPageDatabase", '/database');
     $provide.value("consPageServer", '/server');

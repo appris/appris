@@ -540,7 +540,7 @@ function createAnnotReferences($filter, query, residues, urlExporter, urlRunnerR
                         if ( angular.isArray(match) && angular.isDefined(match[1]) && angular.isDefined(match[2]) ) {
                             var acc = match[1];
                             var eval = match[2];
-                            var id = acc;
+                            var id = acc.replace(/\.\d*$/g,'');
                             annot = "<a href='"+urlPfam+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
 
                         }
