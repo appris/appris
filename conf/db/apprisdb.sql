@@ -15,7 +15,7 @@ CREATE TABLE datasource (
 CREATE TABLE entity (
   entity_id INT(11) unsigned NOT NULL auto_increment,
   datasource_id INT(11) unsigned NOT NULL,
-  identifier VARCHAR(2000) DEFAULT NULL,
+  identifier VARCHAR(200) DEFAULT NULL,
   source VARCHAR(50) DEFAULT NULL,
   biotype VARCHAR(50) DEFAULT NULL,
   tsl INT(1) DEFAULT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE entity (
 CREATE TABLE xref_identify (
   entity_id INT(11) unsigned NOT NULL,
   datasource_id INT(11) unsigned NOT NULL,
-  identifier VARCHAR(2000) NOT NULL,
+  identifier VARCHAR(200) NOT NULL,
   CONSTRAINT fk_identify_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_identify_datasource FOREIGN KEY (datasource_id) REFERENCES datasource (datasource_id) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY key_identify_entity_id (entity_id),
