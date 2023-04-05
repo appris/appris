@@ -1,3 +1,47 @@
+```
+SERVER-RELEASE:   2023_01.v48
+CODE-RELEASE:     4.12.2.28
+```
+
+### Highlights
+
++ Upload the annotations for Mus musculus M31
++ Upload updated annotations for Bos taurus e104
++ Upload updated annotations for Gallus gallus e108
++ Upload updated annotations for Macaca mulatta e105
++ Upload updated annotations for Drosophila melanogaster e107
++ Upload updated annotations for Homo sapiens G42
++ Upload updated annotations for Sus scrofa e108
++ Upload updated annotations for Danio rerio e104
++ Upload updated annotations for Pan troglodytes e104
++ Updated proteo DB with Gencode 41
+
+
+### Server (4.12)
+
+
+### Code (2.28)
++ CORSAIR: New scores divided by species
++ Matador3D: Stricter score
++ Fixsome bugs in Appris final decision
+
+___
+## 2022_07.v47
+```
+SERVER-RELEASE:   2022_07.v47
+CODE-RELEASE:     4.12.2.28
+```
+
+### Highlights
+
++ Upload the annotations for Homo sapiens  G41
++ Upload the annotations for Mus musculus M30
+
+### Server (4.12)
+
+
+### Code (2.28)
+
 ___
 ## 2022_02.v47
 ```
