@@ -1120,14 +1120,8 @@ sub step_trifid($$$$$)
 	my ($i_princ_list, $scores, $gene, $trifid_report, $min_lead) = @_;
 	my ($report);
 
-	### PREVIOUS VERSION
-	#my (@scoring_principals) = grep {
-	#	$scores->{$_}{'score_principal_isoform'} >= 0  # i.e. not -1
-	#} keys(%{$i_princ_list});
-
-	# I delete that limitation, so we dont need a double rejection
 	my (@scoring_principals) = grep {
-		$scores->{$_}{'score_principal_isoform'}
+		$scores->{$_}{'score_principal_isoform'} >= 0  # i.e. not -1
 	} keys(%{$i_princ_list});
 
 	if (@scoring_principals) {

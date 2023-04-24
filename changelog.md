@@ -1,3 +1,24 @@
+## 2023_03.v48
+```
+SERVER-RELEASE:   2023_03.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
++ Upload the annotations for Homo Sapiens G43
++ Upload the annotations for Mus musculus M32
+
+### Server (4.13)
+
++ Add feature to get genes with shorter link
+
+### Code (2.29)
+
++ Fix problem with P5
+
+___
+## 2023_01.v48
 ```
 SERVER-RELEASE:   2023_01.v48
 CODE-RELEASE:     4.12.2.28
