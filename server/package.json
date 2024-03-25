@@ -6,7 +6,7 @@
     "start": "node scripts/web-server.js"
   },
   "dependencies": {
-    "express": "3.4.7",
+    "express": "4.19.2",
     "forever": "~0.13.0"
   },
   "devDependencies": {
