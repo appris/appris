@@ -1276,10 +1276,14 @@ sub get_tool_result {
 		print $intmpfile $sequences;	
 		
 		# create command
-		my ($cmd) = "perl $FindBin::Bin/";
-		my ($suffix) = '';		
+		#my ($cmd) = "perl $FindBin::Bin/";
+		my ($cmd) = "$FindBin::Bin/";
+		my ($suffix) = '';
+		if ( $format eq 'clwstrict' ) { $suffix = "aln-clustalw_strict.clwstrict" }
 		if ( $type eq 'muscle' ) {
-			$cmd .= "ebi/muscle_lwp.pl --email appris\@cnio.es --format $format $intmpfile --outfile $outtmpfile 1>&2 2> /dev/null ";
+			#$cmd .= "ebi/muscle_lwp.pl --email appris\@cnio.es --format $format $intmpfile --outfile $outtmpfile 1>&2 2> /dev/null ";
+			my ($outtmpfile_aux) = $outtmpfile.'.'.$suffix;
+			$cmd .= "ebi/muscle3.8.31_i86linux32 -in $intmpfile -out $outtmpfile_aux -$format 1>&2 2> /dev/null ";
 			if ( $format eq 'clw' ) { $suffix = "aln-clustalw.clw" }
 			if ( $format eq 'clwstrict' ) { $suffix = "aln-clustalw_strict.clwstrict" }
 			elsif ( $format eq 'fasta' ) { $suffix = "aln-fasta.fasta" }

@@ -27,21 +27,29 @@
             <li>
                 <a href="#/downloads">Downloads</a>
             </li>
-            <li>
-                <a data-ng-href="{{serverConf.hostWS}}/apidoc/">WebServices</a>
-            </li>
             <li class="dropdown" dropdown is-open="status.isopen">
-                <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/functional_isoforms/" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a ng-href="{{serverConf.hostWS}}/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
                     <li><a ng-href="{{serverConf.hostWS}}/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#/help/intro">Help & Docs</a>
+            <li class="dropdown" dropdown is-open="status.isopen">
+                <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/" dropdown-toggle ng-disabled="disabled">APPRIS/MANE matches<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode19/">Gencode 19</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode40/">Gencode 40</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode41/">Gencode 41</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode42/">Gencode 42</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode43/">Gencode 43</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode44/">Gencode 44</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode44/">Gencode 45</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq105/">RefSeq 105</a></li>
+                   <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq110/">RefSeq 110</a></li>                   
+                </ul>
             </li>
             <li>
-                <a href="#/contact">Contact us</a>
+                <a href="#/help/intro">Help & Docs</a>
             </li>
             <li>
                 <a href="#/about">About us</a>

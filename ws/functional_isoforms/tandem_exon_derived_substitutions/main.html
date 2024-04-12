@@ -13,7 +13,7 @@
     <!-- End Google Analytics -->
     <meta charset="UTF-8">
     <title>Important Alternative Isoforms!</title>
-    <meta name="description" content="View important alternative isoforms based on APPRIS annotations of human genes in GENCODE release 27.">
+    <meta name="description" content="View important alternative isoforms based on APPRIS annotations of human genes in GENCODE release 33.">
     <!-- Imports CSS -->
     <link rel='stylesheet' type='text/css' href='css/reset.css'>
     <link rel="stylesheet" type='text/css' href="css/bootstrap.min.css">
@@ -70,7 +70,7 @@
                 <span class="icon-bar">
                 </span>
             </button>
-            <a class="navbar-brand" href="http://appris-tools.org/">
+            <a class="navbar-brand" href="http://appris.bioinfo.cnio.es/">
                 {APPRIS}
             </a>
         </div>
@@ -78,31 +78,42 @@
         <div class="collapse navbar-collapse" id="appris-navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="dropdown" dropdown is-open="status.isopen">
-                    <a href="http://appris-tools.org/#/tools" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Tools <b class="caret"></b></a>
+                    <a href="http://appris.bioinfo.cnio.es/#/tools" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Tools <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="http://appris-tools.org/#/seeker">Database</a></li>
-                        <li><a href="http://appris-tools.org/#/server">WebServer</a></li>
+                        <li><a href="http://appris.bioinfo.cnio.es/#/seeker">Database</a></li>
+                        <li><a href="http://appris.bioinfo.cnio.es/#/server">WebServer</a></li>
                         <li><a href="http://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="http://appris-tools.org/#/downloads">Downloads</a>
-                </li>
-                <li>
-                    <a href="http://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a>
+                    <a href="http://appris.bioinfo.cnio.es/#/downloads">Downloads</a>
                 </li>
                 <li class="dropdown" dropdown is-open="status.isopen">
-                    <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                    <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/functional_isoforms/" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                        <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
                        <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="http://appris-tools.org/#/help/intro">Help & Docs</a>
+                <li class="dropdown" dropdown is-open="status.isopen">
+                  <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/" dropdown-toggle ng-disabled="disabled">APPRIS/MANE matches<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode19/">Gencode 19</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode40/">Gencode 40</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode41/">Gencode 41</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode42/">Gencode 42</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode43/">Gencode 43</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode44/">Gencode 44</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode45/">Gencode 45</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq105/">RefSeq 105</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq110/">RefSeq 110</a></li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="http://appris-tools.org/#/about">About us</a>
+                    <a href="http://appris.bioinfo.cnio.es/#/help/intro">Help & Docs</a>
+                </li>
+                <li>
+                    <a href="http://appris.bioinfo.cnio.es/#/about">About us</a>
                 </li>
             </ul>
         </div>
@@ -113,9 +124,12 @@
   </header>
   <section>
     <div class="main-desc">
-      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_33.html" target="_blank">GENCODE v33</a> (maybe they are not valid for any other annotation).</p>
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_33.html" target="_blank">GENCODE v33</a> 
+        (maybe they are not valid for any other annotation).
+      </p>
       <br/>
-      <p>For more information about these Functional Isoforms, read the following publication:<p>
+      <p>These data can be downloaded <a href="data/HES_APPRIS_functional.tsv">here</a> in TSV format.<br/>
+        For more information about these Functional Isoforms, read the following publication:<p>
       <address>
         <strong>The clinical importance of tandem exon duplication-derived substitutions.</strong>Nucleic Acids Res. 2021 49:8232–46.<br>
         Martinez Gomez L, Pozo F, Walsh TA, Abascal F, Tress ML.<br>

@@ -20,11 +20,8 @@
  <p>When APPRIS core modules are unable to choose a clear principal variant (approximately 25% of
      human protein-coding genes), the database chooses two or more of the CDS variants as
      "candidates" to be the principal variant. These are assigned tags from PRINCIPAL:2 to
-     PRINCIPAL:5, or ALTERNATIVE:1 or ALTERNATIVE:2, according to one of two selection processes
-     The 'TRIFID' selection process is used on datasets for which TRIFID scores are available,
-     (e.g. Gencode33/Ensembl99 human annotation), while the 'Classic' selection process is used
-     for all other datasets.</p>
- <h5>TRIFID transcript selection</h5>
+     PRINCIPAL:5, or ALTERNATIVE:1 or ALTERNATIVE:2, according to the next selection process:
+     
  <ul>
   <li>
    <strong>PRINCIPAL:2</strong>
@@ -33,7 +30,7 @@
        raw TRIFID score is greater than any other candidate by a sufficiently wide margin. TRIFID is a
        machine learning classifier based on APPRIS and external database input which we have found
        to be a reliable indicator of isoform functionality. For more information about TRIFID,
-       please consult the <a href="https://gitlab.com/bu_cnio/trifid" target="_blank">TRIFID GitLab
+       please consult the <a href="https://github.com/fpozoc/trifid" target="_blank">TRIFID GitHub
        repository</a>.</p>
   </li>
   <li>
@@ -61,49 +58,7 @@
        selected as the principal variant.</p>
   </li>
  </ul>
- <h5>Classic transcript selection</h5>
- <ul>
-  <li>
-   <strong>PRINCIPAL:2</strong>
-   <p>When APPRIS core modules are unable to choose a clear principal variant and one of the
-       principal transcript candidates has a distinct CCDS identifier, it is selected as the
-       principal variant for that gene. A CCDS identifier shows that there is consensus between
-       RefSeq and GENCODE/Ensembl for that variant, guaranteeing that the variant has cDNA
-       support.</p>
-  </li>
-  <li>
-   <strong>PRINCIPAL:3</strong>
-   <p>Where the APPRIS core modules are unable to choose a clear principal variant and multiple
-       candidates have distinct CCDS identifiers, APPRIS selects the variant with the lowest CCDS
-       identifier as the principal variant. The lower the CCDS identifier, the earlier it was
-       annotated.</p>
-   <p>Consensus CDS annotated earlier are likely to have more cDNA evidence. Consecutive CCDS
-       identifiers are not included in this flag, since they will have been annotated in the
-       same release of CCDS. These are distinguished with the next flag.</p>
-   <p>In addition, if there are multiple variants with distinct (but consecutive) CCDS identifiers,
-       APPRIS chooses the variant for which all splice junctions are supported by at least one
-       non-suspect mRNA. This information is reported by the method Transcript Support Level (TSL),
-       which is a method to highlight well-supported and poorly-supported transcript models for
-       users. The method relies on the primary data that can support full-length transcript
-       structure: mRNA and EST alignments supplied by UCSC and Ensembl.</p>
-  </li>
-  <li>
-   <strong>PRINCIPAL:4</strong>
-   <p>Where the APPRIS core modules are unable to choose a clear principal CDS, there are multiple
-       variants with distinct (but consecutive) CCDS identifiers, and all the splice junctions are
-       not well-supported, APPRIS selects the longest CCDS isoform as the principal variant.</p>
-  </li>
-  <li>
-   <strong>PRINCIPAL:5</strong>
-   <p>Where the APPRIS core modules are unable to choose a clear principal variant and none of the
-       candidate variants are annotated by CCDS, APPRIS selects the longest of the candidate
-       isoforms as the principal variant.</p>
-   <p>In the small number of cases where two or more candidates remain that cannot be distinguished
-       even by isoform length, a simple string sort is applied to the transcript identifiers of
-       remaining candidates, and the candidate with the first-sorting transcript ID is arbitrarily
-       selected as the principal variant.</p>
-  </li>
- </ul>
+ 
  <p>For genes with PRINCIPAL:2 to PRINCIPAL:5 isoforms "candidate" variants not chosen as principal
      are labeled in the following way:</p>
  <ul>
@@ -118,4 +73,6 @@
        non-primate species.</p>
   </li>
  </ul>
+ <p>You can see the transcript selection method prior to TRIFID in the 
+    <a href="#/help/previous" target="_blank">Previous versions</a> section.</p>
 </div>

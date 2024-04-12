@@ -74,11 +74,38 @@
             </div>
         </div>
 
+        <div data-ng-if="help == 'methods/trifid'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>TRIFID: Assessing the functional relevance of splice isoforms</small></h2></div>
+                <div class="panel-body">
+                    <help-trifid></help-trifid>
+                </div>
+            </div>
+        </div>
+
         <div data-ng-if="help == 'scores'">
             <div class="panel panel-default">
                 <div class="panel-heading"><h2>Help & Docs <small>The APPRIS Scores</small></h2></div>
                 <div class="panel-body">
                     <help-scores></help-scores>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'importantIsoforms'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Important Isoforms</small></h2></div>
+                <div class="panel-body">
+                    <help-important-isoforms></help-important-isoforms>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'apprisMane'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>APPRIS principal isoforms and MANE Select transcripts</small></h2></div>
+                <div class="panel-body">
+                    <help-appris-mane></help-appris-mane>
                 </div>
             </div>
         </div>
@@ -174,6 +201,15 @@
                 <div class="panel-heading"><h2>Help & Docs <small>Available Species</small></h2></div>
                 <div class="panel-body">
                     <help-species></help-species>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="help == 'previous'">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>Help & Docs <small>Previous versions</small></h2></div>
+                <div class="panel-body">
+                    <help-previous></help-previous>
                 </div>
             </div>
         </div>

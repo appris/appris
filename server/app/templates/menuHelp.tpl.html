@@ -37,14 +37,27 @@
             href="#help/services">The APPRIS WebServices</a>
     </li>
     <li role="presentation" data-ng-class="{ active: isActive('/help/methods')}"><a href="#help/methods">The APPRIS
-        Methods</a></li>
+        Methods</a>
+        <ul class="subnav subnav-pills" style="font-size: small">
+            <li role="presentation"
+                data-ng-class="{ active: isActive('/help/methods/trifid')}"><a
+                    href="#help/methods/trifid">TRIFID: Assessing the functional relevance of splice isoforms</a></li>
+        </ul>
+    </li>
     <li role="presentation" data-ng-class="{ active: isActive('/help/scores')}"><a href="#help/scores">The APPRIS
         Scores</a></li>
+    <li role="presentation" data-ng-class="{ active: isActive('/help/importantIsoforms')}"><a href="#help/importantIsoforms">Important 
+        Isoforms</a></li>
+    <li role="presentation" data-ng-class="{ active: isActive('/help/apprisMane')}"><a href="#help/apprisMane">APPRIS principal 
+        isoforms and MANE Select transcripts</a></li>
     <li role="presentation" data-ng-class="{ active: isActive('/help/docker')}"><a
             href="#help/docker">Docker</a>
     </li>
     <li role="presentation" data-ng-class="{ active: isActive('/help/species')}"><a href="#help/species">Available
         Species and Gene sets</a>
+    </li>
+    <li role="presentation" data-ng-class="{ active: isActive('/help/previous')}"><a href="#help/previous">Previous
+        versions</a>
     </li>
     <li role="presentation" data-ng-class="{ active: isActive('/help/changelogs')}"><a href="#help/changelogs">Change
         logs</a>

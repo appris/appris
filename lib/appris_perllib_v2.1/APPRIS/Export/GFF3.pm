@@ -766,8 +766,8 @@ sub get_spade_annotations {
 						my($optional);
 						$optional->{'Parent'}			= $gene_id;
 						$optional->{'ID'}				= $transcript_id;
-                                                $optional->{'Note'}                             = "hmm_acc:".$region->hmm_acc if ($region->hmm_acc);
-                                                $optional->{'Note'}                             .= ",hmm_name:".$region->hmm_name if ($region->hmm_name);
+						$optional->{'Note'}				= "hmm_acc:".$region->hmm_acc if ($region->hmm_acc);
+						$optional->{'Note'}				.= ",hmm_name:".$region->hmm_name if ($region->hmm_name);
 						$optional->{'Note'}				.= ",evalue:".$region->evalue if ($region->evalue);
 						if ($region->alignment_start and $region->alignment_end) {
 							$optional->{'Note'}			.= ",pep_start:".$region->alignment_start.",pep_end:".$region->alignment_end; 

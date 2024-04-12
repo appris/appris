@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128430091-1"></script>
+    <script src="https://www.googleoptimize.com/optimize.js?id=GTM-N76Q8HW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-128430091-1', {'anonymize_ip': true, 'optimize_id': 'GTM-N76Q8HW'});
+    </script>
+    <!-- End Google Analytics -->
+    <meta charset="UTF-8">
+    <title>Important Alternative Isoforms!</title>
+    <meta name="description" content="View important alternative isoforms based on APPRIS annotations of human genes.">
+    <!-- Imports CSS -->
+    <link rel='stylesheet' type='text/css' href='css/reset.css'>
+    <link rel="stylesheet" type='text/css' href="css/bootstrap.min.css">
+    <link rel='stylesheet' type='text/css' href='css/appris.css'>
+
+    <link rel="stylesheet" type='text/css' href="css/handsontable-7.4.0.full.min.css">
+    <link rel="stylesheet" type='text/css' href="css/main.css">
+
+    <!-- Imports JS -->
+    <script type='text/javascript' src="js/jquery-3.5.1.min.js"></script>
+    <script type='text/javascript' src="js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="js/handsontable-7.4.0.full.min.js"></script>
+    <script type='text/javascript' src="js/xlsx.full.min.js"></script>
+    <script type='text/javascript' src="js/main.js"></script>
+
+    <script type="text/javascript">
+
+      // when document is ready
+      $(document).ready(function() {
+
+        // get the text data in tabular format
+        let textData = $.ajax({
+            url: "data/appris_data.principal_mane_match_G45.tsv",
+            // async: false,
+            success: function(textData){
+              // convert text to object (array of arraya)
+              let data = convert_txt_to_json(textData);
+              // create table
+              create_table('table1', data);
+            },
+            error: function(xhr,status,error){
+              alert(`${xhr}: ${error}`);
+            }
+        });
+
+    });
+  </script>
+
+</head>
+<body class="swagger-section">
+<div class="row clearfix">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-appris" role="navigation">
+        <div class="navbar-header">
+            <button aria-expanded="false" class="navbar-toggle collapsed"
+                    data-target="#appris-navbar-collapse" data-toggle="collapse"
+                    type="button">
+                <span class="sr-only">
+                    Toggle navigation
+                </span>
+                <span class="icon-bar">
+                </span>
+                <span class="icon-bar">
+                </span>
+                <span class="icon-bar">
+                </span>
+            </button>
+            <a class="navbar-brand" href="https://appris.bioinfo.cnio.es/">
+                {APPRIS}
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="appris-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown" dropdown is-open="status.isopen">
+                    <a href="https://appris.bioinfo.cnio.es/#/tools" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Tools <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="https://appris.bioinfo.cnio.es/#/seeker">Database</a></li>
+                        <li><a href="https://appris.bioinfo.cnio.es/#/server">WebServer</a></li>
+                        <li><a href="https://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="https://appris.bioinfo.cnio.es/#/downloads">Downloads</a>
+                </li>
+    	        <li class="dropdown" dropdown is-open="status.isopen">
+        	    <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/functional_isoforms/" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+	               <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
+        	       <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" dropdown is-open="status.isopen">
+                  <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/" dropdown-toggle ng-disabled="disabled">APPRIS/MANE matches<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode19/">Gencode 19</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode40/">Gencode 40</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode41/">Gencode 41</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode42/">Gencode 42</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode43/">Gencode 43</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode44/">Gencode 44</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode45/">Gencode 45</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq105/">RefSeq 105</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq110/">RefSeq 110</a></li>
+                    </ul>
+                </li>
+		            <li>
+                    <a href="https://appris.bioinfo.cnio.es/#/help/intro">Help & Docs</a>
+                </li>
+                <li>
+                    <a href="https://appris.bioinfo.cnio.es/#/about">About us</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+  <header>
+    <h1>APPRIS/MANE matches for GENCODE Release 45</h1>
+  </header>
+  <section>
+    <div class="main-desc">
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_45.html" target="_blank">GENCODE v45</a>.</p>
+      <br/>
+      <p>The table below shows the transcripts annotated by APPRIS as principal isoforms that match those annotated by MANE.<br/>
+        These data can be downloaded <a href="data/appris_data.principal_mane_match_G45.tsv">here</a> in TSV format.</p>
+    </div>
+    <hr/>
+    <div>
+      <div id="table1" class="hot handsontable htRowHeaders htColumnHeaders"></div>
+    </div>
+  </section>
+	</div>
+  <hr/>
+
+ <footer></footer>
+
+</body>
+</html>

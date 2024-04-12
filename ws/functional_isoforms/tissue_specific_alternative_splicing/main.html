@@ -88,17 +88,28 @@
                 <li>
                     <a href="https://appris.bioinfo.cnio.es/#/downloads">Downloads</a>
                 </li>
-                <li>
-                    <a href="https://apprisws.bioinfo.cnio.es/apidoc/">WebServices</a>
-                </li>
     	        <li class="dropdown" dropdown is-open="status.isopen">
-        	    <a class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
+        	    <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/functional_isoforms/" dropdown-toggle ng-disabled="disabled">Important Isoforms<b class="caret"></b></a>
                     <ul class="dropdown-menu">
 	               <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tissue_specific_alternative_splicing/">Tissue-Specific Alternative Splicing</a></li>
         	       <li><a href="https://apprisws.bioinfo.cnio.es/functional_isoforms/tandem_exon_derived_substitutions/">Tandem Exon Derived Substitutions</a></li>
                     </ul>
                 </li>
-		<li>
+                <li class="dropdown" dropdown is-open="status.isopen">
+                  <a class="dropdown-toggle btn" href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/" dropdown-toggle ng-disabled="disabled">APPRIS/MANE matches<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode19/">Gencode 19</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode40/">Gencode 40</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode41/">Gencode 41</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode42/">Gencode 42</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode43/">Gencode 43</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode44/">Gencode 44</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/gencode45/">Gencode 45</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq105/">RefSeq 105</a></li>
+                     <li><a href="https://apprisws.bioinfo.cnio.es/appris_mane_matches/refseq110/">RefSeq 110</a></li>
+                    </ul>
+                </li>
+		            <li>
                     <a href="https://appris.bioinfo.cnio.es/#/help/intro">Help & Docs</a>
                 </li>
                 <li>
@@ -113,9 +124,33 @@
   </header>
   <section>
     <div class="main-desc">
-      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_27.html" target="_blank">GENCODE v27</a> (maybe they are not valid for any other annotation).</p>
+
+      <p>In the study <strong>"An analysis of tissue-specific alternative splicing at the protein
+        level"</strong> (<a href="https://doi.org/10.1371/journal.pcbi.1008287"
+        target="_blank">Rodriguez et al. 2020</a>), we investigated the evidence for tissue-specific
+        splicing among those splice isoforms detected in a large-scale proteomics analysis. Although
+        the data supporting alternative splicing is limited at the protein level, clear patterns
+        emerged among the small numbers of  alternative splice events that we could detect in the
+        proteomics data.</p>
+  
+      <p>More than a third of these events were tissue-specific and most were ancient: over 95% of
+        alternative splice events that were tissue-specific in both proteomics and RNAseq analyses
+        evolved prior to the ancestors of lobe-finned fish, at least 400 million years ago.</p>
+  
+      <p>Tissue-specific alternative protein forms in the proteomics analysis were particularly
+        abundant in nervous and muscle tissues and their genes had roles related to the cytoskeleton
+        and either the structure of muscle fibres or cell-cell connections. This suggests that
+        tissue-specific alternative splicing may have played a role in the development of the
+        vertebrate brain and heart.</p>
+  
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_27.html" target="_blank">GENCODE v27</a>. 
+        However, our results may not be extrapolable to the whole genome; three in four alternative 
+        exons in the human gene set arose in the primate lineage.</p>
+
       <br/>
-      <p>For more information about these Functional Isoforms, read the following publication:<p>
+      
+      <p>These data can be downloaded <a href="data/FunctionalTableLong.tsv">here</a> in TSV format.<br/>
+        For more information about these Functional Isoforms, read the following publication:<p>
       <address>
         <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
         Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>

@@ -42,6 +42,14 @@ apprisDirectives.directive('toolsTpl', function() {
     };
 });
 
+apprisDirectives.directive('toolsExtraTpl', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'templates/toolsExtra.tpl.html'
+    };
+});
+
 apprisDirectives.directive('menuHelpTpl', function() {
     return {
         restrict: 'E',
@@ -84,6 +92,14 @@ apprisDirectives.directive('helpMethods', function() {
     };
 });
 
+apprisDirectives.directive('helpTrifid', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/trifid.html'
+    };
+});
+
 apprisDirectives.directive('helpScores', function() {
     return {
         restrict: 'E',
@@ -92,6 +108,21 @@ apprisDirectives.directive('helpScores', function() {
     };
 });
 
+apprisDirectives.directive('helpImportantIsoforms', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/importantIsoforms.html'
+    };
+});
+
+apprisDirectives.directive('helpApprisMane', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/apprisMane.html'
+    };
+});
 
 apprisDirectives.directive('helpDbQuery', function() {
     return {
@@ -337,6 +368,14 @@ apprisDirectives.directive('helpDocker', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'partials/help/help/docker.html'
+    };
+});
+
+apprisDirectives.directive('helpPrevious', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'partials/help/help/previous.html'
     };
 });
 

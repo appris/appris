@@ -1,0 +1,72 @@
+<div>
+    <p><strong>TRIFID</strong> is a machine learning tool that predicts the functional relevance of 
+        protein isoforms. Trained on real data from large-scale proteomics experiments, it uses 
+        features from the APPRIS database and external inputs to score each annotated isoform. It 
+        uses a random forest-based predictor of splice isoform functional importance based on unbiased 
+        data from large-scale mass spectrometry, using protein isoforms detected in these proteomics 
+        experiments as a proxy for functional significance at the protein level. The higher the score, 
+        the more likely the isoform is to be functionally important. 
+        <br/>
+        It can distinguish isoforms that are under selective pressure from those that are not. In testing, 
+        we have found that isoforms with a score above 0.6 are under selective pressure. These isoforms 
+        are marked in bold in the APPRIS database. 
+    </p>
+
+    <p>
+        <img src="img/alt_NS_syn.png" class="img-thumbnail img-responsive img-center" style="width: 50%;">
+        <p style="text-align: justify; width: 50%; margin: 0 auto;"><small>
+        Non-synonymous to synonymous (NS/Syn) ratios for rare (yellow) and common (purple) 
+        allele frequencies for non-overlapping alternative exons from the human gene set. Exons 
+        are binned by their TRIFID score. Exons with scores above 0.6 have significantly 
+        lower NS/Syn ratios for common allele frequencies, so are under selective pressure. 
+        Exons with scores below 0.6 do not. From Pozo et al. 2021.</small></p>
+    </p>
+
+    <p>Alternative exons that score highly in TRIFID are also much more likely to have pathogenic 
+        variants, which reinforces the likelihood that transcripts with these exons are functionally important. 
+        Proportionally, TRIFID alternative transcripts with scores above 0.8 harbour 700 times more pathogenic 
+        mutations than the the lowest scoring TRIFID alternative transcripts.
+    </p>
+
+    <p>
+        <img src="img/TRIFIDScores.png" class="img-thumbnail img-responsive img-center" style="width: 50%">
+        <p style="text-align: justify; width: 50%; margin: 0 auto;"><small>
+        The percentage of alternative exons that contain pathogenic mutations in the ClinVar database. Again, 
+        exons are binned by TRIFID score. From Pozo et al. 2022.</small></p>
+    </p>
+
+    <p>The most important features in TRIFID are conservation-based, but information from annotators, the 
+        effect on protein structure and function, and transcript expression levels also play a part in 
+        determining the TRIFID score. 
+    </p>
+
+    <p>
+        <img src="img/SHAP_scores.png" class="img-thumbnail img-responsive img-center" style="width: 50%">
+        <p style="text-align: justify; width: 50%; margin: 0 auto;"><small>The top 18 features in TRIFID divided into 5 sub-types (evolutionary, annotation, structure/functional, 
+        expression and splicing effects). CORSAIR, Matador3D and Spade are all APPRIS-based scores. A lower case “n” 
+        indicates that the feature was normalized. From Pozo et al, 2021.</small></p>
+    </p>
+
+    <p>Protein isoforms predicted as functionally important by the algorithm had higher cross-species conservation 
+        and significantly fewer broken functional domains. TRIFID has been applied to all species in APPRIS.
+    </p>
+
+
+    <p>Further technical and scientific details can be found in the GitHub repository 
+        (<a href="https://github.com/fpozoc/trifid" target="_blank">github.com/fpozoc/trifid</a>) and in the <i>NAR Genomics 
+        and Bioinformatics</i> and <i>Npj Genomic Medicine</i> publications:
+
+    </p>
+    <ul>
+    <li style="list-style:none"><p>
+        Pozo, F., Martinez-Gomez, L., Walsh, T. A., Rodriguez, J. M., Di Domenico, T., Abascal, F., 
+        Vazquez, J., & Tress, M. L. (2021).</br><b>Assessing the functional relevance of splice isoforms.</b></br>  
+        NAR Genomics and Bioinformatics, Volume 3, Issue 2, June 2021, lqab044. doi: <a href="https://doi.org/10.1093/nargab/lqab044" target="_blank">10.1093/nargab/lqab044</a></br>
+    </p></li>
+    <li style="list-style:none"><p>
+        Pozo, F., Rodriguez, J. M., Vazquez, J., & Tress, M. L. (2022).</br><b>Clinical variant interpretation 
+        and biologically relevant reference transcripts.</b></br>Npj Genomic Medicine. 
+        doi: TBD</br>
+    </p></li>
+    </ul>
+</div>

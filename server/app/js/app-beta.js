@@ -36,8 +36,8 @@ apprisApp.config(['$provide', function ($provide) {
     // BETA server - development
     $provide.value("serverName", '{APPRISdev}');
     $provide.value("serverType", 'beta');
-    $provide.value("serverHost", 'https://appris-dev.bioinfo.cnio.es');
-    $provide.value("serverHostWS", 'https://apprisws-dev.bioinfo.cnio.es');
+    $provide.value("serverHost", 'http://appris-dev.bioinfo.cnio.es');
+    $provide.value("serverHostWS", 'http://apprisws-dev.bioinfo.cnio.es');
 
     // CONSTANTS
     $provide.value("consUrlEnsembl", 'https://www.ensembl.org');
@@ -49,6 +49,7 @@ apprisApp.config(['$provide', function ($provide) {
     $provide.value("consUrlPfamfamily", 'https://www.ncbi.nlm.nih.gov/Structure/cdd/');
     // constant paths
     $provide.value("consPageDatabase", '/database');
+    $provide.value("consPageGene", '/gene');
     $provide.value("consPageServer", '/server');
     $provide.value("consPathServerStatus", '/server/status/');
     $provide.value("consPathServerResult", '/server/result/');
@@ -71,40 +72,26 @@ apprisApp.config(['$compileProvider', function ($compileProvider) {
 //        $templateCache.removeAll();
 //    });
 //});
-apprisApp.run(function($rootScope, $templateCache) {
+apprisApp.run(['$rootScope', '$location', '$window', '$templateCache', function($rootScope, $location, $window, $templateCache){
     $rootScope.$on('$routeChangeStart', function(event, next, current) {
         if (typeof(current) !== 'undefined'){
             $templateCache.remove(current.templateUrl);
         }
     });
-});
+    // http://www.arnaldocapo.com/blog/post/google-analytics-and-angularjs-with-ui-router/72
+    $rootScope.$on('$routeChangeSuccess', function(event) {
+        if (!$window.ga)
+            return;
+        $window.ga('send', 'pageview', { page: $location.path() });
+    });
+}]);
+
+
 
 apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-//        console.log($httpProvider.defaults.headers);
-//        $httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
-//        $httpProvider.defaults.headers.post['Accept'] = 'application/json, text/javascript';
-//        $httpProvider.defaults.headers.post['Access-Control-Max-Age'] = '1728000';
-//        $httpProvider.defaults.headers.common['Access-Control-Max-Age'] = '1728000';
-//        $httpProvider.defaults.headers.common['Accept'] = 'application/json, text/javascript';
-//        $httpProvider.defaults.headers.common['Content-Type'] = 'application/json; charset=utf-8';
-//        $httpProvider.defaults.useXDomain = true;
-//        delete $httpProvider.defaults.headers.common['X-Requested-With'];
-//        console.log($httpProvider.defaults.headers);
-
-
-//        $locationProvider.html5Mode(true);
-//        $locationProvider.html5Mode('requireBase:true');
-
-//        //initialize get if not there
-//        if (!$httpProvider.defaults.headers.get) {
-//            $httpProvider.defaults.headers.get = {};
-//        }
-//        //disable IE ajax request caching
-//        $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
         $routeProvider.
             when('/species', {
-//                controller: 'SpeciesController',
                 templateUrl: 'partials/species.html'
             }).
             when('/server', {
@@ -131,6 +118,13 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 templateUrl: 'partials/sreport.html'
             }).
             when('/database/:tid/:species/:id/:methods?', {
+                controller: 'ReportController',
+                templateUrl: 'partials/report.html'
+            }).
+            when('/gene', {
+                redirectTo: '/database'
+            }).
+            when('/gene/:id', {
                 controller: 'ReportController',
                 templateUrl: 'partials/report.html'
             }).

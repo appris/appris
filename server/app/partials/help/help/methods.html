@@ -18,10 +18,15 @@
     </div>
 </div>
 
+<hr>
+
 <h4>Firestar: Functionally Important Residues</h4>
 <p><strong><a href="http://firedb.bioinfo.cnio.es/Php/FireStar.php" target="_blank">firestar</a></strong> predicts functionally
     important residues based on the <a href="http://firedb.bioinfo.cnio.es/Php/FireDB.php" target="_blank">fireDB</a> database. The predictions are based on the local evaluation of alignments between the query sequence and the structures with functional information that are stored in FireDB. The reliability of predictions is assessed with <a href="http://firedb.bioinfo.cnio.es/Php/square.php" target="_blank">SQUARE</a> and the functional information is highlighted along with a reliability score.</p>
 <p>Functional residues are highly conserved, even across large evolutionary distances. Since these residues are unlikely to have arisen by chance we can also use this to help determine the principal isoform. Variants that have "lost" conserved functional residues are unlikely to be the principal isoform.</p>
+
+<br/>
+<hr>
 
 <h4>Matador3D (and Matador3Dv2): Protein structural information</h4>
 <p><strong>Matador3D</strong> and <strong>Matador3Dv2</strong> are two methods that analyze protein
@@ -36,12 +41,18 @@
     </ul>
 <p>Protein structure is much more conserved than sequence and isoforms with large inserts or deletions relative to homologous crystal structures are also not likely to be principal.</p>
 
+<br/>
+<hr>
+
 <h4>SPADE: Scanning Pfam Alignments for Damaged Entities</h4>
 <p>Proteins are generally comprised of one or more functional regions commonly termed domains. Identifying the functional domains present in a variant can provide insights into the function and to determine the most likely principal isoform.</p>
 <p>The presence of functional domains is analysed with
     <a href="https://pfam.xfam.org/" target="_blank">Pfamscan</a>.
 </p>
 <p>Variants that have "lost" conserved functional domains are unlikely to be principal isoforms.</p>
+
+<br/>
+<hr>
 
 <h4>CORSAIR: Conservation against vertebrates</h4>
 <p><strong>CORSAIR</strong> carries out <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi"
@@ -50,6 +61,9 @@
 </p>
 <p>Transcripts that are conserved over greater evolutionary distances are more likely to be the main variant.</p>
 <p>CORSAIR counts the number of species that align correctly and without gaps for each variant.</p>
+
+<br/>
+<hr>
 
 <h4>THUMP: Detecting reliable trans-membrane helices</h4>
 <p><strong>THUMP</strong> makes unanimous predictions of trans-membrane helices using three
@@ -60,12 +74,32 @@
 </p>
 <p>Transcripts that have "lost" trans-membrane helices are less likely to be the principal isoform.</p>
 
+<br/>
+<hr>
+
 <h4>CRASH: Signal Peptide and Mitochondrial Signal Sequences.</h4>
 <p>The presence and location of signal peptides and cleavage sites in amino acid sequences are analysed with <a
         href="http://www.cbs.dtu.dk/services/SignalP/" target="_blank">SignalP</a> program. And
     <a href="http://www.cbs.dtu.dk/services/TargetP/" target="_blank">TargetP</a> predicts the sub-cellular location of eukaryotic proteins. <strong>CRASH</strong> uses a rule-based analysis of these two programs to select only reliable predictions.</p>
 
-<!--<h4>PROTEO: Proteomic evidence for the human genome</h4>-->
+
+<br/>
+<hr>
+
+<h4>PROTEO: Proteomic evidence for the human genome</h4>
+
+<p>Peptides mapped in the APPRIS database come from large-scale tissue-based proteomics 
+    experiments. Spectra were downloaded via ProteomeXchange, and searched against the 
+    relevant database using Comet. All PSM were post-processed with PeptideProphet. The 
+    minimum PEP score for inclusion was 0.0001. We allow only fully tryptic peptides and 
+    one missed cleavage.
+</p>
+<p>More details available in the following paper: Martinez Gomez, L., Pozo, F., Walsh, T. A., 
+    Abascal, F., & Tress, M. L. (2021). <a
+    href="https://doi.org/10.1093/nar/gkab623" target="_blank">The clinical importance of tandem exon duplication-derived substitutions.</a> 
+    Nucleic acids research, 49, 8232–8246.
+</p>
+
 <!--<p>We collected peptides from seven separate MS sources. Two came from large-scale proteomics
     databases, <a href="http://www.peptideatlas.org/">PeptideAtlas</a> and
     <a href="https://peptide.nist.gov/">NIST</a>. Another four datasets that were recently published
@@ -79,5 +113,11 @@
 </p>-->
 <!--<p>In order to improve reliability the peptides from each of these studies were filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages. For those studies where it was possible we considered only peptides identified by multiple search engines.</p>-->
 <!--<p><strong>Note: At the moment, we only have proteomic evidences for human in the GENCODE gene set.</strong></p>-->
+
+<br/>
+<hr>
+
+<h4>TRIFID: Assessing the functional relevance of splice isoforms</h4>
+<help-trifid></help-trifid>
 
 </div>

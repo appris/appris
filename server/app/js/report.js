@@ -45,6 +45,141 @@ module.controller('ReportController', ['consPageError', '$rootScope', '$scope', 
         $scope.runnerid = $routeParams.jobid;
         $scope.jobid = $scope.runnerid;
     }
+    // EXPORTER mode just with Gene ID
+    else if ( angular.isDefined($routeParams.id) ) {
+
+        var json = `{
+            "species": {
+                "homo_sapiens": {
+                    "ensembl": {
+                        "assembly": "hg38",
+                        "version": "e109v48"
+                    },
+                    "refseq": {
+                        "assembly": "hg38",
+                        "version": "rs110v48"
+                    }
+                },
+                "mus_musculus": {
+                    "ensembl": {
+                        "assembly": "mm39",
+                        "version": "e109v48"
+                    }
+                },
+                "danio_rerio": {
+                    "ensembl": {
+                        "assembly": "danRer11",
+                        "version": "e104v48"
+                    }
+                },
+                "rattus_norvegicus": {
+                    "ensembl": {
+                        "assembly": "rn7",
+                        "version": "e105v46"
+                    }
+                },
+                "sus_scrofa": {
+                    "ensembl": {
+                        "assembly": "susScr4",
+                        "version": "e108v48"
+                    }
+                },
+                "pan_troglodytes": {
+                    "ensembl": {
+                        "assembly": "panTro5",
+                        "version": "e104v48"
+                    }
+                },
+                "bos_taurus": {
+                    "ensembl": {
+                        "assembly": "bosTau9",
+                        "version": "e104v48"
+                    }
+                },
+                "macaca_mulatta": {
+                    "ensembl": {
+                        "assembly": "rheMac10",
+                        "version": "e105v48"
+                    }
+                },
+                "gallus_gallus": {
+                    "ensembl": {
+                        "assembly": "galGal7",
+                        "version": "e108v48"
+                    }
+                },
+                "drosophila_melanogaster": {
+                    "ensembl": {
+                        "assembly": "dm6",
+                        "version": "e107v48"
+                    }
+                },
+                "caenorhabditis_elegans": {
+                    "ensembl": {
+                        "assembly": "ce11",
+                        "version": "e108v48"
+                    }
+                }
+            }
+        }`;
+
+        var obj = JSON.parse(json);
+
+        if ( $routeParams.id.startsWith('ENSGALG') ) {
+            $routeParams.species = 'gallus_gallus';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSG') ) {
+            $routeParams.species = 'homo_sapiens';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSMUSG') ) {
+            $routeParams.species = 'mus_musculus';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSDARG') ) {
+            $routeParams.species = 'danio_rerio';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSRNOG') ) {
+            $routeParams.species = 'rattus_norvegicus';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSSSCG') ) {
+            $routeParams.species = 'sus_scrofa';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSPTRG') ) {
+            $routeParams.species = 'pan_troglodytes';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSBTAG') ) {
+            $routeParams.species = 'bos_taurus';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('ENSMMUG') ) {
+            $routeParams.species = 'macaca_mulatta';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('FBgn') ) {
+            $routeParams.species = 'drosophila_melanogaster';
+            $routeParams.sc = 'ensembl';
+        }
+        else if ( $routeParams.id.startsWith('WBGene') ) {
+            $routeParams.species = 'caenorhabditis_elegans';
+            $routeParams.sc = 'ensembl';
+        }
+        else {
+            $routeParams.species = 'homo_sapiens';
+            $routeParams.sc = 'refseq';
+        }
+
+        $routeParams.tid = 'id'
+        $routeParams.as = obj['species'][$routeParams.species][$routeParams.sc]['assembly']
+        $routeParams.ds = obj['species'][$routeParams.species][$routeParams.sc]['version']
+        $scope.exporterid = $routeParams.tid+'/'+$routeParams.species+'/'+$routeParams.id;
+        $scope.jobid = $scope.exporterid; 
+    }
 
     // APPRIS annots
 

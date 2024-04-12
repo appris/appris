@@ -49,6 +49,7 @@ apprisApp.config(['$provide', function ($provide) {
     $provide.value("consUrlPfamfamily", 'https://www.ncbi.nlm.nih.gov/Structure/cdd/');
     // constant paths
     $provide.value("consPageDatabase", '/database');
+    $provide.value("consPageGene", '/gene');
     $provide.value("consPageServer", '/server');
     $provide.value("consPathServerStatus", '/server/status/');
     $provide.value("consPathServerResult", '/server/result/');
@@ -117,6 +118,13 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 templateUrl: 'partials/sreport.html'
             }).
             when('/database/:tid/:species/:id/:methods?', {
+                controller: 'ReportController',
+                templateUrl: 'partials/report.html'
+            }).
+            when('/gene', {
+                redirectTo: '/database'
+            }).
+            when('/gene/:id', {
                 controller: 'ReportController',
                 templateUrl: 'partials/report.html'
             }).
