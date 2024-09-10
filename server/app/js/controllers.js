@@ -248,6 +248,12 @@ apprisControllers.controller('ContactController', ['$scope',
         $scope.linkBlogger = 'https://appris-cnio.blogspot.com';
         $scope.logoTwitter = 'img/twitter-ico.png';
         $scope.linkTwitter = 'https://twitter.com/appris_cnio';
+        $scope.logoBluesky = 'img/bluesky-ico-2.png';
+        $scope.linkBluesky = 'https://bsky.app/profile/appris.bsky.social';
+        $scope.logoMastodon = 'img/mastodon-ico.png';
+        $scope.linkMastodon = 'https://fediscience.org/@appris_cnio';
+        $scope.logoGithub = 'img/github-ico.png';
+        $scope.linkGithub = 'https://github.com/appris/appris';
     }
 ]);
 

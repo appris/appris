@@ -47,9 +47,10 @@ apprisApp.config(['$provide', function ($provide) {
     $provide.value("consUrlFirestarligand", 'http://firedb.bioinfo.cnio.es/Php/ligand/index.html?id=');
     $provide.value("consUrlPDBligand", 'https://www.rcsb.org/pdb/ligand/ligandsummary.do?hetId=');
     $provide.value("consUrlPDBstructure", 'https://www.rcsb.org/structure/');
-    $provide.value("consUrlPfamfamily", 'https://www.ncbi.nlm.nih.gov/Structure/cdd/');
+    $provide.value("consUrlPfamfamily", 'https://www.ebi.ac.uk/interpro/entry/pfam/');
     // constant paths
     $provide.value("consPageDatabase", '/database');
+    $provide.value("consPageGene", '/gene');
     $provide.value("consPageServer", '/server');
     $provide.value("consPathServerStatus", '/server/status/');
     $provide.value("consPathServerResult", '/server/result/');
@@ -110,6 +111,13 @@ apprisApp.config(['$routeProvider', '$locationProvider', function ($routeProvide
                 templateUrl: 'partials/sreport.html'
             }).
             when('/database/:tid/:species/:id/:methods?', {
+                controller: 'ReportController',
+                templateUrl: 'partials/report.html'
+            }).
+            when('/gene', {
+                redirectTo: '/database'
+            }).
+            when('/gene/:id', {
                 controller: 'ReportController',
                 templateUrl: 'partials/report.html'
             }).

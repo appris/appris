@@ -1,0 +1,75 @@
+{
+    "species": {
+        "homo_sapiens": {
+            "ensembl": {
+                "assembly": "hg38",
+                "version": "e112v48"
+            },
+            "refseq": {
+                "assembly": "hg38",
+                "version": "rs110v48"
+            }
+        },
+        "mus_musculus": {
+            "ensembl": {
+                "assembly": "mm39",
+                "version": "e112v48"
+            }
+        },
+        "danio_rerio": {
+            "ensembl": {
+                "assembly": "danRer11",
+                "version": "e104v48"
+            }
+        },
+        "rattus_norvegicus": {
+            "ensembl": {
+                "assembly": "rn7",
+                "version": "e110v46"
+            }
+        },
+        "sus_scrofa": {
+            "ensembl": {
+                "assembly": "susScr4",
+                "version": "e108v48"
+            }
+        },
+        "pan_troglodytes": {
+            "ensembl": {
+                "assembly": "panTro5",
+                "version": "e104v48"
+            }
+        },
+        "gallus_gallus": {
+            "ensembl": {
+                "assembly": "galGal7",
+                "version": "e108v48"
+            }
+        },
+        "bos_taurus": {
+            "ensembl": {
+                "assembly": "bosTau9",
+                "version": "e111v48"
+            }
+        },
+        "macaca_mulatta": {
+            "ensembl": {
+                "assembly": "rheMac10",
+                "version": "e105v48"
+            }
+        },
+        "drosophila_melanogaster": {
+            "ensembl": {
+                "assembly": "dm6",
+                "version": "e110v48"
+            }
+        },
+        "caenorhabditis_elegans": {
+            "ensembl": {
+                "assembly": "ce11",
+                "version": "e108v48"
+            }
+        }
+    }
+}
+ 

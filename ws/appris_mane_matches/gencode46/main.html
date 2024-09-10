@@ -13,7 +13,7 @@
     <!-- End Google Analytics -->
     <meta charset="UTF-8">
     <title>Important Alternative Isoforms!</title>
-    <meta name="description" content="View important alternative isoforms based on APPRIS annotations of human genes in GENCODE release 27.">
+    <meta name="description" content="View important alternative isoforms based on APPRIS annotations of human genes.">
     <!-- Imports CSS -->
     <link rel='stylesheet' type='text/css' href='css/reset.css'>
     <link rel="stylesheet" type='text/css' href="css/bootstrap.min.css">
@@ -36,7 +36,7 @@
 
         // get the text data in tabular format
         let textData = $.ajax({
-            url: "data/FunctionalTableLong.tsv",
+            url: "data/appris_data.principal_mane_match_G46.tsv",
             // async: false,
             success: function(textData){
               // convert text to object (array of arraya)
@@ -121,42 +121,14 @@
     </nav>
 </div>
   <header>
-    <h1>Important Alternative Isoforms in Human</h1>
+    <h1>APPRIS/MANE matches for GENCODE Release 46</h1>
   </header>
   <section>
     <div class="main-desc">
-
-      <p>In the study <strong>"An analysis of tissue-specific alternative splicing at the protein
-        level"</strong> (<a href="https://doi.org/10.1371/journal.pcbi.1008287"
-        target="_blank">Rodriguez et al. 2020</a>), we investigated the evidence for tissue-specific
-        splicing among those splice isoforms detected in a large-scale proteomics analysis. Although
-        the data supporting alternative splicing is limited at the protein level, clear patterns
-        emerged among the small numbers of  alternative splice events that we could detect in the
-        proteomics data.</p>
-  
-      <p>More than a third of these events were tissue-specific and most were ancient: over 95% of
-        alternative splice events that were tissue-specific in both proteomics and RNAseq analyses
-        evolved prior to the ancestors of lobe-finned fish, at least 400 million years ago.</p>
-  
-      <p>Tissue-specific alternative protein forms in the proteomics analysis were particularly
-        abundant in nervous and muscle tissues and their genes had roles related to the cytoskeleton
-        and either the structure of muscle fibres or cell-cell connections. This suggests that
-        tissue-specific alternative splicing may have played a role in the development of the
-        vertebrate brain and heart.</p>
-  
-      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_27.html" target="_blank">GENCODE v27</a>. 
-        However, our results may not be extrapolable to the whole genome; three in four alternative 
-        exons in the human gene set arose in the primate lineage.</p>
-
+      <p>These genes are from <a href="https://www.gencodegenes.org/human/release_46.html" target="_blank">GENCODE v46</a>.</p>
       <br/>
-      
-      <p>These data can be downloaded <a href="data/FunctionalTableLong.tsv">here</a> in TSV format.<br/>
-        For more information about these Functional Isoforms, read the following publication:<p>
-      <address>
-        <strong>An analysis of tissue-specific alternative splicing at the protein level</strong><br>
-        Jose Manuel Rodriguez, Fernando Pozo, Tomas di Domenico, Jesus Vazquez, Michael L. Tress<br>
-        DOI:<a href="https://doi.org/10.1371/journal.pcbi.1008287" target="_blank">10.1371/journal.pcbi.1008287</a>
-      </address>
+      <p>The table below shows the transcripts annotated by APPRIS as principal isoforms that match those annotated by MANE.<br/>
+        These data can be downloaded <a href="data/appris_data.principal_mane_match_G46.tsv">here</a> in TSV format.</p>
     </div>
     <hr/>
     <div>
