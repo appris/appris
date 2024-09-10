@@ -1,3 +1,91 @@
+## 2024_06.v48
+```
+SERVER-RELEASE:   2024_06.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
++ Upload the annotations for Homo sapiens G46
++ Upload the annotations for Mus musculus M35
+
+### Server (4.13)
+
+
+### Code (2.29)
+
++ FIRESTAR: FireDB Updated.
++ Fix bug with new Corsair Databases
+___
+## 2024_03.v48
+```
+SERVER-RELEASE:   2024_03.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
++ Fix annotations for Bos Taurus E111
+
+### Server (4.13)
+
+
+### Code (2.29)
+
+___
+## 2024_02.v48
+```
+SERVER-RELEASE:   2024_02.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
++ Upload the annotations for Homo sapiens G45
++ Upload the annotations for Mus musculus M34
++ Upload the annotations for Bos Taurus E111
+
+### Server (4.13)
+
+
+### Code (2.29)
+
+___
+## 2023_08.v48
+```
+SERVER-RELEASE:   2023_08.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
++ Upload the annotations for Homo sapiens G44
++ Upload the annotations for Mus musculus M33
++ Upload the annotations for Rattus norvegicus E110
++ Upload the annotations for Drosophila melanogaster E110
++ Fix duplications in Homo sapiens RS110
+
+### Server (4.13)
+
+
+### Code (2.29)
+
+___
+## 2023_05.v48
+```
+SERVER-RELEASE:   2023_05.v48
+CODE-RELEASE:     4.13.2.29
+```
+
+### Highlights
+
+
+### Server (4.13)
+
+
+### Code (2.29)
+
+___
 ## 2023_03.v48
 ```
 SERVER-RELEASE:   2023_03.v48
