@@ -55,8 +55,10 @@ use APPRIS::Utils::Exception qw(throw warning deprecate);
        string - the sequence of the region
   Arg [-num_experiments] :
        integer - num. experiments for this region
-  Arg [-experiments] :
-       string - the list of experiments for this region
+  Arg [-tissues] :
+       string - the list of tissues for this region
+  Arg [-pep_score] :
+       string - PEP score for this peptide
   Arg [-pstart]  : 
        int - start postion of the peptide region
   Arg [-pend]    : 
@@ -86,13 +88,15 @@ sub new {
 	
 	my (
 		$peptide_id,	$sequence,
-		$num_experiments,	$experiments,
+		$num_experiments,	$tissues,
+		$pep_score,
 		$pstart,	$pend,
 		$start,		$end,		$strand,
 	)
 	= rearrange( [
 		'peptide_id',		'sequence',
-		'num_experiments',	'experiments',
+		'num_experiments',	'tissues',
+    'pep_score',
 		'pstart',	'pend',
 		'start',	'end',		'strand',
 	],
@@ -102,7 +106,8 @@ sub new {
  	$self->peptide_id($peptide_id) if(defined $peptide_id);
  	$self->sequence($sequence);
  	$self->num_experiments($num_experiments);
- 	$self->experiments($experiments);
+ 	$self->tissues($tissues);
+ 	$self->pep_score($pep_score);
  	$self->pstart($pstart);
  	$self->pend($pend);
  	$self->start($start) if(defined $start);
@@ -166,11 +171,11 @@ sub num_experiments {
 	return $self->{'num_experiments'};
 }
 
-=head2 experiments
+=head2 tissues
 
-  Arg [1]    : (optional) String - the list of experiments for this region
-  Example    : $region->experiments('-');
-  Description: Getter/setter for the experiments that for this region
+  Arg [1]    : (optional) String - the list of tissues for this region
+  Example    : $region->tissues('-');
+  Description: Getter/setter for the tissues that for this region
   Returntype : String
   Exceptions : none
   Caller     : general
@@ -178,10 +183,28 @@ sub num_experiments {
 
 =cut
 
-sub experiments {
+sub tissues {
 	my ($self) = shift;
-	$self->{'experiments'} = shift if(@_);
-	return $self->{'experiments'};
+	$self->{'tissues'} = shift if(@_);
+	return $self->{'tissues'};
+}
+
+=head2 pep_score
+
+  Arg [1]    : (optional) String - the PEP score for this region
+  Example    : $region->pep_score('123');
+  Description: Getter/setter for the PEP score that for this region
+  Returntype : String
+  Exceptions : none
+  Caller     : general
+  Status     : Stable
+
+=cut
+
+sub pep_score {
+	my ($self) = shift;
+	$self->{'pep_score'} = shift if(@_);
+	return $self->{'pep_score'};
 }
 
 =head2 pstart

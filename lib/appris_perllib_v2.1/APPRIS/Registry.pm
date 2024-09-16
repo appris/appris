@@ -2231,7 +2231,8 @@ sub fetch_analysis_by_stable_id {
 							-peptide_id			=> $residue->{'peptide_id'},
 							-sequence			=> $residue->{'sequence'},
 							-num_experiments	=> $residue->{'num_experiments'},
-							-experiments		=> $residue->{'experiments'},
+							-tissues			=> $residue->{'tissues'},
+							-pep_score			=> $residue->{'pep_score'}
 						)				
 					);
 				}

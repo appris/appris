@@ -1385,7 +1385,6 @@ sub get_proteo_annotations {
 
     my ($output) = '';
     my ($method_seqname) = ( $feature->chromosome ) ? $feature->chromosome : $gene_id;
-	my ($method_score) = '.';
 	my ($method_phase) = '.';
 	my ($method_source) = $GTF_CONSTANTS->{'proteo'}->{'source'};
 	my ($method_type) = $GTF_CONSTANTS->{'proteo'}->{'type'};
@@ -1403,6 +1402,7 @@ sub get_proteo_annotations {
 						my ($method_start)  = ( defined $region->start )      ? $region->start      : $region->pstart;
 						my ($method_end)    = ( defined $region->end )        ? $region->end        : $region->pend;
 						my ($method_strand) = ( defined $region->strand )     ? $region->strand     : '.';
+						my ($method_score) = ( defined $region->pep_score )   ? $region->pep_score  : '.';
 						# common attributes
 						my ($common) = {
 								'seqname'	=> $method_seqname,
@@ -1420,6 +1420,10 @@ sub get_proteo_annotations {
 						$optional->{'transcript_id'}	= $transcript_id;
 						if ($region->pstart and $region->pend and $region->sequence) {
 							$optional->{'note'}			= "pep_start:".$region->pstart.",pep_end:".$region->pend.",pep_seq:".$region->sequence;
+						}
+						if ($region->tissues) {
+							my ($t) = $region->tissues; $t =~ s/;/,/g;
+							$optional->{'note'}			.= ",tissues:".$t;
 						}
 						if (defined $common and defined $optional) {
 							$output .= print_annotations($common,$optional);			

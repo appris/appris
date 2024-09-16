@@ -119,7 +119,7 @@ $METHOD_HEADS = {
 	},
 	'proteo'=>{
 		'tsv'=>
-			"== proteomic_evidence: peptides\tsequence\tno.experiments_found\n",
+			"== proteomic_evidence: peptides\tsequence\tno.experiments_found\tpep_score\ttissues_found\n",
 		'raw'=>
 			"== proteomic_evidence: text_result\n",
 	},
@@ -1997,10 +1997,13 @@ sub get_trans_proteo_tsv_annot {
 					if ( defined $method->result ) {
 						if ( defined $method->peptides ) {
 							foreach my $region (@{$method->peptides}) {
-								if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend ) {
+								if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend
+									and defined $region->pep_score and defined $region->tissues ) {
 									$output .=	$region->pstart.':'.$region->pend."\t".
 												$region->sequence."\t".
-												$region->num_experiments."\n";
+												$region->num_experiments."\t".
+												$region->pep_score."\t".
+												$region->tissues."\n";
 								}
 							}
 						}

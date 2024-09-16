@@ -2431,10 +2431,10 @@ sub parse_proteo_rst($)
 	my ($cutoffs);
 
 	my (@results) = split('\n',$result);
-	#$peptide, $gene, $transcripts with, $transcripts without, $no_expts
 	#You should delete all peptides with the "$transcripts from other genes" and "$transcripts without" column.
-	#VSLENYFSLLNEK,ENSG00000000003.11,ENST00000373020.5,ENST00000612152.1;ENST00000614008.1,6
-	#DWTDTNYYSEK,ENSG00000000003.11,ENST00000612152.1;ENST00000373020.5;ENST00000614008.1,,4
+	# peptide,geneid,matched,not matched,count,percolator PEP,tissues
+	# DADKVNNEGCFIK,ENSG00000000003,ENST00000373020.9;ENST00000614008.4,ENST00000612152.4,22,2.2381693e-09,{'ovary': 1; 'pancreas': 1}
+	# IQTKPVITCFK,ENSG00000000003,ENST00000373020.9,ENST00000612152.4;ENST00000614008.4,2,0.00030766736,{'testis': 2}
 	foreach my $peptide_result (@results)
 	{
 		next unless (defined $peptide_result);
@@ -2449,6 +2449,8 @@ sub parse_proteo_rst($)
 		my ($mapped_transcript_list) = $split_line[2]; # GeneTranscripts
 		my ($mapped_transc_without_list) = $split_line[3]; # GeneTranscriptsWithOut
 		my ($num_experiments) = $split_line[4]; # TotalNumExperiments
+		my ($pep_score) = $split_line[5]; # PEPscore
+		my ($tissues) = $split_line[6]; # Tissues
 		$mapped_peptide_sequence =~ s/^\"//;			$mapped_peptide_sequence =~ s/\"$//;
 		$mapped_peptide_sequence=~s/Z$//;
 		$mapped_transcript_list =~ s/^\"//;				$mapped_transcript_list =~ s/\"$//;
@@ -2457,7 +2459,9 @@ sub parse_proteo_rst($)
 			defined $mapped_gene and $mapped_gene ne '' and
 			defined $mapped_peptide_sequence and $mapped_peptide_sequence ne '' and
 			defined $mapped_transcript_list and $mapped_transcript_list ne '' and
-			defined $num_experiments and $num_experiments ne ''
+			defined $num_experiments and $num_experiments ne '' and
+			defined $tissues and $tissues ne '' and
+			defined $pep_score and $pep_score ne ''
 		){
 			next;
 		}
@@ -2472,6 +2476,8 @@ sub parse_proteo_rst($)
 				my ($peptide) = {
 								'sequence'			=> $mapped_peptide_sequence,
 								'num_experiments'	=> $num_experiments,
+								'tissues'			=> $tissues,
+								'pep_score'			=> $pep_score,
 								'result'			=> $peptide_result
 				};
 				$cutoffs->{$mapped_transc_id}->{'gene_id'} = $mapped_gene;
@@ -2536,6 +2542,8 @@ sub parse_proteo($$)
 				my (%transc_results);
 				my ($num_peptides) = 0;
 				my ($num_experiments) = 0;
+				my ($tissues) = '';
+				my ($pep_score) = 0;
 				my ($strand) = $transcript->strand;
 				my ($report) = $cutoffs->{$transcript_id};
 				foreach my $region_info (@{$report->{'peptides'}}) {
@@ -2553,7 +2561,9 @@ sub parse_proteo($$)
 							'pstart' => $start_peptide_position,
 							'pend' => $stop_peptide_position,
 							'sequence' => $region_info->{'sequence'},
-							'num_experiments' => $region_info->{'num_experiments'}
+							'num_experiments' => $region_info->{'num_experiments'},
+							'tissues' => $region_info->{'tissues'},
+							'pep_score' => $region_info->{'pep_score'}
 						};
 						push(@regions, $region);
 						$peptide_mapped = 1;
@@ -2648,14 +2658,18 @@ sub parse_proteo($$)
 						-pstart				=> $start_peptide_position,
 						-pend				=> $stop_peptide_position,
 						-sequence			=> $region_info->{'sequence'},
-						-num_experiments	=> $region_info->{'num_experiments'}
+						-num_experiments	=> $region_info->{'num_experiments'},
+						-tissues			=> $region_info->{'tissues'},
+						-pep_score			=> $region_info->{'pep_score'}
 					);
 				} else {
 					$region = APPRIS::Analysis::PROTEORegion->new (
 						-pstart				=> $start_peptide_position,
 						-pend				=> $stop_peptide_position,
 						-sequence			=> $region_info->{'sequence'},
-						-num_experiments	=> $region_info->{'num_experiments'}
+						-num_experiments	=> $region_info->{'num_experiments'},
+						-tissues			=> $region_info->{'tissues'},
+						-pep_score			=> $region_info->{'pep_score'}
 					);
 				}
 				push(@{$regions}, $region);

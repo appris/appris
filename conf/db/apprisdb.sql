@@ -72,7 +72,7 @@ CREATE TABLE sequence (
   entity_id INT(11) unsigned NOT NULL,
   type_id INT(11) unsigned NOT NULL,
   length INT(10) unsigned DEFAULT NULL,
-  sequence TEXT NOT NULL,
+  sequence TEXT(55000) NOT NULL,
   CONSTRAINT fk_sequence_entity FOREIGN KEY (entity_id) REFERENCES entity (entity_id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_sequence_type FOREIGN KEY (type_id) REFERENCES type (type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY key_sequence_entity_id (entity_id)
@@ -552,7 +552,8 @@ CREATE TABLE proteo_peptides (
   peptide_id VARCHAR(50) DEFAULT NULL,
   sequence TEXT NOT NULL,
   num_experiments INT(5) unsigned NOT NULL,
-  experiments VARCHAR(13) DEFAULT NULL,
+  pep_score FLOAT DEFAULT NULL, -- Percolator PEP
+  tissues LONGTEXT DEFAULT NULL,
   start INT(20) unsigned NOT NULL,
   end INT(20) unsigned NOT NULL,  
   trans_start INT(20) unsigned DEFAULT NULL,
