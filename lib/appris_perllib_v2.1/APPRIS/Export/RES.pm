@@ -229,7 +229,7 @@ sub get_trans_annotations {
 		 		if ( (exists $sc{proteo}) ) {
 			 		if ( $analysis->proteo and $analysis->proteo->result ) {
 			 			my ($method) = $analysis->proteo;		 			
-				 		my ($residues) = parser_proteo_residues($method, $len);
+				 		my ($residues) = parser_proteo_residues($method, $inres);
 						if ( defined $residues and scalar($residues) > 0 ) {
 							push(@{$methods}, {
 								'name'		=> 'proteo',
@@ -544,27 +544,29 @@ sub parser_proteo_residues {
 			foreach my $region (@{$method->peptides}) {	
 				if ( defined $region->sequence and defined $region->num_experiments and defined $region->pstart and defined $region->pend 
 					and defined $region->pep_score and defined $region->tissues ) {
-					my (@tissues) = split(/\;/, $region->tissues);
-					my @annot_data;
-					foreach my $tis (@tissues) {
-						if ( $tis ne '' ) {
-							if ( $tis =~ /\'([^\']*)\'\:\s*(\d+)/ ) {
-								push @annot_data, { tissue => $1, number => $2 };
-								# $annot .= $1." (".$2.")\n";
+					if ( !defined $inres or ( defined $inres and ($region->pstart <= $inres) and ($region->pend >= $inres) ) ) {
+						my (@tissues) = split(/\;/, $region->tissues);
+						my @annot_data;
+						foreach my $tis (@tissues) {
+							if ( $tis ne '' ) {
+								if ( $tis =~ /\'([^\']*)\'\:\s*(\d+)/ ) {
+									push @annot_data, { tissue => $1, number => $2 };
+									# $annot .= $1." (".$2.")\n";
+								}
 							}
 						}
+						# sort the annot_data array first by number, then by tissue name (alphanumeric)
+						@annot_data = sort { $b->{number} <=> $a->{number} || $a->{tissue} cmp $b->{tissue} } @annot_data;
+						# build the $annot string from the sorted data
+						my ($annot) = '';
+						foreach my $entry (@annot_data) { $annot .= $entry->{tissue} . " (" . $entry->{number} . ")\n" }
+						my ($res) = {
+							'start'		=> $region->pstart,
+							'end'		=> $region->pend,
+							'annot'		=> $region->sequence . " (".$region->num_experiments."; ".$region->pep_score.")\n".$annot,
+						};
+						push(@{$residues},$res);
 					}
-                    # sort the annot_data array first by number, then by tissue name (alphanumeric)
-					@annot_data = sort { $b->{number} <=> $a->{number} || $a->{tissue} cmp $b->{tissue} } @annot_data;
-                    # build the $annot string from the sorted data
-					my ($annot) = '';
-					foreach my $entry (@annot_data) { $annot .= $entry->{tissue} . " (" . $entry->{number} . ")\n" }
-					my ($res) = {
-						'start'		=> $region->pstart,
-						'end'		=> $region->pend,
-						'annot'		=> $region->sequence . " (".$region->num_experiments."; ".$region->pep_score.")\n".$annot,
-					};
-					push(@{$residues},$res);
 				}
 			}
 		}
