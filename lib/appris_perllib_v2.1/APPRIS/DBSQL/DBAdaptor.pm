@@ -2322,6 +2322,55 @@ sub query_proteo_peptides {
 	return $final;
 }
 
+sub query_proteo_peptides_old {
+        my ($self, %iargs) = @_;
+        my $dbh = $self->dbh;
+
+        my @args;
+        foreach my $k (sort keys %iargs){ # important sort the keys!!!
+                my $v = $iargs{$k};
+                if ( $k eq 'region' ) {
+                        my @args1;
+                        push(@args1, {'trans_end' => $v->{'start'}});
+                        push(@args1, "and");
+                        push(@args1, {'trans_start' => $v->{'end'}});
+                        push(@args, [@args1]);
+                        push(@args, "or");
+                        my @args2;
+                        push(@args2, {'trans_end' => $v->{'start'}});
+                        push(@args2, "and");
+                        push(@args2, {'trans_start' => $v->{'end'}});
+                        push(@args, [@args2]);
+                        push(@args, "or");
+                }
+                else {
+                        push @args, ({$k => $v}, "and"); # format for the_add_condition subroutine but too bad won't be scalable for "or"
+                }
+        }
+        if (keys(%iargs)){ pop @args;}  # remove final "and"
+
+        my $statement = "select
+        c.proteo_id,
+                c.num_peptides,
+                c.peptide_evidence,
+        r.proteo_peptides_id,
+                r.peptide_id,
+                r.sequence,
+                r.num_experiments,
+                r.start,
+                r.end,
+                r.trans_start,
+                r.trans_end,
+                r.trans_strand
+
+                from proteo c, proteo_peptides r ";
+
+        my @bindvalues;
+        ($statement, @bindvalues) = _add_condition_combine19($statement, @args);
+
+        my $final = _do_query($dbh, $statement, @bindvalues);
+        return $final;
+}
 sub query_appris {
 	my ($self, %args) = @_;
 	my $dbh = $self->dbh;

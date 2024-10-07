@@ -2237,7 +2237,35 @@ sub fetch_analysis_by_stable_id {
 					);
 				}
 			};
-			throw('No proteo analysis') if ($@);
+			if ($@) {
+                          eval {
+                                my ($list);
+                                if (defined $region and exists $region->{'start'} and exists $region->{'end'}) {
+                                        $list = $self->dbadaptor->query_proteo_peptides_old(entity_id => $entity->{'entity_id'}, region => {start => $region->{'start'}, end => $region->{'end'}})
+                                }
+                                else {
+                                        $list = $self->dbadaptor->query_proteo_peptides_old(entity_id => $entity->{'entity_id'})
+                                }
+                                foreach my $residue (@{$list}) {
+                                        push(@{$regions},
+                                                APPRIS::Analysis::PROTEORegion->new
+                                                (
+                                                        -start                          => $residue->{'trans_start'},
+                                                        -end                            => $residue->{'trans_end'},
+                                                        -strand                         => $residue->{'trans_strand'},
+                                                        -pstart                         => $residue->{'start'},
+                                                        -pend                           => $residue->{'end'},
+                                                        -peptide_id                     => $residue->{'peptide_id'},
+                                                        -sequence                       => $residue->{'sequence'},
+                                                        -num_experiments        => $residue->{'num_experiments'},
+                                                        -tissues                        => '',
+                                                        -pep_score                      => ''
+                                                )
+                                        );
+                                }
+                          };
+                          throw('No proteo analysis') if ($@);
+			}
 			if (defined $method) { # Create object
 				eval {
 					$proteo = APPRIS::Analysis::PROTEO->new
