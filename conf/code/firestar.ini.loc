@@ -9,10 +9,10 @@ dbName=FireDB
 user=firedb
 pass=
 [DATABASES]
-release=22Aug2013
+release=09Feb2024
 nrdb=sprot_clean_trembl_clean_70
-hhbdb=hhblits_
-hhprof=nr20_12Aug11
+hhbdb=a3m_
+hhprof=a3m_09Feb2024
 blast_path=APPRIS__HOME/db/firestar
 hhdb_path=APPRIS__HOME/db/firestar
 [PROGRAMS]
