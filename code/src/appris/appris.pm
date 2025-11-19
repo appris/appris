@@ -829,8 +829,9 @@ sub get_appris_scores($$\$\$\$)
 				elsif ( $metric eq 'corsair' ) {
 					if    ( $max >= 13  )  { $weight = 4; }
 					elsif ( $max >= 8   )  { $weight = 3; }
-					elsif ( $max >= 4   )  { $weight = 2; }
-					elsif ( $max >= 1   )  { $weight = 1; }
+					elsif ( $max >= 5.5 )  { $weight = 2; }
+					elsif ( $max >= 3   )  { $weight = 1; }
+					elsif ( $max >= 1   )  { $weight = 0.5; }
 					else                   { $weight = 0; }
 				}
 				elsif ( $metric eq 'spade_integrity' ) {

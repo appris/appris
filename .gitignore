@@ -2,6 +2,8 @@
 .bash_logout
 .bashrc
 .bash_history
+.bashrc_original_ubuntu
+.sudo_as_admin_successful
 .profile
 .project
 .includepath
@@ -71,6 +73,7 @@ features/*
 !features/README.md
 
 # 'db' dir
+db
 db/*
 !db/README.md
 !db/scripts
