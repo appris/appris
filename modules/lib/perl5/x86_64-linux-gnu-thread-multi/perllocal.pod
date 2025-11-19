@@ -2770,3 +2770,157 @@ C<EXE_FILES: >
 
 =back
 
+=head2 Wed Apr 26 13:01:01 2023: C<Module> L<JSON|JSON>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 4.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:07:59 2023: C<Module> L<JSON|JSON>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 4.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:08:02 2023: C<Module> L<Canary::Stability|Canary::Stability>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2013>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:09:11 2023: C<Module> L<APPRIS|APPRIS>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.1>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:10:27 2023: C<Module> L<local::lib|local::lib>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 2.000029>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:11:48 2023: C<Module> L<JSON|JSON>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 4.10>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
+=head2 Wed Apr 26 13:22:35 2023: C<Module> L<APPRIS|APPRIS>
+
+=over 4
+
+=item *
+
+C<installed into: /local/appris/modules/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.1>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
