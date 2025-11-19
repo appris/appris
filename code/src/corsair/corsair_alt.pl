@@ -33,9 +33,8 @@ use vars qw(
 	$RUN_PROGRAM
 	$PROG_DB_PREFIX
 	$PROG_DB
-	$PROG_DB_V
-	$PROG_DB_INV
 	$PROG_EVALUE
+	$NUM_ALIGNMENTS
 	$PROG_MINLEN
 	$PROG_CUTOFF
 	$OK_LABEL
@@ -87,10 +86,9 @@ $CODE_CONF_DIR		= $ENV{APPRIS_CODE_CONF_DIR};
 $CACHE_FLAG			= $cfg->val('CORSAIR_ALT_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val( 'CORSAIR_ALT_VARS', 'program');
 $PROG_DB_PREFIX		= $ENV{APPRIS_PROGRAMS_DB_DIR};
-$PROG_DB_V			= $cfg->val('CORSAIR_ALT_VARS', 'db_v');
-$PROG_DB_INV		= $cfg->val('CORSAIR_ALT_VARS', 'db_inv');
-$PROG_DB			= undef;
+$PROG_DB			= $cfg->val('CORSAIR_ALT_VARS', 'db');
 $PROG_EVALUE		= $cfg->val('CORSAIR_ALT_VARS', 'evalue');
+$NUM_ALIGNMENTS		= $cfg->val('CORSAIR_ALT_VARS', 'num_alignments');
 $PROG_MINLEN		= $cfg->val('CORSAIR_ALT_VARS', 'minlen');
 $PROG_CUTOFF		= $cfg->val('CORSAIR_ALT_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
@@ -132,14 +130,18 @@ sub main()
 	my ($PROG_DB_UID);
 	if ( exists $META_CONFIG->{$GIVEN_SPECIES} and exists $META_CONFIG->{$GIVEN_SPECIES}->{'animal'} ) {
 		my ($animal) = $META_CONFIG->{$GIVEN_SPECIES}->{'animal'};
+		
+		#if ( $animal eq 'vertebrates' ) {
+		#	$PROG_DB = $PROG_DB_V;
+		#	$PROG_DB_UID = (split('/', $PROG_DB))[0];
+		#}
+		#elsif ( $animal eq 'invertebrates' ) {
+		#	$PROG_DB = $PROG_DB_INV;
+		#	$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
+		#}
 
-		if ( $animal eq 'vertebrates' ) {
-			$PROG_DB = $PROG_DB_V;
+		if ( $animal eq 'vertebrates' || $animal eq 'invertebrates') {
 			$PROG_DB_UID = (split('/', $PROG_DB))[0];
-		}
-		elsif ( $animal eq 'invertebrates' ) {
-			$PROG_DB = $PROG_DB_INV;
-			$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
 		}
 		else {
 			$logger->error("Unknown/invalid animal group: '$animal'");
@@ -238,7 +240,7 @@ sub main()
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e$PROG_EVALUE -o $tmp_blast_file";
+					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e$PROG_EVALUE -b $NUM_ALIGNMENTS -o $tmp_blast_file";
 					$logger->debug("$cmd\n");						
 					system($cmd) == 0 or $logger->error("system call exit code: $?");
 				};

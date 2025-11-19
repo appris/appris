@@ -32,9 +32,8 @@ use vars qw(
 	$RUN_PROGRAM
 	$PROG_DB_PREFIX
 	$PROG_DB
-	$PROG_DB_V
-	$PROG_DB_INV
 	$PROG_EVALUE
+	$NUM_ALIGNMENTS
 	$PROG_MINLEN
 	$PROG_CUTOFF
 	$OK_LABEL
@@ -82,10 +81,9 @@ $WSPACE_CACHE		= $ENV{APPRIS_PROGRAMS_CACHE_DIR};
 $CACHE_FLAG			= $cfg->val('CORSAIR_VARS', 'cache');
 $RUN_PROGRAM		= $cfg->val('CORSAIR_VARS', 'program');
 $PROG_DB_PREFIX		= $ENV{APPRIS_PROGRAMS_DB_DIR};
-$PROG_DB			= undef;
-$PROG_DB_V			= $cfg->val('CORSAIR_VARS', 'db_v');
-$PROG_DB_INV		= $cfg->val('CORSAIR_VARS', 'db_inv');
+$PROG_DB			= $cfg->val('CORSAIR_VARS', 'db');
 $PROG_EVALUE		= $cfg->val('CORSAIR_VARS', 'evalue');
+$NUM_ALIGNMENTS		= $cfg->val('CORSAIR_VARS', 'num_alignments');
 $PROG_MINLEN		= $cfg->val('CORSAIR_VARS', 'minlen');
 $PROG_CUTOFF		= $cfg->val('CORSAIR_VARS', 'cutoff');
 $OK_LABEL			= 'YES';
@@ -126,17 +124,18 @@ sub main()
 	# Get the variables from determined specie
 	my ($PROG_DB_UID);
 	if ( exists $SPECIES->{$GIVEN_SPECIES} and exists $SPECIES->{$GIVEN_SPECIES}->{'animal'} ) {
-		if ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'vertebrates' ) {
-			$PROG_DB = $PROG_DB_V;
-			$PROG_DB_UID = (split('/', $PROG_DB))[0];
-		}
-		elsif ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'invertebrates' ) {
-			$PROG_DB = $PROG_DB_INV;
-			$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
-		}
-		else {
-			$logger->error("Animal category does not exit");			
-		}
+		#if ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'vertebrates' ) {
+		#	$PROG_DB = $PROG_DB_V;
+		#	$PROG_DB_UID = (split('/', $PROG_DB))[0];
+		#}
+		#elsif ( $SPECIES->{$GIVEN_SPECIES}->{'animal'} eq 'invertebrates' ) {
+		#	$PROG_DB = $PROG_DB_INV;
+		#	$PROG_DB_UID = join('_', (split('/', $PROG_DB))[0], 'invert');
+		#}
+		#else {
+		#	$logger->error("Animal category does not exit");			
+		#}
+		$PROG_DB_UID = (split('/', $PROG_DB))[0];
 	}
 	else {
 		$logger->error("Species does not exit");
@@ -200,7 +199,7 @@ sub main()
 				eval
 				{
 					$logger->info("Running blast\n");
-					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e $PROG_EVALUE -o $tmp_blast_file";
+					my ($cmd) = "$RUN_PROGRAM -d $PROG_DB_PATH -i $fasta_sequence_file -e $PROG_EVALUE -b $NUM_ALIGNMENTS -o $tmp_blast_file";
 					$logger->debug("$cmd\n");						
 					system($cmd) == 0 or $logger->error("system call exit code: $?");
 				};

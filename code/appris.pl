@@ -481,6 +481,9 @@ sub create_ini($)
 	my ($config_cont) = getStringFromFile($DEFAULT_CONFIG_FILE);
 	$config_cont = _subs_template($config_cont, 'APPRIS__PIPELINE__METHODS', $methods);
 	$config_cont = _subs_template($config_cont, 'APPRIS__SPECIES', $species);
+	my ($species_join) = $species;
+	$species_join =~ s/\s/\_/g;
+	$config_cont = _subs_template($config_cont, 'APPRIS__CORSAIR__SPECIES', $species_join);
 	
 	my ($config_file) = $outpath.'/pipeline.ini';
 	my ($a) = printStringIntoFile($config_cont, $config_file);
