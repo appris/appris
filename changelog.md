@@ -1,3 +1,78 @@
+## 2025_08.v50
+```
+SERVER-RELEASE:   2025_08.v50
+CODE-RELEASE:     4.13.2.32
+```
+
+### Highlights
+
++ Fix trifid error with loss of function genes
+
+### Server (4.13)
+
+
+### Code (2.31)
+
+___
+## 2025_07.v50
+```
+SERVER-RELEASE:   2025_07.v50
+CODE-RELEASE:     4.13.2.31
+```
+
+### Highlights
+
++ Add new Manual annotations for Homo sapiens G48
+
+### Server (4.13)
+
+
+### Code (2.31)
+
+___
+## 2025_05.v50
+```
+SERVER-RELEASE:   2025_05.v50
+CODE-RELEASE:     4.13.2.31
+```
+
+### Highlights
+
++ Add Manual annotations, labelled as PRINCIPAL:M, ALTERNATIVE:M and MINOR:M
++ Upload the annotations for Homo sapiens G48
++ Upload the annotations for Mus musculus M37
++ Upload the annotations for Rattus norvegicus e114
++ Upload the annotations for Bos taurus e114
++ Upload the annotations for Drosophila melanogaster e114
+
+### Server (4.13)
+
+
+### Code (2.31)
+
++ APPRIS: Add Manual annotations, labelled as PRINCIPAL:M, ALTERNATIVE:M and MINOR:M
+___
+## 2024_10.v49
+```
+SERVER-RELEASE:   2024_10.v49
+CODE-RELEASE:     4.13.2.30
+```
+
+### Highlights
+
++ Update the API methods, database, and visualization for the new PROTEO data.
++ Upload the annotations for Homo sapiens G47
++ Upload the annotations for Mus musculus M36
++ Upload the annotations for Danio rerio e113
++ Upload the annotations for Sus scrofa e113
+
+### Server (4.13)
+
+
+### Code (2.30)
+
++ PROTEO: Update the API methods, database, and visualization for the new PROTEO data.
+___
 ## 2024_06.v48
 ```
 SERVER-RELEASE:   2024_06.v48
