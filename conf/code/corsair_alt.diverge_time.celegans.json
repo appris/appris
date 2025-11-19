@@ -1,54 +1,54 @@
 {
 "Caenorhabditis":[
-	{"name":"Caenorhabditis briggsae","common":"C briggsae","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":60,"norm":0.15}
-	{"name":"Caenorhabditis remanei","common":"C remanei","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":60,"norm":0.15}
+	{"name":"Caenorhabditis briggsae","common":"C briggsae","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_000004555.2_CB4","age":60,"norm":0.15},
+	{"name":"Caenorhabditis remanei","common":"C remanei","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_010183535.1_CRPX506","age":60,"norm":0.15}
 ],
 "Loa":[
-	{"name":"Loa loa","common":"Loa loa","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":241,"norm":0.53}
+	{"name":"Loa loa","common":"Loa loa","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_000183805.2_Loa_loa_V3.1","age":241,"norm":0.53}
 ],
 "Brugia":[
-	{"name":"Brugia malayi","common":"B malayi","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":241,"norm":0.53}
+	{"name":"Brugia malayi","common":"B malayi","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_000002995.4_B_malayi-4.0","age":241,"norm":0.53}
 ],
 "Strongyloides":[
-	{"name":"Strongyloides ratti","common":"Rat threadworm","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":241,"norm":0.53}
+	{"name":"Strongyloides ratti","common":"Rat threadworm","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_001040885.1_S_ratti_ED321","age":241,"norm":0.53}
 ],
 "Trichinella":[
-	{"name":"Trichinella spiralis","common":"Pork worm","tax_id":9606,"proteome_id":" NO RS","weight":0,"age":439,"norm":0.975}
+	{"name":"Trichinella spiralis","common":"Pork worm","tax_id":9606,"proteome_id":" NO RS","weight":0,"clade":"invertebrate", "annotation":"GCF_000181795.1_Trichinella_spiralis-3.7.1","age":439,"norm":0.975}
 ],
 "Drosophila":[
-	{"name":"Drosophila melanogaster","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Drosophila melanogaster","common":"Fruit fly","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_000001215.4_Release_6_plus_ISO1_MT","age":612,"norm":1}
 ],
 "Octopus":[
-	{"name":"Octopus sinensis","common":"Common octopus","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Octopus sinensis","common":"Common octopus","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_006345805.1_ASM634580v1","age":612,"norm":1}
 ],
 "Ixodes":[
-	{"name":"Ixodes scapularis","common":"Deer tick","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Ixodes scapularis","common":"Deer tick","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_016920785.2_ASM1692078v2","age":612,"norm":1}
 ],
 "Aedes":[
-	{"name":"Aedes aegypti","common":"Yellow fever mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Aedes aegypti","common":"Yellow fever mosquito","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_002204515.2_AaegL5.0","age":612,"norm":1}
 ],
 "Lepeophtheirus":[
-	{"name":"Lepeophtheirus salmonis","common":"Salmon louse","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Lepeophtheirus salmonis","common":"Salmon louse","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_016086655.3_UVic_Lsal_1.2","age":612,"norm":1}
 ],
 "Patiria":[
-	{"name":"Patiria miniata","common":"Bat star","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Patiria miniata","common":"Bat star","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_015706575.1_ASM1570657v1","age":612,"norm":1}
 ],
 "Acanthaster":[
-	{"name":"Acanthaster planci","common":"Crown-of-thorns starfish","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Acanthaster planci","common":"Crown-of-thorns starfish","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_001949145.1_OKI-Apl_1.0","age":612,"norm":1}
 ],
 "Pecten":[
-	{"name":"Pecten maximus","common":"Great scallop","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":612,"norm":1}
+	{"name":"Pecten maximus","common":"Great scallop","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"invertebrate", "annotation":"GCF_902652985.1_xPecMax1.1","age":612,"norm":1}
 ],
 "Homo":[
-	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"age":680,"norm":1}
+	{"name":"Homo sapiens","common":"Human","tax_id":9606,"proteome_id":"UP000005640","weight":0,"clade":"vertebrate_mammalian", "annotation":"GCF_000001405.40_GRCh38.p14","age":680,"norm":1}
 ],
 "Mus":[
-	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"1","age":680,"norm":1},
+	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"1","clade":"vertebrate_mammalian", "annotation":"GCF_000001635.27_GRCm39","age":680,"norm":1}
 ],
 "Danio":[
-	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"9","age":680,"norm":1}
+	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"9","clade":"vertebrate_other", "annotation":"GCF_000002035.6_GRCz11","age":680,"norm":1}
 ],
 "Styela":[
-	{"name":"Styela clava","common":"S.Clava","tax_id":7725,"weight":"12","age":680,"norm":1}
+	{"name":"Styela clava","common":"S.Clava","tax_id":7725,"weight":"12","clade":"invertebrate", "annotation":"GCF_013122585.1_ASM1312258v2","age":680,"norm":1}
 ]
 }

@@ -1,146 +1,177 @@
 {
-"Microcebus":[
-	{"name":"Microcebus murinus","common":"Mouse Lemur","tax_id":30608,"weight":0,"age":73,"norm":0.1077}
-],
-"Otolemur":[
-	{"name":"Otolemur garnettii","common":"Bushbaby","tax_id":30611,"proteome_id":"UP000005225","weight":0,"age":73,"norm":0.1077}
-],
-"Mus":[
-	{"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","weight":"1","age":88,"norm":0.1297935}
-],
-"Rattus":[
-	{"name":"Rattus norvegicus","common":"Rat","tax_id":10116,"proteome_id":"UP000002494","weight":"1","age":88,"norm":0.1297935}
-],
-"Dipodomys":[
-	{"name":"Dipodomys ordii","common":"Kangaroo rat","tax_id":10020,"proteome_id":"UP000081671","weight":"1","age":88,"norm":0.1297935}
-],
-"Ictidomys":[
-	{"name":"Ictidomys tridecemlineatus","common":"Squirrel","tax_id":43179,"proteome_id":"UP000005215","weight":"1","age":88,"norm":0.1297935}
-],
-"Cavia":[
-	{"name":"Cavia porcellus","common":"Guinea Pig","tax_id":10141,"proteome_id":"UP000005447","weight":"1","age":88,"norm":0.1297935}
-],
-"Oryctolagus":[
-	{"name":"Oryctolagus cuniculus","common":"Rabbit","tax_id":9986,"proteome_id":"UP000001811","weight":"1","age":88,"norm":0.1297935}
-],
-"Tupaia":[
-	{"name":"Tupaia chinensis","common":"Tree Shrew","tax_id":37347,"weight":"1","age":88,"norm":0.1297935}
-],
-"Erinaceus":[
-	{"name":"Erinaceus europaeus","common":"Hedgehog","tax_id":9365,"proteome_id":"UP000079721","weight":"2","age":94,"norm":0.1386431}
-],
-"Sorex":[
-	{"name":"Sorex araneus","common":"Shrew","tax_id":42254,"weight":"2","age":94,"norm":0.1386431}
-],
-"Myotis":[
-	{"name":"Myotis lucifugus","common":"Microbat","tax_id":59463,"proteome_id":"UP000001074","weight":"2","age":94,"norm":0.1386431}
-],
-"Equus":[
-	{"name":"Equus caballus","common":"Horse","tax_id":9796,"proteome_id":"UP000002281","weight":"2","age":94,"norm":0.1386431}
-],
-"Felis":[
-	{"name":"Felis catus","common":"Cat","tax_id":9685,"proteome_id":"UP000011712","weight":"2","age":94,"norm":0.1386431}
-],
-"Canis":[
-	{"name":"Canis lupus familiaris","common":"Dog","tax_id":9615,"proteome_id":"UP000002254","weight":"2","age":94,"norm":0.1386431}
-],
-"Tursiops":[
-	{"name":"Tursiops truncatus","common":"Dolphin","tax_id":9739,"proteome_id":"UP000245320","weight":"2","age":94,"norm":0.1386431}
-],
-"Sus":[
-	{"name":"Sus scrofa","common":"Pig","tax_id":9823,"proteome_id":"UP000008227","weight":"2","age":94,"norm":0.1386431}
-],
-"Bos":[
-	{"name":"Bos taurus","common":"Cow","tax_id":9913,"proteome_id":"UP000009136","weight":"2","age":94,"norm":0.1386431}
-],
-"Ovis":[
-	{"name":"Ovis aries","common":"Sheep","tax_id":9940,"proteome_id":"UP000002356","weight":"2","age":94,"norm":0.1386431}
-],
-"Dasypus":[
-	{"name":"Dasypus novemcinctus","common":"Armadillo","tax_id":9361,"weight":"3","age":102,"norm":0.1504425}
-],
-"Echinops":[
-	{"name":"Echinops telfairi","common":"Lesser hedgehog tenrec","tax_id":9371,"weight":"3","age":102,"norm":0.1504425}
-],
-"Loxodonta":[
-	{"name":"Loxodonta africana","common":"Elephant","tax_id":9785,"proteome_id":"UP000007646","weight":"3","age":102,"norm":0.1504425}
-],
-"Sarcophilus":[
-	{"name":"Sarcophilus harrisii","common":"Tasmanian devil","tax_id":9305,"proteome_id":"UP000007648","weight":"4","age":160,"norm":0.2359882}
-],
-"Vombatus":[
-	{"name":"Vombatus ursinus","common":"Wombat","tax_id":9315,"weight":"4","age":160,"norm":0.2359882}
-],
-"Monodelphis":[
-	{"name":"Monodelphis domestica","common":"Opossum","tax_id":13616,"proteome_id":"UP000002280","weight":"4","age":160,"norm":0.2359882}
-],
-"Ornithorhynchus":[
-	{"name":"Ornithorhynchus anatinus","common":"Platypus","tax_id":9258,"proteome_id":"UP000002279","weight":"5","age":169,"norm":0.2492625}
-],
-"Anolis":[
-	{"name":"Anolis carolinensis","common":"Anole lizard","tax_id":28377,"proteome_id":"UP000001646","weight":"6","age":320,"norm":0.4719764}
-],
-"Taeniopygia":[
-	{"name":"Taeniopygia guttata","common":"Zebra Finch","tax_id":59729,"proteome_id":"UP000007754","weight":"6","age":320,"norm":0.4719764}
-],
-"Ficedula":[
-	{"name":"Ficedula albicollis","common":"Flycatcher","tax_id":59894,"proteome_id":"UP000016665","weight":"6","age":320,"norm":0.4719764}
-],
-"Podarcis":[
-	{"name":"Podarcis muralis","common":"Wall Lizard","tax_id":8839,"proteome_id":"UP000016666","weight":"6","age":320,"norm":0.4719764}
-],
-"Gallus":[
-	{"name":"Gallus gallus","common":"Chicken","tax_id":9031,"proteome_id":"UP000000539","weight":"6","age":320,"norm":0.4719764}
-],
-"Meleagris":[
-	{"name":"Meleagris gallopavo","common":"Turkey","tax_id":9103,"proteome_id":"UP000001645","weight":"6","age":320,"norm":0.4719764}
-],
-"Pelodiscus":[
-	{"name":"Pelodiscus sinensis","common":"Chinese softshell turtle","tax_id":13735,"proteome_id":"UP000007267","weight":"6","age":320,"norm":0.4719764}
-],
-"Xenopus":[
-	{"name":"Xenopus laevis","common":"Xenopus","tax_id":8364,"proteome_id":"UP000008143","weight":"7","age":353,"norm":0.520649}
-],
-"Geotrypetes":[
-	{"name":"Geotrypetes seraphini","common":"Random Amphibian","tax_id":8364,"proteome_id":"UP000008143","weight":"7","age":353,"norm":0.520649}
-],
-"Latimeria":[
-	{"name":"Latimeria chalumnae","common":"Coelacanth","tax_id":7897,"proteome_id":"UP000008672","weight":"8","age":414,"norm":0.6106195}
-],
-"Danio":[
-	{"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","weight":"9","age":432,"norm":0.6371681}
-],
-"Oreochromis":[
-	{"name":"Oreochromis niloticus","common":"Tilapia","tax_id":8128,"proteome_id":"UP000005207","weight":"9","age":432,"norm":0.6371681}
-],
-"Oryzias":[
-	{"name":"Oryzias latipes","common":"Medaka","tax_id":8090,"proteome_id":"UP000001038","weight":"9","age":432,"norm":0.6371681}
-],
-"Gasterosteus":[
-	{"name":"Gasterosteus aculeatusus","common":"Stickleback","tax_id":8083,"proteome_id":"UP000002852","weight":"9","age":432,"norm":0.6371681}
-],
-"Takifugu":[
-	{"name":"Takifugu rubripes","common":"Fugu","tax_id":31033,"proteome_id":"UP000005226","weight":"9","age":432,"norm":0.6371681}
-],
-"Lepisosteus":[
-	{"name":"Lepisosteus oculatus","common":"Spotted gar","tax_id":7918,"proteome_id":"UP000018468","weight":"9","age":432,"norm":0.6371681}
-],
-"Salmo":[
-	{"name":"Salmo salar","common":"Salmon","tax_id":8030,"weight":"9","age":432,"norm":0.6371681}
-],
-"Amblyraja":[
-	{"name":"Amblyraja radiata","common":"Thorny skate","tax_id":386614,"weight":"10","age":473,"norm":0.69764}
-],
-"Scyliorhinus":[
-	{"name":"Scyliorhinus canicula","common":"Small-spotted catshark","tax_id":7830,"weight":"10","age":473,"norm":0.69764}
-],
-"Petromyzon":[
-	{"name":"Petromyzon marinus","common":"Lamprey","tax_id":7757,"weight":"11","age":601,"norm":0.8864307}
-],
-"Styela":[
-	{"name":"Styela clava","common":"S.Clava","tax_id":7725,"weight":"12","age":678,"norm":1}
-],
-"Ciona":[
-	{"name":"Ciona intestinalis","common":"C.intestinalis","tax_id":51511,"proteome_id":"UP000007875","weight":"12","age":678,"norm":1}
-]
-}
+    "Gorilla":[
+            {"name":"Gorilla gorilla","common":"Gorilla","tax_id":9595,"proteome_id":"UP000001519","clade":"vertebrate_mammalian","annotation":"GCF_029281585.2_NHGRI_mGorGor1-v2.0_pri","weight":0,"age":8.6,"norm":0}
+    ],
+    "Pan":[
+            {"name":"Pan troglodytes","common":"Chimpanzee","tax_id":9598,"proteome_id":"UP000002277","clade":"vertebrate_mammalian","annotation":"GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri","weight":0,"age":6.4,"norm":0}
+    ],
+    "Pongo":[
+            {"name":"Pongo abelii","common":"Orangutan","tax_id":9601,"proteome_id":"UP000001595","clade":"vertebrate_mammalian","annotation":"GCF_028885655.2_NHGRI_mPonAbe1-v2.0_pri","weight":0,"age":0,"norm":0}
+    ],
+    "Macaca":[
+            {"name":"Macaca mulatta","common":"Macaque","tax_id":9544,"proteome_id":"UP000006718","clade":"vertebrate_mammalian","annotation":"GCF_003339765.1_Mmul_10","weight":0,"age":28.1,"norm":0.0422}
+    ],
+    "Papio":[
+            {"name":"Papio anubis","common":"Olive baboon","tax_id":9555,"proteome_id":"UP000028761","clade":"vertebrate_mammalian","annotation":"GCF_008728515.1_Panubis1.0","weight":0,"age":0,"norm":0.0422}
+    ],
+    "Chlorocebus":[
+            {"name":"Chlorocebus sabaeus","common":"Vervet-AGM","tax_id":60711,"proteome_id":"UP000029965","clade":"vertebrate_mammalian","annotation":"GCF_015252025.1_Vero_WHO_p1.0","weight":0,"age":0,"norm":0.0422}
+    ],
+    "Aotus":[
+            {"name":"Aotus nancymaae","common":"Gibbon","tax_id":61853,"proteome_id":"UP000001073","clade":"vertebrate_mammalian","annotation":"GCF_030222135.1_86718_ANA_hifiasm-v0.15.2.pri","weight":0,"age":0,"norm":0.0626}
+    ],
+    "Callithrix":[
+            {"name":"Callithrix jacchus","common":"Marmoset","tax_id":9483,"proteome_id":"UP000008225","clade":"vertebrate_mammalian","annotation":"GCF_011100555.1_mCalJa1.2.pat.X","weight":0,"age":0,"norm":0.0626}
+    ],
+    "Carlito":[
+            {"name":"Carlito syrichta","common":"Tarsier","tax_id":1868482,"proteome_id":"UP000189704","clade":"vertebrate_mammalian","annotation":"GCF_000164805.1_Tarsius_syrichta-2.0.1","weight":0,"age":0,"norm":0.1004}
+    ],
+    "Microcebus":[
+        {"name":"Microcebus murinus","common":"Mouse Lemur","tax_id":30608,"clade":"vertebrate_mammalian","annotation":"GCF_000165445.2_Mmur_3.0","weight":0,"age":73,"norm":0.1077}
+    ],
+    "Otolemur":[
+        {"name":"Otolemur garnettii","common":"Bushbaby","tax_id":30611,"proteome_id":"UP000005225","clade":"vertebrate_mammalian","annotation":"GCF_000181295.1_OtoGar3","weight":0,"age":73,"norm":0.1077}
+    ],
+    "Mus":[
+        {"name":"Mus musculus","common":"Mouse","tax_id":10090,"proteome_id":"UP000000589","clade":"vertebrate_mammalian","annotation":"GCF_000001635.27_GRCm39","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Rattus":[
+        {"name":"Rattus norvegicus","common":"Rat","tax_id":10116,"proteome_id":"UP000002494","clade":"vertebrate_mammalian","annotation":"GCF_036323735.1_GRCr8","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Dipodomys":[
+        {"name":"Dipodomys ordii","common":"Kangaroo rat","tax_id":10020,"proteome_id":"UP000081671","clade":"vertebrate_mammalian","annotation":"GCF_000151885.1_Dord_2.0","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Ictidomys":[
+        {"name":"Ictidomys tridecemlineatus","common":"Squirrel","tax_id":43179,"proteome_id":"UP000005215","clade":"vertebrate_mammalian","annotation":"GCF_016881025.1_HiC_Itri_2","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Cavia":[
+        {"name":"Cavia porcellus","common":"Guinea Pig","tax_id":10141,"proteome_id":"UP000005447","clade":"vertebrate_mammalian","annotation":"GCF_034190915.1_mCavPor4.1","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Oryctolagus":[
+        {"name":"Oryctolagus cuniculus","common":"Rabbit","tax_id":9986,"proteome_id":"UP000001811","clade":"vertebrate_mammalian","annotation":"GCF_009806435.1_UM_NZW_1.0","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Tupaia":[
+        {"name":"Tupaia chinensis","common":"Tree Shrew","tax_id":37347,"clade":"vertebrate_mammalian","annotation":"GCF_000334495.1_TupChi_1.0","weight":"1","age":88,"norm":0.1297935}
+    ],
+    "Erinaceus":[
+        {"name":"Erinaceus europaeus","common":"Hedgehog","tax_id":9365,"proteome_id":"UP000079721","clade":"vertebrate_mammalian","annotation":"GCF_950295315.1_mEriEur2.1","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Sorex":[
+        {"name":"Sorex araneus","common":"Shrew","tax_id":42254,"clade":"vertebrate_mammalian","annotation":"GCF_027595985.1_mSorAra2.pri","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Myotis":[
+        {"name":"Myotis lucifugus","common":"Microbat","tax_id":59463,"proteome_id":"UP000001074","clade":"vertebrate_mammalian","annotation":"GCF_000147115.1_Myoluc2.0","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Equus":[
+        {"name":"Equus caballus","common":"Horse","tax_id":9796,"proteome_id":"UP000002281","clade":"vertebrate_mammalian","annotation":"GCF_002863925.1_EquCab3.0","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Felis":[
+        {"name":"Felis catus","common":"Cat","tax_id":9685,"proteome_id":"UP000011712","clade":"vertebrate_mammalian","annotation":"GCF_018350175.1_F.catus_Fca126_mat1.0","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Canis":[
+        {"name":"Canis lupus familiaris","common":"Dog","tax_id":9615,"proteome_id":"UP000002254","clade":"vertebrate_mammalian","annotation":"GCF_000002285.5_Dog10K_Boxer_Tasha","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Tursiops":[
+        {"name":"Tursiops truncatus","common":"Dolphin","tax_id":9739,"proteome_id":"UP000245320","clade":"vertebrate_mammalian","annotation":"GCF_011762595.1_mTurTru1.mat.Y","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Sus":[
+        {"name":"Sus scrofa","common":"Pig","tax_id":9823,"proteome_id":"UP000008227","clade":"vertebrate_mammalian","annotation":"GCF_000003025.6_Sscrofa11.1","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Bos":[
+        {"name":"Bos taurus","common":"Cow","tax_id":9913,"proteome_id":"UP000009136","clade":"vertebrate_mammalian","annotation":"GCF_002263795.3_ARS-UCD2.0","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Ovis":[
+        {"name":"Ovis aries","common":"Sheep","tax_id":9940,"proteome_id":"UP000002356","clade":"vertebrate_mammalian","annotation":"GCF_016772045.2_ARS-UI_Ramb_v3.0","weight":"2","age":94,"norm":0.1386431}
+    ],
+    "Dasypus":[
+        {"name":"Dasypus novemcinctus","common":"Armadillo","tax_id":9361,"clade":"vertebrate_mammalian","annotation":"GCF_030445035.1_mDasNov1.hap2","weight":"3","age":102,"norm":0.1504425}
+    ],
+    "Echinops":[
+        {"name":"Echinops telfairi","common":"Lesser hedgehog tenrec","tax_id":9371,"clade":"vertebrate_mammalian","annotation":"GCF_000313985.2_ASM31398v2","weight":"3","age":102,"norm":0.1504425}
+    ],
+    "Loxodonta":[
+        {"name":"Loxodonta africana","common":"Elephant","tax_id":9785,"proteome_id":"UP000007646","clade":"vertebrate_mammalian","annotation":"GCF_030014295.1_mLoxAfr1.hap2","weight":"3","age":102,"norm":0.1504425}
+    ],
+    "Sarcophilus":[
+        {"name":"Sarcophilus harrisii","common":"Tasmanian devil","tax_id":9305,"proteome_id":"UP000007648","clade":"vertebrate_mammalian","annotation":"GCF_902635505.1_mSarHar1.11","weight":"4","age":160,"norm":0.2359882}
+    ],
+    "Vombatus":[
+        {"name":"Vombatus ursinus","common":"Wombat","tax_id":9315,"clade":"vertebrate_mammalian","annotation":"GCF_900497805.2_bare-nosed_wombat_genome_assembly","weight":"4","age":160,"norm":0.2359882}
+    ],
+    "Monodelphis":[
+        {"name":"Monodelphis domestica","common":"Opossum","tax_id":13616,"proteome_id":"UP000002280","clade":"vertebrate_mammalian","annotation":"GCF_027887165.1_mMonDom1.pri","weight":"4","age":160,"norm":0.2359882}
+    ],
+    "Ornithorhynchus":[
+        {"name":"Ornithorhynchus anatinus","common":"Platypus","tax_id":9258,"proteome_id":"UP000002279","clade":"vertebrate_mammalian","annotation":"GCF_004115215.2_mOrnAna1.pri.v4","weight":"5","age":169,"norm":0.2492625}
+    ],
+    "Anolis":[
+        {"name":"Anolis carolinensis","common":"Anole lizard","tax_id":28377,"proteome_id":"UP000001646","clade":"vertebrate_other","annotation":"GCF_035594765.1_rAnoCar3.1.pri","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Taeniopygia":[
+        {"name":"Taeniopygia guttata","common":"Zebra Finch","tax_id":59729,"proteome_id":"UP000007754","clade":"vertebrate_other","annotation":"GCF_003957565.2_bTaeGut1.4.pri","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Ficedula":[
+        {"name":"Ficedula albicollis","common":"Flycatcher","tax_id":59894,"proteome_id":"UP000016665","clade":"vertebrate_other","annotation":"GCF_000247815.1_FicAlb1.5","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Podarcis":[
+        {"name":"Podarcis muralis","common":"Wall Lizard","tax_id":8839,"proteome_id":"UP000016666","clade":"vertebrate_other","annotation":"GCF_004329235.1_PodMur_1.0","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Gallus":[
+        {"name":"Gallus gallus","common":"Chicken","tax_id":9031,"proteome_id":"UP000000539","clade":"vertebrate_other","annotation":"GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Meleagris":[
+        {"name":"Meleagris gallopavo","common":"Turkey","tax_id":9103,"proteome_id":"UP000001645","clade":"vertebrate_other","annotation":"GCF_000146605.3_Turkey_5.1","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Pelodiscus":[
+        {"name":"Pelodiscus sinensis","common":"Chinese softshell turtle","tax_id":13735,"proteome_id":"UP000007267","clade":"vertebrate_other","annotation":"GCF_000230535.1_PelSin_1.0","weight":"6","age":320,"norm":0.4719764}
+    ],
+    "Xenopus":[
+        {"name":"Xenopus laevis","common":"Xenopus","tax_id":8364,"proteome_id":"UP000008143","clade":"vertebrate_other","annotation":"GCF_017654675.1_Xenopus_laevis_v10.1","weight":"7","age":353,"norm":0.520649}
+    ],
+    "Geotrypetes":[
+        {"name":"Geotrypetes seraphini","common":"Random Amphibian","tax_id":8364,"proteome_id":"UP000008143","clade":"vertebrate_other","annotation":"GCF_902459505.1_aGeoSer1.1","weight":"7","age":353,"norm":0.520649}
+    ],
+    "Latimeria":[
+        {"name":"Latimeria chalumnae","common":"Coelacanth","tax_id":7897,"proteome_id":"UP000008672","clade":"vertebrate_other","annotation":"GCF_037176945.1_fLatCha1.pri","weight":"8","age":414,"norm":0.6106195}
+    ],
+    "Danio":[
+        {"name":"Danio rerio","common":"Zebrafish","tax_id":7955,"proteome_id":"UP000000437","clade":"vertebrate_other","annotation":"GCF_000002035.6_GRCz11","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Oreochromis":[
+        {"name":"Oreochromis niloticus","common":"Tilapia","tax_id":8128,"proteome_id":"UP000005207","clade":"vertebrate_other","annotation":"GCF_001858045.2_O_niloticus_UMD_NMBU","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Oryzias":[
+        {"name":"Oryzias latipes","common":"Medaka","tax_id":8090,"proteome_id":"UP000001038","clade":"vertebrate_other","annotation":"GCF_002234675.1_ASM223467v1","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Gasterosteus":[
+        {"name":"Gasterosteus aculeatus","common":"Stickleback","tax_id":8083,"proteome_id":"UP000002852","clade":"vertebrate_other","annotation":"GCF_016920845.1_GAculeatus_UGA_version5","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Takifugu":[
+        {"name":"Takifugu rubripes","common":"Fugu","tax_id":31033,"proteome_id":"UP000005226","clade":"vertebrate_other","annotation":"GCF_901000725.2_fTakRub1.2","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Paramormyrops":[
+        {"name":"Paramormyrops kingsleyae","common":"Paramormyrops","clade":"vertebrate_other","annotation":"GCF_002872115.1_PKINGS_0.1","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Lepisosteus":[
+        {"name":"Lepisosteus oculatus","common":"Spotted gar","tax_id":7918,"proteome_id":"UP000018468","clade":"vertebrate_other","annotation":"GCF_000242695.1_LepOcu1","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Salmo":[
+        {"name":"Salmo salar","common":"Salmon","tax_id":8030,"clade":"vertebrate_other","annotation":"GCF_905237065.1_Ssal_v3.1","weight":"9","age":432,"norm":0.6371681}
+    ],
+    "Amblyraja":[
+        {"name":"Amblyraja radiata","common":"Thorny skate","tax_id":386614,"clade":"vertebrate_other","annotation":"GCF_010909765.2_sAmbRad1.1.pri","weight":"10","age":473,"norm":0.69764}
+    ],
+    "Scyliorhinus":[
+        {"name":"Scyliorhinus canicula","common":"Small-spotted catshark","tax_id":7830,"clade":"vertebrate_other","annotation":"GCF_902713615.1_sScyCan1.1","weight":"10","age":473,"norm":0.69764}
+    ],
+    "Petromyzon":[
+        {"name":"Petromyzon marinus","common":"Lamprey","tax_id":7757,"clade":"vertebrate_other","annotation":"GCF_010993605.1_kPetMar1.pri","weight":"11","age":601,"norm":0.8864307}
+    ],
+    "Styela":[
+        {"name":"Styela clava","common":"S.Clava","tax_id":7725,"clade":"invertebrate","annotation":"GCF_013122585.1_ASM1312258v2","weight":"12","age":678,"norm":1}
+    ],
+    "Ciona":[
+        {"name":"Ciona intestinalis","common":"C.intestinalis","clade":"invertebrate","annotation":"GCF_000224145.3_KH","weight":"12","age":678,"norm":1}
+    ]
+    }
+    
