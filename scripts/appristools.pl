@@ -61,6 +61,7 @@ else {
 	if ( $methods =~ /s/  ) { $met .= 'spade,'       }
 	if ( $methods =~ /c1/ ) { $met .= 'corsair,'     }
 	if ( $methods =~ /c2/ ) { $met .= 'corsair_alt,' }
+	if ( $methods =~ /c3/ ) { $met .= 'corsair_gfa,' }
 	if ( $methods =~ /t/  ) { $met .= 'thump,'       }
 	if ( $methods =~ /r/  ) { $met .= 'crash,'       }
 	if ( $methods =~ /p/  ) { $met .= 'proteo,'      }
@@ -538,6 +539,7 @@ Executes all APPRIS 'steps
 	* s  - Presence of whole protein domains, SPADE
 	* c1 - Presence of conservation, CORSAIR
 	* c2 - Presence of conservation, CORSAIR_ALT
+	* c3 - Gene Family Age, CORSAIR_GFA
 	* t  - Presence of whole trans-membrane helices, THUMP
 	* r  - Prediction of signal peptide and sub-cellular location, CRASH
 	* p  - Proteomic evidence, PROTEO

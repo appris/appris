@@ -34,6 +34,7 @@ Optional arguments:\n
 \t\t s -> spade\n
 \t\t c1 -> corsair\n
 \t\t c2 -> corsair_alt\n
+\t\t c3 -> corsair_gfa\n
 \t\t t -> thump\n
 \t\t r -> crash\n
 \t\t p -> proteo\n
@@ -133,6 +134,9 @@ if [ "${METHODS}" != "" ]; then
 	fi
 	if [[ "${METHODS}" == *"c2"* ]]; then
 		MET="${MET},corsair_alt"
+	fi
+	if [[ "${METHODS}" == *"c3"* ]]; then
+		MET="${MET},corsair_gfa"
 	fi
 	if [[ "${METHODS}" == *"t"* ]]; then
 		MET="${MET},thump"
