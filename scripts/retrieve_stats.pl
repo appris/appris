@@ -367,6 +367,9 @@ sub _get_prin_stats($$)
 		elsif ( (exists $gene_prin_report->{'PRINCIPAL:5'} and ($gene_prin_report->{'PRINCIPAL:5'} >= 1) ) ) {
 			$report->{'uncertain_longest_seq'}++;
 		}
+		elsif ( (exists $gene_prin_report->{'PRINCIPAL:M'} and ($gene_prin_report->{'PRINCIPAL:M'} >= 1) ) ) {
+			$report->{'uncertain_longest_seq'}++;
+				}
 		$report->{'genes'}++;		
 	}
 	return $report;

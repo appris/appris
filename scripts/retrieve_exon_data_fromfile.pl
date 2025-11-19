@@ -219,7 +219,7 @@ sub get_exon_data($$)
 					elsif ( $appris_annot =~ /ALTERNATIVE/ ) {
 						$a_annot = $appris_annot;
 					}
-					elsif ( $appris_annot eq 'MINOR' ) {
+					elsif ( $appris_annot =~ /MINOR/ ) {
 						$a_annot = $appris_annot;					
 					}					
 					if ( defined $a_annot ) {						

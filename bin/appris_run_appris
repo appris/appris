@@ -60,7 +60,7 @@ Optional arguments:\n
 \t\t ucsc    -> create UCSC alignments\n
 \n
 \t -d [-trifid]\n
-\t\t TRIFID predictions file\n
+\t\t TRIFID_PARAMETERS\n
 \n
 \t -o [-out]\n
 \t\t Output path\n
@@ -350,3 +350,43 @@ else
 		
 	fi
 fi
+
+# -----------------------------------------------------------------------------
+# APPRIS MANUAL. For now, just for Homo sapiens and for APPRIS-TRIFID
+# The TSV file with the manual annotations is save in /local/appris/conf/scripts/apprisrc.Hsap.hg38.ensembl
+if [[ "${APPRIS_MANUAL_FILE}" != "" && "${TRIFID_PARAMETERS}" != "" ]]; then
+
+	# local parameters
+	MANUAL_LOG_PARAMETERS=""
+	if [ "$LOG_LEVEL" != "" ]; then
+		LOG_LEVEL_MANUAL="${LOG_LEVEL^^}"
+		LOG_FILENAME="${APPRIS_WORKSPACE_LOG_DIR}/appris_manual_appris.${SPECIES_ID}.log"
+		MANUAL_LOG_PARAMETERS="--loglevel=${LOG_LEVEL_MANUAL} --logfile=${LOG_FILENAME}"
+	fi
+
+	MANUAL_SCRIPT="${APPRIS_SCRIPTS_DIR}/appris_manual_appris.py"
+
+	# print trace
+	echo "================="
+	echo "python3 ${MANUAL_SCRIPT}"
+	echo " --species="${APPRIS_SPECIES}""
+	echo " --input_folder="${APPRIS_ANNOT_DIR}""
+	echo " --manual_file="${APPRIS_MANUAL_FILE}""
+	echo " ${MANUAL_LOG_PARAMETERS}"
+
+	# run method
+	python3 ${MANUAL_SCRIPT} \
+		--species="${APPRIS_SPECIES}" \
+		--input_folder="${APPRIS_ANNOT_DIR}" \
+		--manual_file="${APPRIS_MANUAL_FILE}" \
+		${MANUAL_LOG_PARAMETERS}
+	echo "================="
+
+else
+	# print trace
+	echo "================="
+	echo "APPRIS MANUAL: NOTHING TO DO FOR ${APPRIS_SPECIES}"
+	echo "================="
+fi
+
+

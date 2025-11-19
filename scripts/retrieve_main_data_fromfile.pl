@@ -96,7 +96,7 @@ sub main()
 	# Get annots
 	$logger->debug("-- get anntos -------\n");
 	eval {
-		my ($cmd) = "awk -F \"\\t\" 'NF >= 20 {if (\$20 ~ /^PRINCIPAL:[0-9]+\$/ || \$20 ~ /^ALTERNATIVE:[0-9]+\$/ ) {print \$2\"\t\"\$1\"\t\"\$3\"\t\"\$8\"\t\"\$20}}' $input_main_file > $output_file";
+		my ($cmd) = "awk -F \"\\t\" 'NF >= 20 {if (\$20 ~ /^PRINCIPAL:[0-9,M]+\$/ || \$20 ~ /^ALTERNATIVE:[0-9,M]+\$/ ) {print \$2\"\t\"\$1\"\t\"\$3\"\t\"\$8\"\t\"\$20}}' $input_main_file > $output_file";
 		$logger->debug("** script: $cmd\n");
 		system($cmd);		
 	};
@@ -104,7 +104,7 @@ sub main()
 		
 	$logger->debug("-- get anntos (for Ensembl) -------\n");
 	eval {
-		my ($cmd) = "awk -F \"\\t\" 'NF >= 20 {if (\$20 ~ /^PRINCIPAL:[0-9]+\$/ || \$20 ~ /^ALTERNATIVE:[0-9]+\$/ ) {print \$1\"\t\"\$3\"\t\"\$20}}' $input_main_file > $output_ens_file";
+		my ($cmd) = "awk -F \"\\t\" 'NF >= 20 {if (\$20 ~ /^PRINCIPAL:[0-9,M]+\$/ || \$20 ~ /^ALTERNATIVE:[0-9,M]+\$/ ) {print \$1\"\t\"\$3\"\t\"\$20}}' $input_main_file > $output_ens_file";
 		$logger->debug("** script: $cmd\n");
 		system($cmd);		
 	};

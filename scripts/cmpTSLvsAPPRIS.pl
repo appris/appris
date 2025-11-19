@@ -147,8 +147,10 @@ sub get_report_content($) {
 		'PRINCIPAL:3' 	=> 0,
 		'PRINCIPAL:4' 	=> 0,
 		'PRINCIPAL:5' 	=> 0,
+		'PRINCIPAL:M' 	=> 0,
 		'ALTERNATIVE:1' => 0,
 		'ALTERNATIVE:2' => 0,
+		'ALTERNATIVE:M' => 0,
 	};
 	my ($num_total_tsl) = {			
 			'tsl1'	=> 0,
