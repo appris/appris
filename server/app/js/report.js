@@ -639,15 +639,15 @@ apprisFilters.filter('convertSeqRunnerObj', function() {
 });
 
 // Replaces the appris labels for "css class"
-apprisFilters.filter('activeAnnotClass', function(principal1, principal2, principal3, principal4, principal5, alternative1, alternative2) {
+apprisFilters.filter('activeAnnotClass', function(principalm, principal1, principal2, principal3, principal4, principal5, alternativem, alternative1, alternative2) {
     return function(input, type){
         var filtered = '';
         if ( angular.isDefined(input) ) {
-            if ( (input == principal1) ||  (input == principal2) || (input == principal3) || (input == principal4) || (input == principal5) ) {
+            if ( (input == principalm) || (input == principal1) ||  (input == principal2) || (input == principal3) || (input == principal4) || (input == principal5) ) {
                 if ( angular.isDefined(type) && type == 'label' ) { filtered = "success" }
                 else { filtered = "principal" }
             }
-            else if ( (input == alternative1) || (input == alternative2) ) {
+            else if ( (input == alternativem) || (input == alternative1) || (input == alternative2) ) {
                 if ( angular.isDefined(type) && type == 'label' ) { filtered = "warning" }
                 else { filtered = "candidate" }
             }

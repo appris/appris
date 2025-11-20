@@ -3,11 +3,19 @@
  <p>APPRIS selects a single CDS variant for each gene as the 'PRINCIPAL' isoform based on the range
      of protein features. Note that since multiple transcripts may have the same CDS, it is
      possible for more than one transcript to be annotated as the principal variant.</p>
- <p>Principal isoforms are tagged with the numbers 1 to 5, with 1 being the most reliable. Note that
-     under the classic transcript selection system (see below) we also regard PRINCIPAL:2 isoforms
-     as highly reliable, while under the TRIFID transcript selection system (see below) we regard
-     PRINCIPAL:2 and PRINCIPAL:3 isoforms as highly reliable.</p>
+ <p>Principal isoforms are tagged with the letter 'M', since they are manual annotations; and then with the
+     numbers 1 to 5, with 1 being the most reliable. Note that under the classic transcript selection
+     system (see <a href="#/help/previous" target="_blank">Previous versions</a>) we also regard
+     PRINCIPAL:2 isoforms as highly reliable, while under the TRIFID transcript selection system
+     (see below) we regard PRINCIPAL:2 and PRINCIPAL:3 isoforms as highly reliable.</p>
  <ul>
+  <li>
+   <strong>PRINCIPAL:M</strong>
+   <p>Transcript(s) from genes manually curated. This decision is based on APPRIS data along with RNAseq,
+       proteomics and conservation data. It is used with the genes with which the predictor has the most
+       problems. Still, transcripts initially predicted as PRINCIPAL by the APPRIS predictor are now
+       labeled as ALTERNATIVE:M (See Bellow). </p>
+  </li>
   <li>
    <strong>PRINCIPAL:1</strong>
    <p>Transcript(s) predicted to code for the main functional isoform based solely on the core
@@ -73,6 +81,14 @@
        non-primate species.</p>
   </li>
  </ul>
+ <p>For genes with PRINCIPAL:M isoform(s), the ALTERNATIVE:M label appears:</p>
+ <ul>
+  <li>
+   <strong>ALTERNATIVE:M</strong>
+   <p>Candidate transcript(s) models that were initially labeled as PRINCIPAL:1 to PRINCIPAL:5 by 
+       the APPRIS predictor; but whose genes were later manually curated.</p>
+  </li>
+</ul>
  <p>You can see the transcript selection method prior to TRIFID in the 
     <a href="#/help/previous" target="_blank">Previous versions</a> section.</p>
 </div>

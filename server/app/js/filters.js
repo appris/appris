@@ -3,11 +3,13 @@
 /* Filters */
 
 var apprisFilters = angular.module('apprisFilters', ['ngResource']).config(["$provide", function ($provide) {
+    $provide.value("principalm", 'PRINCIPAL:M');
     $provide.value("principal1", 'PRINCIPAL:1');
     $provide.value("principal2", 'PRINCIPAL:2');
     $provide.value("principal3", 'PRINCIPAL:3');
     $provide.value("principal4", 'PRINCIPAL:4');
     $provide.value("principal5", 'PRINCIPAL:5');
+    $provide.value("alternativem", 'ALTERNATIVE:M');
     $provide.value("alternative1", 'ALTERNATIVE:1');
     $provide.value("alternative2", 'ALTERNATIVE:2');
     $provide.value("minor", 'MINOR');
