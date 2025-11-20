@@ -1,0 +1,219 @@
+
+<html>
+<head>
+    <title>{PROTEO} - Peptide evidence for the human genome</title>
+    <meta name="description" content="Peptide evidence for the human genome">
+    <meta name="author" content="Jose Rodriguez, CNIO-INB">
+</head>
+<style type="text/css">
+table td {
+	padding: 7px;
+}
+</style>
+<body>
+	<h2>Description</h3>
+<<<<<<< HEAD
+    <p>
+        Peptides that were identified[1], in collaboration, by <a href="https://www.cnio.es/" target="_blank">Spanish National Cancer Research Centre (CNIO)</a> and <a href="https://www.cnic.es/" target="_blank">Centro Nacional de Investigaciones Cardiovasculares (CNIC)</a>.
+    </p>
+    <p>
+    	We interrogate peptides from eight large-scale human proteomics experiments and databases, irrespective of tissue or cell type, for the vast majority of the protein-coding genes in these experiments. The peptide has to be included in at least 2 experiments.
+	</p>
+	
+    <h2>Procedures</h2>
+    <p>
+        We collected the peptides for the analysis from eight distinct large-scale proteomics data sets: the <a href="http://www.peptideatlas.org/" target="_blank">PeptideAtlas</a>[2] and <a href="https://peptide.nist.gov/" target="_blank"> NIST databases</a> and six published large-scale experiments.[3-8]. For the Wilhelm analysis, we only included the peptides from the publically available Cellzome experiments on human tissues.
+    </p>
+    <p>
+    	The eight studies covered a huge range of tissues and cell types: the peptides from the PeptideAtlas database cover 51 different tissues, cell types, and developmental stages, whereas the Geiger study interrogated 11 different cell types. The spectra from the PeptideAtlas database were only part of the NIST database and the Ezkurdia analyses. The Kim and Wilhelm analyses peptides were generated from 30 and 35 distinct tissues types (51 tissues in total).    	
+=======
+	<p>
+		Peptides that were identified in the GENCODE gene set, either as part of a collaboration
+		between the <a href="https://www.cnio.es/" target="_blank">Spanish National Cancer
+		Research Centre (CNIO)</a> and <a href="https://www.cnic.es/" target="_blank">Centro
+		Nacional de Investigaciones Cardiovasculares (CNIC)</a>[1], or by reanalysis of other
+		proteomics studies[2-14].
+	</p>
+	
+    <h2>Procedures</h2>
+	<p>
+		This proteomic evidence has been collected from various mass
+		spectrometry (MS) sources, covering a range of tissues and cell types.
+	</p>
+	<p>
+		Prior to GENCODE v33, peptides were collected from 8 distinct large-scale proteomics data sets,
+		incorporating the <a href="http://www.peptideatlas.org/" target="_blank">PeptideAtlas</a> and
+		<a href="https://peptide.nist.gov/" target="_blank">NIST</a> databases, as well as six published
+		large-scale experiments[1-8]. To improve reliability, peptides from each of these sources were
+		filtered, eliminating non-tryptic and semi-tryptic peptides and peptides containing missed cleavages,
+		and where possible only considering peptides identified by multiple search engines. Note that for
+		the Wilhelm analysis[7], we only included the peptides from the publically available Cellzome
+		experiments on human tissues.
+	</p>
+	<p>
+		APPRIS releases from GENCODE v33 onwards have used peptide evidence from 2 proteomics
+		studies[8-9], and from GENCODE v38, these were supplemented by peptides from a further
+		5 studies[10-14]. For these studies, the Comet search engine
+		(<a href="https://doi.org/10.1002/pmic.201200439" target="_blank">Eng et al. 2012</a>)
+		was used with default parameters, then post-processed with Percolator
+		(<a href="https://doi.org/10.1038/nmeth1113" target="_blank">Käll et al. 2007</a>;
+		<a href="https://pubmed.ncbi.nlm.nih.gov/27572102/" target="_blank">The et al. 2016</a>).
+		Peptide-spectrum matches (PSMs) that had a Posterior Error Probability (PEP) of lower than 0.001 were
+		allowed as long as they were fully tryptic peptides and had no more than 2 missed cleavages.
+		Only peptides with at least 2 valid PSMs across the 7 studies are considered by PROTEO.
+>>>>>>> 5522e53bbb703096e18e84d7210b41465648a536
+	</p>
+    <h2>Annotations</h2>
+    <p>
+    	The following table describes the annotations of PROTEO tracks:
+    </p>    
+	<table border="1" cellspacing="0">
+	<tbody>
+		<tr>
+			<th>field</th>
+			<th>example</th>
+			<th>Info type</th>
+			<th>description</th>
+		</tr>
+		<tr>
+			<td><tt>Item</tt></td>
+			<td>GVSEAAVLKPSEELPAEATSSVEPEK</td>
+			<td><tt>string</tt></td>
+			<td>Peptide found in large-scale human proteomics experiments and databases</td>
+		</tr>
+		<tr>
+			<td><tt>Score</tt></td>
+			<td>2</td>
+			<td><tt>int range [2-8]</tt></td>
+			<td>Number of experiments where the peptide was found. The peptide has to be included in at least 2 experiments</td>
+		</tr>
+		<tr>
+			<td><tt>Position</tt></td>
+			<td>chr21:33043745-33043822</td>
+			<td width="120px"><tt>chr:start-end</tt></td>
+			<td>Genome position</td>
+		</tr>
+		<tr>
+			<td><tt>List of Ensembl transcript ID</tt></td>
+			<td>ENST00000399804;ENST00000286835</td>
+			<td><tt>string</tt></td>
+			<td>List of variants (designated by Ensembl transcript ID) that contain the peptide</td>
+		</tr>
+	</tbody>
+	</table>
+    	
+    <h2>Credits</h2>
+<<<<<<< HEAD
+    <p>
+        The data was generated by <a href="https://www.cnio.es/" target="_blank">Spanish National Cancer Research Centre (CNIO)</a>, <a href="https://www.cnic.es/" target="_blank">Centro Nacional de Investigaciones Cardiovasculares (CNIC)</a> and <a href="https://inb-elixir.es/" target="_blank">Spanish Institute of Bioinformatics</a> using a computational pipeline developed by Michael Tress, Iakes Ezkurdia and Jose Manuel Rodriguez.
+    </p>
+=======
+	<p>
+		PROTEO data has been generated by the <a href="https://www.cnio.es/" target="_blank">Spanish
+		National Cancer Research Centre (CNIO)</a> in collaboration with <a href="https://www.cnic.es/"
+		target="_blank">Centro Nacional de Investigaciones Cardiovasculares (CNIC)</a> and the <a
+		href="https://inb-elixir.es/" target="_blank">Spanish Institute of Bioinformatics</a>, using a
+		computational pipeline developed by Michael Tress, Iakes Ezkurdia and Jose Manuel Rodriguez.
+		More recently, this computational pipeline was augmented by an additional component &mdash;
+		the <a href="https://gitlab.com/bu_cnio/protter" target="_blank">protter workflow</a> &mdash;
+		developed by Tomás Di Domenico and Thomas Walsh.
+	</p>
+>>>>>>> 5522e53bbb703096e18e84d7210b41465648a536
+
+    <h2>Contacts</h2>
+    <p>
+		If you have questions or comments, please <a
+		href="https://appris.bioinfo.cnio.es/#/contact" target="_blank">contact us</a>.
+    </p>
+	
+	<h2>Data Release Policy</h2>
+    <p>
+    	All data is freely available to the public.
+	</p>
+
+	<h2>References</h2>
+<<<<<<< HEAD
+    <p>
+    	[1] Ezkurdia I, Rodriguez JM, Carrillo-de Santa Pau E, Vazquez J, Valencia A, Tress ML.<br>
+    	<b>Most highly expressed protein-coding genes have a single dominant isoform.</b><br>
+        J Proteome Res. 2015 Apr 3;14(4):1880-7. doi: <a href="https://doi.org/10.1021/pr501286b">10.1021/pr501286b</a>. Epub 2015 Mar 11. PubMed PMID: 25732134.
+    </p>
+		[2] Farrah, T.; Deutsch, E. W.; Hoopmann, M. R.; Hallows, J. L.; Sun, Z.; Huang, C. Y.; Moritz, R. L.<br>
+    	The state of the human proteome in 2012 as viewed through PeptideAtlas.<br>
+    	J. Proteome Res. 2013, 12, 162-171
+=======
+	<p>
+		[1] Ezkurdia, I.; Rodriguez, J.M.; Carrillo-de Santa Pau, E.; Vazquez, J.; Valencia, A.; Tress, M.L.<br>
+		Most highly expressed protein-coding genes have a single dominant isoform.<br>
+		J Proteome Res 2015, 14, 1880-7 <a href="https://doi.org/10.1021/pr501286b" target="_blank">doi:10.1021/pr501286b</a>
+>>>>>>> 5522e53bbb703096e18e84d7210b41465648a536
+	</p>
+	<p>
+		[2] Farrah, T.; Deutsch, E.W.; Hoopmann, M.R.; Hallows, J.L.; Sun, Z.; Huang, C.Y.; Moritz, R.L.<br>
+		The state of the human proteome in 2012 as viewed through PeptideAtlas.<br>
+		J Proteome Res. 2013, 12, 162-171
+	</p>
+	<p>
+		[3] Ezkurdia, I.; del Pozo, A.; Frankish, A.; Rodriguez, J.M.; Harrow, J.; Ashman, K.; Valencia, A.; Tress, M.L.<br>
+		Comparative proteomics reveals a significant bias toward alternative protein isoforms with conserved structure and function.<br>
+		Mol. Biol. Evol. 2012, 29, 2265– 2283
+	</p>
+	<p>
+		[4] Munoz, J.; Low, T.Y.; Kok, Y.J.; Chin, A.; Frese, C.K.; Ding, V.; Choo, A.; Heck, A.J.<br>
+		The quantitative proteomes of human-induced pluripotent stem cells and embryonic stem cells.<br>
+		Mol. Syst. Biol. 2011, 7, 550
+	</p>
+	<p>
+		[5] Nagaraj, N.; Wisniewski, J.R.; Geiger, T.; Cox, J.; Kircher, M.; Kelso, J.; Pääbo, S.; Mann, M.<br>
+		Deep proteome and transcriptome mapping of a human cancer cell line.<br>
+		Mol. Syst. Biol. 2011, 7, 548
+	</p>
+	<p>
+		[6] Geiger, T.; Wehner, A.; Schaab, C.; Cox, J.; Mann, M.<br>
+		Comparative proteomic analysis of eleven common cell lines reveals ubiquitous but varying expression of most proteins.<br>
+		Mol. Cell Proteomics 2012, 11, M111.014050
+	</p>
+	<p>
+		[7] Wilhelm, M.; Schlegl, J.; Hahne, H.; Gholami, A.M.; Lieberenz, M.; Savitski, M.M.; … Kuster B.<br>
+		Mass-spectrometry-based draft of the human proteome.<br>
+		Nature 2014, 509, 582-587
+	</p>
+	<p>
+		[8] Kim, M.S.; Pinto, S.M.; Getnet, D.; Nirujogi, R.S.; Manda, S.S.; Chaerkady, R.; … Pandey, A.<br>
+		A draft map of the human proteome.<br>
+		Nature 2014, 509, 575-581
+	</p>
+	<p>
+		[9] Wang, D.; Eraslan, B.; Wieland, T.; Hallström, B.; Hopf, T.; Zolg, D.P., … Kuster, B.<br>
+		A deep proteome and transcriptome abundance atlas of 29 healthy human tissues.<br>
+		Mol. Syst. Biol. 2019, 15, e8503
+	</p>
+	<p>
+		[10] Zhang B.; Wang J.; Wang X.; Zhu J.; Liu Q.; Shi Z.; … NCI CPTAC.<br>
+		Proteogenomic characterization of human colon and rectal cancer.<br>
+		Nature 2014, 513, 382-7
+	</p>
+	<p>
+		[11] Bekker-Jensen, D.B.; Kelstrup, C.D.; Batth, T.S.; Larsen, S.C.; Haldrup, C.; Bramsen, J.B.; … Olsen J.V.<br>
+		An optimized shotgun strategy for the rapid generation of comprehensive human proteomes.<br>
+		Cell Syst. 2017, 4, 587-599.e4
+	</p>
+	<p>
+		[12] Carlyle, B.C.; Kitchen, R.R.; Kanyo, J.E.; Voss, E.Z.; Pletikos, M.; Sousa, A.M.M.; … Nairn, A.C.<br>
+		A multiregional proteomic survey of the postnatal human brain.<br>
+		Nat. Neurosci. 2017, 20, 1787-1795
+	</p>
+	<p>
+		[13] Schiza, C.; Korbakis, D.; Jarvi, K.; Diamandis, E.P.; Drabovich, A.P.<br>
+		Identification of TEX101-associated proteins through proteomic measurement
+		of human spermatozoa homozygous for the missense variant rs35033974.<br>
+		Mol. Cell Proteomics 2019, 18, 338-351
+	</p>
+	<p>
+		[14] Jiang, L.; Wang, M.; Lin, S.; Jian, R.; Li, X.; Chan, J.; … Snyder M.P.<br>
+		A quantitative proteome map of the human body.<br>
+		Cell 2020, 183, 269-283.e19
+	</p>
+
+</body>
+</html>
