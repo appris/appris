@@ -535,13 +535,15 @@ function createAnnotReferences($filter, query, residues, urlExporter, urlRunnerR
                             }
                         }
                     }
-                    else if ( (mid === "functional_domain") && angular.isDefined(mres.annot.match(pattern)) ) {
+                    else if ( (mid === "functional_domain") && angular.isDefined(mres.annot.match(pattern)) && angular.isDefined(mres.name) ) {
                         var match = mres.annot.match(pattern);
                         if ( angular.isArray(match) && angular.isDefined(match[1]) && angular.isDefined(match[2]) ) {
                             var acc = match[1];
                             var eval = match[2];
+                            var name = mres.name;
                             var id = acc.replace(/\.\d*$/g,'');
-                            annot = "<a href='"+urlPfam+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                            //annot = "<a href='"+urlPfam+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                            annot = "<a href='"+urlPfam+id+"' target='_blank'>"+name+"</a>" + " (" + eval + ")";
 
                         }
                     }

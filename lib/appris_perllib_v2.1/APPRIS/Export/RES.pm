@@ -378,6 +378,7 @@ sub parser_spade_residues {
 							'start'		=> $region->alignment_start,
 							'end'		=> $region->alignment_end,
 							'annot'		=> $region->hmm_acc . " (" . $region->evalue . ")",
+							'name'		=> $region->hmm_name,
 						};						
 					 	if ( ($region->type_domain eq 'domain_damaged') or ($region->type_domain eq 'domain_wrong') ) {
 					 		$res->{'damaged'} = 1;

@@ -87,13 +87,16 @@ module.directive('browserAnnotTpl', ['$compile', '$filter', 'consUrlFirestarliga
                                 }
                             }
                         }
-                        else if ( (mid === "functional_domain") && angular.isDefined(res_value.annot.match(pattern)) ) {
+                        else if ( (mid === "functional_domain") && angular.isDefined(res_value.annot.match(pattern)) && angular.isDefined(res_value.name) ) {
                             var match = res_value.annot.match(pattern);
                             if ( angular.isArray(match) && angular.isDefined(match[1]) && angular.isDefined(match[2]) ) {
                                 var acc = match[1];
                                 var eval = match[2];
+                                var name = res_value.name;
                                 var id = acc.replace(/\.\d*$/g,'');
-                                annot = "<a href='"+consUrlPfamfamily+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                                //annot = "<a href='"+consUrlPfamfamily+id+"' target='_blank'>"+acc+"</a>" + " (" + eval + ")";
+                                annot = "<a href='"+consUrlPfamfamily+id+"' target='_blank'>"+name+"</a>" + " (" + eval + ")";
+
                             }
                         }
                         else {
